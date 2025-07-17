@@ -1,0 +1,13 @@
+{
+  "name": "@aamini/config-typescript",
+  "version": "0.0.1",
+  "type": "module",
+  "private": true,
+  "exports": {
+    "./base": "./tsconfig.base.json",
+    "./next": "./tsconfig.next.json"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.2"
+  }
+}

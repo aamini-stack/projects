@@ -1,0 +1,27 @@
+{
+  "name": "@aamini/config-eslint",
+  "version": "0.0.1",
+  "type": "module",
+  "private": true,
+  "exports": {
+    "./base": "./.eslintrc.base.js",
+    "./next": "./.eslintrc.next.js",
+    "./playwright": "./.eslintrc.playwright.js"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.31.0",
+    "@next/eslint-plugin-next": "^15.3.0",
+    "eslint": "^9.31.0",
+    "eslint-config-next": "15.3.2",
+    "eslint-config-prettier": "^10.1.1",
+    "eslint-plugin-import": "2.31.0",
+    "eslint-plugin-jest": "^29.0.1",
+    "eslint-plugin-jsx-a11y": "6.10.1",
+    "eslint-plugin-only-warn": "^1.1.0",
+    "eslint-plugin-playwright": "^1.6.2",
+    "eslint-plugin-react": "7.35.0",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-turbo": "^2.5.0",
+    "globals": "^16.3.0"
+  }
+}

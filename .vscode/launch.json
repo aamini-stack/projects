@@ -1,0 +1,41 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug Imdbgraph (Server)",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["run", "dev"],
+      "cwd": "${workspaceFolder}/apps/imdbgraph"
+    },
+    {
+      "name": "Debug Imdbgraph (Client)",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "pnpm run dev",
+      "cwd": "${workspaceFolder}/apps/imdbgraph"
+    },
+    {
+      "name": "Debug Portfolio (Server)",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["run", "dev"],
+      "cwd": "${workspaceFolder}/apps/portfolio"
+    },
+    {
+      "name": "Debug Portfolio (Client)",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "pnpm run dev",
+      "cwd": "${workspaceFolder}/apps/portfolio"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Debug Portfolio (All)",
+      "configurations": ["Debug Portfolio (Client)", "Debug Portfolio (Server)"]
+    }
+  ]
+}

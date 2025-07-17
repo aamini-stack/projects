@@ -1,0 +1,4 @@
+{
+  "extends": "@aamini/config-typescript/base",
+  "include": ["src/**/*.ts", "src/**/*.tsx"]
+}

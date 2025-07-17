@@ -1,0 +1,21 @@
+{
+  "extends": "@aamini/config-typescript/next",
+  "compilerOptions": {
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    "next-env.d.ts",
+    "next.config.js",
+    ".next/types/**/*.ts"
+, "jest.config.js"  ],
+  "exclude": ["node_modules"]
+}

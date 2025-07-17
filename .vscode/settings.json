@@ -1,0 +1,40 @@
+{
+  // ===========================================================================
+  // * Default Settings
+  // ===========================================================================
+  // General
+  "git.autofetch": true,
+  "files.autoSave": "afterDelay",
+  // Formatting
+  "editor.formatOnPaste": true,
+  "editor.formatOnSave": true,
+  "editor.rulers": [80, 120],
+  "[markdown]": {
+    "editor.wordWrap": "on"
+  },
+  // Terminals
+  "terminal.integrated.defaultProfile.osx": "fish",
+  // Etc
+  "chat.commandCenter.enabled": false,
+  "redhat.telemetry.enabled": false,
+  // ===========================================================================
+
+  // ===========================================================================
+  // * Node.js Settings
+  // ===========================================================================
+  "files.exclude": {
+    "**/node_modules/": true,
+    "**/.next/": true,
+    "**/.swc/": true,
+    "**/.turbo": true,
+  },
+  "files.associations": {
+    "*.css": "tailwindcss",
+    "*.json5": "jsonc"
+  },
+  // Formatting
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "typescript.preferences.importModuleSpecifier": "non-relative",
+  // Tailwind CSS
+  "tailwindCSS.classFunctions": ["tw", "clsx", "cn"]
+}
