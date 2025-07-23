@@ -1,0 +1,23 @@
+{
+  "name": "@aamini/portfolio-e2e",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check-types": "tsc --noEmit",
+    "e2e": "playwright test",
+    "lint": "eslint --max-warnings 0"
+  },
+  "dependencies": {
+    "@aamini/portfolio": "workspace:*"
+  },
+  "devDependencies": {
+    "@aamini/config-eslint": "workspace:*",
+    "@aamini/config-typescript": "workspace:*",
+    "@playwright/test": "^1.54.1",
+    "@types/node": "^24.0.15",
+    "eslint": "^9.31.0",
+    "eslint-plugin-playwright": "^2.2.0",
+    "typescript": "^5.8.3"
+  }
+}

@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { Button } from "./primitives/button";
+import { Button } from '@/components/primitives/button';
 import {
   Card,
   CardContent,
@@ -8,7 +8,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "./primitives/card";
+} from '@/components/primitives/card';
 import {
   Form,
   FormControl,
@@ -16,13 +16,13 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "./primitives/form";
-import { Textarea } from "./primitives/textarea";
-import { zodResolver } from "@hookform/resolvers/zod";
-import Image from "next/image";
-import { useForm } from "react-hook-form";
-import { toast } from "sonner";
-import * as z from "zod";
+} from '@/components/primitives/form';
+import { Textarea } from '@/components/primitives/textarea';
+import { zodResolver } from '@hookform/resolvers/zod';
+import Image from 'next/image';
+import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
+import * as z from 'zod';
 
 const formSchema = z.object({
   message: z.string().nonempty(),
@@ -34,16 +34,16 @@ export function ContactCard() {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      message: "",
+      message: '',
     },
   });
 
   async function onSubmit(values: FormValues) {
     try {
-      const response = await fetch("/api/contact", {
-        method: "POST",
+      const response = await fetch('/api/contact', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({ message: values.message }),
       });
@@ -51,11 +51,11 @@ export function ContactCard() {
       if (!response.ok) {
         toast.error(response.statusText);
       } else {
-        toast.success("Message sent successfully!");
+        toast.success('Message sent successfully!');
         form.reset();
       }
     } catch {
-      toast.error("An unexpected error occurred");
+      toast.error('An unexpected error occurred');
     }
   }
 
@@ -64,19 +64,19 @@ export function ContactCard() {
       <CardHeader>
         <CardTitle>Reach out!</CardTitle>
         <CardDescription>
-          Either email me at{" "}
+          Either email me at{' '}
           <a
             className="text-cyan-600 hover:underline"
             href="mailto:aamini1024@gmail.com"
           >
             aamini1024@gmail.com
-          </a>{" "}
+          </a>{' '}
           or fill out the form below
         </CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form id="email" onSubmit={form.handleSubmit(onSubmit)}>
+          <form id="email" onSubmit={() => form.handleSubmit(onSubmit)}>
             <FormField
               control={form.control}
               name="message"
@@ -104,7 +104,7 @@ export function ContactCard() {
           className="w-40"
           disabled={form.formState.isSubmitting}
         >
-          {form.formState.isSubmitting ? "Sending..." : "Send Message"}
+          {form.formState.isSubmitting ? 'Sending...' : 'Send Message'}
           <Image
             src="/icons/email.svg"
             alt="Email Icon"

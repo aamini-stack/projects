@@ -36,6 +36,7 @@ export default function Index() {
 
           <Button size="icon" variant="neutral" asChild>
             <Link href="https://linkedin.com/in/aria-amini">
+              {/* eslint-disable-next-line @typescript-eslint/no-deprecated */}
               <Linkedin />
             </Link>
           </Button>

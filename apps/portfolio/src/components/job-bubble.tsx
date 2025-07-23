@@ -1,16 +1,16 @@
-"use client";
+'use client';
 
-import { Card } from "./primitives/card";
-import { Button } from "@/components/primitives/button";
-import { JobInfo } from "@/lib/jobs";
+import { Button } from '@/components/primitives/button';
+import { Card } from '@/components/primitives/card';
+import { JobInfo } from '@/lib/jobs';
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@radix-ui/react-collapsible";
-import { ChevronsUpDown } from "lucide-react";
-import Image from "next/image";
-import { useState } from "react";
+} from '@radix-ui/react-collapsible';
+import { ChevronsUpDown } from 'lucide-react';
+import Image from 'next/image';
+import { useState } from 'react';
 
 export function JobBubble({ job }: { job: JobInfo }) {
   const header = job.bulletPoints[0];
@@ -18,7 +18,7 @@ export function JobBubble({ job }: { job: JobInfo }) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <Card className="max-w-lg min-w-sm px-8 pt-6">
+    <Card className="min-w-sm max-w-lg px-8 pt-6">
       {/* Header */}
       <header className="flex">
         <div className="flex h-10 w-10 items-center justify-center">
@@ -29,7 +29,7 @@ export function JobBubble({ job }: { job: JobInfo }) {
             width={40}
           />
         </div>
-        <hgroup className="mr-12 ml-2 flex flex-1 flex-col">
+        <hgroup className="ml-2 mr-12 flex flex-1 flex-col">
           <h2>{job.company}</h2>
           <p className="text-sm">{job.role}</p>
         </hgroup>
@@ -54,7 +54,7 @@ export function JobBubble({ job }: { job: JobInfo }) {
         </CollapsibleContent>
         <CollapsibleTrigger className="my-2" asChild={true}>
           <Button variant="neutral" size="icon" className="w-fit gap-0.5 px-4">
-            {isOpen ? "See Less" : "See More"}
+            {isOpen ? 'See Less' : 'See More'}
             <ChevronsUpDown />
           </Button>
         </CollapsibleTrigger>

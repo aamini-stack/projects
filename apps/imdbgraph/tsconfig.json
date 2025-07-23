@@ -11,11 +11,12 @@
     }
   },
   "include": [
-    "**/*.ts",
-    "**/*.tsx",
+    "src/**/*.ts",
+    "src/**/*.tsx",
     "next-env.d.ts",
-    "next.config.js",
-    ".next/types/**/*.ts"
+    ".next/types/**/*.ts",
+    "next.config.ts",
+    "scripts/**/*.ts"
   ],
   "exclude": ["node_modules"]
 }

@@ -1,22 +1,22 @@
-import "./globals.css";
-import { Toaster } from "@/components/primitives/sonner";
-import type { Metadata } from "next";
-import { ThemeProvider } from "next-themes";
-import { Geist, Geist_Mono } from "next/font/google";
+import './globals.css';
+import { Toaster } from '@/components/primitives/sonner';
+import type { Metadata } from 'next';
+import { ThemeProvider } from 'next-themes';
+import { Geist, Geist_Mono } from 'next/font/google';
 
 const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+  variable: '--font-geist-sans',
+  subsets: ['latin'],
 });
 
 const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  variable: '--font-geist-mono',
+  subsets: ['latin'],
 });
 
 export const metadata: Metadata = {
-  title: "Aria Amini - Portfolio",
-  description: "Portfolio of Aria Amini, a software engineer.",
+  title: 'Aria Amini - Portfolio',
+  description: 'Portfolio of Aria Amini, a software engineer.',
 };
 
 export default function RootLayout({

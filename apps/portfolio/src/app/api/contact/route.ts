@@ -1,9 +1,14 @@
 import { RateLimiter } from '@/lib/rate-limiter';
+import { type } from 'arktype';
 import FormData from 'form-data';
 import Mailgun from 'mailgun.js';
 import { NextRequest, NextResponse } from 'next/server';
 
 const rateLimiter = new RateLimiter();
+
+const MessageResponse = type({
+  message: 'string',
+});
 
 export async function POST(req: NextRequest) {
   // https://github.com/vercel/next.js/discussions/55037#discussioncomment-6922202
@@ -20,13 +25,16 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(result, { status: 429 });
   }
 
-  const { message } = await req.json();
-  if (!message) {
+  const response = MessageResponse(await req.json());
+  if (response instanceof type.errors) {
+    throw Error(response.summary);
+  }
+  if (!response.message) {
     return new NextResponse('Message is required', { status: 400 });
   }
 
   try {
-    await sendEmail(message);
+    await sendEmail(response.message);
   } catch (error) {
     console.error('Error sending email:', error);
     return NextResponse.json(error, { status: 500 });

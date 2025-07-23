@@ -3,25 +3,32 @@
   "ui": "tui",
   "tasks": {
     "build": {
-      "dependsOn": ["^build"],
+      "env": [
+        "DATABASE_URL",
+        "CRON_SECRET",
+        "MAILGUN_API_KEY",
+        "MAILGUN_DOMAIN"
+      ],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
       "outputs": [".next/**", "!.next/cache/**"]
     },
-    "dev": {
-      "cache": false,
-      "persistent": true
+    "check-types": {
+      "dependsOn": ["^check-types"]
+    },
+    "lint": {
+      "dependsOn": ["^lint"]
+    },
+    "test": {
+      "env": ["CI"]
     },
     "e2e": {
       "passThroughEnv": ["PLAYWRIGHT_*"],
       "dependsOn": ["^build"]
     },
-    "lint": {
-      "dependsOn": ["^lint"]
+    "dev": {
+      "cache": false,
+      "persistent": true
     },
-    "check-types": {
-      "dependsOn": ["^check-types"]
-    },
-    "test": {},
     "test:watch": {
       "cache": false,
       "persistent": true

@@ -8,10 +8,10 @@ export const dynamic = 'force-dynamic'; // No caching.
  * This API is called once a day by vercel. Once called, it begins updating
  * all the database entries with new data from IMDB in the background (~10 min).
  */
-export async function GET(request: NextRequest) {
+export function GET(request: NextRequest) {
   // Authentication
   const authHeader = request.headers.get('authorization');
-  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+  if (authHeader !== `Bearer ${process.env.CRON_SECRET?.toString() ?? ''}`) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 

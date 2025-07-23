@@ -66,7 +66,7 @@ export function SearchBar({ autoFocus = false }: { autoFocus?: boolean }) {
       {/* Search Bar */}
       <search
         className={cn(
-          'placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input flex h-10 w-full min-w-0 items-center rounded-xl border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none md:text-sm',
+          'placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input shadow-xs flex h-10 w-full min-w-0 items-center rounded-xl border bg-transparent px-3 py-1 text-base outline-none transition-[color,box-shadow] md:text-sm',
           'has-focus-visible:border-ring has-focus-visible:ring-ring/50 has-focus-visible:ring-[3px]',
           'has-disabled:pointer-events-none has-disabled:cursor-not-allowed has-disabled:opacity-50',
           'has-aria-invalid:ring-destructive/20 dark:has-aria-invalid:ring-destructive/40 has-aria-invalid:border-destructive',
@@ -99,7 +99,7 @@ export function SearchBar({ autoFocus = false }: { autoFocus?: boolean }) {
       {!error && (
         <ul
           className={cn(
-            'bg-popover absolute top-full right-0 left-0 z-50 mt-3 w-full rounded-xl border p-2 shadow-lg',
+            'bg-popover absolute left-0 right-0 top-full z-50 mt-3 w-full rounded-xl border p-2 shadow-lg',
             {
               hidden:
                 !isOpen ||
@@ -118,7 +118,7 @@ export function SearchBar({ autoFocus = false }: { autoFocus?: boolean }) {
             <li
               key={show.imdbId}
               className={cn(
-                'text-foreground/60 flex w-full cursor-pointer items-center justify-between gap-2 rounded-md px-2 py-1.5 text-sm outline-none select-none',
+                'text-foreground/60 flex w-full cursor-pointer select-none items-center justify-between gap-2 rounded-md px-2 py-1.5 text-sm outline-none',
                 'disabled:pointer-events-none disabled:opacity-50',
                 '[&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0',
                 {

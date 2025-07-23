@@ -7,7 +7,7 @@
     "./base": "./tsconfig.base.json",
     "./next": "./tsconfig.next.json"
   },
-  "devDependencies": {
+  "peerDependencies": {
     "typescript": "^5.8.2"
   }
 }

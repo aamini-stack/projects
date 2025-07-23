@@ -1,6 +1,6 @@
 import baseConfig from './.eslintrc.base.js';
 import pluginNext from '@next/eslint-plugin-next';
-import pluginJest from 'eslint-plugin-jest';
+import pluginTanstack from '@tanstack/eslint-plugin-query';
 import pluginReact from 'eslint-plugin-react';
 import pluginReactHooks from 'eslint-plugin-react-hooks';
 import { defineConfig } from 'eslint/config';
@@ -43,9 +43,5 @@ export default defineConfig([
     },
   },
 
-  // Jest
-  {
-    files: ['**/*.spec.ts', '**/*.test.ts'],
-    plugins: { jest: pluginJest },
-  },
+  ...pluginTanstack.configs['flat/recommended'],
 ]);

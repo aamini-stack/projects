@@ -1,19 +1,7 @@
 {
-  "tabWidth": 2,
-  "printWidth": 80,
   "singleQuote": true,
-  "endOfLine": "auto",
   "plugins": [
     "@trivago/prettier-plugin-sort-imports",
     "prettier-plugin-tailwindcss"
-  ],
-  "overrides": [
-    {
-      "files": ["*.json5"],
-      "options": {
-        "quoteProps": "preserve",
-        "trailingComma": "none"
-      }
-    }
   ]
 }

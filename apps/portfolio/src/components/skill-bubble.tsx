@@ -1,5 +1,5 @@
-import { Tech } from "@/lib/skills";
-import Image from "next/image";
+import { Tech } from '@/lib/skills';
+import Image from 'next/image';
 
 export function SkillBubble({ tech }: { tech: Tech }) {
   return (

@@ -1,0 +1,103 @@
+{
+  "folders": [
+    {
+      "path": "../apps/imdbgraph",
+    },
+    {
+      "path": "../apps/imdbgraph-e2e",
+    },
+    {
+      "path": "../libs",
+    },
+    {
+      "name": "@aamini/root",
+      "path": "..",
+    },
+  ],
+  "settings": {
+    // ===========================================================================
+    // * Default Settings
+    // ===========================================================================
+    // General
+    "git.autofetch": true,
+    "files.autoSave": "afterDelay",
+    // Formatting
+    "editor.formatOnPaste": true,
+    "editor.formatOnSave": true,
+    "editor.rulers": [80, 120],
+    "[markdown]": {
+      "editor.wordWrap": "on",
+    },
+    // ===========================================================================
+
+    // ===========================================================================
+    // * Node.js Settings
+    // ===========================================================================
+    "files.exclude": {
+      "**/node_modules/": true,
+      "**/.next/": true,
+      "**/.swc/": true,
+      "**/.turbo": true,
+    },
+    // Formatting
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "typescript.preferences.importModuleSpecifier": "non-relative",
+
+    // Ark Types: https://arktype.io/docs/intro/setup#settings
+    "editor.quickSuggestions": {
+      "strings": "on",
+    },
+    "typescript.preferences.autoImportSpecifierExcludeRegexes": [
+      "^(node:)?os$",
+    ],
+
+    // ESLint
+    "eslint.workingDirectories": [{ "pattern": "./apps/*/" }],
+  },
+  "extensions": {
+    "recommendations": [
+      "editorconfig.editorconfig",
+      "github.vscode-github-actions",
+      "mikestead.dotenv",
+      "dbaeumer.vscode-eslint",
+      "esbenp.prettier-vscode",
+      "bradlc.vscode-tailwindcss",
+      "ms-playwright.playwright",
+      "xabikos.javascriptsnippets",
+      "vitest.explorer",
+    ],
+  },
+  "launch": {
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "Debug imdbgraph (Server)",
+        "type": "node-terminal",
+        "request": "launch",
+        "command": "pnpm run dev",
+        "cwd": "${workspaceFolder}/../imdbgraph",
+      },
+      {
+        "name": "Debug imdbgraph (Client)",
+        "type": "chrome",
+        "request": "launch",
+        "cwd": "${workspaceFolder}/../imdbgraph",
+      },
+      {
+        "name": "Debug imdbgraph (Server + Client)",
+        "type": "node",
+        "request": "launch",
+        "program": "${workspaceFolder}/node_modules/next/dist/bin/next",
+        "runtimeArgs": ["--inspect"],
+        "skipFiles": ["<node_internals>/**"],
+        "serverReadyAction": {
+          "action": "debugWithChrome",
+          "killOnServerStop": true,
+          "pattern": "- Local:.+(https?://.+)",
+          "uriFormat": "%s",
+          "webRoot": "${workspaceFolder}",
+        },
+      },
+    ],
+  },
+}
