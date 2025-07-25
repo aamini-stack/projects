@@ -1,6 +1,5 @@
 import { PlopTypes } from '@turbo/gen';
 
-
 export default function generator(plop: PlopTypes.NodePlopAPI): void {
   plop.setGenerator('app', {
     description: 'Creates a new Next.js app from sample-app template',

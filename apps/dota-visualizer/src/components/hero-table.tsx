@@ -1,21 +1,33 @@
-import { Hero, HeroDictionary } from '@/lib/dota/hero';
+import { HeroDictionary } from '@/lib/dota/hero';
 import Image from 'next/image';
 import React from 'react';
 
-export function GroupedHeroStatsTable({ data }: { data: HeroDictionary }) {
+export function HeroTable({
+  heroDictionary,
+}: {
+  heroDictionary: HeroDictionary;
+}) {
   // Group heroes by armor value
-  const groupedHeroes = Object.values(data).reduce<Record<number, Hero[]>>(
-    (acc, hero) => {
-      const armorValue = hero.baseArmor;
-      acc[armorValue] ??= [];
-      acc[armorValue].push(hero);
-      return acc;
-    },
-    {},
-  );
+  interface ArmorStat {
+    name: string;
+    icon: string;
+    armor: number;
+  }
+
+  const groupedHeroesByArmor: Record<string, ArmorStat[]> = {};
+  for (const [heroName, hero] of heroDictionary) {
+    const armor = hero.baseArmor;
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    groupedHeroesByArmor[armor] ??= [];
+    groupedHeroesByArmor[armor].push({
+      name: heroName,
+      armor: hero.baseArmor,
+      icon: hero.iconImage,
+    });
+  }
 
   // Sort armor values in ascending order
-  const sortedArmorValues = Object.keys(groupedHeroes)
+  const sortedArmorValues = Object.keys(groupedHeroesByArmor)
     .map(Number)
     .sort((a, b) => a - b);
 
@@ -33,22 +45,22 @@ export function GroupedHeroStatsTable({ data }: { data: HeroDictionary }) {
           </tr>
         </thead>
         <tbody>
-          {sortedArmorValues.map((armorValue) => (
-            <tr key={armorValue} className="hover:bg-gray-700">
+          {sortedArmorValues.map((armor) => (
+            <tr key={armor} className="hover:bg-gray-700">
               <td className="border border-gray-600 px-4 py-3 text-center font-bold">
-                {armorValue}
+                {armor}
               </td>
               <td className="border border-gray-600 px-4 py-3">
                 <div className="flex flex-wrap gap-1">
-                  {Object.entries(data).map(([heroName, hero]) => (
+                  {groupedHeroesByArmor[armor]?.map((hero) => (
                     <div
-                      key={heroName}
+                      key={hero.name}
                       className="flex items-center justify-center"
-                      title={heroName}
+                      title={hero.name}
                     >
                       <Image
-                        src={hero.iconImage}
-                        alt={heroName}
+                        src={hero.icon}
+                        alt={hero.name}
                         width={32}
                         height={32}
                         className="mr-2 inline-block"

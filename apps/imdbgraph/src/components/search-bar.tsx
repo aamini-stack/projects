@@ -10,9 +10,7 @@ import { Search as SearchIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect, useDeferredValue } from 'react';
 
-/**
- * https://www.w3.org/WAI/ARIA/apg/patterns/combobox/examples/combobox-autocomplete-list/
- */
+/** https://www.w3.org/WAI/ARIA/apg/patterns/combobox/examples/combobox-autocomplete-list/ */
 export function SearchBar({ autoFocus = false }: { autoFocus?: boolean }) {
   const router = useRouter();
   const [inputValue, setInputValue] = useState('');

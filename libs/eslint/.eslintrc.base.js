@@ -9,8 +9,8 @@ import tseslint from 'typescript-eslint';
 /**
  * A shared ESLint configuration for the repository.
  *
- * @type {import("eslint").Linter.Config[]}
- * */
+ * @type {import('eslint').Linter.Config[]}
+ */
 export default defineConfig([
   globalIgnores(['node_modules', '.next', 'dist/**']),
   js.configs.recommended,
@@ -46,7 +46,10 @@ export default defineConfig([
   },
 
   // Tests (Playwright + Vitest)
-  pluginPlaywright.configs['flat/recommended'],
+  {
+    files: ['**/*-e2e/src/**/*e2e.test.ts'],
+    ...pluginPlaywright.configs['flat/recommended'],
+  },
   {
     files: ['**/*.test.*', '**/__tests__/**'],
     ...pluginVitest.configs.recommended,
@@ -55,6 +58,7 @@ export default defineConfig([
   // Prevent Relative Imports like:
   // import { x } from '../folder/module-a';
   {
+    files: ['src/**/*.{ts,tsx,js,mjs,cjs,jsx}'],
     ignores: ['**/*.test.*', '**/__tests__/**'],
     rules: {
       'no-restricted-imports': [

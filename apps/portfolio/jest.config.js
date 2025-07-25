@@ -5,9 +5,7 @@ const createJestConfig = nextJest({
   dir: './',
 });
 
-/**
- * @type {import('jest').Config}
- */
+/** @type {import('jest').Config} */
 const config = {
   // Add any custom config to be passed to Jest
   coverageProvider: 'v8',

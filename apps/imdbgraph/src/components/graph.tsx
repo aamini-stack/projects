@@ -36,9 +36,7 @@ interface Point {
   custom?: { episode: Episode };
 }
 
-/**
- * Transform data into a format that Highcharts understands.
- */
+/** Transform data into a format that Highcharts understands. */
 function parseRatings(ratings: Ratings): Highcharts.SeriesSplineOptions[] {
   let i = 1;
   const allSeries: Highcharts.SeriesSplineOptions[] = [];

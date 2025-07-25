@@ -9,8 +9,8 @@ import globals from 'globals';
 /**
  * A custom shared ESLint configuration for applications that use Next.js.
  *
- * @type {import("eslint").Linter.Config[]}
- * */
+ * @type {import('eslint').Linter.Config[]}
+ */
 export default defineConfig([
   ...baseConfig,
   {

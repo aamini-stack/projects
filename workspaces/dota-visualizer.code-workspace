@@ -50,9 +50,6 @@
     "typescript.preferences.autoImportSpecifierExcludeRegexes": [
       "^(node:)?os$",
     ],
-
-    // ESLint
-    "eslint.workingDirectories": [{ "pattern": "./apps/*/" }],
   },
   "extensions": {
     "recommendations": [

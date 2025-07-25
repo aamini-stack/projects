@@ -5,8 +5,8 @@ import { NextRequest, NextResponse } from 'next/server';
 export const dynamic = 'force-dynamic'; // No caching.
 
 /**
- * This API is called once a day by vercel. Once called, it begins updating
- * all the database entries with new data from IMDB in the background (~10 min).
+ * This API is called once a day by vercel. Once called, it begins updating all
+ * the database entries with new data from IMDB in the background (~10 min).
  */
 export function GET(request: NextRequest) {
   // Authentication

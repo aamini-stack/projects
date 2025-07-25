@@ -18,18 +18,13 @@ All projects/apps are written in Next.js and the monorepo is managed using Turbo
 
 ## Feature request workflow
 
-I want you to follow a workflow similar to this when working on any major feature requests.
-Call this the "Aria LLM workflow" and announce it so I know you're following it.
-And announce each step.
+I want you to follow a workflow similar to this when implementing any major feature requests.
 
-Aria LLM Workflow:
+Before any major feature work, begin by first stopping to discuss testing strategy with me. This will help you succesfully iterate/debug the requested feature. The main testing strategies will be:
 
-1. Before any major feature work, begin by planning an appropriate testing strategy with me. This will help you succesfully iterate/debug the requested feature.
-2. If working on a UI feature, also run `pnpm run dev` and open the app in a browser window.
-3. Begin working on the feature. While working, ignore lint/type rules until the very end.
-4. Once done, fix all previous lint/type rules.
-5. Run `pnpm run verify` one last time.
-6. Run `cd .. && pnpm run e2e` to run e2e tests.
+1. No tests. Only use this for very simple features.
+2. Unit Tests. Use this for any non-UI / logic features. If writing a new feature and there are no tests, write some unit tests first and have me evaluate the tests before you begin implementing the feature. While working on the feature, use `pnpm run verify` to then run the tests and then fix any issues that arise.
+3. Browser testing. Launch `pnpm run dev` and open the app in a browser window and use that to debug.
 
 ## Core Principles
 
