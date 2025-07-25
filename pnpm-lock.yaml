@@ -127,9 +127,6 @@ importers:
       eslint:
         specifier: ^9.31.0
         version: 9.31.0(jiti@2.4.2)
-      eslint-plugin-playwright:
-        specifier: ^2.2.0
-        version: 2.2.0(eslint@9.31.0(jiti@2.4.2))
       typescript:
         specifier: ^5.8.3
         version: 5.8.3
