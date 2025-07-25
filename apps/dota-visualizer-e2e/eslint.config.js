@@ -1,5 +1,4 @@
 import baseConfig from '@aamini/config-eslint/base';
-import playwright from 'eslint-plugin-playwright';
 import { defineConfig } from 'eslint/config';
 
 /**
@@ -7,7 +6,4 @@ import { defineConfig } from 'eslint/config';
  *
  * @type {import('eslint').Linter.Config[]}
  */
-export default defineConfig([
-  ...baseConfig,
-  playwright.configs['flat/recommended'],
-]);
+export default defineConfig([...baseConfig]);
