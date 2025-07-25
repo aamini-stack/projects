@@ -1,7 +1,7 @@
 import js from '@eslint/js';
 import pluginVitest from '@vitest/eslint-plugin';
 import pluginPrettier from 'eslint-config-prettier';
-import pluginPlaywright from 'eslint-plugin-playWright';
+import pluginPlaywright from 'eslint-plugin-playwright';
 import pluginTurbo from 'eslint-plugin-turbo';
 import { defineConfig, globalIgnores } from 'eslint/config';
 import tseslint from 'typescript-eslint';
