@@ -10,7 +10,6 @@
     "test": "turbo run test",
     "check-types": "turbo run check-types",
     "e2e": "turbo run e2e",
-    "e2e:ci": "docker run --rm --network host -v /apps/dota-visualizer-e2e/src:/app/apps/dota-visualizer-e2e/src aamini:latest",
     "format": "prettier --check \"**/*.{ts,tsx,js,jsx,html,json,json5,yml,yaml}\"",
     "format:fix": "prettier --write \"**/*.{ts,tsx,js,jsx,html,json,json5,yml,yaml}\"",
     "verify": "turbo run build lint test check-types",
