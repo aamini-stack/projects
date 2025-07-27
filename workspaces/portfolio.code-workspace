@@ -24,7 +24,7 @@
     // Formatting
     "editor.formatOnPaste": true,
     "editor.formatOnSave": true,
-    "editor.rulers": [80, 120],
+    "editor.rulers": [80],
     "[markdown]": {
       "editor.wordWrap": "on",
     },

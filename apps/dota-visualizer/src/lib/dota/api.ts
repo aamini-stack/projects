@@ -1,4 +1,4 @@
-import { Hero, HeroDictionary, HeroName, validHeroes } from '@/lib/dota/hero';
+import { Hero, HeroDictionary, HeroName, heroNames } from '@/lib/dota/hero';
 import { type } from 'arktype';
 
 export async function fetchLatestHeroData(): Promise<HeroDictionary> {
@@ -44,7 +44,7 @@ async function parseOpenDotaApiResponse(response: Response) {
   const OpenDotaHero = type({
     id: 'number',
     name: 'string',
-    localized_name: type.enumerated(...validHeroes),
+    localized_name: type.enumerated(...heroNames),
     primary_attr: 'string',
     attack_type: 'string',
     roles: 'string[]',

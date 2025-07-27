@@ -23,11 +23,18 @@
     },
     "e2e": {
       "passThroughEnv": ["PLAYWRIGHT_*"],
-      "dependsOn": ["^build"]
+      "dependsOn": ["^build"],
+      "env": ["DATABASE_URL"]
     },
     "dev": {
       "cache": false,
       "persistent": true
+    },
+    "start": {
+      "dependsOn": ["^build"],
+      "env": ["DATABASE_URL"],
+      "cache": false,
+      "persistent": false
     },
     "test:watch": {
       "cache": false,

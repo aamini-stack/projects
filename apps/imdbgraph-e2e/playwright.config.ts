@@ -24,10 +24,11 @@ export default defineConfig({
 
   /* Run your local dev server before starting the tests */
   webServer: {
-    command: 'pnpm run start -p 4002',
+    command: 'turbo run start',
     url: 'http://localhost:4002',
     reuseExistingServer: false,
     cwd: '../imdbgraph',
+    stdout: 'pipe',
   },
 
   /* Configure projects for major browsers */

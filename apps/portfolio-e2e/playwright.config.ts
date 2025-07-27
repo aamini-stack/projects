@@ -1,5 +1,6 @@
 import { defineConfig, devices } from '@playwright/test';
 
+
 /** See https://playwright.dev/docs/test-configuration. */
 export default defineConfig({
   testDir: './src',
@@ -24,10 +25,11 @@ export default defineConfig({
 
   /* Run your local dev server before starting the tests */
   webServer: {
-    command: 'pnpm run start -p 4003',
+    command: 'turbo run start',
     url: 'http://localhost:4003',
     reuseExistingServer: false,
     cwd: '../portfolio',
+    stdout: 'pipe',
   },
 
   /* Configure projects for major browsers */

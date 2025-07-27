@@ -2,4 +2,3 @@ packages:
   - 'apps/*'
   - 'e2e/*'
   - 'libs/*'
-  - 'turbo/templates/*'

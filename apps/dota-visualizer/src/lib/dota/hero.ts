@@ -42,9 +42,9 @@ export interface Hero {
   nightVision: number;
 }
 
-export type HeroName = (typeof validHeroes)[number];
+export type HeroName = (typeof heroNames)[number];
 
-export const validHeroes = [
+export const heroNames = [
   'Anti-Mage',
   'Axe',
   'Bane',

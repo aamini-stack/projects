@@ -24,10 +24,11 @@ export default defineConfig({
 
   /* Run your local dev server before starting the tests */
   webServer: {
-    command: 'pnpm run start -p 4001',
+    command: 'turbo run start',
     url: 'http://localhost:4001',
     reuseExistingServer: false,
     cwd: '../dota-visualizer',
+    stdout: 'pipe',
   },
 
   /* Configure projects for major browsers */
