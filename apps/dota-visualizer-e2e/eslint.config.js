@@ -1,9 +1,11 @@
 import baseConfig from '@aamini/config-eslint/base';
-import { defineConfig } from 'eslint/config';
 
-/**
- * A shared ESLint configuration for playwright packages.
- *
- * @type {import('eslint').Linter.Config[]}
- */
-export default defineConfig([...baseConfig]);
+
+/** @type {import('eslint').Linter.Config} */
+export default [
+  ...baseConfig,
+  {
+    // Override rules here...
+    rules: {},
+  },
+];

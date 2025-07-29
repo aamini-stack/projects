@@ -7,12 +7,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/primitives/select';
-import { HeroDictionary, HeroName } from '@/lib/dota/hero';
-import {
-  Attribute,
-  attributes,
-  HeroStatsAnalyzer,
-} from '@/lib/dota/hero-percentiles';
+import { Hero, HeroDictionary, HeroName } from '@/lib/dota/hero';
+import { Attribute, HeroStatsAnalyzer } from '@/lib/dota/hero-percentiles';
 import Image from 'next/image';
 import { useMemo, useState } from 'react';
 
@@ -40,6 +36,79 @@ const displayNames: Record<Attribute, string> = {
   attackPoint: 'Attack Point',
   moveSpeed: 'Move Speed',
 };
+
+const statGroups = {
+  Attributes: [
+    'baseStr',
+    'strGain',
+    'baseAgi',
+    'agiGain',
+    'baseInt',
+    'intGain',
+  ],
+  Vitals: ['baseHealth', 'baseHealthRegen', 'baseMana', 'baseManaRegen'],
+  Defense: ['baseArmor', 'baseMagicResistance'],
+  Vision: ['dayVision', 'nightVision'],
+};
+
+function StatCard({
+  attribute,
+  hero,
+  heroStats,
+  heroName,
+}: {
+  attribute: Attribute;
+  hero: Hero;
+  heroStats: HeroStatsAnalyzer;
+  heroName: HeroName;
+}) {
+  const percentile = Math.round(
+    Number(heroStats.computePercentile(heroName, attribute) * 100),
+  );
+  return (
+    <div key={attribute} className="p-2 w-full">
+      <div className="text-sm font-bold overflow-hidden whitespace-nowrap truncate">
+        {displayNames[attribute]}: {hero[attribute]}
+      </div>
+      <div className="text-sm text-gray-500">
+        <span style={{ color: getPercentileColor(percentile) }}>
+          {percentile}th percentile
+        </span>
+      </div>
+    </div>
+  );
+}
+
+function StatGroup({
+  title,
+  attributes,
+  hero,
+  heroStats,
+  heroName,
+}: {
+  title: string;
+  attributes: Attribute[];
+  hero: Hero;
+  heroStats: HeroStatsAnalyzer;
+  heroName: HeroName;
+}) {
+  return (
+    <div className="rounded border p-4 flex-shrink-0 min-w-[200px]">
+      <h3 className="text-xl font-semibold mb-3">{title}</h3>
+      <div className="flex flex-col gap-1">
+        {attributes.map((attr) => (
+          <StatCard
+            key={attr}
+            attribute={attr}
+            hero={hero}
+            heroStats={heroStats}
+            heroName={heroName}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
 
 export function HeroStats({
   heroDictionary,
@@ -94,25 +163,16 @@ export function HeroStats({
         <h2 className="flex text-2xl font-bold capitalize gap-2">
           {name} <Image src={hero.iconImage} alt="" width={32} height={32} />
         </h2>
-        <div className="mt-4 grid grid-cols-2 gap-4 md:grid-cols-4 lg:grid-cols-4">
-          {attributes.map((attr) => (
-            <div key={attr} className="rounded border p-4">
-              <div className="text-sm font-bold overflow-hidden whitespace-nowrap truncate">
-                {displayNames[attr]}: {hero[attr]}
-              </div>
-              <div className="text-sm text-gray-500">
-                {(() => {
-                  const percentile = Math.round(
-                    Number(heroStats.computePercentile(name, attr) * 100),
-                  );
-                  return (
-                    <span style={{ color: getPercentileColor(percentile) }}>
-                      {percentile}th percentile
-                    </span>
-                  );
-                })()}
-              </div>
-            </div>
+        <div className="mt-4 flex flex-nowrap gap-8 overflow-x-auto">
+          {Object.entries(statGroups).map(([groupName, groupAttributes]) => (
+            <StatGroup
+              key={groupName}
+              title={groupName}
+              attributes={groupAttributes as Attribute[]}
+              hero={hero}
+              heroStats={heroStats}
+              heroName={name}
+            />
           ))}
         </div>
       </div>

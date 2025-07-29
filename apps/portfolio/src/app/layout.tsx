@@ -1,5 +1,7 @@
 import './globals.css';
 import { Toaster } from '@/components/primitives/sonner';
+import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import type { Metadata } from 'next';
 import { ThemeProvider } from 'next-themes';
 import { Geist, Geist_Mono } from 'next/font/google';
@@ -38,6 +40,8 @@ export default function RootLayout({
           {children}
         </ThemeProvider>
         <Toaster className="offset-y-(--header-size)" />
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );

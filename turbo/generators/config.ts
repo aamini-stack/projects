@@ -1,5 +1,14 @@
 import { PlopTypes } from '@turbo/gen';
 
+const options = [
+  'addNext',
+  'addVitest',
+  'addVitestServerMock',
+  'addDb',
+  'addLint',
+  'addCline',
+];
+
 export default function generator(plop: PlopTypes.NodePlopAPI): void {
   plop.setGenerator('app', {
     description: 'Creates a new Next.js app from sample-app template',
@@ -34,37 +43,35 @@ export default function generator(plop: PlopTypes.NodePlopAPI): void {
       },
     ],
     actions: [
-      // Copy files
+      // Basics
       {
         type: 'addMany',
-        destination: '{{ turbo.paths.root }}/apps/{{ appName }}',
-        templateFiles: '../templates/sample-app/*',
         base: '../templates/sample-app',
+        templateFiles: [
+          '../templates/sample-app/eslint.config.js',
+          '../templates/sample-app/tsconfig.json',
+          '../templates/sample-app/package.json',
+          '../templates/sample-app/postcss.config.mjs',
+          '../templates/sample-app/next.config.ts',
+          '../templates/sample-app/components.json',
+          '../templates/sample-app/src/app/layout.tsx',
+          '../templates/sample-app/src/app/globals.css',
+        ],
+        destination: '{{ turbo.paths.root }}/apps/{{ appName }}',
         force: true,
-        globOptions: {
-          dot: true,
-          ignore: ['**/node_modules/**', '**/dist/**', '**/.next/**'],
-        },
       },
+      // Playwright
       {
         type: 'addMany',
-        destination: '{{ turbo.paths.root }}/apps/{{ appName }}-e2e',
-        templateFiles: '../templates/sample-app-e2e/*',
         base: '../templates/sample-app-e2e',
+        templateFiles: [
+          '../templates/sample-app-e2e/**/*',
+          '!../templates/sample-app-e2e/node_modules/**/*',
+          '!../templates/sample-app-e2e/src/**/*',
+        ],
+        destination: '{{ turbo.paths.root }}/apps/{{ appName }}-e2e',
         force: true,
-        globOptions: {
-          dot: true,
-          ignore: ['**/node_modules/**'],
-        },
       },
-      // Fix App package.json
-      {
-        type: 'modify',
-        path: '{{ turbo.paths.root }}/apps/{{ appName }}/package.json',
-        pattern: /"name": "@aamini\/sample-app"/,
-        template: '"name": "@aamini/{{ appName }}"',
-      },
-      // Fix E2E package.json
       {
         type: 'modify',
         path: '{{ turbo.paths.root }}/apps/{{ appName }}-e2e/package.json',
@@ -77,30 +84,53 @@ export default function generator(plop: PlopTypes.NodePlopAPI): void {
         pattern: /"@aamini\/sample-app": "workspace:\*"/,
         template: '"@aamini/{{ appName }}": "workspace:*"',
       },
-      // Fix Playwright config
       {
         type: 'modify',
         path: '{{ turbo.paths.root }}/apps/{{ appName }}-e2e/playwright.config.ts',
-        pattern: /baseURL: 'http:\/\/localhost:3000'/,
-        template: "baseURL: 'http://localhost:{{ port }}'",
+        pattern: '5000',
+        template: '{{ port }}',
       },
       {
         type: 'modify',
         path: '{{ turbo.paths.root }}/apps/{{ appName }}-e2e/playwright.config.ts',
-        pattern: /url: 'http:\/\/localhost:3000'/,
-        template: "url: 'http://localhost:{{ port }}'",
+        pattern: '5000',
+        template: '{{ port }}',
       },
       {
         type: 'modify',
         path: '{{ turbo.paths.root }}/apps/{{ appName }}-e2e/playwright.config.ts',
-        pattern: /command: 'pnpm run start -p 3000'/,
-        template: "command: 'pnpm run start -p {{ port }}'",
+        pattern: /sample-app/,
+        template: '{{ appName }}',
+      },
+      // Vitest
+      {
+        type: 'addMany',
+        base: '../templates/sample-app',
+        templateFiles: '../templates/sample-app/vitest.*.ts',
+        destination: '{{ turbo.paths.root }}/apps/{{ appName }}',
+        force: true,
       },
       {
-        type: 'modify',
-        path: '{{ turbo.paths.root }}/apps/{{ appName }}-e2e/playwright.config.ts',
-        pattern: /cwd: '\.\.\/sample-app'/,
-        template: "cwd: '../{{ appName }}'",
+        type: 'addMany',
+        base: '../templates/sample-app/mocks',
+        templateFiles: '../templates/sample-app/mocks/**/*',
+        destination: '{{ turbo.paths.root }}/apps/{{ appName }}/mocks',
+        force: true,
+      },
+      {
+        type: 'addMany',
+        base: '../templates/sample-app/src/lib',
+        templateFiles: '../templates/sample-app/src/lib/**/*',
+        destination: '{{ turbo.paths.root }}/apps/{{ appName }}/src/lib',
+        force: true,
+      },
+      // Cline
+      {
+        type: 'addMany',
+        base: '../templates/sample-app',
+        templateFiles: '../templates/sample-app/.clinerules**/*',
+        destination: '{{ turbo.paths.root }}/apps/{{ appName }}/.clinerules',
+        force: true,
       },
     ],
   });

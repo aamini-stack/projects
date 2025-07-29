@@ -1,24 +1,35 @@
-# Project-Specific Rules
+# Cline Rules
 
-This is {{ appName }}. This is a project contained within a monorepo (@aamini). You have access
-to an adjacent e2e project (dota-e2e) that is critical for you to use when iterating/debugging
-new features. The test suite contains a simple screenshot test as a default, but
-you can add any other tests you may want to as well. 
+## App Description
 
-## 1. Important Rules
+This is {{ appName }}.
 
-- Use pnpm for all dependency management commands.
-- Use import aliases. Ex: `"@/lib/utils"` instead of `"../../lib/utils"`
-- Run `pnpm verify` to make sure the project still builds + passes checks/tests
-- Use `pnpm e2e` to run UI tests. You can check the playwright screenshots
-  for validation while iterating on one of my requests. You can also use the browser
-- All new features and significant bug fixes must be accompanied by appropriate tests (unit, integration, and/or e2e).
-- Use `pnpm run generate-app` at root if you need to create any new applications.
--
+## Project Structure
 
-## 2. Monorepo Structure
+{{ appName }} is contained within a monorepo (@aamini). This monorepo contains
+all my personal projects along with common utils/configs shared among my projects.
+All projects/apps are written in Next.js and the monorepo is managed using TurboRepo. All dependency management is done through pnpm and NOT npm or yarn. Use commands like: `pnpm i`, `pnpm exec`, `pnpm dlx`, `pnpm run dev` and **NOT** `npx` or `npm i`.
 
-- **`apps/`**: Contains individual applications (e.g., `dota-visualizer`, `imdbgraph`, `portfolio`). Each application should be self-contained within its directory. This directory also contains tests (ex: `dota-visualizer-e2e`)
-- **`libs/`**: Contains shared libraries and utilities that can be consumed by multiple applications or other libraries.
-  - `libs/eslint/`: Centralized ESLint configurations.
-  - `libs/typescript/`: Centralized TypeScript configurations.
+### Directory Structure
+
+- Main code: `<root>/apps/{{ appName }}`
+- E2E Playwright Test Suite: `<root>/apps/{{ appName }}-e2e`
+- Common Library/Config code: `<root>/libs`
+
+## Feature request workflow
+
+I want you to follow a workflow similar to this when implementing any major feature requests.
+
+Before any major feature work, begin by first stopping to discuss testing strategy with me. This will help you succesfully iterate/debug the requested feature. The main testing strategies will be:
+
+1. No tests. Only use this for very simple features.
+2. Unit Tests. Use this for any non-UI / logic features. If writing a new feature and there are no tests, write some unit tests first and have me evaluate the tests before you begin implementing the feature. While working on the feature, use `pnpm run verify` to then run the tests and then fix any issues that arise.
+3. Browser testing. Launch `pnpm run dev` and open the app in a browser window and use that to debug.
+
+## Style Guide
+
+1. Use import aliases. Ex: `"@/lib/utils"` instead of relative imports like `"../../lib/utils"`
+2. Prefer functional programming over OOP.
+3. Prefer `function x() { ... }` over `const x = () => {...}` for react components, unless the body is
+   only a single return.
+4. Write components using modern TailwindCSS and Shadcn components. Use `pnpm dlx shadcn@latest add {component}` to install any new components you need. Example: `pnpm dlx shadcn@latest add button`.

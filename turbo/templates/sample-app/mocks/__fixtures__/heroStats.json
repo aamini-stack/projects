@@ -1,0 +1,11 @@
+[
+  {
+    "id": 1,
+    "name": "npc_dota_hero_antimage",
+    "primary_attr": "agi",
+    "attack_type": "Melee",
+    "roles": ["Carry", "Escape", "Nuker"],
+    "base_health": 120,
+    "base_health_regen": 1
+  }
+]

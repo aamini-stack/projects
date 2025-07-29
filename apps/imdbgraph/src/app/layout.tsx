@@ -2,10 +2,8 @@ import '@/app/globals.css';
 import Providers from '@/app/providers';
 import { ThemeButton } from '@/components/theme/theme-button';
 import { cn } from '@/lib/utils';
-import { Analytics } from '@vercel/analytics/react';
-import { SpeedInsights } from '@vercel/speed-insights/next';
 import { Metadata } from 'next';
-import { Geist } from 'next/font/google';
+import { Geist, Geist_Mono } from 'next/font/google';
 import React from 'react';
 
 export const metadata: Metadata = {
@@ -33,7 +31,16 @@ const geistSans = Geist({
   variable: '--font-geist-sans',
 });
 
-export default function RootLayout(props: { children: React.ReactNode }) {
+const geistMono = Geist_Mono({
+  variable: '--font-geist-mono',
+  subsets: ['latin'],
+});
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   return (
     /**
      * SuppressHydrationWarning is necessary because it is impossible for the
@@ -46,6 +53,7 @@ export default function RootLayout(props: { children: React.ReactNode }) {
         className={cn(
           'bg-background min-h-dvh min-w-80 font-sans antialiased',
           geistSans.variable,
+          geistMono.variable,
         )}
       >
         <Providers>
@@ -55,7 +63,7 @@ export default function RootLayout(props: { children: React.ReactNode }) {
               <ThemeButton />
             </div>
             {/* Main content */}
-            <div className="flex w-full flex-1 flex-col">{props.children}</div>
+            <div className="flex w-full flex-1 flex-col">{children}</div>
             {/* Footer */}
             <footer className="w-full px-6 py-6">
               <div className="flex flex-col items-center justify-between gap-4">
@@ -84,8 +92,6 @@ export default function RootLayout(props: { children: React.ReactNode }) {
             </footer>
           </div>
         </Providers>
-        <Analytics />
-        <SpeedInsights />
       </body>
     </html>
   );

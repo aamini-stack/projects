@@ -62,7 +62,8 @@ export function SearchBar({ autoFocus = false }: { autoFocus?: boolean }) {
       </label>
 
       {/* Search Bar */}
-      <search
+      <div
+        role="search"
         className={cn(
           'placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input shadow-xs flex h-10 w-full min-w-0 items-center rounded-xl border bg-transparent px-3 py-1 text-base outline-none transition-[color,box-shadow] md:text-sm',
           'has-focus-visible:border-ring has-focus-visible:ring-ring/50 has-focus-visible:ring-[3px]',
@@ -80,9 +81,10 @@ export function SearchBar({ autoFocus = false }: { autoFocus?: boolean }) {
           {...getInputProps()}
         />
         <LoadingSpinner
+          testId="loading-spinner"
           className={cn('px-[2px]', { invisible: !isFetching })}
         />
-      </search>
+      </div>
 
       {error && (
         <div

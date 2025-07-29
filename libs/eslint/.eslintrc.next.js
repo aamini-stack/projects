@@ -1,6 +1,5 @@
 import baseConfig from './.eslintrc.base.js';
 import pluginNext from '@next/eslint-plugin-next';
-import pluginTanstack from '@tanstack/eslint-plugin-query';
 import pluginReact from 'eslint-plugin-react';
 import pluginReactHooks from 'eslint-plugin-react-hooks';
 import { defineConfig } from 'eslint/config';
@@ -42,6 +41,4 @@ export default defineConfig([
       'react/react-in-jsx-scope': 'off',
     },
   },
-
-  ...pluginTanstack.configs['flat/recommended'],
 ]);
