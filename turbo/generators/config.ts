@@ -60,6 +60,11 @@ export default function generator(plop: PlopTypes.NodePlopAPI): void {
         destination: '{{ turbo.paths.root }}/apps/{{ appName }}',
         force: true,
       },
+      {
+        type: 'add',
+        template: '../templates/sample-app.code-workspace',
+        path: '{{ turbo.paths.root }}/workspaces/{{ appName }}.code-workspace',
+      },
       // Playwright
       {
         type: 'addMany',
