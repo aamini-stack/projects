@@ -1,10 +1,10 @@
 {
   "folders": [
     {
-      "path": "../apps/{{ appName }}",
+      "path": "../apps/chibi-chat",
     },
     {
-      "path": "../apps/{{ appName }}-e2e",
+      "path": "../apps/chibi-chat-e2e",
     },
     {
       "name": "@aamini/lib",
@@ -72,20 +72,20 @@
     "version": "0.2.0",
     "configurations": [
       {
-        "name": "Debug {{ appName }} (Server)",
+        "name": "Debug chibi-chat (Server)",
         "type": "node-terminal",
         "request": "launch",
-        "command": "pnpm run dev",
-        "cwd": "${workspaceFolder}/../{{ appName }}",
+        "command": "pnpm run dev -p 4004",
+        "cwd": "${workspaceFolder}/../chibi-chat",
       },
       {
-        "name": "Debug {{ appName }} (Client)",
+        "name": "Debug chibi-chat (Client)",
         "type": "chrome",
         "request": "launch",
-        "cwd": "${workspaceFolder}/../{{ appName }}",
+        "cwd": "${workspaceFolder}/../chibi-chat",
       },
       {
-        "name": "Debug {{ appName }} (Server + Client)",
+        "name": "Debug chibi-chat (Server + Client)",
         "type": "node",
         "request": "launch",
         "program": "${workspaceFolder}/node_modules/next/dist/bin/next",

@@ -62,7 +62,7 @@ export default function generator(plop: PlopTypes.NodePlopAPI): void {
       },
       {
         type: 'add',
-        template: '../templates/sample-app.code-workspace',
+        templateFile: '../templates/sample-app.code-workspace',
         path: '{{ turbo.paths.root }}/workspaces/{{ appName }}.code-workspace',
       },
       // Playwright

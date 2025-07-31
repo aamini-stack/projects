@@ -3,6 +3,7 @@
   "ui": "tui",
   "tasks": {
     "build": {
+      "dependsOn": ["^build"],
       "env": [
         "DATABASE_URL",
         "CRON_SECRET",
@@ -16,10 +17,11 @@
       "dependsOn": ["^check-types"]
     },
     "lint": {
-      "dependsOn": ["^lint"]
+      "dependsOn": ["check-types", "^lint"]
     },
     "test": {
-      "env": ["CI"]
+      "env": ["CI"],
+      "dependsOn": ["^test"]
     },
     "e2e": {
       "passThroughEnv": ["PLAYWRIGHT_*"],
@@ -31,10 +33,10 @@
       "persistent": true
     },
     "start": {
-      "dependsOn": ["^build"],
+      "dependsOn": ["build"],
       "env": ["DATABASE_URL"],
       "cache": false,
-      "persistent": false
+      "persistent": true
     },
     "test:watch": {
       "cache": false,
