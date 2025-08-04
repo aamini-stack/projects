@@ -4,8 +4,7 @@
   "type": "module",
   "private": true,
   "exports": {
-    "./base": "./.eslintrc.base.js",
-    "./next": "./.eslintrc.next.js"
+    "./*": "./.eslintrc.*.js"
   },
   "devDependencies": {
     "@eslint/js": "^9.31.0",
@@ -21,10 +20,11 @@
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-turbo": "^2.5.5",
     "globals": "^16.3.0",
+    "typescript": "5.8.3",
     "typescript-eslint": "^8.38.0"
   },
   "peerDependencies": {
     "eslint": "^9.31.0",
-    "typescript": "^5.8.2"
+    "typescript": "5.8.2"
   }
 }

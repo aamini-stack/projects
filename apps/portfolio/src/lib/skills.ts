@@ -1,6 +1,6 @@
 export interface Tech {
   name: string;
-  href?: string;
+  href: string | undefined;
   src: string;
 }
 

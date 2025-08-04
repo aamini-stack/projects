@@ -8,8 +8,6 @@ export default defineConfig({
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   retries: 0,
-  /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: [['html', { open: 'never' }]],
 
@@ -24,7 +22,7 @@ export default defineConfig({
 
   /* Run your local dev server before starting the tests */
   webServer: {
-    command: 'turbo run start',
+    command: 'pnpm run start',
     url: 'http://localhost:4003',
     reuseExistingServer: process.env.CI ? false : true,
     cwd: '../portfolio',

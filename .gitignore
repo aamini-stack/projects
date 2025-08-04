@@ -5,7 +5,10 @@
 
 # Build
 .turbo
+.astro
 .next
+.vercel
+dist
 node_modules
 next-env.d.ts
 

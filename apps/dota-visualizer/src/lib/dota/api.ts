@@ -1,4 +1,9 @@
-import { Hero, HeroDictionary, HeroName, heroNames } from '@/lib/dota/hero';
+import {
+  type Hero,
+  type HeroDictionary,
+  type HeroName,
+  heroNames,
+} from '@/lib/dota/hero';
 import { type } from 'arktype';
 
 export async function fetchLatestHeroData(): Promise<HeroDictionary> {

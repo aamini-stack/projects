@@ -1,4 +1,4 @@
-import { Tech } from '@/lib/skills';
+import type { Tech } from '@/lib/skills';
 import Image from 'next/image';
 
 export function SkillBubble({ tech }: { tech: Tech }) {

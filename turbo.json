@@ -11,7 +11,7 @@
         "MAILGUN_DOMAIN"
       ],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
-      "outputs": [".next/**", "!.next/cache/**"]
+      "outputs": [".next/**", "!.next/cache/**", "dist/**"]
     },
     "check-types": {
       "dependsOn": ["^check-types"]
@@ -25,7 +25,6 @@
     },
     "e2e": {
       "passThroughEnv": ["PLAYWRIGHT_*"],
-      "dependsOn": ["^build"],
       "env": ["DATABASE_URL"]
     },
     "dev": {

@@ -15,9 +15,11 @@ export interface Episode {
   numVotes: number;
 }
 
+export type RatingsData = Record<string, Record<string, Episode>>;
+
 export interface Ratings {
   show: Show;
-  allEpisodeRatings: Record<string, Record<string, Episode>>;
+  allEpisodeRatings: RatingsData;
 }
 
 export function formatYears(show: Show): string {

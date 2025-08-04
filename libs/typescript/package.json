@@ -4,10 +4,9 @@
   "type": "module",
   "private": true,
   "exports": {
-    "./base": "./tsconfig.base.json",
-    "./next": "./tsconfig.next.json"
+    "./*": "./tsconfig.*.json"
   },
   "peerDependencies": {
-    "typescript": "^5.8.2"
+    "typescript": "5.8.2"
   }
 }

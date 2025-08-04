@@ -1,4 +1,4 @@
-import { HeroName, type Hero, type HeroDictionary } from '@/lib/dota/hero';
+import type { HeroName, Hero, HeroDictionary } from '@/lib/dota/hero';
 
 export type Attribute = {
   [K in keyof Hero]: Hero[K] extends number ? K : never;

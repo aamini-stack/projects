@@ -1,6 +1,4 @@
-import { HeroDictionary } from '@/lib/dota/hero';
-import Image from 'next/image';
-import React from 'react';
+import type { HeroDictionary } from '@/lib/dota/hero';
 
 export function HeroTable({
   heroDictionary,
@@ -58,7 +56,7 @@ export function HeroTable({
                       className="flex items-center justify-center"
                       title={hero.name}
                     >
-                      <Image
+                      <img
                         src={hero.icon}
                         alt={hero.name}
                         width={32}

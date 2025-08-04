@@ -1,5 +1,3 @@
-'use client';
-
 import {
   Select,
   SelectContent,
@@ -7,9 +5,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/primitives/select';
-import { Hero, HeroDictionary, HeroName } from '@/lib/dota/hero';
-import { Attribute, HeroStatsAnalyzer } from '@/lib/dota/hero-percentiles';
-import Image from 'next/image';
+import type { Hero, HeroDictionary, HeroName } from '@/lib/dota/hero';
+import { type Attribute, HeroStatsAnalyzer } from '@/lib/dota/hero-percentiles';
 import { useMemo, useState } from 'react';
 
 const displayNames: Record<Attribute, string> = {
@@ -66,8 +63,8 @@ function StatCard({
     Number(heroStats.computePercentile(heroName, attribute) * 100),
   );
   return (
-    <div key={attribute} className="p-2 w-full">
-      <div className="text-sm font-bold overflow-hidden whitespace-nowrap truncate">
+    <div key={attribute} className="w-full p-2">
+      <div className="overflow-hidden truncate whitespace-nowrap text-sm font-bold">
         {displayNames[attribute]}: {hero[attribute]}
       </div>
       <div className="text-sm text-gray-500">
@@ -93,8 +90,8 @@ function StatGroup({
   heroName: HeroName;
 }) {
   return (
-    <div className="rounded border p-4 flex-shrink-0 min-w-[200px]">
-      <h3 className="text-xl font-semibold mb-3">{title}</h3>
+    <div className="min-w-[200px] flex-shrink-0 rounded border p-4">
+      <h3 className="mb-3 text-xl font-semibold">{title}</h3>
       <div className="flex flex-col gap-1">
         {attributes.map((attr) => (
           <StatCard
@@ -160,8 +157,8 @@ export function HeroStats({
         />
       </div>
       <div>
-        <h2 className="flex text-2xl font-bold capitalize gap-2">
-          {name} <Image src={hero.iconImage} alt="" width={32} height={32} />
+        <h2 className="flex gap-2 text-2xl font-bold capitalize">
+          {name} <img src={hero.iconImage} alt="" width={32} height={32} />
         </h2>
         <div className="mt-4 flex flex-nowrap gap-8 overflow-x-auto">
           {Object.entries(statGroups).map(([groupName, groupAttributes]) => (

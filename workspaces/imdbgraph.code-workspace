@@ -38,6 +38,9 @@
       "**/.next/": true,
       "**/.swc/": true,
       "**/.turbo": true,
+      "**/.astro": true,
+      "**/dist": true,
+      "**/.vercel": true,
     },
     // Formatting
     "editor.defaultFormatter": "esbenp.prettier-vscode",
@@ -52,10 +55,18 @@
     ],
 
     // ESLint
-    "eslint.workingDirectories": [{ "pattern": "./apps/*/" }],
+    "eslint.workingDirectories": [
+      {
+        "pattern": "./apps/*/",
+      },
+    ],
+    "[astro]": {
+      "editor.defaultFormatter": "astro-build.astro-vscode",
+    },
   },
   "extensions": {
     "recommendations": [
+      "astro-build.astro-vscode",
       "editorconfig.editorconfig",
       "github.vscode-github-actions",
       "mikestead.dotenv",
@@ -71,32 +82,16 @@
     "version": "0.2.0",
     "configurations": [
       {
-        "name": "Debug imdbgraph (Server)",
-        "type": "node-terminal",
+        "command": "./node_modules/.bin/astro dev",
+        "name": "Development server",
         "request": "launch",
-        "command": "pnpm run dev",
-        "cwd": "${workspaceFolder}/../imdbgraph",
+        "type": "node-terminal",
       },
       {
-        "name": "Debug imdbgraph (Client)",
+        "name": "Client",
         "type": "chrome",
         "request": "launch",
-        "cwd": "${workspaceFolder}/../imdbgraph",
-      },
-      {
-        "name": "Debug imdbgraph (Server + Client)",
-        "type": "node",
-        "request": "launch",
-        "program": "${workspaceFolder}/node_modules/next/dist/bin/next",
-        "runtimeArgs": ["--inspect"],
-        "skipFiles": ["<node_internals>/**"],
-        "serverReadyAction": {
-          "action": "debugWithChrome",
-          "killOnServerStop": true,
-          "pattern": "- Local:.+(https?://.+)",
-          "uriFormat": "%s",
-          "webRoot": "${workspaceFolder}",
-        },
+        "cwd": "${workspaceFolder}/../dota-visualizer",
       },
     ],
   },

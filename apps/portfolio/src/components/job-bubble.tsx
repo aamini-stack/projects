@@ -2,7 +2,7 @@
 
 import { Button } from '@/components/primitives/button';
 import { Card } from '@/components/primitives/card';
-import { JobInfo } from '@/lib/jobs';
+import type { JobInfo } from '@/lib/jobs';
 import {
   Collapsible,
   CollapsibleContent,

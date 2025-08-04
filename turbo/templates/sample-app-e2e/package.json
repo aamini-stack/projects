@@ -1,15 +1,15 @@
 {
-  "name": "@aamini/sample-app-e2e",
+  "name": "@aamini/{{ appName }}-e2e",
   "version": "0.0.1",
   "private": true,
   "type": "module",
   "scripts": {
     "check-types": "tsc --noEmit",
-    "e2e": "playwright test",
+    "e2e": "playwright test --update-snapshots",
     "lint": "eslint --max-warnings 0"
   },
   "dependencies": {
-    "@aamini/sample-app": "workspace:*"
+    "@aamini/{{ appName }}": "workspace:*"
   },
   "devDependencies": {
     "@aamini/config-eslint": "workspace:*",
@@ -17,6 +17,6 @@
     "@playwright/test": "^1.54.1",
     "@types/node": "^24.0.15",
     "eslint": "^9.31.0",
-    "typescript": "^5.8.3"
+    "typescript": "5.8.3"
   }
 }

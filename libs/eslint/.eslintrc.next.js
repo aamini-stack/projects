@@ -2,7 +2,7 @@ import baseConfig from './.eslintrc.base.js';
 import pluginNext from '@next/eslint-plugin-next';
 import pluginReact from 'eslint-plugin-react';
 import pluginReactHooks from 'eslint-plugin-react-hooks';
-import { defineConfig } from 'eslint/config';
+import { defineConfig, globalIgnores } from 'eslint/config';
 import globals from 'globals';
 
 /**
@@ -11,6 +11,7 @@ import globals from 'globals';
  * @type {import('eslint').Linter.Config[]}
  */
 export default defineConfig([
+  globalIgnores(['.next', , '.vercel']),
   ...baseConfig,
   {
     ...pluginReact.configs.flat.recommended,

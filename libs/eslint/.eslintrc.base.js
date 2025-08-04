@@ -12,7 +12,7 @@ import tseslint from 'typescript-eslint';
  * @type {import('eslint').Linter.Config[]}
  */
 export default defineConfig([
-  globalIgnores(['node_modules', '.next', 'dist/**']),
+  globalIgnores(['node_modules']),
   js.configs.recommended,
   pluginPrettier,
 
@@ -55,7 +55,7 @@ export default defineConfig([
 
   // Tests (Playwright + Vitest)
   {
-    files: ['**/*-e2e/src/**/*e2e.test.ts'],
+    files: ['**/*e2e.{spec,test}.ts'],
     ...pluginPlaywright.configs['flat/recommended'],
   },
   {

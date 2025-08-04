@@ -16,16 +16,6 @@ All projects/apps are written in Next.js and the monorepo is managed using Turbo
 - E2E Playwright Test Suite: `<root>/apps/imdbgraph-e2e`
 - Common Library/Config code: `<root>/libs`
 
-## Feature request workflow
-
-I want you to follow a workflow similar to this when implementing any major feature requests.
-
-Before any major feature work, begin by first stopping to discuss testing strategy with me. This will help you succesfully iterate/debug the requested feature. The main testing strategies will be:
-
-1. No tests. Only use this for very simple features.
-2. Unit Tests. Use this for any non-UI / logic features. If writing a new feature and there are no tests, write some unit tests first and have me evaluate the tests before you begin implementing the feature. While working on the feature, use `pnpm run verify` to then run the tests and then fix any issues that arise.
-3. Browser testing. Launch `pnpm run dev` and open the app in a browser window and use that to debug.
-
 ## Style Guide
 
 1. Use import aliases. Ex: `"@/lib/utils"` instead of relative imports like `"../../lib/utils"`

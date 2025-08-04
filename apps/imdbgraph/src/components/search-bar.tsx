@@ -1,30 +1,58 @@
 'use client';
 
-import { LoadingSpinner } from '@/components/icons';
-import { fetchSuggestions } from '@/db/data/suggestions';
+import { actions } from 'astro:actions';
+import type { Show } from '@/lib/types';
 import { formatYears } from '@/lib/types';
 import { cn } from '@/lib/utils';
-import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import { useCombobox } from 'downshift';
-import { Search as SearchIcon } from 'lucide-react';
-import { useRouter } from 'next/navigation';
-import { useState, useEffect, useDeferredValue } from 'react';
+import { Search as SearchIcon, Star } from 'lucide-react';
+import { useState, useDeferredValue, useEffect } from 'react';
+import { keepPreviousData, QueryClient, useQuery } from '@tanstack/react-query';
+
+export const CLIENT = new QueryClient();
 
 /** https://www.w3.org/WAI/ARIA/apg/patterns/combobox/examples/combobox-autocomplete-list/ */
-export function SearchBar({ autoFocus = false }: { autoFocus?: boolean }) {
-  const router = useRouter();
+export function SearchBar() {
   const [inputValue, setInputValue] = useState('');
   const deferredValue = useDeferredValue(inputValue);
+  const [isRedirecting, setIsRedirecting] = useState(true);
 
   const {
     isFetching,
     data: searchResults,
     error,
-  } = useQuery({
-    queryKey: ['suggestions', deferredValue],
-    queryFn: () => fetchSuggestions(deferredValue),
-    placeholderData: keepPreviousData,
-    enabled: !!inputValue,
+  } = useQuery<Show[] | null>(
+    {
+      queryKey: ['suggestions', deferredValue],
+      queryFn: async () => {
+        const { data, error } = await actions.fetchSuggestions({
+          query: deferredValue,
+        });
+        if (error) {
+          throw error;
+        }
+        return data;
+      },
+      placeholderData: keepPreviousData,
+      enabled: !!inputValue,
+    },
+    CLIENT,
+  );
+
+  useEffect(() => {
+    setIsRedirecting(false);
+  }, []);
+
+  // Setup listener to detect is a link has been clicked to disable input while
+  // the page is redirecting.
+  useEffect(() => {
+    const listener = () => {
+      setIsRedirecting(true);
+    };
+    addEventListener('beforeunload', listener);
+    return () => {
+      removeEventListener('beforeunload', listener);
+    };
   });
 
   const {
@@ -40,19 +68,14 @@ export function SearchBar({ autoFocus = false }: { autoFocus?: boolean }) {
     onInputValueChange: ({ inputValue }) => {
       setInputValue(inputValue);
     },
-    onSelectedItemChange: ({ selectedItem }) => {
-      if (selectedItem) {
-        // Navigate to ratings page when an item is selected
-        router.push(`/ratings?id=${selectedItem.imdbId}`);
+    itemToString: (item) => item?.title ?? '',
+    onSelectedItemChange(event) {
+      const { selectedItem } = event;
+      if (!!selectedItem && searchResults) {
+        window.location.href = '/ratings/' + selectedItem.imdbId;
       }
     },
-    itemToString: (item) => item?.title ?? '',
   });
-
-  // Optimize page navigation by prefetching the ratings page
-  useEffect(() => {
-    router.prefetch('/ratings');
-  }, [router]);
 
   return (
     <div className="bg-background text-popover-foreground relative flex h-full w-full flex-col text-sm">
@@ -63,7 +86,6 @@ export function SearchBar({ autoFocus = false }: { autoFocus?: boolean }) {
 
       {/* Search Bar */}
       <div
-        role="search"
         className={cn(
           'placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input shadow-xs flex h-10 w-full min-w-0 items-center rounded-xl border bg-transparent px-3 py-1 text-base outline-none transition-[color,box-shadow] md:text-sm',
           'has-focus-visible:border-ring has-focus-visible:ring-ring/50 has-focus-visible:ring-[3px]',
@@ -75,15 +97,28 @@ export function SearchBar({ autoFocus = false }: { autoFocus?: boolean }) {
         <SearchIcon className="mr-2 h-4 w-4 shrink-0 opacity-50" />
         <input
           aria-invalid={!!error}
-          autoFocus={autoFocus}
           className="flex-1 outline-none"
           placeholder="Search for any TV show..."
+          tabIndex={0}
+          disabled={isRedirecting}
           {...getInputProps()}
         />
-        <LoadingSpinner
-          testId="loading-spinner"
-          className={cn('px-[2px]', { invisible: !isFetching })}
-        />
+        {/* Loading Icon (Only shows when loading) */}
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className={cn('animate-spin px-[2px]', { invisible: !isFetching })}
+          data-testid="loading-spinner"
+        >
+          <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+        </svg>
       </div>
 
       {error && (
@@ -118,7 +153,7 @@ export function SearchBar({ autoFocus = false }: { autoFocus?: boolean }) {
             <li
               key={show.imdbId}
               className={cn(
-                'text-foreground/60 flex w-full cursor-pointer select-none items-center justify-between gap-2 rounded-md px-2 py-1.5 text-sm outline-none',
+                'text-foreground/60 w-full cursor-pointer select-none rounded-md px-2 py-1.5 text-sm outline-none',
                 'disabled:pointer-events-none disabled:opacity-50',
                 '[&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0',
                 {
@@ -130,28 +165,20 @@ export function SearchBar({ autoFocus = false }: { autoFocus?: boolean }) {
               )}
               {...getItemProps({ item: show, index })}
             >
-              {/* Show Title + Years */}
-              <div className="flex flex-1 flex-col">
-                <span className="break-words">{show.title}&nbsp;</span>
-                <span className="text-foreground/40 text-xs">
-                  {formatYears(show)}
-                </span>
-              </div>
-              {/* 1-10 Rating + Blue Star Icon */}
-              <div className="flex shrink-0 items-center space-x-1 text-sm">
-                <dt>
-                  <span className="sr-only">Star rating</span>
-                  <svg
-                    className="text-sky-500"
-                    width="16"
-                    height="20"
-                    fill="currentColor"
-                  >
-                    <path d="M7.05 3.691c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.372 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.539 1.118l-2.8-2.034a1 1 0 00-1.176 0l-2.8 2.034c-.783.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.363-1.118L.98 9.483c-.784-.57-.381-1.81.587-1.81H5.03a1 1 0 00.95-.69L7.05 3.69z" />
-                  </svg>
-                </dt>
-                <dd>{`${show.rating.toFixed(1)} / 10.0`}</dd>
-              </div>
+              <a className="flex gap-4" href={`/ratings/${show.imdbId}`}>
+                {/* Show Title + Years */}
+                <div className="flex flex-1 flex-col">
+                  <span className="break-words">{show.title}&nbsp;</span>
+                  <span className="text-foreground/40 text-xs">
+                    {formatYears(show)}
+                  </span>
+                </div>
+                {/* 1-10 Rating + Blue Star Icon */}
+                <div className="flex items-center space-x-1 text-sm">
+                  <span>{`${show.rating.toFixed(1)} / 10.0`}</span>
+                  <Star className="text-sky-500" />
+                </div>
+              </a>
             </li>
           ))}
         </ul>

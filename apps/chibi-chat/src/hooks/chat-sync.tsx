@@ -1,6 +1,6 @@
-import { findNextMessage, getMessage, Message } from '@/lib/messages';
+import { findNextMessage, getMessage, type Message } from '@/lib/messages';
 import { useEffect, useState } from 'react';
-import YouTube, { YouTubePlayer } from 'react-youtube';
+import YouTube, { type YouTubePlayer } from 'react-youtube';
 
 interface Status {
   i: number;
@@ -24,14 +24,16 @@ export function useChat(playerState: number, player?: YouTubePlayer) {
     }
 
     // Setup scheduler (to process messages every 100ms)
-    if (player && playerState === YouTube.PlayerState.PLAYING) {
-      const id = setInterval(() => {
-        void tick();
-      }, TICK_MS);
-      return () => {
-        clearInterval(id);
-      };
+    if (!player || playerState !== YouTube.PlayerState.PLAYING) {
+      return;
     }
+
+    const id = setInterval(() => {
+      void tick();
+    }, TICK_MS);
+    return () => {
+      clearInterval(id);
+    };
   }, [player, playerState]);
 
   return status.messages;

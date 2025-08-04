@@ -5,7 +5,7 @@ import { parseMessage, printTimestamp, stringToColour } from '@/lib/messages';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import { useRef, useState } from 'react';
-import YouTube, { YouTubePlayer } from 'react-youtube';
+import YouTube, { type YouTubePlayer } from 'react-youtube';
 
 export function VideoPlayer() {
   const player = useRef<YouTubePlayer>(undefined);
@@ -28,15 +28,15 @@ export function VideoPlayer() {
       />
 
       {/* Chat Window */}
-      <div className="text-[13px] leading-5 text-[#dedee3] border-l border-[#2f2f32] w-[340px] flex flex-col">
+      <div className="flex w-[340px] flex-col border-l border-[#2f2f32] text-[13px] leading-5 text-[#dedee3]">
         {/* Title */}
-        <div className="flex h-[50px] items-center justify-center bg-[#1f1f23] border-b border-white/[.1]">
+        <div className="flex h-[50px] items-center justify-center border-b border-white/[.1] bg-[#1f1f23]">
           <span>Chibi Chat</span>
         </div>
         {/* Messages */}
         <div
           className={cn(
-            'h-full bg-[#18181b] flex flex-1 flex-col-reverse overflow-auto',
+            'flex h-full flex-1 flex-col-reverse overflow-auto bg-[#18181b]',
             '[&::-webkit-scrollbar]:w-[0.6rem]',
             '[&::-webkit-scrollbar-thumb]:bg-[#323239]',
             '[&::-webkit-scrollbar-thumb]:border-2',
@@ -48,8 +48,8 @@ export function VideoPlayer() {
             {messages.map((message) => (
               // Individual Messages
               <li className="w-full" key={message.index}>
-                <div className="flex px-[5px] py-[2.5px] items-baseline break-words">
-                  <p className="px-[5px] mr-[5px] text-[#dedee3] align-middle">
+                <div className="flex items-baseline break-words px-[5px] py-[2.5px]">
+                  <p className="mr-[5px] px-[5px] align-middle text-[#dedee3]">
                     {printTimestamp(message.offsetMilli)}
                   </p>
                   <div className="inline min-w-0">
@@ -66,7 +66,7 @@ export function VideoPlayer() {
                           return (
                             <div
                               key={index}
-                              className="inline items-center align-middle -my-0.5"
+                              className="-my-0.5 inline items-center align-middle"
                             >
                               <Image
                                 width={28}

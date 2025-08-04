@@ -1,0 +1,37 @@
+---
+import { HeroStats } from '@/components/hero-stats';
+import { HeroTable } from '@/components/hero-table';
+import { fetchLatestHeroData } from '@/lib/dota/api';
+import '@/styles/globals.css';
+import '@fontsource-variable/inter';
+import Font from 'astro/components/Font.astro';
+
+const heroDictionary = await fetchLatestHeroData();
+---
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
+    <title>IMDB Graph</title>
+    <meta
+      name="description"
+      content="Website to visualize IMDB TV show ratings as a graph."
+    />
+    <meta
+      name="keywords"
+      content="imdbgraph.org, imdbgraph.com, IMDB, Graph, IMDB Graph, 
+      IMDB Chart, imdbgraph, Visualize, Episode ratings, chart, season, 
+      episode"
+    />
+    <Font cssVariable="--font-inter" preload />
+  </head>
+  <body class="antialiased">
+    <main class="flex min-h-screen flex-col items-center justify-center p-24">
+      <h1 class="mb-8 text-4xl font-bold">Dota 2 Hero Stats</h1>
+      <HeroStats client:load heroDictionary={heroDictionary} />
+      <HeroTable client:load heroDictionary={heroDictionary} />
+    </main>
+  </body>
+</html>
