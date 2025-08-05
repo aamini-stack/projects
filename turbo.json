@@ -14,10 +14,13 @@
       "outputs": [".next/**", "!.next/cache/**", "dist/**"]
     },
     "check-types": {
-      "dependsOn": ["^check-types"]
+      "dependsOn": ["build"]
     },
     "lint": {
-      "dependsOn": ["check-types", "^lint"]
+      "dependsOn": ["check-types"]
+    },
+    "lint:ci": {
+      "dependsOn": ["check-types"]
     },
     "test": {
       "env": ["CI"],
@@ -25,7 +28,8 @@
     },
     "e2e": {
       "passThroughEnv": ["PLAYWRIGHT_*"],
-      "env": ["DATABASE_URL"]
+      "env": ["DATABASE_URL"],
+      "dependsOn": ["^build"]
     },
     "dev": {
       "cache": false,

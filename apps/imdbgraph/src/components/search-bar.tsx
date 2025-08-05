@@ -1,188 +1,194 @@
-'use client';
+'use client'
 
-import { actions } from 'astro:actions';
-import type { Show } from '@/lib/types';
-import { formatYears } from '@/lib/types';
-import { cn } from '@/lib/utils';
-import { useCombobox } from 'downshift';
-import { Search as SearchIcon, Star } from 'lucide-react';
-import { useState, useDeferredValue, useEffect } from 'react';
-import { keepPreviousData, QueryClient, useQuery } from '@tanstack/react-query';
+import { actions } from 'astro:actions'
+import { keepPreviousData, QueryClient, useQuery } from '@tanstack/react-query'
+import { useCombobox } from 'downshift'
+import { Search as SearchIcon, Star } from 'lucide-react'
+import { useDeferredValue, useEffect, useState } from 'react'
+import type { Show } from '@/lib/types'
+import { formatYears } from '@/lib/types'
+import { cn } from '@/lib/utils'
 
-export const CLIENT = new QueryClient();
+export const CLIENT = new QueryClient()
 
 /** https://www.w3.org/WAI/ARIA/apg/patterns/combobox/examples/combobox-autocomplete-list/ */
 export function SearchBar() {
-  const [inputValue, setInputValue] = useState('');
-  const deferredValue = useDeferredValue(inputValue);
-  const [isRedirecting, setIsRedirecting] = useState(true);
+	const [inputValue, setInputValue] = useState('')
+	const deferredValue = useDeferredValue(inputValue)
+	const [isRedirecting, setIsRedirecting] = useState(true)
 
-  const {
-    isFetching,
-    data: searchResults,
-    error,
-  } = useQuery<Show[] | null>(
-    {
-      queryKey: ['suggestions', deferredValue],
-      queryFn: async () => {
-        const { data, error } = await actions.fetchSuggestions({
-          query: deferredValue,
-        });
-        if (error) {
-          throw error;
-        }
-        return data;
-      },
-      placeholderData: keepPreviousData,
-      enabled: !!inputValue,
-    },
-    CLIENT,
-  );
+	const {
+		isFetching,
+		data: searchResults,
+		error,
+	} = useQuery<Show[] | null>(
+		{
+			queryKey: ['suggestions', deferredValue],
+			queryFn: async () => {
+				const { data, error } = await actions.fetchSuggestions({
+					query: deferredValue,
+				})
+				if (error) {
+					throw error
+				}
+				return data
+			},
+			placeholderData: keepPreviousData,
+			enabled: !!inputValue,
+		},
+		CLIENT,
+	)
 
-  useEffect(() => {
-    setIsRedirecting(false);
-  }, []);
+	useEffect(() => {
+		setIsRedirecting(false)
+	}, [])
 
-  // Setup listener to detect is a link has been clicked to disable input while
-  // the page is redirecting.
-  useEffect(() => {
-    const listener = () => {
-      setIsRedirecting(true);
-    };
-    addEventListener('beforeunload', listener);
-    return () => {
-      removeEventListener('beforeunload', listener);
-    };
-  });
+	// Setup listener to detect is a link has been clicked to disable input while
+	// the page is redirecting.
+	useEffect(() => {
+		const listener = () => {
+			setIsRedirecting(true)
+		}
+		addEventListener('beforeunload', listener)
+		return () => {
+			removeEventListener('beforeunload', listener)
+		}
+	})
 
-  const {
-    isOpen,
-    getLabelProps,
-    getMenuProps,
-    getInputProps,
-    highlightedIndex,
-    getItemProps,
-  } = useCombobox({
-    items: searchResults ?? [],
-    inputValue,
-    onInputValueChange: ({ inputValue }) => {
-      setInputValue(inputValue);
-    },
-    itemToString: (item) => item?.title ?? '',
-    onSelectedItemChange(event) {
-      const { selectedItem } = event;
-      if (!!selectedItem && searchResults) {
-        window.location.href = '/ratings/' + selectedItem.imdbId;
-      }
-    },
-  });
+	const {
+		isOpen,
+		getLabelProps,
+		getMenuProps,
+		getInputProps,
+		highlightedIndex,
+		getItemProps,
+	} = useCombobox({
+		items: searchResults ?? [],
+		inputValue,
+		onInputValueChange: ({ inputValue }) => {
+			setInputValue(inputValue)
+		},
+		itemToString: (item) => item?.title ?? '',
+		onSelectedItemChange(event) {
+			const { selectedItem } = event
+			if (!!selectedItem && searchResults) {
+				window.location.href = `/ratings/${selectedItem.imdbId}`
+			}
+		},
+	})
 
-  return (
-    <div className="bg-background text-popover-foreground relative flex h-full w-full flex-col text-sm">
-      {/* Hidden label for accessibility */}
-      <label {...getLabelProps()} className="sr-only">
-        Search for TV shows
-      </label>
+	return (
+		<div className="relative flex h-full w-full flex-col bg-background text-popover-foreground text-sm">
+			{/* Hidden label for accessibility */}
+			<label
+				htmlFor="search-bar-input"
+				{...getLabelProps()}
+				className="sr-only"
+			>
+				Search for TV shows
+			</label>
 
-      {/* Search Bar */}
-      <div
-        className={cn(
-          'placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input shadow-xs flex h-10 w-full min-w-0 items-center rounded-xl border bg-transparent px-3 py-1 text-base outline-none transition-[color,box-shadow] md:text-sm',
-          'has-focus-visible:border-ring has-focus-visible:ring-ring/50 has-focus-visible:ring-[3px]',
-          'has-disabled:pointer-events-none has-disabled:cursor-not-allowed has-disabled:opacity-50',
-          'has-aria-invalid:ring-destructive/20 dark:has-aria-invalid:ring-destructive/40 has-aria-invalid:border-destructive',
-          'file:text-foreground file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium',
-        )}
-      >
-        <SearchIcon className="mr-2 h-4 w-4 shrink-0 opacity-50" />
-        <input
-          aria-invalid={!!error}
-          className="flex-1 outline-none"
-          placeholder="Search for any TV show..."
-          tabIndex={0}
-          disabled={isRedirecting}
-          {...getInputProps()}
-        />
-        {/* Loading Icon (Only shows when loading) */}
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className={cn('animate-spin px-[2px]', { invisible: !isFetching })}
-          data-testid="loading-spinner"
-        >
-          <path d="M21 12a9 9 0 1 1-6.219-8.56" />
-        </svg>
-      </div>
+			{/* Search Bar */}
+			<div
+				className={cn(
+					'flex h-10 w-full min-w-0 items-center rounded-xl border border-input bg-transparent px-3 py-1 text-base shadow-xs outline-none transition-[color,box-shadow] selection:bg-primary selection:text-primary-foreground placeholder:text-muted-foreground md:text-sm dark:bg-input/30',
+					'has-focus-visible:border-ring has-focus-visible:ring-[3px] has-focus-visible:ring-ring/50',
+					'has-disabled:pointer-events-none has-disabled:cursor-not-allowed has-disabled:opacity-50',
+					'has-aria-invalid:border-destructive has-aria-invalid:ring-destructive/20 dark:has-aria-invalid:ring-destructive/40',
+					'file:inline-flex file:h-7 file:border-0 file:bg-transparent file:font-medium file:text-foreground file:text-sm',
+				)}
+			>
+				<SearchIcon className="mr-2 h-4 w-4 shrink-0 opacity-50" />
+				<input
+					aria-invalid={!!error}
+					className="flex-1 outline-none"
+					placeholder="Search for any TV show..."
+					tabIndex={0}
+					disabled={isRedirecting}
+					id="search-bar-input"
+					{...getInputProps()}
+				/>
+				{/* Loading Icon (Only shows when loading) */}
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					width="24"
+					height="24"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					strokeWidth="2"
+					strokeLinecap="round"
+					strokeLinejoin="round"
+					className={cn('animate-spin px-[2px]', { invisible: !isFetching })}
+					data-testid="loading-spinner"
+				>
+					<title>Loading Icon</title>
+					<path d="M21 12a9 9 0 1 1-6.219-8.56" />
+				</svg>
+			</div>
 
-      {error && (
-        <div
-          aria-live="polite"
-          className="text-destructive px-2 py-1.5 text-center"
-        >
-          Something went wrong. Please try again.
-        </div>
-      )}
+			{error && (
+				<div
+					aria-live="polite"
+					className="px-2 py-1.5 text-center text-destructive"
+				>
+					Something went wrong. Please try again.
+				</div>
+			)}
 
-      {/* Dropdown Menu */}
-      {!error && (
-        <ul
-          className={cn(
-            'bg-popover absolute left-0 right-0 top-full z-50 mt-3 w-full rounded-xl border p-2 shadow-lg',
-            {
-              hidden:
-                !isOpen ||
-                !deferredValue ||
-                (isFetching && !searchResults?.length),
-            },
-          )}
-          {...getMenuProps()}
-        >
-          {inputValue && searchResults?.length === 0 && (
-            <div className="text-foreground/60 px-2 py-1.5 text-center">
-              No TV Shows Found.
-            </div>
-          )}
-          {searchResults?.map((show, index) => (
-            <li
-              key={show.imdbId}
-              className={cn(
-                'text-foreground/60 w-full cursor-pointer select-none rounded-md px-2 py-1.5 text-sm outline-none',
-                'disabled:pointer-events-none disabled:opacity-50',
-                '[&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0',
-                {
-                  'opacity-50': isFetching,
-                  'bg-accent text-accent-foreground':
-                    highlightedIndex === index,
-                  'hover:bg-foreground/5': highlightedIndex !== index,
-                },
-              )}
-              {...getItemProps({ item: show, index })}
-            >
-              <a className="flex gap-4" href={`/ratings/${show.imdbId}`}>
-                {/* Show Title + Years */}
-                <div className="flex flex-1 flex-col">
-                  <span className="break-words">{show.title}&nbsp;</span>
-                  <span className="text-foreground/40 text-xs">
-                    {formatYears(show)}
-                  </span>
-                </div>
-                {/* 1-10 Rating + Blue Star Icon */}
-                <div className="flex items-center space-x-1 text-sm">
-                  <span>{`${show.rating.toFixed(1)} / 10.0`}</span>
-                  <Star className="text-sky-500" />
-                </div>
-              </a>
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
-  );
+			{/* Dropdown Menu */}
+			{!error && (
+				<ul
+					className={cn(
+						'absolute top-full right-0 left-0 z-50 mt-3 w-full rounded-xl border bg-popover p-2 shadow-lg',
+						{
+							hidden:
+								!isOpen ||
+								!deferredValue ||
+								(isFetching && !searchResults?.length),
+						},
+					)}
+					{...getMenuProps()}
+				>
+					{inputValue && searchResults?.length === 0 && (
+						<div className="px-2 py-1.5 text-center text-foreground/60">
+							No TV Shows Found.
+						</div>
+					)}
+					{searchResults?.map((show, index) => (
+						<li
+							key={show.imdbId}
+							className={cn(
+								'w-full cursor-pointer select-none rounded-md px-2 py-1.5 text-foreground/60 text-sm outline-none',
+								'disabled:pointer-events-none disabled:opacity-50',
+								'[&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0',
+								{
+									'opacity-50': isFetching,
+									'bg-accent text-accent-foreground':
+										highlightedIndex === index,
+									'hover:bg-foreground/5': highlightedIndex !== index,
+								},
+							)}
+							{...getItemProps({ item: show, index })}
+						>
+							<a className="flex gap-4" href={`/ratings/${show.imdbId}`}>
+								{/* Show Title + Years */}
+								<div className="flex flex-1 flex-col">
+									<span className="break-words">{show.title}&nbsp;</span>
+									<span className="text-foreground/40 text-xs">
+										{formatYears(show)}
+									</span>
+								</div>
+								{/* 1-10 Rating + Blue Star Icon */}
+								<div className="flex items-center space-x-1 text-sm">
+									<span>{`${show.rating.toFixed(1)} / 10.0`}</span>
+									<Star className="text-sky-500" />
+								</div>
+							</a>
+						</li>
+					))}
+				</ul>
+			)}
+		</div>
+	)
 }

@@ -7,7 +7,6 @@
       "path": "../apps/chibi-chat-e2e",
     },
     {
-      "name": "@aamini/lib",
       "path": "../libs",
     },
     {
@@ -16,33 +15,37 @@
     },
   ],
   "settings": {
-    // ===========================================================================
-    // * Default Settings
-    // ===========================================================================
     // General
     "git.autofetch": true,
     "files.autoSave": "afterDelay",
-    // Formatting
-    "editor.formatOnPaste": true,
-    "editor.formatOnSave": true,
-    "editor.rulers": [80],
-    "[markdown]": {
-      "editor.wordWrap": "on",
-    },
-    // ===========================================================================
-
-    // ===========================================================================
-    // * Node.js Settings
-    // ===========================================================================
     "files.exclude": {
       "**/node_modules/": true,
       "**/.next/": true,
       "**/.swc/": true,
       "**/.turbo": true,
+      "**/.astro": true,
+      "**/dist": true,
+      "**/.vercel": true,
     },
+    
     // Formatting
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnPaste": true,
+    "editor.formatOnSave": true,
+    "editor.rulers": [80],
+    "editor.defaultFormatter": "biomejs.biome",
     "typescript.preferences.importModuleSpecifier": "non-relative",
+    "source.organizeImports.biome": "explicit",
+    "source.fixAll.biome": "explicit",
+    "editor.codeActionsOnSave": {
+      "quickfix.biome": "explicit",
+      "source.organizeImports.biome": "explicit"
+    },
+    "[markdown]": {
+      "editor.wordWrap": "on",
+    },
+    "[astro]": {
+      "editor.defaultFormatter": "astro-build.astro-vscode",
+    },
 
     // Ark Types: https://arktype.io/docs/intro/setup#settings
     "editor.quickSuggestions": {
@@ -51,17 +54,14 @@
     "typescript.preferences.autoImportSpecifierExcludeRegexes": [
       "^(node:)?os$",
     ],
-
-    // ESLint
-    "eslint.workingDirectories": [{ "pattern": "./apps/*/" }],
   },
   "extensions": {
     "recommendations": [
+      "astro-build.astro-vscode",
       "editorconfig.editorconfig",
       "github.vscode-github-actions",
       "mikestead.dotenv",
-      "dbaeumer.vscode-eslint",
-      "esbenp.prettier-vscode",
+      "biomejs.biome",
       "bradlc.vscode-tailwindcss",
       "ms-playwright.playwright",
       "xabikos.javascriptsnippets",
@@ -72,32 +72,16 @@
     "version": "0.2.0",
     "configurations": [
       {
-        "name": "Debug chibi-chat (Server)",
-        "type": "node-terminal",
+        "name": "Server",
+        "command": "./node_modules/.bin/astro dev",
         "request": "launch",
-        "command": "pnpm run dev -p 4004",
-        "cwd": "${workspaceFolder}/../chibi-chat",
+        "type": "node-terminal",
       },
       {
-        "name": "Debug chibi-chat (Client)",
+        "name": "Client",
         "type": "chrome",
         "request": "launch",
         "cwd": "${workspaceFolder}/../chibi-chat",
-      },
-      {
-        "name": "Debug chibi-chat (Server + Client)",
-        "type": "node",
-        "request": "launch",
-        "program": "${workspaceFolder}/node_modules/next/dist/bin/next",
-        "runtimeArgs": ["--inspect"],
-        "skipFiles": ["<node_internals>/**"],
-        "serverReadyAction": {
-          "action": "debugWithChrome",
-          "killOnServerStop": true,
-          "pattern": "- Local:.+(https?://.+)",
-          "uriFormat": "%s",
-          "webRoot": "${workspaceFolder}",
-        },
       },
     ],
   },

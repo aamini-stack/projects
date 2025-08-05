@@ -1,10 +1,10 @@
-import baseConfig from '@aamini/config-eslint/base';
+import baseConfig from '@aamini/config-eslint/base'
 
 /** @type {import('eslint').Linter.Config} */
 export default [
-  ...baseConfig,
-  {
-    // Override rules here...
-    rules: {},
-  },
-];
+	...baseConfig,
+	{
+		// Override rules here...
+		rules: {},
+	},
+]

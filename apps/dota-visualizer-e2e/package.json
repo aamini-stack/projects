@@ -6,17 +6,15 @@
   "scripts": {
     "check-types": "tsc --noEmit",
     "e2e": "playwright test",
-    "lint": "eslint --max-warnings 0"
+    "lint": "biome lint"
   },
   "dependencies": {
     "@aamini/dota-visualizer": "workspace:*"
   },
   "devDependencies": {
-    "@aamini/config-eslint": "workspace:*",
     "@aamini/config-typescript": "workspace:*",
     "@playwright/test": "^1.54.1",
     "@types/node": "^24.1.0",
-    "eslint": "^9.31.0",
     "typescript": "5.8.3"
   }
 }

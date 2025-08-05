@@ -17,7 +17,6 @@
     "paths": {
       "@/*": ["./src/*"]
     },
-
     "plugins": [{ "name": "next" }],
     "module": "ESNext",
     "moduleResolution": "Bundler",

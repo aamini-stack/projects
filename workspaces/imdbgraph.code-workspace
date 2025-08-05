@@ -15,24 +15,9 @@
     },
   ],
   "settings": {
-    // ===========================================================================
-    // * Default Settings
-    // ===========================================================================
     // General
     "git.autofetch": true,
     "files.autoSave": "afterDelay",
-    // Formatting
-    "editor.formatOnPaste": true,
-    "editor.formatOnSave": true,
-    "editor.rulers": [80],
-    "[markdown]": {
-      "editor.wordWrap": "on",
-    },
-    // ===========================================================================
-
-    // ===========================================================================
-    // * Node.js Settings
-    // ===========================================================================
     "files.exclude": {
       "**/node_modules/": true,
       "**/.next/": true,
@@ -42,9 +27,25 @@
       "**/dist": true,
       "**/.vercel": true,
     },
+    
     // Formatting
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnPaste": true,
+    "editor.formatOnSave": true,
+    "editor.rulers": [80],
+    "editor.defaultFormatter": "biomejs.biome",
     "typescript.preferences.importModuleSpecifier": "non-relative",
+    "source.organizeImports.biome": "explicit",
+    "source.fixAll.biome": "explicit",
+    "editor.codeActionsOnSave": {
+      "quickfix.biome": "explicit",
+      "source.organizeImports.biome": "explicit"
+    },
+    "[markdown]": {
+      "editor.wordWrap": "on",
+    },
+    "[astro]": {
+      "editor.defaultFormatter": "astro-build.astro-vscode",
+    },
 
     // Ark Types: https://arktype.io/docs/intro/setup#settings
     "editor.quickSuggestions": {
@@ -53,16 +54,6 @@
     "typescript.preferences.autoImportSpecifierExcludeRegexes": [
       "^(node:)?os$",
     ],
-
-    // ESLint
-    "eslint.workingDirectories": [
-      {
-        "pattern": "./apps/*/",
-      },
-    ],
-    "[astro]": {
-      "editor.defaultFormatter": "astro-build.astro-vscode",
-    },
   },
   "extensions": {
     "recommendations": [
@@ -70,8 +61,7 @@
       "editorconfig.editorconfig",
       "github.vscode-github-actions",
       "mikestead.dotenv",
-      "dbaeumer.vscode-eslint",
-      "esbenp.prettier-vscode",
+      "biomejs.biome",
       "bradlc.vscode-tailwindcss",
       "ms-playwright.playwright",
       "xabikos.javascriptsnippets",
@@ -82,8 +72,8 @@
     "version": "0.2.0",
     "configurations": [
       {
+        "name": "Server",
         "command": "./node_modules/.bin/astro dev",
-        "name": "Development server",
         "request": "launch",
         "type": "node-terminal",
       },
@@ -91,7 +81,7 @@
         "name": "Client",
         "type": "chrome",
         "request": "launch",
-        "cwd": "${workspaceFolder}/../dota-visualizer",
+        "cwd": "${workspaceFolder}/../imdbgraph",
       },
     ],
   },

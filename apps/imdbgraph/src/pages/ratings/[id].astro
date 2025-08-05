@@ -1,31 +1,31 @@
 ---
-import { SearchBar } from '@/components/search-bar';
-import { formatYears, type Ratings } from '@/lib/types';
-import { actions } from 'astro:actions';
-import Layout from '@/pages/_base-layout.astro';
-import { Graph } from '@/components/graph';
+import { actions } from 'astro:actions'
+import { Graph } from '@/components/graph'
+import { SearchBar } from '@/components/search-bar'
+import { formatYears, type Ratings } from '@/lib/types'
+import Layout from '@/pages/_layout.astro'
 
-export const prerender = false;
+export const prerender = false
 
-const showId = Astro.params.id;
+const showId = Astro.params.id
 
 if (!showId) {
-  return Astro.redirect('/404');
+	return Astro.redirect('/404')
 }
 const ratings = await Astro.callAction(actions.fetchRatings.orThrow, {
-  showId,
-});
-const show = ratings.show;
+	showId,
+})
+const show = ratings.show
 
 function hasRatings(ratings: Ratings): boolean {
-  for (const seasonRatings of Object.values(ratings.allEpisodeRatings)) {
-    for (const episode of Object.values(seasonRatings)) {
-      if (episode.numVotes > 0) {
-        return true;
-      }
-    }
-  }
-  return false;
+	for (const seasonRatings of Object.values(ratings.allEpisodeRatings)) {
+		for (const episode of Object.values(seasonRatings)) {
+			if (episode.numVotes > 0) {
+				return true
+			}
+		}
+	}
+	return false
 }
 ---
 

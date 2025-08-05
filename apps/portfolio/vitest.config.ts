@@ -1,13 +1,11 @@
-import react from '@vitejs/plugin-react';
-import tsconfigPaths from 'vite-tsconfig-paths';
-import { defineConfig } from 'vitest/config';
+/// <reference types="vitest" />
+import { getViteConfig } from 'astro/config'
 
-export default defineConfig({
-  plugins: [tsconfigPaths(), react()],
-  test: {
-    globals: true,
-    environment: 'jsdom',
-    setupFiles: ['./vitest.setup.ts'],
-    includeSource: ['src/**/*.ts'],
-  },
-});
+export default getViteConfig({
+	//@ts-ignore
+	test: {
+		setupFiles: 'vitest.setup.ts',
+		globals: true,
+		environment: 'jsdom',
+	},
+})

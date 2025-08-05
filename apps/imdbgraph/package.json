@@ -6,14 +6,14 @@
   "scripts": {
     "build": "astro build",
     "dev": "astro dev --port 4002",
+    "check-types": "tsc --noEmit",
     "astro": "astro",
-    "lint": "eslint --max-warnings 0",
+    "lint": "biome lint",
     "test": "vitest run",
     "test:watch": "vitest --watch",
     "verify": "turbo build lint test"
   },
   "dependencies": {
-    "@astrojs/node": "^9.3.3",
     "@astrojs/react": "^4.3.0",
     "@astrojs/vercel": "^8.2.5",
     "@fontsource-variable/inter": "^5.2.6",
@@ -39,7 +39,6 @@
     "tailwind-merge": "^3.3.1"
   },
   "devDependencies": {
-    "@aamini/config-eslint": "workspace:*",
     "@aamini/config-typescript": "workspace:*",
     "@tailwindcss/vite": "^4.1.11",
     "@tanstack/eslint-plugin-query": "^5.83.1",
@@ -51,10 +50,7 @@
     "@types/pg-copy-streams": "^1.2.5",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
-    "@vercel/node": "^5.3.10",
-    "@vitejs/plugin-react": "^4.7.0",
     "drizzle-kit": "^0.31.4",
-    "eslint": "^9.31.0",
     "jsdom": "^26.1.0",
     "msw": "^2.10.4",
     "postcss": "^8.5.6",

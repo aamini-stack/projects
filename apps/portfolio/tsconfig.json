@@ -1,16 +1,14 @@
 {
-  "extends": "@aamini/config-typescript/next",
+  "extends": "@aamini/config-typescript/base",
   "compilerOptions": {
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ],
+    "jsx": "react-jsx",
+    "jsxImportSource": "react",
+    "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
     },
     "types": ["vitest/importMeta"]
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules", ".next"]
+  "include": [".astro/types.d.ts", "**/*"],
+  "exclude": ["dist"]
 }

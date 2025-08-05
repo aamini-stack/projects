@@ -1,40 +1,40 @@
-import { db } from '@/lib/db/connection';
-import { download } from '@/lib/db/scraper/file-downloader';
-import { randomUUID } from 'node:crypto';
-import { createReadStream } from 'node:fs';
-import { mkdir } from 'node:fs/promises';
-import { tmpdir } from 'node:os';
-import path from 'node:path';
-import { pipeline } from 'node:stream/promises';
-import type { PoolClient } from 'pg';
-import { from as copyFrom } from 'pg-copy-streams';
+import { randomUUID } from 'node:crypto'
+import { createReadStream } from 'node:fs'
+import { mkdir } from 'node:fs/promises'
+import { tmpdir } from 'node:os'
+import path from 'node:path'
+import { pipeline } from 'node:stream/promises'
+import type { PoolClient } from 'pg'
+import { from as copyFrom } from 'pg-copy-streams'
+import { db } from '@/lib/db/connection'
+import { download } from '@/lib/db/scraper/file-downloader'
 
 /**
  * Main method that downloads the latest files from IMDB and updates our
  * internal database with the latest data.
  */
 export async function update(): Promise<void> {
-  const client = await db.$client.connect();
-  console.log('Connected to db. Starting database population...');
-  const startTime = Date.now();
-  try {
-    await client.query('BEGIN');
-    await transfer(client);
-    await client.query('COMMIT');
+	const client = await db.$client.connect()
+	console.log('Connected to db. Starting database population...')
+	const startTime = Date.now()
+	try {
+		await client.query('BEGIN')
+		await transfer(client)
+		await client.query('COMMIT')
 
-    const duration = ((Date.now() - startTime) / 1000).toFixed(2);
-    console.log(
-      `✅ Database population completed successfully in ${duration} seconds!`,
-    );
-  } catch (error) {
-    console.error('❌ Database population failed:');
-    console.error(error);
-    console.error('Attempting Rollback...');
-    await client.query('ROLLBACK');
-    console.error('Rollback Succeeded...');
-  } finally {
-    client.release();
-  }
+		const duration = ((Date.now() - startTime) / 1000).toFixed(2)
+		console.log(
+			`✅ Database population completed successfully in ${duration} seconds!`,
+		)
+	} catch (error) {
+		console.error('❌ Database population failed:')
+		console.error(error)
+		console.error('Attempting Rollback...')
+		await client.query('ROLLBACK')
+		console.error('Rollback Succeeded...')
+	} finally {
+		client.release()
+	}
 }
 
 /**
@@ -43,7 +43,7 @@ export async function update(): Promise<void> {
  * data from the temp tables.
  */
 async function transfer(client: PoolClient) {
-  await client.query(`
+	await client.query(`
     CREATE TEMPORARY TABLE temp_title
     (
         imdb_id         VARCHAR(10),
@@ -71,40 +71,40 @@ async function transfer(client: PoolClient) {
         imdb_rating DOUBLE PRECISION,
         num_votes   INT
     ) ON COMMIT DROP;
-  `);
+  `)
 
-  // Download files and store them in temp tables.
-  const tempDir = path.join(tmpdir(), `imdb-run-${randomUUID()}`);
-  await mkdir(tempDir);
-  console.log('Starting downloads...');
-  await download('title.basics.tsv.gz', path.join(tempDir, 'titles.tsv'));
-  await download('title.episode.tsv.gz', path.join(tempDir, 'episodes.tsv'));
-  await download('title.ratings.tsv.gz', path.join(tempDir, 'ratings.tsv'));
+	// Download files and store them in temp tables.
+	const tempDir = path.join(tmpdir(), `imdb-run-${randomUUID()}`)
+	await mkdir(tempDir)
+	console.log('Starting downloads...')
+	await download('title.basics.tsv.gz', path.join(tempDir, 'titles.tsv'))
+	await download('title.episode.tsv.gz', path.join(tempDir, 'episodes.tsv'))
+	await download('title.ratings.tsv.gz', path.join(tempDir, 'ratings.tsv'))
 
-  const copy = async (file: string, cmd: string) => {
-    const sourceStream = createReadStream(file);
-    const ingestStream = client.query(copyFrom(cmd));
-    await pipeline(sourceStream, ingestStream);
-    console.log(`Successfully transferred ${file} to table temp_title`);
-  };
+	const copy = async (file: string, cmd: string) => {
+		const sourceStream = createReadStream(file)
+		const ingestStream = client.query(copyFrom(cmd))
+		await pipeline(sourceStream, ingestStream)
+		console.log(`Successfully transferred ${file} to table temp_title`)
+	}
 
-  console.log('Starting file to temp table transfers...');
-  await copy(
-    path.join(tempDir, 'titles.tsv'),
-    `COPY temp_title FROM STDIN WITH (DELIMITER '\t', HEADER TRUE) 
+	console.log('Starting file to temp table transfers...')
+	await copy(
+		path.join(tempDir, 'titles.tsv'),
+		`COPY temp_title FROM STDIN WITH (DELIMITER '\t', HEADER TRUE) 
     WHERE title_type IN ('tvSeries', 'tvEpisode', 'tvShort', 'tvSpecial', 'tvMiniSeries') AND start_year IS NOT NULL;`,
-  );
-  await copy(
-    path.join(tempDir, 'episodes.tsv'),
-    "COPY temp_episode FROM STDIN WITH (DELIMITER '\t', HEADER TRUE);",
-  );
-  await copy(
-    path.join(tempDir, 'ratings.tsv'),
-    "COPY temp_ratings FROM STDIN WITH (DELIMITER '\t', HEADER TRUE);",
-  );
+	)
+	await copy(
+		path.join(tempDir, 'episodes.tsv'),
+		"COPY temp_episode FROM STDIN WITH (DELIMITER '\t', HEADER TRUE);",
+	)
+	await copy(
+		path.join(tempDir, 'ratings.tsv'),
+		"COPY temp_ratings FROM STDIN WITH (DELIMITER '\t', HEADER TRUE);",
+	)
 
-  // Update show table using new data from temp tables
-  await client.query(`
+	// Update show table using new data from temp tables
+	await client.query(`
     INSERT INTO show(imdb_id, title, start_year, end_year, rating, num_votes)
     SELECT imdb_id,
            primary_title,
@@ -120,11 +120,11 @@ async function transfer(client: PoolClient) {
             end_year = excluded.end_year,
             rating = excluded.rating,
             num_votes = excluded.num_votes;
-  `);
-  console.log('Shows successfully updated');
+  `)
+	console.log('Shows successfully updated')
 
-  // Update episode table using new data from temp tables
-  await client.query(`
+	// Update episode table using new data from temp tables
+	await client.query(`
     INSERT INTO episode(show_id, episode_id, title, season_num, episode_num, rating, num_votes)
     SELECT e.show_id,
            e.episode_id,
@@ -148,6 +148,6 @@ async function transfer(client: PoolClient) {
             episode_num = excluded.episode_num,
             rating = excluded.rating,
             num_votes = excluded.num_votes;
-  `);
-  console.log('Episodes successfully updated');
+  `)
+	console.log('Episodes successfully updated')
 }

@@ -5,18 +5,16 @@
   "type": "module",
   "scripts": {
     "check-types": "tsc --noEmit",
-    "e2e": "playwright test --update-snapshots",
-    "lint": "eslint --max-warnings 0"
+    "e2e": "playwright test",
+    "lint": "biome lint"
   },
   "dependencies": {
     "@aamini/portfolio": "workspace:*"
   },
   "devDependencies": {
-    "@aamini/config-eslint": "workspace:*",
     "@aamini/config-typescript": "workspace:*",
     "@playwright/test": "^1.54.1",
     "@types/node": "^24.0.15",
-    "eslint": "^9.31.0",
     "typescript": "5.8.3"
   }
 }

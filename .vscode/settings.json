@@ -1,38 +1,37 @@
 {
-  // ===========================================================================
-  // * Default Settings
-  // ===========================================================================
   // General
   "git.autofetch": true,
   "files.autoSave": "afterDelay",
-  // Formatting
-  "editor.formatOnPaste": true,
-  "editor.formatOnSave": true,
-  "editor.rulers": [80],
-  "[markdown]": {
-    "editor.wordWrap": "on"
-  },
-  // ===========================================================================
-
-  // ===========================================================================
-  // * Node.js Settings
-  // ===========================================================================
   "files.exclude": {
     "**/node_modules/": true,
     "**/.next/": true,
     "**/.swc/": true,
-    "**/.turbo": true
+    "**/.turbo": true,
+    "**/.astro": true,
+    "**/dist": true,
+    "**/.vercel": true,
   },
+  
   // Formatting
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnPaste": true,
+  "editor.formatOnSave": true,
+  "editor.rulers": [80],
+  "editor.defaultFormatter": "biomejs.biome",
   "typescript.preferences.importModuleSpecifier": "non-relative",
+  "source.organizeImports.biome": "explicit",
+  "source.fixAll.biome": "explicit",    
+  "[markdown]": {
+    "editor.wordWrap": "on",
+  },
+  "[astro]": {
+    "editor.defaultFormatter": "astro-build.astro-vscode",
+  },
 
   // Ark Types: https://arktype.io/docs/intro/setup#settings
   "editor.quickSuggestions": {
-    "strings": "on"
+    "strings": "on",
   },
-  "typescript.preferences.autoImportSpecifierExcludeRegexes": ["^(node:)?os$"],
-
-  // ESLint
-  "eslint.workingDirectories": [{ "pattern": "./apps/*/" }]
+  "typescript.preferences.autoImportSpecifierExcludeRegexes": [
+    "^(node:)?os$",
+  ],
 }

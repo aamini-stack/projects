@@ -1,55 +1,55 @@
-import { searchMocks } from './__fixtures__/search';
-import { SearchBar } from './search-bar';
-import { screen, fireEvent, render } from '@testing-library/react';
-import { vi, test, expect } from 'vitest';
-import { ActionError } from 'astro:actions';
+import { ActionError } from 'astro:actions'
+import { fireEvent, render, screen } from '@testing-library/react'
+import { expect, test, vi } from 'vitest'
+import { searchMocks } from './__fixtures__/search'
+import { SearchBar } from './search-bar'
 
 vi.mock('astro:actions', () => ({
-  actions: {
-    fetchSuggestions: mockFetchSuggestions,
-  },
-}));
+	actions: {
+		fetchSuggestions: mockFetchSuggestions,
+	},
+}))
 
 test('loading spinner', async () => {
-  render(<SearchBar />);
+	render(<SearchBar />)
 
-  const searchBar = await screen.findByRole('combobox');
-  fireEvent.change(searchBar, { target: { value: 'blah' } });
-  expect(await screen.findByTestId('loading-spinner')).toBeVisible();
-});
+	const searchBar = await screen.findByRole('combobox')
+	fireEvent.change(searchBar, { target: { value: 'blah' } })
+	expect(await screen.findByTestId('loading-spinner')).toBeVisible()
+})
 
 test('no results', async () => {
-  render(<SearchBar />);
+	render(<SearchBar />)
 
-  const searchBar = await screen.findByRole('combobox');
-  fireEvent.change(searchBar, { target: { value: 'blah' } });
-  expect(await screen.findByText(/No TV Shows Found./i)).toBeInTheDocument();
-});
+	const searchBar = await screen.findByRole('combobox')
+	fireEvent.change(searchBar, { target: { value: 'blah' } })
+	expect(await screen.findByText(/No TV Shows Found./i)).toBeInTheDocument()
+})
 
 test('error message', async () => {
-  render(<SearchBar />);
+	render(<SearchBar />)
 
-  const searchBar = await screen.findByRole('combobox');
-  fireEvent.change(searchBar, { target: { value: 'error' } });
-  expect(
-    await screen.findByText(
-      /Something went wrong. Please try again./i,
-      {},
-      { timeout: 20_000 },
-    ),
-  ).toBeInTheDocument();
-}, 20_000);
+	const searchBar = await screen.findByRole('combobox')
+	fireEvent.change(searchBar, { target: { value: 'error' } })
+	expect(
+		await screen.findByText(
+			/Something went wrong. Please try again./i,
+			{},
+			{ timeout: 20_000 },
+		),
+	).toBeInTheDocument()
+}, 20_000)
 
 function mockFetchSuggestions({ query }: { query: string }) {
-  if (query === 'error') {
-    return Promise.resolve({
-      error: new ActionError({
-        code: 'INTERNAL_SERVER_ERROR',
-      }),
-    });
-  } else {
-    return Promise.resolve({
-      data: searchMocks[query.toLocaleLowerCase()] ?? [],
-    });
-  }
+	if (query === 'error') {
+		return Promise.resolve({
+			error: new ActionError({
+				code: 'INTERNAL_SERVER_ERROR',
+			}),
+		})
+	} else {
+		return Promise.resolve({
+			data: searchMocks[query.toLocaleLowerCase()] ?? [],
+		})
+	}
 }

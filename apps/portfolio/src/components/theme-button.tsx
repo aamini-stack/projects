@@ -1,23 +1,38 @@
-'use client';
-
-import { Button } from '@/components/primitives/button';
-import { Moon, Sun } from 'lucide-react';
-import { useTheme } from 'next-themes';
+import { useStore } from '@nanostores/react'
+import { Moon, Sun } from 'lucide-react'
+import { useEffect } from 'react'
+import { Button } from '@/components/primitives/button'
+import { theme } from '@/lib/store'
 
 export function ThemeButton() {
-  const { setTheme } = useTheme();
+	const $theme = useStore(theme)
 
-  return (
-    <Button
-      variant="neutral"
-      size="icon"
-      onClick={() => {
-        setTheme((theme) => (theme === 'dark' ? 'light' : 'dark'));
-      }}
-    >
-      <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-      <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-      <span className="sr-only">Toggle theme</span>
-    </Button>
-  );
+	useEffect(() => {
+		const isDarkMode = document.documentElement.classList.contains('dark')
+		theme.set(isDarkMode ? 'dark' : 'theme-light')
+	}, [])
+
+	useEffect(() => {
+		if ($theme !== null) {
+			const isDark =
+				$theme === 'dark' ||
+				($theme === 'system' &&
+					window.matchMedia('(prefers-color-scheme: dark)').matches)
+			document.documentElement.classList[isDark ? 'add' : 'remove']('dark')
+		}
+	}, [$theme])
+
+	return (
+		<Button
+			variant="neutral"
+			size="icon"
+			onClick={() => {
+				theme.set($theme === 'theme-light' ? 'dark' : 'theme-light')
+			}}
+		>
+			<Sun className="dark:-rotate-90 h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:scale-0" />
+			<Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+			<span className="sr-only">Toggle theme</span>
+		</Button>
+	)
 }

@@ -6,8 +6,9 @@
   "scripts": {
     "build": "astro build",
     "dev": "astro dev --port 4001",
+    "check-types": "tsc --noEmit",
     "astro": "astro",
-    "lint": "eslint --max-warnings 0",
+    "lint": "biome lint",
     "test": "vitest run",
     "test:watch": "vitest --watch",
     "verify": "turbo build lint test"
@@ -27,7 +28,6 @@
     "tailwind-merge": "^3.3.1"
   },
   "devDependencies": {
-    "@aamini/config-eslint": "workspace:*",
     "@aamini/config-typescript": "workspace:*",
     "@tailwindcss/vite": "^4.1.11",
     "@testing-library/jest-dom": "^6.6.4",
@@ -36,7 +36,6 @@
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
     "@vitejs/plugin-react": "^4.7.0",
-    "eslint": "^9.31.0",
     "jsdom": "^26.1.0",
     "msw": "^2.10.4",
     "postcss": "^8.5.6",

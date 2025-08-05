@@ -1,13 +1,13 @@
 {
   "recommendations": [
+    "astro-build.astro-vscode",
     "editorconfig.editorconfig",
     "github.vscode-github-actions",
     "mikestead.dotenv",
-    "dbaeumer.vscode-eslint",
-    "esbenp.prettier-vscode",
+    "biomejs.biome",
     "bradlc.vscode-tailwindcss",
     "ms-playwright.playwright",
     "xabikos.javascriptsnippets",
-    "vitest.explorer"
+    "vitest.explorer",
   ]
 }

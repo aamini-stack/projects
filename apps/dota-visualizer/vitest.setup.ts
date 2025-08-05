@@ -1,13 +1,13 @@
-import { server } from './mocks/node.js';
-import '@testing-library/jest-dom/vitest';
-import { beforeAll, afterEach, afterAll } from 'vitest';
+import { server } from './mocks/node.js'
+import '@testing-library/jest-dom/vitest'
+import { afterAll, afterEach, beforeAll } from 'vitest'
 
 beforeAll(() => {
-  server.listen();
-});
+	server.listen()
+})
 afterEach(() => {
-  server.resetHandlers();
-});
+	server.resetHandlers()
+})
 afterAll(() => {
-  server.close();
-});
+	server.close()
+})
