@@ -24,8 +24,7 @@
       "**/.swc/": true,
       "**/.turbo": true,
       "**/.astro": true,
-      "**/dist": true,
-      "**/.vercel": true,
+      "**/dist": true
     },
     
     // Formatting
