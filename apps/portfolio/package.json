@@ -7,11 +7,8 @@
     "build": "astro build",
     "dev": "astro dev --port 4003",
     "check-types": "tsc --noEmit",
-    "astro": "astro",
-    "lint": "biome lint",
     "test": "vitest run",
-    "test:watch": "vitest --watch",
-    "verify": "turbo build lint test"
+    "test:watch": "vitest --watch"
   },
   "dependencies": {
     "@astrojs/react": "^4.3.0",
