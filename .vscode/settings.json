@@ -34,4 +34,7 @@
   "typescript.preferences.autoImportSpecifierExcludeRegexes": [
     "^(node:)?os$",
   ],
+  "[yaml]": {
+    "editor.defaultFormatter": "redhat.vscode-yaml"
+  },
 }

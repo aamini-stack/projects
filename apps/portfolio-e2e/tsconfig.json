@@ -1,4 +1,4 @@
 {
-  "extends": "@aamini/config-typescript/base",
+  "extends": "astro/tsconfigs/strictest",
   "include": ["src/**/*.ts", "src/**/*.tsx", "playwright.config.ts"]
 }
