@@ -34,19 +34,14 @@
     "editor.rulers": [80],
     "editor.defaultFormatter": "biomejs.biome",
     "typescript.preferences.importModuleSpecifier": "non-relative",
-    "source.organizeImports.biome": "explicit",
-    "source.fixAll.biome": "explicit",
     "editor.codeActionsOnSave": {
-      "quickfix.biome": "explicit",
+      "source.fixAll.biome": "explicit",
       "source.organizeImports.biome": "explicit"
     },
     "[markdown]": {
       "editor.wordWrap": "on",
     },
-    "[astro]": {
-      "editor.defaultFormatter": "astro-build.astro-vscode",
-    },
-
+    
     // Ark Types: https://arktype.io/docs/intro/setup#settings
     "editor.quickSuggestions": {
       "strings": "on",
