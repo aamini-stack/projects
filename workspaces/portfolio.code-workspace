@@ -7,6 +7,9 @@
       "path": "../apps/portfolio-e2e",
     },
     {
+      "path": "../libs",
+    },
+    {
       "name": "@aamini/root",
       "path": "..",
     },
