@@ -25,8 +25,7 @@ export default defineConfig({
 		command: 'pnpm run dev',
 		url: 'http://localhost:4003',
 		reuseExistingServer: !process.env.CI,
-		cwd: '../portfolio',
-		stdout: 'pipe',
+		cwd: '../portfolio'
 	},
 
 	expect: {
