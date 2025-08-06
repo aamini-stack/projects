@@ -18,107 +18,6 @@ importers:
         specifier: ^2.5.5
         version: 2.5.5
 
-  apps/chibi-chat:
-    dependencies:
-      '@vercel/analytics':
-        specifier: ^1.5.0
-        version: 1.5.0(next@15.4.2(@playwright/test@1.54.2)(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(react@19.1.1)
-      '@vercel/speed-insights':
-        specifier: ^1.2.0
-        version: 1.2.0(next@15.4.2(@babel/core@7.28.0)(@playwright/test@1.54.2)(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(react@19.1.1)
-      clsx:
-        specifier: ^2.1.1
-        version: 2.1.1
-      next:
-        specifier: 15.4.2
-        version: 15.4.2(@babel/core@7.28.0)(@playwright/test@1.54.2)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
-      react:
-        specifier: ^19.1.0
-        version: 19.1.1
-      react-dom:
-        specifier: ^19.1.0
-        version: 19.1.1(react@19.1.1)
-      react-youtube:
-        specifier: ^10.1.0
-        version: 10.1.0(react@19.1.1)
-      tailwind-merge:
-        specifier: ^3.3.1
-        version: 3.3.1
-      youtube-player:
-        specifier: ^5.6.0
-        version: 5.6.0
-    devDependencies:
-      '@aamini/config-typescript':
-        specifier: workspace:*
-        version: link:../../libs/typescript
-      '@tailwindcss/postcss':
-        specifier: ^4.1.11
-        version: 4.1.11
-      '@testing-library/jest-dom':
-        specifier: ^6.6.4
-        version: 6.6.4
-      '@testing-library/react':
-        specifier: ^16.3.0
-        version: 16.3.0(@testing-library/dom@10.4.1)(@types/react-dom@19.1.7(@types/react@19.1.9))(@types/react@19.1.9)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
-      '@types/node':
-        specifier: ^24.0.15
-        version: 24.2.0
-      '@types/react':
-        specifier: ^19.1.8
-        version: 19.1.9
-      '@types/react-dom':
-        specifier: ^19.1.6
-        version: 19.1.7(@types/react@19.1.9)
-      '@types/youtube':
-        specifier: ^0.1.2
-        version: 0.1.2
-      '@types/youtube-player':
-        specifier: ^5.5.11
-        version: 5.5.11
-      '@vitejs/plugin-react':
-        specifier: ^4.7.0
-        version: 4.7.0(vite@7.0.6(@types/node@24.2.0)(jiti@2.5.1)(lightningcss@1.30.1))
-      jsdom:
-        specifier: ^26.1.0
-        version: 26.1.0
-      postcss:
-        specifier: ^8.5.6
-        version: 8.5.6
-      tailwindcss:
-        specifier: ^4.1.11
-        version: 4.1.11
-      tw-animate-css:
-        specifier: ^1.3.5
-        version: 1.3.6
-      typescript:
-        specifier: 5.8.3
-        version: 5.8.3
-      vite-tsconfig-paths:
-        specifier: ^5.1.4
-        version: 5.1.4(typescript@5.8.3)(vite@7.0.6(@types/node@24.2.0)(jiti@2.5.1)(lightningcss@1.30.1))
-      vitest:
-        specifier: ^3.2.4
-        version: 3.2.4(@types/debug@4.1.12)(@types/node@24.2.0)(jiti@2.5.1)(jsdom@26.1.0)(lightningcss@1.30.1)(msw@2.10.4(@types/node@24.2.0)(typescript@5.8.3))
-
-  apps/chibi-chat-e2e:
-    dependencies:
-      '@aamini/chibi-chat':
-        specifier: workspace:*
-        version: link:../chibi-chat
-    devDependencies:
-      '@aamini/config-typescript':
-        specifier: workspace:*
-        version: link:../../libs/typescript
-      '@playwright/test':
-        specifier: ^1.54.1
-        version: 1.54.2
-      '@types/node':
-        specifier: ^24.0.15
-        version: 24.2.0
-      typescript:
-        specifier: 5.8.3
-        version: 5.8.3
-
   apps/dota-visualizer:
     dependencies:
       '@astrojs/node':
@@ -158,9 +57,6 @@ importers:
         specifier: ^3.3.1
         version: 3.3.1
     devDependencies:
-      '@aamini/config-typescript':
-        specifier: workspace:*
-        version: link:../../libs/typescript
       '@tailwindcss/vite':
         specifier: ^4.1.11
         version: 4.1.11(vite@7.0.6(@types/node@24.2.0)(jiti@2.5.1)(lightningcss@1.30.1))
@@ -213,9 +109,6 @@ importers:
         specifier: workspace:*
         version: link:../dota-visualizer
     devDependencies:
-      '@aamini/config-typescript':
-        specifier: workspace:*
-        version: link:../../libs/typescript
       '@playwright/test':
         specifier: ^1.54.1
         version: 1.54.2
@@ -298,9 +191,6 @@ importers:
         specifier: ^3.3.1
         version: 3.3.1
     devDependencies:
-      '@aamini/config-typescript':
-        specifier: workspace:*
-        version: link:../../libs/typescript
       '@tailwindcss/vite':
         specifier: ^4.1.11
         version: 4.1.11(vite@7.0.6(@types/node@24.2.0)(jiti@2.5.1)(lightningcss@1.30.1))
@@ -365,9 +255,6 @@ importers:
         specifier: workspace:*
         version: link:../imdbgraph
     devDependencies:
-      '@aamini/config-typescript':
-        specifier: workspace:*
-        version: link:../../libs/typescript
       '@playwright/test':
         specifier: ^1.54.1
         version: 1.54.2
@@ -462,9 +349,6 @@ importers:
         specifier: ^4.0.5
         version: 4.0.14
     devDependencies:
-      '@aamini/config-typescript':
-        specifier: workspace:*
-        version: link:../../libs/typescript
       '@tailwindcss/postcss':
         specifier: ^4.1.11
         version: 4.1.11
@@ -514,9 +398,6 @@ importers:
         specifier: workspace:*
         version: link:../portfolio
     devDependencies:
-      '@aamini/config-typescript':
-        specifier: workspace:*
-        version: link:../../libs/typescript
       '@playwright/test':
         specifier: ^1.54.1
         version: 1.54.2
@@ -526,12 +407,6 @@ importers:
       typescript:
         specifier: 5.8.3
         version: 5.8.3
-
-  libs/typescript:
-    dependencies:
-      typescript:
-        specifier: 5.8.2
-        version: 5.8.2
 
 packages:
 
@@ -2290,12 +2165,6 @@ packages:
   '@types/unist@3.0.3':
     resolution: {integrity: sha512-ko/gIFJRv177XgZsZcBwnqJN5x/Gien8qNOn0D5bQU/zAzVf9Zt3BlcUiLqhV9y4ARk0GbT3tnUiPNgnTXzc/Q==}
 
-  '@types/youtube-player@5.5.11':
-    resolution: {integrity: sha512-pM41CDBqJqBmTeJWnF7NOGz82IQoYOhqzMYXv5vKCXBqGiYSLldxMtpCk6KAEtADTy49S45AriYaCaZyeUX38Q==}
-
-  '@types/youtube@0.1.2':
-    resolution: {integrity: sha512-n1/KqusanheyQRWHamNZv8K3kydlRqyEsZEKxMTeNWXQTC15lZprITCUt+WgL1vAIvKHCjPBIWz/gf/KQLsB3g==}
-
   '@typescript-eslint/project-service@8.39.0':
     resolution: {integrity: sha512-CTzJqaSq30V/Z2Og9jogzZt8lJRR5TKlAdXmWgdu4hgcC9Kww5flQ+xFvMxIBWVNdxJO7OifgdOK4PokMIWPew==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
@@ -2382,29 +2251,6 @@ packages:
 
   '@vercel/routing-utils@5.1.1':
     resolution: {integrity: sha512-EyOik06V2fPXAbKY087BM7DMOQOJK+9mubwwox1TkDi21tMeJcMYwsXwepm6ZmyZ5u0j1TpJW172fP4MbzaCcg==}
-
-  '@vercel/speed-insights@1.2.0':
-    resolution: {integrity: sha512-y9GVzrUJ2xmgtQlzFP2KhVRoCglwfRQgjyfY607aU0hh0Un6d0OUyrJkjuAlsV18qR4zfoFPs/BiIj9YDS6Wzw==}
-    peerDependencies:
-      '@sveltejs/kit': ^1 || ^2
-      next: '>= 13'
-      react: ^18 || ^19 || ^19.0.0-rc
-      svelte: '>= 4'
-      vue: ^3
-      vue-router: ^4
-    peerDependenciesMeta:
-      '@sveltejs/kit':
-        optional: true
-      next:
-        optional: true
-      react:
-        optional: true
-      svelte:
-        optional: true
-      vue:
-        optional: true
-      vue-router:
-        optional: true
 
   '@vitejs/plugin-react@4.7.0':
     resolution: {integrity: sha512-gUu9hwfWvvEDBBmgtAowQCojwZmJ5mcLn3aufeCsitijs3+f2NsrPtlAWIR6OPiqljl96GVCUbLe0HyqIpVaoA==}
@@ -2841,14 +2687,6 @@ packages:
   data-urls@5.0.0:
     resolution: {integrity: sha512-ZYP5VBHshaDAiVZxjbRVcFJpc+4xGgT0bK3vzy1HLN8jTO975HEbuYzZJcHoQEY5K1a0z8YayJkyVETa08eNTg==}
     engines: {node: '>=18'}
-
-  debug@2.6.9:
-    resolution: {integrity: sha512-bC7ElrdJaJnPbAP+1EotYvqZsb3ecl5wi6Bfi6BJTUcNowp6cvspg0jXznRTKDjm/E7AdgFBVeAPVMNcKGsHMA==}
-    peerDependencies:
-      supports-color: '*'
-    peerDependenciesMeta:
-      supports-color:
-        optional: true
 
   debug@4.4.1:
     resolution: {integrity: sha512-KcKCqiftBJcZr++7ykoDIEwSa3XWowTfNPo92BYxjXiyYEVrUQh2aLyhxBCwww+heortUFxEJYcRzosstTEBYQ==}
@@ -3384,9 +3222,6 @@ packages:
     resolution: {integrity: sha512-7dUi7RvCoT/xast/o/dLN53oqND4yk0nsHkhRgn9w65C4PofCLOoJ39iSOg+qVDdWQPIEj+eszMHQ+aLVwwQSg==}
     engines: {node: '>=8'}
 
-  globrex@0.1.2:
-    resolution: {integrity: sha512-uHJgbwAMwNFf5mLst7IWLNg14x1CkeqglJb/K3doi4dw6q2IvAAmM/Y81kevy83wP+Sst+nutFTYOGg3d1lsxg==}
-
   gopd@1.2.0:
     resolution: {integrity: sha512-ZUKRh6/kUFoAiTAtTYPZJ3hw9wNxx+BIBOijnlG9PnrJsCcSjs1wyyD6vJpaYtgnzDrKYRSqf3OO6Rfa93xsRg==}
     engines: {node: '>= 0.4'}
@@ -3769,9 +3604,6 @@ packages:
     resolution: {integrity: sha512-xi6IyHML+c9+Q3W0S4fCQJOym42pyurFiJUHEcEyHS0CeKzia4yZDEsLlqOFykxOdHpNy0NmvVO31vcSqAxJCg==}
     engines: {node: '>= 12.0.0'}
 
-  load-script@1.0.0:
-    resolution: {integrity: sha512-kPEjMFtZvwL9TaZo0uZ2ml+Ye9HUMmPwbYRJ324qF9tqMejwykJ5ggTyvzmrbBeapCAbk98BSbTeovHEEP1uCA==}
-
   locate-path@6.0.0:
     resolution: {integrity: sha512-iPZK6eYjbxRu3uB4/WZ3EsEIMJFMqAoopl3R+zuq0UjcAm/MO6KCweDgPfP3elTztoKP3KtnVHxTn2NHBSDVUw==}
     engines: {node: '>=10'}
@@ -4040,9 +3872,6 @@ packages:
   mrmime@2.0.1:
     resolution: {integrity: sha512-Y3wQdFg2Va6etvQ5I82yUhGdsKrcYox6p7FfL1LbK2J4V01F9TGlepTIhnK24t7koZibmg82KGglhA1XK5IsLQ==}
     engines: {node: '>=10'}
-
-  ms@2.0.0:
-    resolution: {integrity: sha512-Tpp60P6IUJDTuOq/5Z8cdskzJujfwqfOTkrwIwj7IRISpnkJnT6SyJ4PCPnGMoFjC9ddhal5KVIYtAt97ix05A==}
 
   ms@2.1.3:
     resolution: {integrity: sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==}
@@ -4497,12 +4326,6 @@ packages:
       '@types/react':
         optional: true
 
-  react-youtube@10.1.0:
-    resolution: {integrity: sha512-ZfGtcVpk0SSZtWCSTYOQKhfx5/1cfyEW1JN/mugGNfAxT3rmVJeMbGpA9+e78yG21ls5nc/5uZJETE3cm3knBg==}
-    engines: {node: '>= 14.x'}
-    peerDependencies:
-      react: '>=0.14.1'
-
   react@19.1.1:
     resolution: {integrity: sha512-w8nqGImo45dmMIfljjMwOGtbmC/mk4CMYhWIicdSflH91J9TyCyczcPFXJzrZ/ZXcgGRFeP6BU0BEJTw6tZdfQ==}
     engines: {node: '>=0.10.0'}
@@ -4707,9 +4530,6 @@ packages:
 
   simple-swizzle@0.2.2:
     resolution: {integrity: sha512-JA//kQgZtbuY83m+xT+tXJkmJncGMTFT+C+g2h2R9uxkYIrE2yy9sgmcLhCnw57/WSD+Eh3J97FPEDFnbXnDUg==}
-
-  sister@3.0.2:
-    resolution: {integrity: sha512-p19rtTs+NksBRKW9qn0UhZ8/TUI9BPw9lmtHny+Y3TinWlOa9jWh9xB0AtPSdmOy49NJJJSSe0Ey4C7h0TrcYA==}
 
   sisteransi@1.0.5:
     resolution: {integrity: sha512-bLGGlR1QxBcynn2d5YmDX4MGjlZvy2MRBDRNHLJ8VI6l6+9FUiyTFNJ0IveOSP0bcXgVDPRcfGqA0pjaqUpfVg==}
@@ -5033,11 +4853,6 @@ packages:
     resolution: {integrity: sha512-TeTSQ6H5YHvpqVwBRcnLDCBnDOHWYu7IvGbHT6N8AOymcr9PJGjc1GTtiWZTYg0NCgYwvnYWEkVChQAr9bjfwA==}
     engines: {node: '>=16'}
 
-  typescript@5.8.2:
-    resolution: {integrity: sha512-aJn6wq13/afZp/jT9QZmwEjDqqvSGp1VT5GVg+f/t6/oVyrgXM6BY1h9BRh/O5p3PlUPAe+WuiEZOmb/49RqoQ==}
-    engines: {node: '>=14.17'}
-    hasBin: true
-
   typescript@5.8.3:
     resolution: {integrity: sha512-p1diW6TqL9L07nNxvRMM7hMMw4c5XOo/1ibL4aAIGmSAt9slTE1Xgw5KWuof2uTOvCg9BY7ZRi+GaF+7sfgPeQ==}
     engines: {node: '>=14.17'}
@@ -5233,14 +5048,6 @@ packages:
     resolution: {integrity: sha512-EbKSKh+bh1E1IFxeO0pg1n4dvoOTt0UDiXMd/qn++r98+jPO1xtJilvXldeuQ8giIB5IkpjCgMleHMNEsGH6pg==}
     engines: {node: ^18.0.0 || ^20.0.0 || >=22.0.0}
     hasBin: true
-
-  vite-tsconfig-paths@5.1.4:
-    resolution: {integrity: sha512-cYj0LRuLV2c2sMqhqhGpaO3LretdtMn/BVX4cPLanIZuwwrkVl+lK84E/miEXkCHWXuq65rhNN4rXsBcOB3S4w==}
-    peerDependencies:
-      vite: '*'
-    peerDependenciesMeta:
-      vite:
-        optional: true
 
   vite@6.3.5:
     resolution: {integrity: sha512-cZn6NDFE7wdTpINgs++ZJ4N49W2vRp8LCKrn3Ob1kYNtOo21vfDoaV5GzBfLU4MovSAB8uNRm4jgzVQZ+mBzPQ==}
@@ -5502,12 +5309,6 @@ packages:
   yoctocolors@2.1.1:
     resolution: {integrity: sha512-GQHQqAopRhwU8Kt1DDM8NjibDXHC8eoh1erhGAJPEyveY9qqVeXvVikNKrDz69sHowPMorbPUrH/mx8c50eiBQ==}
     engines: {node: '>=18'}
-
-  youtube-player@5.5.2:
-    resolution: {integrity: sha512-ZGtsemSpXnDky2AUYWgxjaopgB+shFHgXVpiJFeNB5nWEugpW1KWYDaHKuLqh2b67r24GtP6HoSW5swvf0fFIQ==}
-
-  youtube-player@5.6.0:
-    resolution: {integrity: sha512-x95fBbxV7eZ1ZsFtMLMcSGX0Jb/GPPj69RsooyEDVa9bzvvNZ4d5VjnBVBYoY85008VefkLvtaV+b+l38R/LMQ==}
 
   zod-to-json-schema@3.24.6:
     resolution: {integrity: sha512-h/z3PKvcTcTetyjl1fkj79MHNEjm+HpD6NXheWjzOekY7kV+lwDYnHw+ivHkijnCSMz1yJaWBD9vu/Fcmk+vEg==}
@@ -6341,7 +6142,8 @@ snapshots:
       nanostores: 1.0.1
       react: 19.1.1
 
-  '@next/env@15.4.2': {}
+  '@next/env@15.4.2':
+    optional: true
 
   '@next/swc-darwin-arm64@15.4.2':
     optional: true
@@ -6855,6 +6657,7 @@ snapshots:
   '@swc/helpers@0.5.15':
     dependencies:
       tslib: 2.8.1
+    optional: true
 
   '@swc/helpers@0.5.17':
     dependencies:
@@ -7141,10 +6944,6 @@ snapshots:
 
   '@types/unist@3.0.3': {}
 
-  '@types/youtube-player@5.5.11': {}
-
-  '@types/youtube@0.1.2': {}
-
   '@typescript-eslint/project-service@8.39.0(typescript@5.8.3)':
     dependencies:
       '@typescript-eslint/tsconfig-utils': 8.39.0(typescript@5.8.3)
@@ -7201,7 +7000,7 @@ snapshots:
 
   '@vercel/analytics@1.5.0(next@15.4.2(@playwright/test@1.54.2)(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(react@19.1.1)':
     optionalDependencies:
-      next: 15.4.2(@babel/core@7.28.0)(@playwright/test@1.54.2)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
+      next: 15.4.2(@playwright/test@1.54.2)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
       react: 19.1.1
 
   '@vercel/functions@2.2.8':
@@ -7235,11 +7034,6 @@ snapshots:
       path-to-regexp-updated: path-to-regexp@6.3.0
     optionalDependencies:
       ajv: 6.12.6
-
-  '@vercel/speed-insights@1.2.0(next@15.4.2(@babel/core@7.28.0)(@playwright/test@1.54.2)(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(react@19.1.1)':
-    optionalDependencies:
-      next: 15.4.2(@babel/core@7.28.0)(@playwright/test@1.54.2)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
-      react: 19.1.1
 
   '@vitejs/plugin-react@4.7.0(vite@6.3.5(@types/node@24.2.0)(jiti@2.5.1)(lightningcss@1.30.1))':
     dependencies:
@@ -7678,7 +7472,8 @@ snapshots:
 
   cli-width@4.1.0: {}
 
-  client-only@0.0.1: {}
+  client-only@0.0.1:
+    optional: true
 
   cliui@8.0.1:
     dependencies:
@@ -7787,10 +7582,6 @@ snapshots:
     dependencies:
       whatwg-mimetype: 4.0.0
       whatwg-url: 14.2.0
-
-  debug@2.6.9:
-    dependencies:
-      ms: 2.0.0
 
   debug@4.4.1:
     dependencies:
@@ -8305,8 +8096,6 @@ snapshots:
       merge2: 1.4.1
       slash: 3.0.0
 
-  globrex@0.1.2: {}
-
   gopd@1.2.0: {}
 
   graceful-fs@4.2.11: {}
@@ -8734,8 +8523,6 @@ snapshots:
       lightningcss-linux-x64-musl: 1.30.1
       lightningcss-win32-arm64-msvc: 1.30.1
       lightningcss-win32-x64-msvc: 1.30.1
-
-  load-script@1.0.0: {}
 
   locate-path@6.0.0:
     dependencies:
@@ -9170,8 +8957,6 @@ snapshots:
 
   mrmime@2.0.1: {}
 
-  ms@2.0.0: {}
-
   ms@2.1.3: {}
 
   msw@2.10.4(@types/node@24.2.0)(typescript@5.8.3):
@@ -9215,7 +9000,7 @@ snapshots:
 
   netmask@2.0.2: {}
 
-  next@15.4.2(@babel/core@7.28.0)(@playwright/test@1.54.2)(react-dom@19.1.1(react@19.1.1))(react@19.1.1):
+  next@15.4.2(@playwright/test@1.54.2)(react-dom@19.1.1(react@19.1.1))(react@19.1.1):
     dependencies:
       '@next/env': 15.4.2
       '@swc/helpers': 0.5.15
@@ -9223,7 +9008,7 @@ snapshots:
       postcss: 8.4.31
       react: 19.1.1
       react-dom: 19.1.1(react@19.1.1)
-      styled-jsx: 5.1.6(@babel/core@7.28.0)(react@19.1.1)
+      styled-jsx: 5.1.6(react@19.1.1)
     optionalDependencies:
       '@next/swc-darwin-arm64': 15.4.2
       '@next/swc-darwin-x64': 15.4.2
@@ -9238,6 +9023,7 @@ snapshots:
     transitivePeerDependencies:
       - '@babel/core'
       - babel-plugin-macros
+    optional: true
 
   nlcst-to-string@4.0.0:
     dependencies:
@@ -9511,6 +9297,7 @@ snapshots:
       nanoid: 3.3.11
       picocolors: 1.1.1
       source-map-js: 1.2.1
+    optional: true
 
   postcss@8.5.6:
     dependencies:
@@ -9632,15 +9419,6 @@ snapshots:
       tslib: 2.8.1
     optionalDependencies:
       '@types/react': 19.1.9
-
-  react-youtube@10.1.0(react@19.1.1):
-    dependencies:
-      fast-deep-equal: 3.1.3
-      prop-types: 15.8.1
-      react: 19.1.1
-      youtube-player: 5.5.2
-    transitivePeerDependencies:
-      - supports-color
 
   react@19.1.1: {}
 
@@ -9964,8 +9742,6 @@ snapshots:
       is-arrayish: 0.3.2
     optional: true
 
-  sister@3.0.2: {}
-
   sisteransi@1.0.5: {}
 
   slash@3.0.0: {}
@@ -10070,12 +9846,11 @@ snapshots:
     dependencies:
       js-tokens: 9.0.1
 
-  styled-jsx@5.1.6(@babel/core@7.28.0)(react@19.1.1):
+  styled-jsx@5.1.6(react@19.1.1):
     dependencies:
       client-only: 0.0.1
       react: 19.1.1
-    optionalDependencies:
-      '@babel/core': 7.28.0
+    optional: true
 
   supports-color@5.5.0:
     dependencies:
@@ -10243,8 +10018,6 @@ snapshots:
   type-fest@0.21.3: {}
 
   type-fest@4.41.0: {}
-
-  typescript@5.8.2: {}
 
   typescript@5.8.3: {}
 
@@ -10426,17 +10199,6 @@ snapshots:
       - terser
       - tsx
       - yaml
-
-  vite-tsconfig-paths@5.1.4(typescript@5.8.3)(vite@7.0.6(@types/node@24.2.0)(jiti@2.5.1)(lightningcss@1.30.1)):
-    dependencies:
-      debug: 4.4.1
-      globrex: 0.1.2
-      tsconfck: 3.1.6(typescript@5.8.3)
-    optionalDependencies:
-      vite: 7.0.6(@types/node@24.2.0)(jiti@2.5.1)(lightningcss@1.30.1)
-    transitivePeerDependencies:
-      - supports-color
-      - typescript
 
   vite@6.3.5(@types/node@24.2.0)(jiti@2.5.1)(lightningcss@1.30.1):
     dependencies:
@@ -10629,22 +10391,6 @@ snapshots:
   yoctocolors-cjs@2.1.2: {}
 
   yoctocolors@2.1.1: {}
-
-  youtube-player@5.5.2:
-    dependencies:
-      debug: 2.6.9
-      load-script: 1.0.0
-      sister: 3.0.2
-    transitivePeerDependencies:
-      - supports-color
-
-  youtube-player@5.6.0:
-    dependencies:
-      debug: 4.4.1
-      load-script: 1.0.0
-      sister: 3.0.2
-    transitivePeerDependencies:
-      - supports-color
 
   zod-to-json-schema@3.24.6(zod@3.25.76):
     dependencies:

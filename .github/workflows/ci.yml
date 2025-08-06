@@ -43,10 +43,7 @@ jobs:
         run: pnpm run verify:ci
   e2e:
     name: 'End-to-End Playwright UI Tests'
-    runs-on: ubuntu-latest
-    container:
-      image: mcr.microsoft.com/playwright:v1.54.0-noble
-      options: --user 1001
+    runs-on: windows-latest
     steps:
       # Checkout
       - uses: actions/checkout@v4
@@ -61,6 +58,9 @@ jobs:
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm i
+      # Install
+      - name: Install Playwright Browsers
+        run: pnpm dlx playwright install --with-deps
       # Run
       - name: Cache turbo build setup
         uses: actions/cache@v4
@@ -74,7 +74,7 @@ jobs:
       - name: Run Playwright tests
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
-        run: pnpm run e2e
+        run: pnpm run e2e -- --update-snapshots
       # Update Screenshots
       - name: Update Screenshots
         if: ${{ failure() }}
