@@ -57,6 +57,9 @@ importers:
         specifier: ^3.3.1
         version: 3.3.1
     devDependencies:
+      '@aamini/config-typescript':
+        specifier: workspace:*
+        version: link:../../libs/typescript
       '@tailwindcss/vite':
         specifier: ^4.1.11
         version: 4.1.11(vite@7.0.6(@types/node@24.2.0)(jiti@2.5.1)(lightningcss@1.30.1))
@@ -109,6 +112,9 @@ importers:
         specifier: workspace:*
         version: link:../dota-visualizer
     devDependencies:
+      '@aamini/config-typescript':
+        specifier: workspace:*
+        version: link:../../libs/typescript
       '@playwright/test':
         specifier: ^1.54.1
         version: 1.54.2
@@ -191,6 +197,9 @@ importers:
         specifier: ^3.3.1
         version: 3.3.1
     devDependencies:
+      '@aamini/config-typescript':
+        specifier: workspace:*
+        version: link:../../libs/typescript
       '@tailwindcss/vite':
         specifier: ^4.1.11
         version: 4.1.11(vite@7.0.6(@types/node@24.2.0)(jiti@2.5.1)(lightningcss@1.30.1))
@@ -255,6 +264,9 @@ importers:
         specifier: workspace:*
         version: link:../imdbgraph
     devDependencies:
+      '@aamini/config-typescript':
+        specifier: workspace:*
+        version: link:../../libs/typescript
       '@playwright/test':
         specifier: ^1.54.1
         version: 1.54.2
@@ -349,6 +361,9 @@ importers:
         specifier: ^4.0.5
         version: 4.0.14
     devDependencies:
+      '@aamini/config-typescript':
+        specifier: workspace:*
+        version: link:../../libs/typescript
       '@tailwindcss/postcss':
         specifier: ^4.1.11
         version: 4.1.11
@@ -398,6 +413,9 @@ importers:
         specifier: workspace:*
         version: link:../portfolio
     devDependencies:
+      '@aamini/config-typescript':
+        specifier: workspace:*
+        version: link:../../libs/typescript
       '@playwright/test':
         specifier: ^1.54.1
         version: 1.54.2
@@ -407,6 +425,12 @@ importers:
       typescript:
         specifier: 5.8.3
         version: 5.8.3
+
+  libs/typescript:
+    dependencies:
+      typescript:
+        specifier: 5.8.2
+        version: 5.8.2
 
 packages:
 
@@ -4948,6 +4972,11 @@ packages:
   type-fest@4.41.0:
     resolution: {integrity: sha512-TeTSQ6H5YHvpqVwBRcnLDCBnDOHWYu7IvGbHT6N8AOymcr9PJGjc1GTtiWZTYg0NCgYwvnYWEkVChQAr9bjfwA==}
     engines: {node: '>=16'}
+
+  typescript@5.8.2:
+    resolution: {integrity: sha512-aJn6wq13/afZp/jT9QZmwEjDqqvSGp1VT5GVg+f/t6/oVyrgXM6BY1h9BRh/O5p3PlUPAe+WuiEZOmb/49RqoQ==}
+    engines: {node: '>=14.17'}
+    hasBin: true
 
   typescript@5.8.3:
     resolution: {integrity: sha512-p1diW6TqL9L07nNxvRMM7hMMw4c5XOo/1ibL4aAIGmSAt9slTE1Xgw5KWuof2uTOvCg9BY7ZRi+GaF+7sfgPeQ==}
@@ -10243,6 +10272,8 @@ snapshots:
   type-fest@0.21.3: {}
 
   type-fest@4.41.0: {}
+
+  typescript@5.8.2: {}
 
   typescript@5.8.3: {}
 
