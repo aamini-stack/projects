@@ -40,6 +40,7 @@
     "zod": "^4.0.5"
   },
   "devDependencies": {
+    "@aamini/config-typescript": "workspace:*",
     "@tailwindcss/postcss": "^4.1.11",
     "@tailwindcss/vite": "^4.1.11",
     "@testing-library/jest-dom": "^6.6.4",
