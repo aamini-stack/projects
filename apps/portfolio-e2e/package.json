@@ -6,7 +6,7 @@
   "scripts": {
     "check-types": "tsc --noEmit",
     "e2e": "playwright test",
-    "lint": "biome lint"
+    "lint": "biome check"
   },
   "dependencies": {
     "@aamini/portfolio": "workspace:*"
