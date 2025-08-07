@@ -1,49 +1,4 @@
-import type { Show } from '@/lib/types'
-
-export const searchMocks: Record<string, Show[]> = {
-	a: [
-		{
-			imdbId: 'tt2560140',
-			title: 'Attack on Titan',
-			startYear: '2013',
-			endYear: '2023',
-			rating: 9.1,
-			numVotes: 625219,
-		},
-		{
-			imdbId: 'tt2193021',
-			title: 'Arrow',
-			startYear: '2012',
-			endYear: '2020',
-			rating: 7.5,
-			numVotes: 455313,
-		},
-		{
-			imdbId: 'tt0417299',
-			title: 'Avatar: The Last Airbender',
-			startYear: '2005',
-			endYear: '2008',
-			rating: 9.3,
-			numVotes: 410746,
-		},
-		{
-			imdbId: 'tt11126994',
-			title: 'Arcane',
-			startYear: '2021',
-			endYear: '2024',
-			rating: 9,
-			numVotes: 403026,
-		},
-		{
-			imdbId: 'tt1844624',
-			title: 'American Horror Story',
-			startYear: '2011',
-			endYear: null,
-			rating: 7.9,
-			numVotes: 355696,
-		},
-	],
-
+export const searchMocks = {
 	avatar: [
 		{
 			imdbId: 'tt0417299',
@@ -52,14 +7,6 @@ export const searchMocks: Record<string, Show[]> = {
 			endYear: '2008',
 			rating: 9.3,
 			numVotes: 410746,
-		},
-		{
-			imdbId: 'tt9018736',
-			title: 'Avatar: The Last Airbender',
-			startYear: '2024',
-			endYear: null,
-			rating: 7.2,
-			numVotes: 80299,
 		},
 		{
 			imdbId: 'tt15776622',
@@ -76,15 +23,7 @@ export const searchMocks: Record<string, Show[]> = {
 			endYear: null,
 			rating: 7.3,
 			numVotes: 117,
-		},
-		{
-			imdbId: 'tt13660822',
-			title: 'Avatar: Super Deformed Shorts',
-			startYear: '2007',
-			endYear: '2007',
-			rating: 6.2,
-			numVotes: 94,
-		},
+		}
 	],
 
 	the: [
