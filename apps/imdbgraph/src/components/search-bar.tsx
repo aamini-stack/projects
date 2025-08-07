@@ -1,15 +1,14 @@
 'use client'
 
 import { actions } from 'astro:actions'
-import { keepPreviousData, QueryClient, useQuery } from '@tanstack/react-query'
+import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { useCombobox } from 'downshift'
 import { Search as SearchIcon, Star } from 'lucide-react'
 import { useDeferredValue, useEffect, useState } from 'react'
+import { queryClient } from '@/lib/query'
 import type { Show } from '@/lib/types'
 import { formatYears } from '@/lib/types'
 import { cn } from '@/lib/utils'
-
-export const CLIENT = new QueryClient()
 
 /** https://www.w3.org/WAI/ARIA/apg/patterns/combobox/examples/combobox-autocomplete-list/ */
 export function SearchBar() {
@@ -36,7 +35,7 @@ export function SearchBar() {
 			placeholderData: keepPreviousData,
 			enabled: !!inputValue,
 		},
-		CLIENT,
+		queryClient,
 	)
 
 	useEffect(() => {
