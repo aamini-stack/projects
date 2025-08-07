@@ -62,13 +62,6 @@ jobs:
       - name: Install Playwright Browsers
         run: pnpm dlx playwright install --with-deps
       # Run
-      - name: Cache turbo build setup
-        uses: actions/cache@v4
-        with:
-          path: .turbo
-          key: ${{ runner.os }}-turbo-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-turbo-
       - name: Build
         run: pnpm run build
       - name: Run Playwright tests
@@ -76,6 +69,7 @@ jobs:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: |
           pnpm run e2e
+      # Upload Report
       - uses: actions/upload-artifact@v4
         id: artifact-upload
         if: ${{ !cancelled() }}

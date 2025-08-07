@@ -23,15 +23,28 @@ jobs:
         with:
           message: |
             ### Updating snapshots. Click [here](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) to see the status.
-      - uses: actions/setup-node@v4
+      # Node.js + pnpm
+      - uses: pnpm/action-setup@v3
         with:
-          node-version: lts/*
+          version: 10
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'pnpm'
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm i
+      # Install
       - name: Install Playwright Browsers
         run: pnpm dlx playwright install --with-deps
-      - name: Run Playwright update snapshots
-        run: pnpm exec playwright test --update-snapshots
+      # Run
+      - name: Build
+        run: pnpm run build
+      - name: Run Playwright tests
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          pnpm run e2e
       - name: Commit and push updated snapshots
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
