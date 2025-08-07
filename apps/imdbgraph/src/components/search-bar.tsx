@@ -24,6 +24,9 @@ export function SearchBar() {
 		{
 			queryKey: ['suggestions', deferredValue],
 			queryFn: async () => {
+				if (!deferredValue) {
+					return null
+				}
 				const { data, error } = await actions.fetchSuggestions({
 					query: deferredValue,
 				})
