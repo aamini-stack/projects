@@ -1,13 +1,13 @@
+import { db } from 'astro:db'
 import { randomUUID } from 'node:crypto'
 import { createReadStream } from 'node:fs'
 import { mkdir } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
 import { pipeline } from 'node:stream/promises'
+import { download } from 'db/scraper/file-downloader'
 import type { PoolClient } from 'pg'
 import { from as copyFrom } from 'pg-copy-streams'
-import { db } from '@/lib/db/connection'
-import { download } from '@/lib/db/scraper/file-downloader'
 
 /**
  * Main method that downloads the latest files from IMDB and updates our
