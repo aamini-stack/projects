@@ -27,6 +27,7 @@
     "highcharts": "^12.3.0",
     "highcharts-react-official": "^3.2.2",
     "lucide-react": "^0.525.0",
+    "minisearch": "^7.1.2",
     "nanostores": "^1.0.1",
     "pg": "^8.16.3",
     "pg-copy-streams": "^7.0.0",
