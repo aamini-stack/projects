@@ -31,7 +31,7 @@ export class SearchCache {
 		const results = this.index.search(q) as (SearchResult & Show)[]
 		const rankedResults = results
 			.map((result) => {
-				const newScore = result.score * Math.log(result.numVotes + 1)
+				const newScore = result.score * Math.sqrt(result.numVotes)
 				return { ...result, score: newScore }
 			})
 			.sort((a, b) => b.score - a.score)

@@ -59,14 +59,6 @@ test('generic search', () => {
       },
       {
         "endYear": null,
-        "imdbId": "tt7631058",
-        "numVotes": 427397,
-        "rating": 6.9,
-        "startYear": "2022",
-        "title": "The Lord of the Rings: The Rings of Power",
-      },
-      {
-        "endYear": null,
         "imdbId": "tt1190634",
         "numVotes": 788118,
         "rating": 8.6,
@@ -88,6 +80,14 @@ test('generic search', () => {
         "rating": 8.6,
         "startYear": "2019",
         "title": "The Mandalorian",
+      },
+      {
+        "endYear": null,
+        "imdbId": "tt7631058",
+        "numVotes": 427397,
+        "rating": 6.9,
+        "startYear": "2022",
+        "title": "The Lord of the Rings: The Rings of Power",
       },
     ]
   `)
