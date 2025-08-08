@@ -22,10 +22,8 @@ jobs:
       # Checkout
       - name: Check out code
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 2
       # Node.js + pnpm
-      - uses: pnpm/action-setup@v3
+      - uses: pnpm/action-setup@v4
         with:
           version: 10
       - name: Setup Node.js environment
