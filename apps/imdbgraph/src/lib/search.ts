@@ -1,4 +1,4 @@
-import MiniSearch from 'minisearch'
+import MiniSearch, { type SearchResult } from 'minisearch'
 import type { Show } from '@/lib/types'
 
 export class SearchCache {
@@ -28,8 +28,15 @@ export class SearchCache {
 	}
 
 	public search(q: string) {
-		const results = this.index.search(q)
-		return results.slice(0, 5).map((result) => ({
+		const results = this.index.search(q) as (SearchResult & Show)[]
+		const rankedResults = results
+			.map((result) => {
+				const newScore = result.score * Math.log(result.numVotes + 1)
+				return { ...result, score: newScore }
+			})
+			.sort((a, b) => b.score - a.score)
+
+		return rankedResults.slice(0, 5).map((result) => ({
 			imdbId: result.imdbId,
 			title: result.title,
 			startYear: result.startYear,
