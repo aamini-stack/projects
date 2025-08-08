@@ -48,47 +48,47 @@ test('non-existent results', () => {
 test('generic search', () => {
 	const results = searchCache.search('The')
 	expect(results).toMatchInlineSnapshot(`
-    [
-      {
-        "endYear": "2019",
-        "imdbId": "tt0898266",
-        "numVotes": 912870,
-        "rating": 8.1,
-        "startYear": "2007",
-        "title": "The Big Bang Theory",
-      },
-      {
-        "endYear": null,
-        "imdbId": "tt1190634",
-        "numVotes": 788118,
-        "rating": 8.6,
-        "startYear": "2019",
-        "title": "The Boys",
-      },
-      {
-        "endYear": "2013",
-        "imdbId": "tt0386676",
-        "numVotes": 783172,
-        "rating": 9,
-        "startYear": "2005",
-        "title": "The Office",
-      },
-      {
-        "endYear": null,
-        "imdbId": "tt8111088",
-        "numVotes": 630839,
-        "rating": 8.6,
-        "startYear": "2019",
-        "title": "The Mandalorian",
-      },
-      {
-        "endYear": null,
-        "imdbId": "tt7631058",
-        "numVotes": 427397,
-        "rating": 6.9,
-        "startYear": "2022",
-        "title": "The Lord of the Rings: The Rings of Power",
-      },
-    ]
-  `)
+		[
+		  {
+		    "endYear": "2019",
+		    "imdbId": "tt0898266",
+		    "numVotes": 912870,
+		    "rating": 8.1,
+		    "startYear": "2007",
+		    "title": "The Big Bang Theory",
+		  },
+		  {
+		    "endYear": "2022",
+		    "imdbId": "tt1520211",
+		    "numVotes": 1150592,
+		    "rating": 8.1,
+		    "startYear": "2010",
+		    "title": "The Walking Dead",
+		  },
+		  {
+		    "endYear": null,
+		    "imdbId": "tt1190634",
+		    "numVotes": 788118,
+		    "rating": 8.6,
+		    "startYear": "2019",
+		    "title": "The Boys",
+		  },
+		  {
+		    "endYear": "2013",
+		    "imdbId": "tt0386676",
+		    "numVotes": 783172,
+		    "rating": 9,
+		    "startYear": "2005",
+		    "title": "The Office",
+		  },
+		  {
+		    "endYear": null,
+		    "imdbId": "tt8111088",
+		    "numVotes": 630839,
+		    "rating": 8.6,
+		    "startYear": "2019",
+		    "title": "The Mandalorian",
+		  },
+		]
+	`)
 })
