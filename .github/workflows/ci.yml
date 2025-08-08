@@ -24,8 +24,6 @@ jobs:
         uses: actions/checkout@v4
       # Node.js + pnpm
       - uses: pnpm/action-setup@v4
-        with:
-          version: 10
       - name: Setup Node.js environment
         uses: actions/setup-node@v4
         with:
