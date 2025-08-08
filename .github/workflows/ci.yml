@@ -19,17 +19,8 @@ jobs:
     timeout-minutes: 15
     runs-on: ubuntu-latest
     steps:
-      # Setup Node.js + pnpm
-      - name: Check out code
-        uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-      - name: Setup Node.js environment
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: 'pnpm'
-      - name: Install dependencies
-        run: pnpm i
+      - name: Setup
+        uses: ./.github/actions/setup
       # Run
       - name: Verify
         run: pnpm run verify:ci
@@ -40,17 +31,8 @@ jobs:
       contents: write
       pull-requests: write
     steps:
-      # Setup Node.js + pnpm
-      - name: Check out code
-        uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-      - name: Setup Node.js environment
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: 'pnpm'
-      - name: Install dependencies
-        run: pnpm i
+      - name: Setup
+        uses: ./.github/actions/setup
       # Install Browsers
       - name: Install Playwright Browsers
         run: pnpm dlx playwright install --with-deps

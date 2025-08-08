@@ -23,18 +23,9 @@ jobs:
         with:
           message: |
             ### Updating snapshots. Click [here](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) to see the status.
-      # Node.js + pnpm
-      - uses: pnpm/action-setup@v3
-        with:
-          version: 10
-      - name: Setup Node.js environment
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: 'pnpm'
-      - name: Install dependencies
-        run: pnpm i
-      # Install
+      - name: Setup
+        uses: ./.github/actions/setup
+      # Install Browsers
       - name: Install Playwright Browsers
         run: pnpm dlx playwright install --with-deps
       # Run
