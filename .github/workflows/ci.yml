@@ -54,7 +54,7 @@ jobs:
       VERCEL_PROJECT_ID: ${{ inputs.vercel_project_id }}
       VERCEL_ORG_ID: ${{ inputs.vercel_org_id }}
     outputs:
-      preview_url: ${{ steps.deploy.outputs.url }}
+      url: ${{ steps.deploy.outputs.url }}
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
@@ -83,7 +83,7 @@ jobs:
       - name: Run Playwright tests
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          BASE_URL: ${{ needs.deploy.outputs.preview_url }}
+          BASE_URL: ${{ needs.deploy.outputs.url }}
         run: pnpm --filter=${{ inputs.e2e_app_name }} run e2e
       - uses: actions/upload-artifact@v4
         id: artifact-upload

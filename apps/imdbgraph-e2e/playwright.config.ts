@@ -19,7 +19,7 @@ export default defineConfig({
 		colorScheme: 'dark',
 
 		/* Base URL to use in actions like `await page.goto('/')`. */
-		baseURL: baseUrl,
+		baseURL: 'https://imdbgraph-rmyibhvb5-aamini.vercel.app/',
 
 		/* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
 		trace: 'on-first-retry',

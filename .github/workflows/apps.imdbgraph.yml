@@ -1,4 +1,4 @@
-name: IMDBGraph CI
+name: apps/imdbgraph
 
 on:
   pull_request:
@@ -20,7 +20,7 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
-    uses: ./.github/workflows/ci-template.yml
+    uses: ./.github/workflows/ci.yml
     with:
       app_name: 'imdbgraph'
       e2e_app_name: 'imdbgraph-e2e'
