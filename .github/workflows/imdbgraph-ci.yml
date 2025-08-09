@@ -17,6 +17,9 @@ on:
 
 jobs:
   ci:
+    permissions:
+      contents: write
+      pull-requests: write
     uses: ./.github/workflows/ci-template.yml
     with:
       app_name: 'imdbgraph'
