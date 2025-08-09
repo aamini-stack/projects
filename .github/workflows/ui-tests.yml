@@ -1,7 +1,15 @@
 name: Update Snapshots on Comment
+
 on:
-  issue_comment:
-    types: [created]
+  workflow_call:
+    inputs:
+      e2e_app_name:
+        required: true
+        type: string
+    secrets:
+      DATABASE_URL:
+        required: true
+
 jobs:
   update-snapshots:
     name: Update Snapshots
@@ -37,7 +45,7 @@ jobs:
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: |
-          pnpm run e2e -- --update-snapshots
+          pnpm --filter=${{ inputs.e2e_app_name }} run e2e -- --update-snapshots
       # Update snapshots
       - name: Commit and push updated snapshots
         uses: stefanzweifel/git-auto-commit-action@v5

@@ -12,6 +12,10 @@ on:
       app_name:
         required: true
         type: string
+      environment:
+        required: false
+        type: string
+        default: 'preview'
     outputs:
       preview_url:
         description: "The URL of the Vercel preview deployment."
@@ -39,12 +43,12 @@ jobs:
       - name: Install Vercel CLI
         run: pnpm add --global vercel@latest
       - name: Pull Vercel Environment Information
-        working-directory: ./apps/imdbgraph
-        run: vercel pull --cwd ../.. --token=${{ secrets.VERCEL_TOKEN }} --yes --environment=preview 
+        working-directory: ./apps/${{ inputs.app_name }}
+        run: vercel pull --cwd ../.. --token=${{ secrets.VERCEL_TOKEN }} --yes --environment=${{ inputs.environment }} 
       - name: Build Project Artifacts
-        working-directory: ./apps/imdbgraph
-        run: vercel build --cwd ../.. --token=${{ secrets.VERCEL_TOKEN }}
+        working-directory: ./apps/${{ inputs.app_name }}
+        run: vercel build --cwd ../.. --token=${{ secrets.VERCEL_TOKEN }} ${{ inputs.environment == 'production' && '--prod' || '' }}
       - name: Deploy Project Artifacts to Vercel
         id: deploy
-        working-directory: ./apps/imdbgraph
-        run: echo "url=$(vercel deploy --cwd ../.. --prebuilt --token=${{ secrets.VERCEL_TOKEN }})" >> $GITHUB_OUTPUT
+        working-directory: ./apps/${{ inputs.app_name }}
+        run: echo "url=$(vercel deploy --cwd ../.. --prebuilt --token=${{ secrets.VERCEL_TOKEN }} ${{ inputs.environment == 'production' && '--prod' || '' }})" >> $GITHUB_OUTPUT
