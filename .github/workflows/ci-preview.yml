@@ -28,6 +28,9 @@ jobs:
   deploy:
     name: 'Deploy to Vercel'
     runs-on: ubuntu-latest
+    env:
+      VERCEL_PROJECT_ID: "prj_k4hqwb95voxcnozM1DY5zuL0rGHv"
+      VERCEL_ORG_ID: "team_BMB11Zck0xVJiYVTGXOUqLiz"
     outputs:
       preview_url: ${{ steps.deploy.outputs.url }}
     steps:
