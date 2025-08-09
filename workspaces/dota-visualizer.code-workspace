@@ -67,7 +67,7 @@
     "configurations": [
       {
         "name": "Server",
-        "command": "./node_modules/.bin/astro dev",
+        "command": "./node_modules/.bin/astro dev --port 4001",
         "request": "launch",
         "type": "node-terminal",
       },
@@ -76,6 +76,7 @@
         "type": "chrome",
         "request": "launch",
         "cwd": "${workspaceFolder}/../dota-visualizer",
+        "url": "http://localhost:4001"
       },
     ],
   },

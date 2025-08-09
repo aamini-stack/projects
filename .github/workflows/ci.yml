@@ -1,13 +1,35 @@
-name: CI
+name: Continous Integration
 
 on:
-  push:
-    branches: ['main']
-  pull_request:
-    types: [opened, synchronize]
+  workflow_call:
+    inputs:
+      app_name:
+        required: true
+        type: string
+      e2e_app_name:
+        required: true
+        type: string
+      vercel_project_id:
+        required: true
+        type: string
+      vercel_org_id:
+        required: true
+        type: string
+      environment:
+        required: false
+        type: string
+        default: 'preview'
+    secrets:
+      VERCEL_TOKEN:
+        required: true
+      TURBO_TOKEN:
+        required: true
+      DATABASE_URL:
+        required: true
 
 permissions:
   contents: write
+  pull-requests: write
 
 env:
   TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
@@ -19,57 +41,50 @@ jobs:
     timeout-minutes: 15
     runs-on: ubuntu-latest
     steps:
-      # Checkout
-      - name: Check out code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 2
-      # Node.js + pnpm
-      - uses: pnpm/action-setup@v3
-        with:
-          version: 10
-      - name: Setup Node.js environment
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: 'pnpm'
-      - name: Install dependencies
-        run: pnpm i
-      # Run
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
       - name: Verify
         run: pnpm run verify:ci
+
+  deploy:
+    name: 'Deploy to Vercel'
+    needs: build
+    runs-on: ubuntu-latest
+    env:
+      VERCEL_PROJECT_ID: ${{ inputs.vercel_project_id }}
+      VERCEL_ORG_ID: ${{ inputs.vercel_org_id }}
+    outputs:
+      url: ${{ steps.deploy.outputs.url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - name: Install Vercel CLI
+        run: pnpm add --global vercel@latest
+      - name: Pull Vercel Environment Information
+        working-directory: ./apps/${{ inputs.app_name }}
+        run: vercel pull --cwd ../.. --token=${{ secrets.VERCEL_TOKEN }} --yes --environment=${{ inputs.environment }} 
+      - name: Build Project Artifacts
+        working-directory: ./apps/${{ inputs.app_name }}
+        run: vercel build --cwd ../.. --token=${{ secrets.VERCEL_TOKEN }} ${{ inputs.environment == 'production' && '--prod' || '' }}
+      - name: Deploy Project Artifacts to Vercel
+        id: deploy
+        working-directory: ./apps/${{ inputs.app_name }}
+        run: echo "url=$(vercel deploy --cwd ../.. --prebuilt --token=${{ secrets.VERCEL_TOKEN }} ${{ inputs.environment == 'production' && '--prod' || '' }})" >> $GITHUB_OUTPUT
+
   e2e:
     name: 'End-to-End Playwright UI Tests'
     runs-on: windows-latest
-    permissions:
-      contents: write
-      pull-requests: write
+    needs: deploy
     steps:
-      # Checkout
       - uses: actions/checkout@v4
-      # Node.js + pnpm
-      - uses: pnpm/action-setup@v3
-        with:
-          version: 10
-      - name: Setup Node.js environment
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: 'pnpm'
-      - name: Install dependencies
-        run: pnpm i
-      # Install
+      - uses: ./.github/actions/setup
       - name: Install Playwright Browsers
         run: pnpm dlx playwright install --with-deps
-      # Run
-      - name: Build
-        run: pnpm run build
       - name: Run Playwright tests
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
-        run: |
-          pnpm run e2e
-      # Upload Report
+          BASE_URL: ${{ needs.deploy.outputs.url }}
+        run: pnpm --filter=${{ inputs.e2e_app_name }} run e2e
       - uses: actions/upload-artifact@v4
         id: artifact-upload
         if: ${{ !cancelled() }}

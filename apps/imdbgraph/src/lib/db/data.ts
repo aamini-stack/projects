@@ -1,8 +1,25 @@
 import { ActionError } from 'astro:actions'
-import { asc, desc, eq, ilike } from 'drizzle-orm'
+import { asc, desc, eq } from 'drizzle-orm'
 import { db } from '@/lib/db/connection'
 import { episode, show } from '@/lib/db/tables/schema'
+import { SearchCache } from '@/lib/search'
 import type { Episode, Ratings } from '@/lib/types'
+
+async function buildSearchIndex() {
+	console.log('Building search index...')
+	try {
+		const shows = await db.select().from(show).orderBy(desc(show.numVotes))
+		console.log(`Search index built with ${shows.length} shows.`)
+		return new SearchCache(shows)
+	} catch (error) {
+		if (error instanceof Error) {
+			console.error('Failed to build search index:', error.cause)
+		}
+		throw error
+	}
+}
+
+const cache = await buildSearchIndex()
 
 export async function fetchSuggestions({ query }: { query: string }) {
 	if (!query) {
@@ -10,12 +27,8 @@ export async function fetchSuggestions({ query }: { query: string }) {
 			code: 'UNPROCESSABLE_CONTENT',
 		})
 	}
-	return await db
-		.select()
-		.from(show)
-		.where(ilike(show.title, `${query}%`))
-		.orderBy(desc(show.numVotes))
-		.limit(5)
+
+	return cache.search(query)
 }
 
 export async function getRatings({

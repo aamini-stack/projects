@@ -15,6 +15,7 @@ test('Screenshot Searchbar', async ({ page }) => {
 	await expect(searchBar).not.toBeDisabled()
 	await searchBar.click()
 	await searchBar.fill('Avatar')
+	await page.getByTestId('loading-spinner').waitFor({ state: 'hidden' })
 	const dropdown = page.getByRole('listbox')
 	await expect(dropdown).toBeInViewport()
 	await expect(page).toHaveScreenshot()
@@ -28,8 +29,10 @@ test('Title works', async ({ page }) => {
 
 test('Search bar click navigation works', async ({ page }) => {
 	const searchBar = page.getByRole('combobox')
+	await expect(searchBar).not.toBeDisabled()
 	await searchBar.click()
 	await searchBar.fill('Avatar')
+	await page.getByTestId('loading-spinner').waitFor({ state: 'hidden' })
 	const avatarDropdownOption = page.getByText(
 		'Avatar: The Last Airbender 2005 - 2008',
 	)
@@ -40,8 +43,10 @@ test('Search bar click navigation works', async ({ page }) => {
 
 test('Search bar keyboard navigation works', async ({ page }) => {
 	const searchBar = page.getByRole('combobox')
+	await expect(searchBar).not.toBeDisabled()
 	await searchBar.click()
 	await searchBar.fill('Avatar')
+	await page.getByTestId('loading-spinner').waitFor({ state: 'hidden' })
 	await expect(
 		page.getByText('Avatar: The Last Airbender 2005 - 2008'),
 	).toBeVisible()

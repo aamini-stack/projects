@@ -1,7 +1,15 @@
 name: Update Snapshots on Comment
+
 on:
-  issue_comment:
-    types: [created]
+  workflow_call:
+    inputs:
+      e2e_app_name:
+        required: true
+        type: string
+    secrets:
+      DATABASE_URL:
+        required: true
+
 jobs:
   update-snapshots:
     name: Update Snapshots
@@ -11,30 +19,23 @@ jobs:
       contents: write
       pull-requests: write
     steps:
+      # Comment on PR
       - name: Get branch of PR
         uses: xt0rted/pull-request-comment-branch@v2
         id: comment-branch
-      - name: Checkout PR branch
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ steps.comment-branch.outputs.head_ref }}
       - name: Comment action started
         uses: thollander/actions-comment-pull-request@v3
         with:
           message: |
             ### Updating snapshots. Click [here](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) to see the status.
-      # Node.js + pnpm
-      - uses: pnpm/action-setup@v3
+      
+      # Setup
+      - name: Checkout PR branch
+        uses: actions/checkout@v4
         with:
-          version: 10
-      - name: Setup Node.js environment
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: 'pnpm'
-      - name: Install dependencies
-        run: pnpm i
-      # Install
+          ref: ${{ steps.comment-branch.outputs.head_ref }}
+      - name: Setup
+        uses: ./.github/actions/setup
       - name: Install Playwright Browsers
         run: pnpm dlx playwright install --with-deps
       # Run
@@ -44,7 +45,8 @@ jobs:
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: |
-          pnpm run e2e -- --update-snapshots
+          pnpm --filter=${{ inputs.e2e_app_name }} run e2e -- --update-snapshots
+      # Update snapshots
       - name: Commit and push updated snapshots
         uses: stefanzweifel/git-auto-commit-action@v5
         with:

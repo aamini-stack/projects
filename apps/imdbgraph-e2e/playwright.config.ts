@@ -1,5 +1,8 @@
 import { defineConfig, devices } from '@playwright/test'
 
+const devUrl = 'http://localhost:4002'
+const baseUrl = process.env.CI ? process.env.BASE_URL : devUrl
+
 /** See https://playwright.dev/docs/test-configuration. */
 export default defineConfig({
 	testDir: './src',
@@ -16,19 +19,24 @@ export default defineConfig({
 		colorScheme: 'dark',
 
 		/* Base URL to use in actions like `await page.goto('/')`. */
-		baseURL: 'http://localhost:4002',
+		baseURL: baseUrl,
 
 		/* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
 		trace: 'on-first-retry',
+		screenshot: 'only-on-failure',
 	},
 
-	/* Run your local dev server before starting the tests */
-	webServer: {
-		command: 'pnpm run dev',
-		url: 'http://localhost:4002',
-		reuseExistingServer: !process.env.CI,
-		cwd: '../imdbgraph',
-	},
+	/* Run your local dev server when running tests locally */
+	...(!process.env.CI
+		? {
+				webServer: {
+					command: 'pnpm dev',
+					url: devUrl,
+					reuseExistingServer: true,
+					cwd: '../imdbgraph',
+				},
+			}
+		: {}),
 
 	expect: {
 		toHaveScreenshot: {
