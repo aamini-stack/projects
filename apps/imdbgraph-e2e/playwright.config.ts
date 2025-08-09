@@ -26,14 +26,16 @@ export default defineConfig({
 	},
 
 	/* Run your local dev server when running tests locally */
-	...(process.env.CIs
-		? undefined
-		: {
-				command: 'pnpm run dev',
-				url: devUrl,
-				reuseExistingServer: true,
-				cwd: '../imdbgraph',
-			}),
+	...(!process.env.CI
+		? {
+				webServer: {
+					command: 'pnpm dev',
+					url: devUrl,
+					reuseExistingServer: true,
+					cwd: '../imdbgraph',
+				},
+			}
+		: {}),
 
 	expect: {
 		toHaveScreenshot: {
