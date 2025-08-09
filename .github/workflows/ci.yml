@@ -1,4 +1,4 @@
-name: CI Template
+name: Continous Integration
 
 on:
   workflow_call:
