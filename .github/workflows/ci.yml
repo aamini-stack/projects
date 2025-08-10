@@ -82,7 +82,7 @@ jobs:
         run: pnpm dlx playwright install --with-deps
       - name: Run Playwright tests
         env:
-          BASE_URL: ${{ needs.deploy.outputs.url }}
+          BASE_URL: ${{ needs.deploy.outputs[format('{0}-url', matrix.app)] }}
         run: echo $BASE_URL && pnpm turbo run e2e --filter=${{ matrix.app }}-e2e
       - uses: actions/upload-artifact@v4
         id: artifact-upload
