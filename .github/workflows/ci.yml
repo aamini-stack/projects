@@ -61,8 +61,6 @@ jobs:
       - uses: ./.github/actions/setup
       - name: Install Vercel CLI
         run: pnpm add --global vercel@latest
-      - name: Link Projects
-        run: vercel link --scope=${{ vars.TURBO_TEAM }} --filter=${{ matrix.app }} --yes
       - name: Deploy
         id: deploy
         run: |
