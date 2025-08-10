@@ -38,7 +38,16 @@ jobs:
         run: vercel link --repo --yes --token=${{ secrets.VERCEL_TOKEN }} --scope=${{ vars.TURBO_TEAM }}
       - name: Deploy
         id: deploy
-        run: ../../scripts/deploy-affected.sh
+        run: |
+          AFFECTED_APPS=$(pnpm turbo ls --affected --output=json | jq -c '[.packages.items[] | select(.path | contains("apps/")) | select(.name | contains("-e2e") | not) | .name]')
+          URLS="{}"
+
+          for app in $(echo "$AFFECTED_APPS" | jq -r '.[]'); do
+            URL=$(vercel deploy ./apps/$app --yes --token=${{ secrets.VERCEL_TOKEN }} --scope=${{ vars.TURBO_TEAM }} ${{ github.ref == 'refs/heads/main' && '--production' || '' }})
+            URLS=$(echo "$URLS" | jq --arg key "$app" --arg value "$URL" '. + {($key): $value}')
+          done
+
+          echo "urls=$URLS" >> $GITHUB_OUTPUT
 
   e2e:
     name: 'E2E tests for ${{ matrix.app.key }}'
