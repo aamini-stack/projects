@@ -61,6 +61,8 @@ jobs:
       - uses: ./.github/actions/setup
       - name: Install Vercel CLI
         run: pnpm add --global vercel@latest
+      - name: Link
+        run: vercel link --repo --yes
       - name: Deploy
         id: deploy
         run: |
