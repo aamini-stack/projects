@@ -10,6 +10,7 @@ on:
 env:
   TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
   TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+  VERCEL_ENV: ${{ github.ref == 'refs/heads/main' && 'production' || 'preview' }}
   TURBO_SCM_BASE: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
 
 jobs:
@@ -27,7 +28,7 @@ jobs:
       - name: 'Get affected apps'
         id: get-affected-apps
         run: |
-          APPS=$(pnpm turbo ls --affected --output=json | jq -c '[.packages.items[] | select(.path | contains("apps/")) | .name]')
+          APPS=$(pnpm turbo ls --affected --output=json | jq -c '[.packages.items[] | select(.path | contains("apps/") and (.name | contains("-e2e") | not)) | .name]')
           echo "affected_apps=$APPS" >> $GITHUB_OUTPUT
 
   build:
@@ -60,10 +61,12 @@ jobs:
       - uses: ./.github/actions/setup
       - name: Install Vercel CLI
         run: pnpm add --global vercel@latest
+      - name: Link Projects
+        run: vercel link --scope=${{ vars.TURBO_TEAM }} --filter=${{ matrix.app }} --yes
       - name: Deploy
         id: deploy
         run: |
-          URL=$(vercel deploy /apps${{ matrix.app }} --yes --token=${{ secrets.VERCEL_TOKEN }} --scope=${{ vars.TURBO_TEAM }} ${{ github.ref == 'refs/heads/main' && '--production' || '' }})
+          URL=$(vercel deploy --token=${{ secrets.VERCEL_TOKEN }} --scope=${{ vars.TURBO_TEAM }} --filter=${{ matrix.app }} '--'${{ env.VERCEL_ENV }})
           echo "url=$URL" >> $GITHUB_OUTPUT
 
   e2e:
