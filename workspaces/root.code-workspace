@@ -1,0 +1,54 @@
+{
+  "folders": [
+    {
+      "path": "..",
+    },
+  ],
+  "settings": {
+    // General
+    "git.autofetch": true,
+    "files.autoSave": "afterDelay",
+    "files.exclude": {
+      "**/node_modules/": true,
+      "**/.next/": true,
+      "**/.swc/": true,
+      "**/.turbo": true,
+      "**/.astro": true,
+      "**/dist": true
+    },
+    
+    // Formatting
+    "editor.formatOnPaste": true,
+    "editor.formatOnSave": true,
+    "editor.rulers": [80],
+    "typescript.preferences.importModuleSpecifier": "non-relative",
+    "editor.codeActionsOnSave": {
+      "source.fixAll.biome": "explicit",
+      "source.organizeImports.biome": "explicit"
+    },
+    "[markdown]": {
+      "editor.wordWrap": "on",
+    },
+
+    // Ark Types: https://arktype.io/docs/intro/setup#settings
+    "editor.quickSuggestions": {
+      "strings": "on",
+    },
+    "typescript.preferences.autoImportSpecifierExcludeRegexes": [
+      "^(node:)?os$",
+    ],
+  },
+  "extensions": {
+    "recommendations": [
+      "astro-build.astro-vscode",
+      "editorconfig.editorconfig",
+      "github.vscode-github-actions",
+      "mikestead.dotenv",
+      "biomejs.biome",
+      "bradlc.vscode-tailwindcss",
+      "ms-playwright.playwright",
+      "xabikos.javascriptsnippets",
+      "vitest.explorer",
+    ],
+  }
+}
