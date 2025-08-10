@@ -16,7 +16,6 @@ env:
 jobs:
   prepare:
     name: 'Prepare jobs'
-    timeout-minutes: 15
     runs-on: ubuntu-latest
     outputs:
       affected_apps: ${{ steps.get-affected-apps.outputs.affected_apps }}
@@ -34,11 +33,9 @@ jobs:
   build:
     name: 'Build ${{ matrix.app }}'
     needs: prepare
-    if: ${{ needs.prepare.outputs.affected_apps != '[]' }}
     strategy:
       matrix:
         app: ${{ fromJson(needs.prepare.outputs.affected_apps) }}
-    timeout-minutes: 15
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -49,7 +46,6 @@ jobs:
   deploy:
     name: 'Deploy ${{ matrix.app }} to Vercel'
     needs: [prepare, build]
-    if: ${{ needs.prepare.outputs.affected_apps != '[]' }}
     strategy:
       matrix:
         app: ${{ fromJson(needs.prepare.outputs.affected_apps) }}
@@ -73,7 +69,6 @@ jobs:
     name: 'E2E tests for ${{ matrix.app }}'
     runs-on: windows-latest
     needs: [prepare, deploy]
-    if: ${{ needs.prepare.outputs.affected_apps != '[]' }}
     strategy:
       matrix:
         app: ${{ fromJson(needs.prepare.outputs.affected_apps) }}
@@ -85,7 +80,7 @@ jobs:
       - name: Run Playwright tests
         env:
           BASE_URL: ${{ needs.deploy.outputs.url }}
-        run: pnpm turbo run test --filter=${{ matrix.app }}-e2e
+        run: turbo run e2e --filter=${{ matrix.app }}-e2e
       - uses: actions/upload-artifact@v4
         id: artifact-upload
         if: ${{ !cancelled() }}

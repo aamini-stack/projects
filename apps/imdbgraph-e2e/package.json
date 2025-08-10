@@ -1,5 +1,5 @@
 {
-  "name": "@aamini/imdbgraph-e2e",
+  "name": "imdbgraph-e2e",
   "version": "0.0.1",
   "private": true,
   "type": "module",
@@ -9,7 +9,7 @@
     "lint": "biome check"
   },
   "dependencies": {
-    "@aamini/imdbgraph": "workspace:*"
+    "imdbgraph": "workspace:*"
   },
   "devDependencies": {
     "@aamini/config-typescript": "workspace:*",

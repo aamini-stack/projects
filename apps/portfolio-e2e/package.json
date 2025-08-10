@@ -1,5 +1,5 @@
 {
-  "name": "@aamini/portfolio-e2e",
+  "name": "portfolio-e2e",
   "version": "0.0.1",
   "private": true,
   "type": "module",
@@ -9,7 +9,7 @@
     "lint": "biome check"
   },
   "dependencies": {
-    "@aamini/portfolio": "workspace:*"
+    "portfolio": "workspace:*"
   },
   "devDependencies": {
     "@aamini/config-typescript": "workspace:*",
