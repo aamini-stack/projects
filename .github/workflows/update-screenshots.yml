@@ -1,14 +1,8 @@
 name: Update Snapshots on Comment
 
 on:
-  workflow_call:
-    inputs:
-      e2e_app_name:
-        required: true
-        type: string
-    secrets:
-      DATABASE_URL:
-        required: true
+  issue_comment:
+    types: [created]
 
 jobs:
   update-snapshots:
@@ -30,23 +24,22 @@ jobs:
             ### Updating snapshots. Click [here](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) to see the status.
       
       # Setup
-      - name: Checkout PR branch
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           ref: ${{ steps.comment-branch.outputs.head_ref }}
-      - name: Setup
-        uses: ./.github/actions/setup
+      - uses: ./.github/actions/setup
       - name: Install Playwright Browsers
         run: pnpm dlx playwright install --with-deps
-      # Run
       - name: Build
         run: pnpm run build
+      # Run
       - name: Run Playwright tests
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: |
-          pnpm --filter=${{ inputs.e2e_app_name }} run e2e -- --update-snapshots
-      # Update snapshots
+          pnpm run e2e -- --update-snapshots
+      
+      # Update screenshots
       - name: Commit and push updated snapshots
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
