@@ -80,7 +80,7 @@ jobs:
       - name: Run Playwright tests
         env:
           BASE_URL: ${{ needs.deploy.outputs.url }}
-        run: turbo run e2e --filter=${{ matrix.app }}-e2e
+        run: pnpm turbo run e2e --filter=${{ matrix.app }}-e2e
       - uses: actions/upload-artifact@v4
         id: artifact-upload
         if: ${{ !cancelled() }}
@@ -96,50 +96,3 @@ jobs:
             ### Playwright visual snapshot differences were detected for `${{ matrix.app }}`.
             View the [Playwright report](${{ steps.artifact-upload.outputs.artifact-url }}) to review the visual differences.
             **To approve the snapshot changes and update the snapshots, please comment:** /approve-snapshots
-
-  update-snapshots:
-    name: Update Snapshots
-    runs-on: windows-latest
-    env:
-      DATABASE_URL: ${{ secrets.DATABASE_URL }}
-    if: github.event.issue.pull_request && contains(github.event.comment.body, '/approve-snapshots')
-    permissions:
-      contents: write
-      pull-requests: write
-    steps:
-      # Comment on PR
-      - name: Get branch of PR
-        uses: xt0rted/pull-request-comment-branch@v2
-        id: comment-branch
-      - name: Comment action started
-        uses: thollander/actions-comment-pull-request@v3
-        with:
-          message: |
-            ### Updating snapshots. Click [here](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) to see the status.
-
-      # Setup
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ steps.comment-branch.outputs.head_ref }}
-      - uses: ./.github/actions/setup
-      - name: Install Playwright Browsers
-        run: pnpm dlx playwright install --with-deps
-      - name: Build
-        run: pnpm run build
-      # Run
-      - name: Run Playwright tests
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-        run: |
-          pnpm run e2e -- --update-snapshots
-
-      # Update screenshots
-      - name: Commit and push updated snapshots
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          commit_message: 'Update e2e snapshots'
-      - name: Comment success
-        uses: thollander/actions-comment-pull-request@v3
-        with:
-          message: |
-            ### 🎉 Successfully updated and committed Playwright snapshots! 🎉
