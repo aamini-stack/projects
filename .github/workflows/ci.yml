@@ -51,7 +51,10 @@ jobs:
         app: ${{ fromJson(needs.prepare.outputs.affected_apps) }}
     runs-on: ubuntu-latest
     outputs:
-      url: ${{ steps.deploy.outputs.url }}
+      dota-visualizer-url: ${{ steps.deploy.outputs.dota-visualizer-url }}
+      imdbgraph-url: ${{ steps.deploy.outputs.imdbgraph-url }}
+      portfolio-url: ${{ steps.deploy.outputs.portfolio-url }}
+
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
@@ -63,7 +66,7 @@ jobs:
         id: deploy
         run: |
           URL=$(vercel deploy ./apps/${{ matrix.app }} --yes --token=${{ secrets.VERCEL_TOKEN }} --scope=${{ vars.TURBO_TEAM }} ${{ github.ref == 'refs/heads/main' && '--production' || '' }})
-          echo "url=$URL" >> $GITHUB_OUTPUT
+          echo "${{ matrix.app }}_]-url=$URL" >> $GITHUB_OUTPUT
 
   e2e:
     name: 'E2E tests for ${{ matrix.app }}'
