@@ -23,10 +23,9 @@ jobs:
     uses: ./.github/workflows/ci.yml
     with:
       app_name: 'dota-visualizer'
-      vercel_project_id: 'prj_k4hqwb95voxcnozM1DY5zuL0rGHv'
+      vercel_project_id: 'prj_Qz3cs7SRlahuq0puQltQRM5kDRh6'
       vercel_org_id: 'team_BMB11Zck0xVJiYVTGXOUqLiz'
       environment: ${{ github.ref == 'refs/heads/main' && 'production' || 'preview' }}
     secrets:
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
       TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-      DATABASE_URL: ${{ secrets.DATABASE_URL }}

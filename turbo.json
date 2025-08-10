@@ -12,7 +12,7 @@
         "ENABLE_EXPERIMENTAL_COREPACK"
       ],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
-      "outputs": [".astro/**", ".vercel/**", "!.next/cache/**", "dist/**"]
+      "outputs": [".astro/**", ".vercel/output/**", "!.next/cache/**", "dist/**"]
     },
     "check-types": {
       "dependsOn": ["build"]
