@@ -80,7 +80,7 @@ jobs:
       - name: Run Playwright tests
         env:
           BASE_URL: ${{ needs.deploy.outputs.url }}
-        run: pnpm turbo run e2e --filter=${{ matrix.app }}-e2e
+        run: BASE_URL=$BASE_URL pnpm turbo run e2e --filter=${{ matrix.app }}-e2e
       - uses: actions/upload-artifact@v4
         id: artifact-upload
         if: ${{ !cancelled() }}
