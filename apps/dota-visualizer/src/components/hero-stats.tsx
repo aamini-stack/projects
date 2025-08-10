@@ -14,7 +14,7 @@ const displayNames: Record<Attribute, string> = {
 	baseHealthRegen: 'Base HP Regen',
 	baseHealth: 'Base HP',
 	baseArmor: 'Base Armor',
-	baseAttackMin: 'Base Attack Min',
+	baseAttackMin: 'Base At tack Min',
 	baseAttackMax: 'Base Attack Max',
 	baseAttackTime: 'Base Attack Time',
 	agiGain: 'Agility Gain',
