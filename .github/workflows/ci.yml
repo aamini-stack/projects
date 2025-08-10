@@ -126,7 +126,7 @@ jobs:
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: |
-          pnpm --filter=${{ inputs.app_name }}-e2e run e2e -- --update-snapshots
+          pnpm run e2e -- --update-snapshots
       
       # Update screenshots
       - name: Commit and push updated snapshots
