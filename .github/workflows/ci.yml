@@ -27,7 +27,7 @@ jobs:
       - name: 'Get affected apps'
         id: get-affected-apps
         run: |
-          APPS=$(pnpm turbo ls --affected --output-mode=json | jq -r 'map(select(.package_dir | contains("apps/"))) | map(.package_name)')
+          APPS=$(pnpm turbo ls --affected --output=json | jq -r '[.packages.items[] | select(.path | contains("apps/")) | .name]')
           echo "affected_apps=$APPS" >> $GITHUB_OUTPUT
 
   build:
