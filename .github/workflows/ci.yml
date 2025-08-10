@@ -24,6 +24,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 2
+      - uses: ./.github/actions/setup
       - name: 'Get affected apps'
         id: get-affected-apps
         run: |
