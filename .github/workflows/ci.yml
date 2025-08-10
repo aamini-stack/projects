@@ -64,7 +64,7 @@ jobs:
       - name: Deploy
         id: deploy
         run: |
-          URL=$(vercel deploy --yes --token=${{ secrets.VERCEL_TOKEN }} --scope=${{ vars.TURBO_TEAM }} ${{ github.ref == 'refs/heads/main' && '--production' || '' }})
+          URL=$(vercel deploy /apps/${{ matrix.app }} --yes --token=${{ secrets.VERCEL_TOKEN }} --scope=${{ vars.TURBO_TEAM }} ${{ github.ref == 'refs/heads/main' && '--production' || '' }})
           echo "url=$URL" >> $GITHUB_OUTPUT
 
   e2e:
