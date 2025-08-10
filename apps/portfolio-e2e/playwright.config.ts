@@ -31,7 +31,7 @@ export default defineConfig({
 					command: 'pnpm dev',
 					url: devUrl,
 					reuseExistingServer: true,
-					cwd: '../imdbgraph',
+					cwd: '../portfolio',
 				},
 			}
 		: {}),
