@@ -97,6 +97,10 @@ jobs:
   update-snapshots:
     name: Update Snapshots
     runs-on: windows-latest
+    needs: deploy
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      BASE_URL: ${{ needs.deploy.outputs.url }}
     if: github.event.issue.pull_request && contains(github.event.comment.body, '/approve-snapshots')
     permissions:
       contents: write
