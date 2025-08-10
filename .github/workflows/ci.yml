@@ -14,47 +14,21 @@ env:
   TURBO_SCM_BASE: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
 
 jobs:
-  prepare:
-    name: 'Prepare jobs'
-    runs-on: ubuntu-latest
-    outputs:
-      affected_apps: ${{ steps.get-affected-apps.outputs.affected_apps }}
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 2
-      - uses: ./.github/actions/setup
-      - name: 'Get affected apps'
-        id: get-affected-apps
-        run: |
-          APPS=$(pnpm turbo ls --affected --output=json | jq -c '[.packages.items[] | select(.path | contains("apps/")) | select(.name | contains("-e2e") | not) | .name]')
-          echo "affected_apps=$APPS" >> $GITHUB_OUTPUT
-
   build:
-    name: 'Build ${{ matrix.app }}'
-    needs: prepare
-    strategy:
-      matrix:
-        app: ${{ fromJson(needs.prepare.outputs.affected_apps) }}
+    name: 'Build'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
       - name: 'Build'
-        run: pnpm turbo run build --filter=${{ matrix.app }}
+        run: pnpm turbo run build --affected
 
   deploy:
-    name: 'Deploy ${{ matrix.app }} to Vercel'
-    needs: [prepare, build]
-    strategy:
-      matrix:
-        app: ${{ fromJson(needs.prepare.outputs.affected_apps) }}
+    name: 'Deploy to Vercel'
+    needs: [build]
     runs-on: ubuntu-latest
     outputs:
-      dota-visualizer-url: ${{ steps.deploy.outputs.dota-visualizer-url }}
-      imdbgraph-url: ${{ steps.deploy.outputs.imdbgraph-url }}
-      portfolio-url: ${{ steps.deploy.outputs.portfolio-url }}
-
+      urls: ${{ steps.deploy.outputs.urls }}
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
@@ -64,17 +38,15 @@ jobs:
         run: vercel link --repo --yes --token=${{ secrets.VERCEL_TOKEN }} --scope=${{ vars.TURBO_TEAM }}
       - name: Deploy
         id: deploy
-        run: |
-          URL=$(vercel deploy ./apps/${{ matrix.app }} --yes --token=${{ secrets.VERCEL_TOKEN }} --scope=${{ vars.TURBO_TEAM }} ${{ github.ref == 'refs/heads/main' && '--production' || '' }})
-          echo "${{ matrix.app }}_]-url=$URL" >> $GITHUB_OUTPUT
+        run: ../../scripts/deploy-affected.sh
 
   e2e:
-    name: 'E2E tests for ${{ matrix.app }}'
+    name: 'E2E tests for ${{ matrix.app.key }}'
     runs-on: windows-latest
-    needs: [prepare, deploy]
+    needs: [deploy]
     strategy:
       matrix:
-        app: ${{ fromJson(needs.prepare.outputs.affected_apps) }}
+        app: ${{ fromJson(needs.deploy.outputs.urls) }}
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
@@ -82,20 +54,20 @@ jobs:
         run: pnpm dlx playwright install --with-deps
       - name: Run Playwright tests
         env:
-          BASE_URL: ${{ needs.deploy.outputs[format('{0}-url', matrix.app)] }}
-        run: echo $BASE_URL && pnpm turbo run e2e --filter=${{ matrix.app }}-e2e
+          BASE_URL: ${{ matrix.app.value }}
+        run: echo $BASE_URL && pnpm turbo run e2e --filter=${{ matrix.app.key }}-e2e
       - uses: actions/upload-artifact@v4
         id: artifact-upload
         if: ${{ !cancelled() }}
         with:
-          name: playwright-report-${{ matrix.app }}
-          path: '**/apps/${{ matrix.app }}-e2e/playwright-report'
+          name: playwright-report-${{ matrix.app.key }}
+          path: '**/apps/${{ matrix.app.key }}-e2e/playwright-report'
           retention-days: 30
       - name: Comment on PR with report link
         uses: thollander/actions-comment-pull-request@v3
         if: ${{ failure() }}
         with:
           message: |
-            ### Playwright visual snapshot differences were detected for `${{ matrix.app }}`.
+            ### Playwright visual snapshot differences were detected for `${{ matrix.app.key }}`.
             View the [Playwright report](${{ steps.artifact-upload.outputs.artifact-url }}) to review the visual differences.
             **To approve the snapshot changes and update the snapshots, please comment:** /approve-snapshots
