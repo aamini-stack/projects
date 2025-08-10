@@ -10,7 +10,6 @@ on:
 env:
   TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
   TURBO_TEAM: ${{ vars.TURBO_TEAM }}
-  VERCEL_ENV: ${{ github.ref == 'refs/heads/main' && 'production' || 'preview' }}
   TURBO_SCM_BASE: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
 
 jobs:
@@ -64,7 +63,7 @@ jobs:
       - name: Deploy
         id: deploy
         run: |
-          URL=$(vercel deploy --token=${{ secrets.VERCEL_TOKEN }} --scope=${{ vars.TURBO_TEAM }} --filter=${{ matrix.app }} '--'${{ env.VERCEL_ENV }})
+          URL=$(vercel deploy --token=${{ secrets.VERCEL_TOKEN }} --scope=${{ vars.TURBO_TEAM }} ${{ github.ref == 'refs/heads/main' && 'production' || 'preview' }})
           echo "url=$URL" >> $GITHUB_OUTPUT
 
   e2e:
