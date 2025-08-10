@@ -62,7 +62,7 @@ jobs:
       - name: Install Vercel CLI
         run: pnpm add --global vercel@latest
       - name: Link
-        run: vercel link --repo --yes
+        run: vercel link --repo --yes --token=${{ secrets.VERCEL_TOKEN }} --scope=${{ vars.TURBO_TEAM }}
       - name: Deploy
         id: deploy
         run: |
