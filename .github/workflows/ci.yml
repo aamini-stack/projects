@@ -97,6 +97,7 @@ jobs:
   update-snapshots:
     name: Update Snapshots
     runs-on: windows-latest
+    if: github.event.issue.pull_request && contains(github.event.comment.body, '/approve-snapshots')
     permissions:
       contents: write
       pull-requests: write
