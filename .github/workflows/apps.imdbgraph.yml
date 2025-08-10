@@ -23,7 +23,6 @@ jobs:
     uses: ./.github/workflows/ci.yml
     with:
       app_name: 'imdbgraph'
-      e2e_app_name: 'imdbgraph-e2e'
       vercel_project_id: 'prj_k4hqwb95voxcnozM1DY5zuL0rGHv'
       vercel_org_id: 'team_BMB11Zck0xVJiYVTGXOUqLiz'
       environment: ${{ github.ref == 'refs/heads/main' && 'production' || 'preview' }}
