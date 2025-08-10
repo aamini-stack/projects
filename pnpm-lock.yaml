@@ -111,7 +111,7 @@ importers:
 
   apps/dota-visualizer-e2e:
     dependencies:
-      '@aamini/dota-visualizer':
+      dota-visualizer:
         specifier: workspace:*
         version: link:../dota-visualizer
     devDependencies:
@@ -263,7 +263,7 @@ importers:
 
   apps/imdbgraph-e2e:
     dependencies:
-      '@aamini/imdbgraph':
+      imdbgraph:
         specifier: workspace:*
         version: link:../imdbgraph
     devDependencies:
@@ -412,7 +412,7 @@ importers:
 
   apps/portfolio-e2e:
     dependencies:
-      '@aamini/portfolio':
+      portfolio:
         specifier: workspace:*
         version: link:../portfolio
     devDependencies:
