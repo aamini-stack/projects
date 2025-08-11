@@ -30,7 +30,7 @@ jobs:
           echo "affected_apps=$APPS" >> $GITHUB_OUTPUT
 
   build:
-    name: 'Build ${{ matrix.app }}'
+    name: 'Build: ${{ matrix.app }}'
     needs: prepare
     strategy:
       matrix:
@@ -43,7 +43,7 @@ jobs:
         run: pnpm turbo run build --filter=${{ matrix.app }}
 
   deploy:
-    name: 'Deploy ${{ matrix.app }} to Vercel'
+    name: 'Deploy: ${{ matrix.app }}'
     needs: [prepare, build]
     strategy:
       matrix:
@@ -62,7 +62,7 @@ jobs:
         run: vercel deploy ./apps/${{ matrix.app }} --yes --token=${{ secrets.VERCEL_TOKEN }} --scope=${{ vars.TURBO_TEAM }} ${{ github.ref == 'refs/heads/main' && '--production' || '' }}
 
   e2e:
-    name: 'E2E tests for ${{ matrix.app }}'
+    name: 'E2E tests: ${{ matrix.app }}'
     runs-on: windows-latest
     needs: [prepare, deploy]
     permissions:
@@ -81,7 +81,7 @@ jobs:
         run: pnpm turbo run e2e --filter=${{ matrix.app }}-e2e
       - uses: actions/upload-artifact@v4
         id: artifact-upload
-        if: ${{ !cancelled() }}
+        if: ${{ failure() }}
         with:
           name: playwright-report-${{ matrix.app }}
           path: '**/apps/${{ matrix.app }}-e2e/playwright-report'
