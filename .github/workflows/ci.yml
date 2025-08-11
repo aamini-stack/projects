@@ -23,12 +23,30 @@ jobs:
       - name: 'Build'
         run: pnpm turbo run build --affected
 
-  deploy:
-    name: 'Deploy to Vercel'
+  get_affected_apps:
+    name: 'Get Affected Apps'
     needs: [build]
     runs-on: ubuntu-latest
     outputs:
-      urls: ${{ steps.deploy.outputs.urls }}
+      affected_apps: ${{ steps.get_apps.outputs.affected_apps }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - name: Get Affected Apps
+        id: get_apps
+        run: |
+          AFFECTED_APPS=$(pnpm turbo ls --affected --output=json | jq -c '[.packages.items[] | select(.path | contains("apps/")) | select(.name | contains("-e2e") | not) | .name]')
+          echo "affected_apps=$AFFECTED_APPS" >> $GITHUB_OUTPUT
+
+  deploy_app:
+    name: 'Deploy ${{ matrix.app }} to Vercel'
+    needs: [get_affected_apps]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        app: ${{ fromJson(needs.get_affected_apps.outputs.affected_apps) }}
+    outputs:
+      url: ${{ steps.deploy.outputs.url }}
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
@@ -39,23 +57,34 @@ jobs:
       - name: Deploy
         id: deploy
         run: |
-          AFFECTED_APPS=$(pnpm turbo ls --affected --output=json | jq -c '[.packages.items[] | select(.path | contains("apps/")) | select(.name | contains("-e2e") | not) | .name]')
+          URL=$(vercel deploy ./apps/${{ matrix.app }} --yes --token=${{ secrets.VERCEL_TOKEN }} --scope=${{ vars.TURBO_TEAM }} ${{ github.ref == 'refs/heads/main' && '--production' || '' }})
+          echo "url=$URL" >> $GITHUB_OUTPUT
+
+  collect_deploy_urls:
+    name: 'Collect Deployed URLs'
+    needs: [deploy_app]
+    runs-on: ubuntu-latest
+    outputs:
+      urls: ${{ steps.collect_urls.outputs.urls }}
+    steps:
+      - name: Collect URLs
+        id: collect_urls
+        run: |
           URLS="{}"
-
-          for app in $(echo "$AFFECTED_APPS" | jq -r '.[]'); do
-            URL=$(vercel deploy ./apps/$app --yes --token=${{ secrets.VERCEL_TOKEN }} --scope=${{ vars.TURBO_TEAM }} ${{ github.ref == 'refs/heads/main' && '--production' || '' }})
-            URLS=$(echo "$URLS" | jq --arg key "$app" --arg value "$URL" '. + {($key): $value}')
+          for job in $(echo '${{ toJSON(needs.deploy_app.outputs) }}' | jq -c '.'); do
+            APP_NAME=$(echo "$job" | jq -r 'keys_without_null_values[0]')
+            APP_URL=$(echo "$job" | jq -r '.[$APP_NAME].url')
+            URLS=$(echo "$URLS" | jq --arg key "$APP_NAME" --arg value "$APP_URL" '. + {($key): $value}')
           done
-
           echo "urls=$URLS" >> $GITHUB_OUTPUT
 
   e2e:
     name: 'E2E tests for ${{ matrix.app.key }}'
     runs-on: windows-latest
-    needs: [deploy]
+    needs: [collect_deploy_urls]
     strategy:
       matrix:
-        app: ${{ fromJson(needs.deploy.outputs.urls) }}
+        app: ${{ fromJson(needs.collect_deploy_urls.outputs.urls) }}
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
