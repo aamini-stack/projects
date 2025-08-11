@@ -75,7 +75,7 @@ jobs:
         run: pnpm dlx playwright install --with-deps
       - name: Run Playwright tests
         env:
-          BASE_URL: ${{ matrix.app }}-git-${{ github.head_ref }}-${{ env.TURBO_TEAM }}.vercel.app
+          BASE_URL: https://${{ matrix.app }}-git-${{ github.head_ref }}-${{ env.TURBO_TEAM }}.vercel.app
         run: pnpm turbo run e2e --filter=${{ matrix.app }}-e2e
       - uses: actions/upload-artifact@v4
         id: artifact-upload

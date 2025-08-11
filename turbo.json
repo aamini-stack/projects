@@ -29,8 +29,6 @@
     },
     "e2e": {
       "passThroughEnv": ["PLAYWRIGHT_*"],
-      "env": ["DATABASE_URL"],
-      "dependsOn": ["^build"]
     },
     "dev": {
       "cache": false,
