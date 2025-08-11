@@ -65,6 +65,8 @@ jobs:
     name: 'E2E tests for ${{ matrix.app }}'
     runs-on: windows-latest
     needs: [prepare, deploy]
+    permissions:
+      pull-requests: write
     strategy:
       matrix:
         app: ${{ fromJson(needs.prepare.outputs.affected_apps) }}
