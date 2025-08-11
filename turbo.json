@@ -28,15 +28,9 @@
       "dependsOn": ["^test"]
     },
     "e2e": {
-      "passThroughEnv": ["PLAYWRIGHT_*"],
+      "passThroughEnv": ["PLAYWRIGHT_*"]
     },
     "dev": {
-      "cache": false,
-      "persistent": true
-    },
-    "start": {
-      "dependsOn": ["build"],
-      "env": ["DATABASE_URL"],
       "cache": false,
       "persistent": true
     },
