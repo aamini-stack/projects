@@ -12,10 +12,7 @@
         "ENABLE_EXPERIMENTAL_COREPACK"
       ],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
-      "outputs": [".astro/**", ".vercel/**", "!.next/cache/**", "dist/**"]
-    },
-    "check-types": {
-      "dependsOn": ["build"]
+      "outputs": [".astro/**", ".vercel/output/**", "!.next/cache/**", "dist/**"]
     },
     "lint": {
       "dependsOn": ["check-types"]
@@ -23,26 +20,11 @@
     "lint:ci": {
       "dependsOn": ["check-types"]
     },
-    "test": {
-      "env": ["CI"],
-      "dependsOn": ["^test"]
-    },
     "e2e": {
-      "passThroughEnv": ["PLAYWRIGHT_*"],
-      "env": ["DATABASE_URL"],
-      "dependsOn": ["^build"]
+      "env": ["BASE_URL", "CI"],
+      "passThroughEnv": ["PLAYWRIGHT_*"]
     },
     "dev": {
-      "cache": false,
-      "persistent": true
-    },
-    "start": {
-      "dependsOn": ["build"],
-      "env": ["DATABASE_URL"],
-      "cache": false,
-      "persistent": true
-    },
-    "test:watch": {
       "cache": false,
       "persistent": true
     }

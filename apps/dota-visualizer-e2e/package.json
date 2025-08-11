@@ -1,5 +1,5 @@
 {
-  "name": "@aamini/dota-visualizer-e2e",
+  "name": "dota-visualizer-e2e",
   "version": "0.0.1",
   "private": true,
   "type": "module",
@@ -9,7 +9,7 @@
     "lint": "biome check"
   },
   "dependencies": {
-    "@aamini/dota-visualizer": "workspace:*"
+    "dota-visualizer": "workspace:*"
   },
   "devDependencies": {
     "@aamini/config-typescript": "workspace:*",
