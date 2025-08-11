@@ -24,19 +24,11 @@
       "dependsOn": ["check-types"]
     },
     "test": {
-      "env": ["CI"],
       "dependsOn": ["^test"]
     },
     "e2e": {
+      "env": ["BASE_URL", "CI"],
       "passThroughEnv": ["PLAYWRIGHT_*"]
-    },
-    "dev": {
-      "cache": false,
-      "persistent": true
-    },
-    "test:watch": {
-      "cache": false,
-      "persistent": true
     }
   }
 }
