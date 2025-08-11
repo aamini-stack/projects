@@ -25,7 +25,7 @@ export default defineConfig({
 	},
 
 	/* Run your local dev server when running tests locally */
-	...(baseUrl
+	...(!baseUrl
 		? {
 				webServer: {
 					command: 'pnpm dev',

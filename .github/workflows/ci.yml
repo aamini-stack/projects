@@ -14,7 +14,7 @@ env:
 
 jobs:
   prepare:
-    name: 'Prepare jobs'
+    name: 'Detect Affected Apps'
     runs-on: ubuntu-latest
     outputs:
       affected_apps: ${{ steps.get-affected-apps.outputs.affected_apps }}
@@ -49,8 +49,6 @@ jobs:
       matrix:
         app: ${{ fromJson(needs.prepare.outputs.affected_apps) }}
     runs-on: ubuntu-latest
-    outputs:
-      url: ${{ steps.deploy.outputs.url }}
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
