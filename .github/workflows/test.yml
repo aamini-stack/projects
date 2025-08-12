@@ -3,11 +3,12 @@ on:
     types:
       - 'vercel.deployment.success'
 
+run-name: 'E2E Tests: ${{ github.event.client_payload.project.name }}'
 env:
   BASE_URL: ${{ github.event.client_payload.url }}     
 jobs:
   e2e:
-    name: 'E2E Tests: ${{ github.event.client_payload.project.name }}'
+    name: 'Playwright Tests'
     runs-on: windows-latest
     permissions:
       pull-requests: write
