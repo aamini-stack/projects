@@ -1,5 +1,5 @@
 import { ActionError } from 'astro:actions'
-import { asc, desc, eq, sql } from 'drizzle-orm'
+import { asc, desc, eq, ilike } from 'drizzle-orm'
 import { db } from '@/lib/db/connection'
 import { episode, show } from '@/lib/db/tables/schema'
 import type { Episode, Ratings } from '@/lib/types'
@@ -14,7 +14,7 @@ export async function fetchSuggestions({ query }: { query: string }) {
 	return await db
 		.select()
 		.from(show)
-		.where(sql`${query}::text <% title::text`)
+		.where(ilike(show.title, `%${query}%`))
 		.orderBy(desc(show.numVotes))
 		.limit(5)
 }
