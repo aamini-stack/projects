@@ -13,11 +13,82 @@ env:
   TURBO_SCM_BASE: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
 
 jobs:
-  build:
-    name: 'Build and Unit Test'
+  changeset:
+    name: 'Detect Affected Apps'
     runs-on: ubuntu-latest
+    outputs:
+      affected_apps: ${{ steps.get-affected-apps.outputs.affected_apps }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - uses: ./.github/actions/setup
+      - name: 'Get affected apps'
+        id: get-affected-apps
+        run: |
+          APPS=$(pnpm turbo ls --affected --output=json | jq -c '[.packages.items[] | select(.path | contains("apps/")) | .name]')
+          echo "affected_apps=$APPS" >> $GITHUB_OUTPUT
+
+  build:
+    name: 'Build: ${{ matrix.app }}'
+    needs: [changeset]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        app: ${{ fromJson(needs.changeset.outputs.affected_apps) }}
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
       - name: 'Build'
-        run: pnpm turbo run build --affected
+        run: pnpm turbo run build --filter=${{ matrix.app }}
+
+  deploy:
+    name: 'Deploy: ${{ matrix.app }}'
+    needs: [changeset]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        app: ${{ fromJson(needs.changeset.outputs.affected_apps) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - name: Install Vercel CLI
+        run: pnpm add --global vercel@latest
+      - name: Link
+        run: vercel link --repo --yes --token=${{ secrets.VERCEL_TOKEN }} --scope=${{ vars.TURBO_TEAM }}
+      - name: Deploy
+        run: vercel deploy ./apps/${{ matrix.app }} --yes --token=${{ secrets.VERCEL_TOKEN }} --scope=${{ vars.TURBO_TEAM }} ${{ github.ref == 'refs/heads/main' && '--production' || '' }}
+
+  e2e:
+    name: 'E2E tests: ${{ matrix.app }}'
+    needs: [changeset, deploy]
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        app: ${{ fromJson(needs.changeset.outputs.affected_apps) }}
+    permissions:
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - name: Install Playwright Browsers
+        run: pnpm dlx playwright install --with-deps
+      - name: Run Playwright tests
+        env:
+          BASE_URL: https://${{ matrix.app }}-git-${{ github.head_ref }}-${{ env.TURBO_TEAM }}.vercel.app
+        run: pnpm turbo run e2e --filter=${{ matrix.app }}
+      - uses: actions/upload-artifact@v4
+        id: artifact-upload
+        if: ${{ failure() }}
+        with:
+          name: playwright-report-${{ matrix.app }}
+          path: '**/apps/${{ matrix.app }}/playwright-report'
+          retention-days: 30
+      - name: Comment on PR with report link
+        uses: thollander/actions-comment-pull-request@v3
+        if: ${{ failure() }}
+        with:
+          message: |
+            ### Playwright visual snapshot differences were detected for `${{ matrix.app }}`.
+            View the [Playwright report](${{ steps.artifact-upload.outputs.artifact-url }}) to review the visual differences.
+            **To approve the snapshot changes and update the snapshots, please comment:** /approve-snapshots
