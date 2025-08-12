@@ -19,12 +19,15 @@
     "git.autofetch": true,
     "files.autoSave": "afterDelay",
     "files.exclude": {
-      "**/node_modules/": true,
-      "**/.next/": true,
-      "**/.swc/": true,
-      "**/.turbo": true,
-      "**/.astro": true,
-      "**/dist": true
+      "node_modules/": true,
+      ".next/": true,
+      ".swc/": true,
+      ".turbo": true,
+      ".astro": true,
+      "dist": true,
+      ".vercel": true,
+      "playwright-report": true,
+      "test-results": true
     },
     
     // Formatting
