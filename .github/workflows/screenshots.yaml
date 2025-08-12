@@ -1,6 +1,6 @@
 on:
   issue_comment:
-    types: [created, edited]
+    types: [created]
 
 jobs:
   update-snapshots:
@@ -38,6 +38,7 @@ jobs:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: |
           pnpm --affected run e2e -- --update-snapshots
+
       # Update snapshots
       - name: Commit and push updated snapshots
         uses: stefanzweifel/git-auto-commit-action@v5
