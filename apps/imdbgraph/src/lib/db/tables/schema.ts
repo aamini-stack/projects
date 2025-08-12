@@ -1,3 +1,4 @@
+import { sql } from 'drizzle-orm'
 import {
 	char,
 	doublePrecision,
@@ -22,6 +23,7 @@ export const episode = pgTable(
 	},
 	(table) => [
 		index().using('btree', table.showId.asc().nullsLast().op('text_ops')),
+		index('trigram_index').using('gin', sql`${table.title} gin_trgm_ops`),
 		foreignKey({
 			columns: [table.showId],
 			foreignColumns: [show.imdbId],
