@@ -3,6 +3,7 @@ on:
     types:
       - 'vercel.deployment.success'
 
+name: E2E Tests
 run-name: 'E2E Tests: ${{ github.event.client_payload.project.name }}'
 env:
   BASE_URL: ${{ github.event.client_payload.url }}     
