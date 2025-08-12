@@ -63,6 +63,9 @@ importers:
       '@aamini/config-typescript':
         specifier: workspace:*
         version: link:../../libs/typescript
+      '@playwright/test':
+        specifier: ^1.54.1
+        version: 1.54.2
       '@tailwindcss/vite':
         specifier: ^4.1.11
         version: 4.1.11(vite@7.0.6(@types/node@24.2.0)(jiti@2.5.1)(lightningcss@1.30.1))
@@ -108,25 +111,6 @@ importers:
       vitest:
         specifier: ^3.2.4
         version: 3.2.4(@types/debug@4.1.12)(@types/node@24.2.0)(jiti@2.5.1)(jsdom@26.1.0)(lightningcss@1.30.1)(msw@2.10.4(@types/node@24.2.0)(typescript@5.8.3))
-
-  apps/dota-visualizer-e2e:
-    dependencies:
-      dota-visualizer:
-        specifier: workspace:*
-        version: link:../dota-visualizer
-    devDependencies:
-      '@aamini/config-typescript':
-        specifier: workspace:*
-        version: link:../../libs/typescript
-      '@playwright/test':
-        specifier: ^1.54.1
-        version: 1.54.2
-      '@types/node':
-        specifier: ^24.1.0
-        version: 24.2.0
-      typescript:
-        specifier: 5.8.3
-        version: 5.8.3
 
   apps/imdbgraph:
     dependencies:
@@ -203,6 +187,9 @@ importers:
       '@aamini/config-typescript':
         specifier: workspace:*
         version: link:../../libs/typescript
+      '@playwright/test':
+        specifier: ^1.54.1
+        version: 1.54.2
       '@tailwindcss/vite':
         specifier: ^4.1.11
         version: 4.1.11(vite@7.0.6(@types/node@24.2.0)(jiti@2.5.1)(lightningcss@1.30.1))
@@ -260,25 +247,6 @@ importers:
       vitest:
         specifier: ^3.2.4
         version: 3.2.4(@types/debug@4.1.12)(@types/node@24.2.0)(jiti@2.5.1)(jsdom@26.1.0)(lightningcss@1.30.1)(msw@2.10.4(@types/node@24.2.0)(typescript@5.8.3))
-
-  apps/imdbgraph-e2e:
-    dependencies:
-      imdbgraph:
-        specifier: workspace:*
-        version: link:../imdbgraph
-    devDependencies:
-      '@aamini/config-typescript':
-        specifier: workspace:*
-        version: link:../../libs/typescript
-      '@playwright/test':
-        specifier: ^1.54.1
-        version: 1.54.2
-      '@types/node':
-        specifier: ^24.0.15
-        version: 24.2.0
-      typescript:
-        specifier: 5.8.3
-        version: 5.8.3
 
   apps/portfolio:
     dependencies:
@@ -367,6 +335,9 @@ importers:
       '@aamini/config-typescript':
         specifier: workspace:*
         version: link:../../libs/typescript
+      '@playwright/test':
+        specifier: ^1.54.1
+        version: 1.54.2
       '@tailwindcss/postcss':
         specifier: ^4.1.11
         version: 4.1.11
@@ -409,25 +380,6 @@ importers:
       vitest:
         specifier: ^3.2.4
         version: 3.2.4(@types/debug@4.1.12)(@types/node@24.2.0)(jiti@2.5.1)(jsdom@26.1.0)(lightningcss@1.30.1)(msw@2.10.4(@types/node@24.2.0)(typescript@5.8.3))
-
-  apps/portfolio-e2e:
-    dependencies:
-      portfolio:
-        specifier: workspace:*
-        version: link:../portfolio
-    devDependencies:
-      '@aamini/config-typescript':
-        specifier: workspace:*
-        version: link:../../libs/typescript
-      '@playwright/test':
-        specifier: ^1.54.1
-        version: 1.54.2
-      '@types/node':
-        specifier: ^24.0.15
-        version: 24.2.0
-      typescript:
-        specifier: 5.8.3
-        version: 5.8.3
 
   libs/typescript:
     dependencies:

@@ -12,21 +12,30 @@
         "ENABLE_EXPERIMENTAL_COREPACK"
       ],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
-      "outputs": [".astro/**", ".vercel/output/**", "!.next/cache/**", "dist/**"]
-    },
-    "lint": {
-      "dependsOn": ["check-types"]
-    },
-    "lint:ci": {
-      "dependsOn": ["check-types"]
-    },
-    "e2e": {
-      "env": ["BASE_URL", "CI"],
-      "passThroughEnv": ["PLAYWRIGHT_*"]
+      "outputs": [".astro/**", ".vercel/output/**", "dist/**"]
     },
     "dev": {
       "cache": false,
       "persistent": true
+    },
+    
+    "check-types": {
+      "dependsOn": ["^check-types"]
+    },
+    "lint": {
+      "dependsOn": ["check-types"]
+    },
+    "test": {
+      "dependsOn": ["build", "^test"]
+    },
+    "test:watch": {
+      "cache": false,
+      "persistent": true
+    },
+    "e2e": {
+      "dependsOn": ["build"],
+      "env": ["BASE_URL", "CI"],
+      "passThroughEnv": ["PLAYWRIGHT_*"]
     }
   }
 }

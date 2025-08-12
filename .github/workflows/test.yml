@@ -1,0 +1,36 @@
+on:
+  repository_dispatch:
+    types:
+      - 'vercel.deployment.success'
+
+jobs:
+  e2e:
+    name: 'E2E Tests'
+    runs-on: windows-latest
+    permissions:
+      pull-requests: write
+    env:
+      BASE_URL: ${{ github.event.client_payload.url }}     
+      APP_NAME: ${{ github.event.client_payload.project.name }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - name: Install Playwright Browsers
+        run: pnpm dlx playwright install --with-deps
+      - name: Run Playwright tests   
+        run: pnpm turbo run e2e --filter=${{ env.APP_NAME }}
+      - uses: actions/upload-artifact@v4
+        id: artifact-upload
+        if: ${{ failure() }}
+        with:
+          name: playwright-report-${{ env.APP_NAME }}
+          path: 'apps/${{ env.APP_NAME }}playwright-report'
+          retention-days: 30
+      - name: Comment on PR with report link
+        uses: thollander/actions-comment-pull-request@v3
+        if: ${{ failure() }}
+        with:
+          message: |
+            ### Playwright visual snapshot differences were detected for `${{ env.APP_NAME }}`.
+            View the [Playwright report](${{ steps.artifact-upload.outputs.artifact-url }}) to review the visual differences.
+            **To approve the snapshot changes and update the snapshots, please comment:** /approve-snapshots
