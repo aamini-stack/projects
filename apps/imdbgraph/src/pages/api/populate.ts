@@ -4,7 +4,7 @@ import { update } from '@/lib/db/scraper'
 
 export const prerender = false
 
-export const POST: APIRoute = ({ request }) => {
+export const GET: APIRoute = ({ request }) => {
 	// Check Auth
 	const authHeader = request.headers.get('authorization') ?? ''
 	if (!CRON_SECRET || authHeader !== `Bearer ${CRON_SECRET}`) {

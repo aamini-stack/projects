@@ -23,7 +23,7 @@ export const searchMocks = {
 			endYear: null,
 			rating: 7.3,
 			numVotes: 117,
-		}
+		},
 	],
 
 	the: [

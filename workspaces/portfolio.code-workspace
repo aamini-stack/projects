@@ -4,9 +4,6 @@
       "path": "../apps/portfolio",
     },
     {
-      "path": "../apps/portfolio-e2e",
-    },
-    {
       "path": "../libs",
     },
     {
@@ -24,7 +21,10 @@
       "**/.swc/": true,
       "**/.turbo": true,
       "**/.astro": true,
-      "**/dist": true
+      "**/dist": true,
+      "**/.vercel": true,
+      "**/playwright-report": true,
+      "**/test-results": true
     },
     
     // Formatting

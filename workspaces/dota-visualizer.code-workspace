@@ -7,9 +7,6 @@
       "path": "../apps/dota-visualizer-e2e",
     },
     {
-      "path": "../libs",
-    },
-    {
       "name": "@aamini/root",
       "path": "..",
     },
@@ -24,7 +21,10 @@
       "**/.swc/": true,
       "**/.turbo": true,
       "**/.astro": true,
-      "**/dist": true
+      "**/dist": true,
+      "**/.vercel": true,
+      "**/playwright-report": true,
+      "**/test-results": true
     },
     
     // Formatting
