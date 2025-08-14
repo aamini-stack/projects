@@ -8,6 +8,7 @@
       "outputs": [".astro/**", ".vercel/output/**", "dist/**"]
     },
     "dev": {
+      "dependsOn": ["build"],
       "cache": false,
       "persistent": true
     },

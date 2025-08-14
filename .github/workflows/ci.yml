@@ -42,7 +42,7 @@ jobs:
       - name: Link
         run: vercel link --repo --yes --token=${{ secrets.VERCEL_TOKEN }} --scope=${{ vars.TURBO_TEAM }}
       - name: Deploy
-        run: vercel deploy --yes --token=${{ secrets.VERCEL_TOKEN }} --scope=${{ vars.TURBO_TEAM }} ${{ github.ref == 'refs/heads/main' && '--production' || '' }}
+        run: vercel deploy --yes --token=${{ secrets.VERCEL_TOKEN }} --scope=${{ vars.TURBO_TEAM }} ${{ github.ref == 'refs/heads/main' && '--prod' || '' }}
 
   e2e:
     runs-on: windows-latest
