@@ -15,7 +15,7 @@ export const GET: APIRoute = async ({ request }) => {
 	const shows = await fetchSuggestions(q)
 	request.headers.set(
 		'Cache-Control',
-		'max-age=60, s-maxage=86400, stale-while-revalidate=3600',
+		'public, max-age=60, s-maxage=86400, stale-while-revalidate=3600',
 	)
 	return new Response(JSON.stringify(shows))
 }
