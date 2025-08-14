@@ -1,6 +1,5 @@
 'use client'
 
-import { actions } from 'astro:actions'
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { useCombobox } from 'downshift'
 import { Search as SearchIcon, Star } from 'lucide-react'
@@ -23,17 +22,20 @@ export function SearchBar() {
 	} = useQuery<Show[] | null>(
 		{
 			queryKey: ['suggestions', deferredValue],
-			queryFn: async () => {
+			queryFn: async ({ signal }) => {
 				if (!deferredValue) {
 					return null
 				}
-				const { data, error } = await actions.fetchSuggestions({
-					query: deferredValue,
-				})
-				if (error) {
-					throw error
-				}
-				return data
+				const response = await fetch(
+					'/api/suggestions?' +
+						new URLSearchParams({
+							q: deferredValue,
+						}).toString(),
+					{
+						signal,
+					},
+				)
+				return response.json()
 			},
 			placeholderData: keepPreviousData,
 			enabled: !!inputValue,

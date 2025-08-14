@@ -4,9 +4,9 @@ import { db } from '@/lib/db/connection'
 import { episode, show } from '@/lib/db/tables/schema'
 import type { Episode, Ratings } from '@/lib/types'
 
-export async function fetchSuggestions({ query }: { query: string }) {
-	if (!query) {
-		throw new ActionError({
+export async function fetchSuggestions(q: string) {
+	if (!q) {
+		throw new Error({
 			code: 'UNPROCESSABLE_CONTENT',
 		})
 	}
@@ -14,7 +14,7 @@ export async function fetchSuggestions({ query }: { query: string }) {
 	return await db
 		.select()
 		.from(show)
-		.where(ilike(show.title, `%${query}%`))
+		.where(ilike(show.title, `%${q}%`))
 		.orderBy(desc(show.numVotes))
 		.limit(5)
 }
