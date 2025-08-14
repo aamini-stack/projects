@@ -14,10 +14,13 @@
     },
     
     "check-types": {
-      "dependsOn": ["^check-types"]
+      "dependsOn": ["build", "^check-types"]
     },
     "lint": {
-      "dependsOn": ["check-types"]
+      "dependsOn": ["build", "check-types"]
+    },
+    "lint:ci": {
+      "dependsOn": ["build", "check-types"]
     },
     "test": {
       "dependsOn": ["build", "^test"]

@@ -8,9 +8,11 @@
     "check-types": "turbo run check-types",
     "lint": "biome check",
     "lint:fix": "biome check --fix",
+    "lint:ci": "biome ci",
     "test": "turbo run test",
     "e2e": "turbo run e2e",
     "verify": "turbo run build lint test check-types e2e",
+    "verify:ci": "turbo run build lint:ci test check-types",
     "generate-app": "turbo gen app"
   },
   "devDependencies": {

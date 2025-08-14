@@ -20,8 +20,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
       # Action
-      - name: 'Build'
-        run: pnpm turbo run build
+      - name: 'Verify'
+        run: pnpm run verify:ci
 
   deploy:
     runs-on: ubuntu-latest
