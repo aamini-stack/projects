@@ -21,7 +21,7 @@ jobs:
       - uses: ./.github/actions/setup
       # Action
       - name: 'Verify'
-        run: pnpm run verify
+        run: pnpm run verify:ci
 
   deploy:
     runs-on: ubuntu-latest
