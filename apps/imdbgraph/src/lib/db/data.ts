@@ -6,7 +6,7 @@ import type { Episode, Ratings } from '@/lib/types'
 
 export async function fetchSuggestions(q: string) {
 	if (!q) {
-		throw new Error("Empty search parameter (q)")
+		throw new Error('Empty search parameter (q)')
 	}
 
 	return await db
