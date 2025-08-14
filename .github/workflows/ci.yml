@@ -21,7 +21,7 @@ jobs:
       - uses: ./.github/actions/setup
       # Action
       - name: 'Build'
-        run: pnpm turbo run build
+        run: pnpm turbo run verify
 
   deploy:
     runs-on: ubuntu-latest
