@@ -1,23 +1,72 @@
-name: Continous Integration
+name: CI
 
 on:
   push:
     branches:
       - main
   pull_request:
-    types: [opened, synchronize]
+    branches:
+      - main
 
 env:
   TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
   TURBO_TEAM: ${{ vars.TURBO_TEAM }}
-  TURBO_SCM_BASE: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
 
 jobs:
   build:
-    name: 'Build and Unit Test'
     runs-on: ubuntu-latest
     steps:
+      # Setup
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
+      # Action
       - name: 'Build'
-        run: pnpm turbo run build --affected
+        run: pnpm turbo run build
+
+  deploy:
+    runs-on: ubuntu-latest
+    outputs:
+      apps: ${{ steps.get-apps.outputs.apps }}
+    steps:
+      # Setup
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      # Action
+      - name: Get Apps
+        id: get-apps
+        run: |
+          APPS=$(pnpm turbo ls --output=json --filter="./apps/*" | jq -c '[.packages.items[] | .name]')
+          echo "apps=$APPS" >> $GITHUB_OUTPUT
+      - name: Install Vercel CLI
+        run: pnpm add --global vercel@latest
+      - name: Link
+        run: vercel link --repo --yes --token=${{ secrets.VERCEL_TOKEN }} --scope=${{ vars.TURBO_TEAM }}
+      - name: Deploy
+        run: vercel deploy --yes --token=${{ secrets.VERCEL_TOKEN }} --scope=${{ vars.TURBO_TEAM }} ${{ github.ref == 'refs/heads/main' && '--production' || '' }}
+
+  e2e:
+    runs-on: windows-latest
+    needs: [deploy]
+    strategy:
+      matrix:
+        app: ${{ fromJson(needs.deploy.outputs.apps) }}
+    permissions:
+      pull-requests: write
+    steps:
+      # Setup
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      # Action
+      - name: Install Playwright Browsers
+        run: pnpm dlx playwright install --with-deps
+      - name: Run Playwright tests
+        env:
+          BASE_URL: https://${{ matrix.app }}-git-${{ github.head_ref || github.ref_name }}-${{ env.TURBO_TEAM }}.vercel.app
+        run: pnpm turbo run e2e --filter=${{ matrix.app }}
+      - uses: actions/upload-artifact@v4
+        id: artifact-upload
+        if: ${{ failure() }}
+        with:
+          name: playwright-report-${{ matrix.app }}
+          path: '**/apps/${{ matrix.app }}/playwright-report'
+          retention-days: 30

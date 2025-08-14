@@ -4,13 +4,6 @@
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "env": [
-        "DATABASE_URL",
-        "CRON_SECRET",
-        "MAILGUN_API_KEY",
-        "MAILGUN_DOMAIN",
-        "ENABLE_EXPERIMENTAL_COREPACK"
-      ],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
       "outputs": [".astro/**", ".vercel/output/**", "dist/**"]
     },
