@@ -35,8 +35,7 @@ export function SearchBar() {
 						signal,
 					},
 				)
-				const result = await response.json()
-				return result.data
+				return await response.json()
 			},
 			placeholderData: keepPreviousData,
 			enabled: !!inputValue,
