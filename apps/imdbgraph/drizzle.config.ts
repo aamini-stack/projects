@@ -1,6 +1,9 @@
 import { defineConfig } from 'drizzle-kit'
+import { loadEnv } from 'vite'
 
-if (!process.env.DATABASE_URL) {
+const url = loadEnv('dev', process.cwd(), '').DATABASE_URL
+
+if (!url) {
 	throw Error('Env $DATABASE_URL is empty.')
 }
 
@@ -9,6 +12,6 @@ export default defineConfig({
 	out: './db/migrations',
 	dialect: 'postgresql',
 	dbCredentials: {
-		url: process.env.DATABASE_URL,
+		url: url,
 	},
 })
