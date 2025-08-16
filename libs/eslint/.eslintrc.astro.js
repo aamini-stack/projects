@@ -1,8 +1,9 @@
-import baseConfig from './.eslintrc.base.js';
-import pluginReact from 'eslint-plugin-react';
-import pluginReactHooks from 'eslint-plugin-react-hooks';
-import { defineConfig, globalIgnores } from 'eslint/config';
-import globals from 'globals';
+import { defineConfig, globalIgnores } from 'eslint/config'
+import eslintPluginAstro from 'eslint-plugin-astro'
+import eslintPluginJsxA11y from 'eslint-plugin-jsx-a11y'
+import pluginReact from 'eslint-plugin-react'
+import pluginReactHooks from 'eslint-plugin-react-hooks'
+import baseConfig from './.eslintrc.base.js'
 
 /**
  * A custom shared ESLint configuration for applications that use Next.js.
@@ -10,26 +11,10 @@ import globals from 'globals';
  * @type {import('eslint').Linter.Config[]}
  */
 export default defineConfig([
-  globalIgnores(['.astro', 'dist', '.vercel', '.next']),
-  ...baseConfig,
-  {
-    ...pluginReact.configs.flat.recommended,
-    languageOptions: {
-      ...pluginReact.configs.flat.recommended.languageOptions,
-      globals: {
-        ...globals.serviceworker,
-      },
-    },
-  },
-  {
-    plugins: {
-      'react-hooks': pluginReactHooks,
-    },
-    settings: { react: { version: 'detect' } },
-    rules: {
-      ...pluginReactHooks.configs.recommended.rules,
-      // React scope no longer necessary with new JSX transform.
-      'react/react-in-jsx-scope': 'off',
-    },
-  },
-]);
+	globalIgnores(['.astro', 'dist', '.vercel']),
+	...baseConfig,
+	pluginReact.configs.flat.recommended,
+	pluginReactHooks.configs.recommended,
+	...eslintPluginAstro.configs.recommended,
+	eslintPluginJsxA11y.configs['jsx-a11y-strict'],
+])

@@ -31,12 +31,8 @@
     "editor.formatOnPaste": true,
     "editor.formatOnSave": true,
     "editor.rulers": [80],
-    "editor.defaultFormatter": "biomejs.biome",
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
     "typescript.preferences.importModuleSpecifier": "non-relative",
-    "editor.codeActionsOnSave": {
-      "source.fixAll.biome": "explicit",
-      "source.organizeImports.biome": "explicit"
-    },
     "[markdown]": {
       "editor.wordWrap": "on",
     },
