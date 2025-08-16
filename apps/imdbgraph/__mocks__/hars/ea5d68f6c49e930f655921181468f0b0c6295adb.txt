@@ -1,1 +1,0 @@
-[{"imdbId":"tt10732794","title":"The King's Avatar","startYear":"2019","endYear":"2019","rating":8.1,"numVotes":1796},{"imdbId":"tt6859260","title":"The King's Avatar","startYear":"2017","endYear":null,"rating":7.4,"numVotes":1636},{"imdbId":"tt2926746","title":"The Avatars","startYear":"2013","endYear":null,"rating":6.7,"numVotes":57}]

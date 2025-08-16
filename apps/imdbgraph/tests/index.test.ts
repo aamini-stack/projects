@@ -4,7 +4,7 @@ test.beforeEach(async ({ page }) => {
 	await page.goto('/')
 	await page.routeFromHAR('./__mocks__/hars/search.har', {
 		url: '*/**/api/suggestions?q=*',
-		update: true,
+		update: false,
 	})
 })
 
