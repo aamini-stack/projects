@@ -11,7 +11,7 @@ import tseslint from 'typescript-eslint';
  *
  * @type {import('eslint').Linter.Config[]}
  */
-export default defineConfig([
+export default [
   globalIgnores(['node_modules']),
   js.configs.recommended,
   pluginPrettier,
@@ -83,4 +83,4 @@ export default defineConfig([
       ],
     },
   },
-]);
+];
