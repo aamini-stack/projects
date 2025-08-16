@@ -10,7 +10,7 @@ export async function fetchSuggestions(db: NodePgDatabase, q: string) {
 	return await db
 		.select()
 		.from(show)
-		.where(sql`title % ${q}`)
+		.where(sql`${q} <% title`)
 		.orderBy(desc(show.numVotes))
 		.limit(5)
 }

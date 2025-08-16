@@ -60,6 +60,22 @@ describe('search tests', () => {
 		expect(results).toMatchInlineSnapshot(`
 			[
 			  {
+			    "endYear": "2022",
+			    "imdbId": "tt1520211",
+			    "numVotes": 1150592,
+			    "rating": 8.1,
+			    "startYear": "2010",
+			    "title": "The Walking Dead",
+			  },
+			  {
+			    "endYear": "2019",
+			    "imdbId": "tt0898266",
+			    "numVotes": 912870,
+			    "rating": 8.1,
+			    "startYear": "2007",
+			    "title": "The Big Bang Theory",
+			  },
+			  {
 			    "endYear": null,
 			    "imdbId": "tt1190634",
 			    "numVotes": 788118,
@@ -77,27 +93,11 @@ describe('search tests', () => {
 			  },
 			  {
 			    "endYear": null,
-			    "imdbId": "tt5180504",
-			    "numVotes": 597967,
-			    "rating": 7.9,
-			    "startYear": "2019",
-			    "title": "The Witcher",
-			  },
-			  {
-			    "endYear": "2007",
-			    "imdbId": "tt0141842",
-			    "numVotes": 532849,
-			    "rating": 9.2,
-			    "startYear": "1999",
-			    "title": "The Sopranos",
-			  },
-			  {
-			    "endYear": null,
-			    "imdbId": "tt0096697",
-			    "numVotes": 456169,
+			    "imdbId": "tt3581920",
+			    "numVotes": 682762,
 			    "rating": 8.6,
-			    "startYear": "1989",
-			    "title": "The Simpsons",
+			    "startYear": "2023",
+			    "title": "The Last of Us",
 			  },
 			]
 		`)

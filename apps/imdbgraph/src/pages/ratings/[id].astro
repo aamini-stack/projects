@@ -1,4 +1,5 @@
 ---
+import { db } from 'db/connection'
 import { Graph } from '@/components/graph'
 import { SearchBar } from '@/components/search-bar'
 import { getRatings } from '@/lib/imdb/ratings'
@@ -12,7 +13,10 @@ const showId = Astro.params.id
 if (!showId) {
 	return Astro.redirect('/404')
 }
-const ratings = await getRatings(showId)
+const ratings = await getRatings(db, showId)
+if (!ratings) {
+	return Astro.redirect('/404')
+}
 const show = ratings.show
 
 function hasRatings(ratings: Ratings): boolean {
