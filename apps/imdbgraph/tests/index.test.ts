@@ -3,7 +3,7 @@ import { expect, test } from '@playwright/test'
 test.beforeEach(async ({ page }) => {
 	await page.goto('/')
 	await page.routeFromHAR('./__mocks__/hars/search.har', {
-		url: '*/**/api/suggestions?q=*',
+		url: '*/**/api/suggestions',
 		update: false,
 	})
 })
