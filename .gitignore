@@ -10,7 +10,6 @@
 .vercel
 dist
 node_modules
-next-env.d.ts
 
 # System Files
 .DS_Store
