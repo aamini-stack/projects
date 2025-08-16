@@ -2,7 +2,7 @@ import { useStore } from '@nanostores/react'
 import { Moon, Sun } from 'lucide-react'
 import { useEffect } from 'react'
 import { Button } from '@/components/button'
-import { theme } from '@/lib/store'
+import { theme } from '@/lib/utils/client-store'
 
 export function ThemeButton() {
 	const $theme = useStore(theme)

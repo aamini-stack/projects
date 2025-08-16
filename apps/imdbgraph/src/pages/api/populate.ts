@@ -1,6 +1,8 @@
 import { CRON_SECRET } from 'astro:env/server'
+import { waitUntil } from '@vercel/functions'
 import type { APIRoute } from 'astro'
-import { update } from '@/lib/db/scraper'
+import { db } from 'db/connection'
+import { update } from '@/lib/imdb/scraper'
 
 export const prerender = false
 
@@ -13,9 +15,7 @@ export const GET: APIRoute = ({ request }) => {
 		})
 	}
 
-	update().catch((e: unknown) => {
-		console.error(e)
-	})
+	waitUntil(update(db).catch((e) => console.log(e)))
 	return new Response('Update queued', {
 		status: 200,
 	})

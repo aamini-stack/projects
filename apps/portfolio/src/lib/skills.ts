@@ -8,22 +8,22 @@ export const skills: Tech[] = [
 	{
 		name: 'JavaScript',
 		href: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript',
-		src: 'https://raw.githubusercontent.com/devicons/devicon/master/icons/javascript/javascript-original.svg',
+		src: '/skills/javascript.svg',
 	},
 	{
 		name: 'TypeScript',
 		href: 'https://www.typescriptlang.org/',
-		src: 'https://raw.githubusercontent.com/devicons/devicon/master/icons/typescript/typescript-original.svg',
+		src: '/skills/typescript.svg',
 	},
 	{
 		name: 'Java',
 		href: 'https://www.java.com',
-		src: 'https://raw.githubusercontent.com/devicons/devicon/master/icons/java/java-original.svg',
+		src: '/skills/java.svg',
 	},
 	{
 		name: 'Python',
 		href: undefined,
-		src: 'https://upload.wikimedia.org/wikipedia/commons/c/c3/Python-logo-notext.svg',
+		src: '/skills/python.svg',
 	},
 	{
 		name: 'Spring',
@@ -33,7 +33,7 @@ export const skills: Tech[] = [
 	{
 		name: 'React',
 		href: 'https://reactjs.org/',
-		src: 'https://raw.githubusercontent.com/devicons/devicon/master/icons/react/react-original-wordmark.svg',
+		src: '/skills/react.svg',
 	},
 	{
 		name: 'Next.js',
@@ -43,22 +43,22 @@ export const skills: Tech[] = [
 	{
 		name: 'Tailwind',
 		href: 'https://tailwindcss.com/',
-		src: 'https://www.vectorlogo.zone/logos/tailwindcss/tailwindcss-icon.svg',
+		src: '/skills/tailwind.svg',
 	},
 	{
 		name: 'Node.js',
 		href: 'https://nodejs.org',
-		src: 'https://raw.githubusercontent.com/devicons/devicon/master/icons/nodejs/nodejs-original-wordmark.svg',
+		src: '/skills/nodejs.svg',
 	},
 	{
 		name: 'PostgreSQL',
 		href: 'https://www.postgresql.org',
-		src: 'https://raw.githubusercontent.com/devicons/devicon/master/icons/postgresql/postgresql-original-wordmark.svg',
+		src: '/skills/postgresql.svg',
 	},
 	{
 		name: 'Docker',
 		href: 'https://www.docker.com/',
-		src: 'https://raw.githubusercontent.com/devicons/devicon/master/icons/docker/docker-original-wordmark.svg',
+		src: '/skills/docker.svg',
 	},
 	{
 		name: 'Kubernetes',
@@ -73,12 +73,12 @@ export const skills: Tech[] = [
 	{
 		name: 'HTML',
 		href: 'https://www.w3.org/html/',
-		src: 'https://raw.githubusercontent.com/devicons/devicon/master/icons/html5/html5-original-wordmark.svg',
+		src: '/skills/html.svg',
 	},
 	{
 		name: 'CSS',
 		href: 'https://www.w3schools.com/css/',
-		src: 'https://raw.githubusercontent.com/devicons/devicon/master/icons/css3/css3-original-wordmark.svg',
+		src: '/skills/css.svg',
 	},
 	{
 		name: 'Jest',

@@ -7,7 +7,6 @@ import { defineConfig, fontProviders } from 'astro/config'
 export default defineConfig({
 	integrations: [react()],
 	vite: {
-		// @ts-expect-error Temp ignore type error. (Works in runtime)
 		plugins: [tailwindcss()],
 	},
 	output: 'static',

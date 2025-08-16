@@ -5,7 +5,13 @@
     "build": {
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
-      "outputs": [".astro/**", ".vercel/output/**", "dist/**"]
+      "outputs": [".astro/**", ".vercel/**", "dist/**"],
+      "env": [
+        "DATABASE_URL",
+        "CRON_SECRET",
+        "MAILGUN_API_KEY",
+        "MAILGUN_DOMAIN"
+      ]
     },
     "dev": {
       "dependsOn": ["build"],

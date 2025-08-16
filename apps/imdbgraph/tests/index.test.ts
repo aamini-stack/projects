@@ -2,6 +2,10 @@ import { expect, test } from '@playwright/test'
 
 test.beforeEach(async ({ page }) => {
 	await page.goto('/')
+	await page.routeFromHAR('./__mocks__/hars/search.har', {
+		url: '*/**/api/suggestions',
+		update: false,
+	})
 })
 
 test('Screenshot Homepage', async ({ page }) => {

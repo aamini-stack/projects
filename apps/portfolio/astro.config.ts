@@ -11,17 +11,14 @@ export default defineConfig({
 			MAILGUN_API_KEY: envField.string({
 				context: 'server',
 				access: 'secret',
-				optional: true,
 			}),
 			MAILGUN_DOMAIN: envField.string({
 				context: 'server',
 				access: 'secret',
-				optional: true,
 			}),
 		},
 	},
 	vite: {
-		//@ts-ignore
 		plugins: [tailwindcss()],
 	},
 	output: 'static',

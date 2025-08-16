@@ -1,7 +1,11 @@
 import { defineConfig, devices } from '@playwright/test'
+import { loadEnv } from 'vite'
+
+const env = loadEnv('test', process.cwd(), '')
 
 const devUrl = `http://localhost:4002`
-const baseUrl = !process.env.CI ? devUrl : process.env.BASE_URL
+const useDevServer = !process.env.CI && !env.BASE_URL
+const baseUrl = useDevServer ? devUrl : env.BASE_URL
 
 /** See https://playwright.dev/docs/test-configuration. */
 export default defineConfig({
@@ -27,7 +31,7 @@ export default defineConfig({
 	},
 
 	/* Run your local dev server when running tests locally */
-	...(!process.env.CI
+	...(useDevServer
 		? {
 				webServer: {
 					command: 'pnpm dev',
