@@ -17,7 +17,6 @@ export default defineConfig({
 		},
 	},
 	vite: {
-		//@ts-ignore
 		plugins: [tailwindcss()],
 		// Needed to fix bug with downshift when SSR'ing on vercel.
 		ssr: {
