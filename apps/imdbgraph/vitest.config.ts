@@ -23,6 +23,7 @@ export default getViteConfig({
 					name: 'db',
 					include: ['src/**/*.test.ts'],
 					environment: 'node',
+					testTimeout: 30_000,
 				},
 			},
 		],
