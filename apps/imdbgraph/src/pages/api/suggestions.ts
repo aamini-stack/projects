@@ -1,5 +1,6 @@
 import type { APIRoute } from 'astro'
-import { fetchSuggestions } from '@/lib/db/data'
+import { db } from 'db/connection'
+import { fetchSuggestions } from '@/lib/imdb/search'
 
 export const prerender = false
 
@@ -12,7 +13,7 @@ export const GET: APIRoute = async ({ request }) => {
 		return new Response(JSON.stringify([]))
 	}
 
-	const shows = await fetchSuggestions(q)
+	const shows = await fetchSuggestions(db, q)
 	return new Response(JSON.stringify(shows), {
 		headers: {
 			'Cache-Control':

@@ -1,38 +1,19 @@
-import { ActionError } from 'astro:actions'
-import { asc, desc, eq, ilike } from 'drizzle-orm'
-import { db } from '@/lib/db/connection'
-import { episode, show } from '@/lib/db/tables/schema'
-import type { Episode, Ratings } from '@/lib/types'
+import { episode, show } from 'db/tables'
+import { asc, eq } from 'drizzle-orm'
+import type { NodePgDatabase } from 'drizzle-orm/node-postgres'
+import type { Episode, Ratings } from '@/lib/imdb/types'
 
-export async function fetchSuggestions(q: string) {
-	if (!q) {
-		throw new Error('Empty search parameter (q)')
-	}
-
-	return await db
-		.select()
-		.from(show)
-		.where(ilike(show.title, `%${q}%`))
-		.orderBy(desc(show.numVotes))
-		.limit(5)
-}
-
-export async function getRatings({
-	showId,
-}: {
-	showId: string
-}): Promise<Ratings> {
+export async function getRatings(
+	db: NodePgDatabase,
+	showId: string,
+): Promise<Ratings | undefined> {
 	const result = await db.select().from(show).where(eq(show.imdbId, showId))
 	if (!result.length) {
-		throw new ActionError({
-			code: 'NOT_FOUND',
-		})
+		return undefined
 	}
 	const foundShow = result[0]
 	if (!foundShow) {
-		throw new ActionError({
-			code: 'BAD_REQUEST',
-		})
+		return undefined
 	}
 
 	const episodes = await db

@@ -1,9 +1,77 @@
 {
-  "id": "eb548e3c-ec5a-4fba-86a4-61a6c91fb16d",
-  "prevId": "203c9749-b4ad-4d8c-afb4-dbe8b18e825d",
+  "id": "00000000-0000-0000-0000-000000000000",
+  "prevId": "",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
+    "public.show": {
+      "name": "show",
+      "schema": "",
+      "columns": {
+        "imdb_id": {
+          "name": "imdb_id",
+          "type": "varchar(10)",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "title": {
+          "name": "title",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "start_year": {
+          "name": "start_year",
+          "type": "char(4)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "end_year": {
+          "name": "end_year",
+          "type": "char(4)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "rating": {
+          "name": "rating",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "num_votes": {
+          "name": "num_votes",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        }
+      },
+      "indexes": {
+        "show_rating_index": {
+          "name": "show_rating_index",
+          "columns": [
+            {
+              "expression": "rating",
+              "asc": true,
+              "nulls": "last",
+              "opclass": "float8_ops",
+              "isExpression": false
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {},
+      "policies": {},
+      "isRLSEnabled": false
+    },
     "public.episode": {
       "name": "episode",
       "schema": "",
@@ -57,86 +125,10 @@
           "columns": [
             {
               "expression": "show_id",
-              "isExpression": false,
               "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        }
-      },
-      "foreignKeys": {
-        "episode_show_imdb_id_fk": {
-          "name": "episode_show_imdb_id_fk",
-          "tableFrom": "episode",
-          "tableTo": "show",
-          "columnsFrom": ["show_id"],
-          "columnsTo": ["imdb_id"],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.show": {
-      "name": "show",
-      "schema": "",
-      "columns": {
-        "imdb_id": {
-          "name": "imdb_id",
-          "type": "varchar(10)",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "title": {
-          "name": "title",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "start_year": {
-          "name": "start_year",
-          "type": "char(4)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "end_year": {
-          "name": "end_year",
-          "type": "char(4)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "rating": {
-          "name": "rating",
-          "type": "double precision",
-          "primaryKey": false,
-          "notNull": true,
-          "default": 0
-        },
-        "num_votes": {
-          "name": "num_votes",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true,
-          "default": 0
-        }
-      },
-      "indexes": {
-        "show_rating_index": {
-          "name": "show_rating_index",
-          "columns": [
-            {
-              "expression": "rating",
-              "isExpression": false,
-              "asc": false,
-              "nulls": "last"
+              "nulls": "last",
+              "opclass": "text_ops",
+              "isExpression": false
             }
           ],
           "isUnique": false,
@@ -148,10 +140,11 @@
           "name": "trigram_index",
           "columns": [
             {
-              "expression": "\"title\" gin_trgm_ops",
+              "expression": "title",
               "asc": true,
-              "isExpression": true,
-              "nulls": "last"
+              "nulls": "last",
+              "opclass": "gin_trgm_ops",
+              "isExpression": false
             }
           ],
           "isUnique": false,
@@ -160,11 +153,26 @@
           "with": {}
         }
       },
-      "foreignKeys": {},
+      "foreignKeys": {
+        "episode_show_imdb_id_fk": {
+          "name": "episode_show_imdb_id_fk",
+          "tableFrom": "episode",
+          "tableTo": "show",
+          "schemaTo": "public",
+          "columnsFrom": [
+            "show_id"
+          ],
+          "columnsTo": [
+            "imdb_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
-      "policies": {},
       "checkConstraints": {},
+      "policies": {},
       "isRLSEnabled": false
     }
   },
@@ -175,8 +183,11 @@
   "policies": {},
   "views": {},
   "_meta": {
-    "columns": {},
     "schemas": {},
+    "tables": {},
+    "columns": {}
+  },
+  "internal": {
     "tables": {}
   }
 }

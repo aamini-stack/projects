@@ -2,11 +2,29 @@
 import { getViteConfig } from 'astro/config'
 
 export default getViteConfig({
-	//@ts-ignore
 	test: {
-		include: ['src/**/*.{test,spec}.?(c|m)[jt]s?(x)', '!tests/**'],
-		setupFiles: 'vitest.setup.ts',
 		globals: true,
-		environment: 'jsdom',
+		projects: [
+			{
+				extends: true,
+				test: {
+					name: 'unit',
+					include: ['src/**/*.test.tsx'],
+					setupFiles: [
+						'__mocks__/setup-jest-dom.ts',
+						'__mocks__/setup-http.ts',
+					],
+					environment: 'jsdom',
+				},
+			},
+			{
+				extends: true,
+				test: {
+					name: 'db',
+					include: ['src/**/*.test.ts'],
+					environment: 'node',
+				},
+			},
+		],
 	},
 })

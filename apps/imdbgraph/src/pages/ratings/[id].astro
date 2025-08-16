@@ -1,8 +1,8 @@
 ---
-import { actions } from 'astro:actions'
 import { Graph } from '@/components/graph'
 import { SearchBar } from '@/components/search-bar'
-import { formatYears, type Ratings } from '@/lib/types'
+import { getRatings } from '@/lib/imdb/ratings'
+import { formatYears, type Ratings } from '@/lib/imdb/types'
 import Layout from '@/pages/_layout.astro'
 
 export const prerender = false
@@ -12,9 +12,7 @@ const showId = Astro.params.id
 if (!showId) {
 	return Astro.redirect('/404')
 }
-const ratings = await Astro.callAction(actions.fetchRatings.orThrow, {
-	showId,
-})
+const ratings = await getRatings(showId)
 const show = ratings.show
 
 function hasRatings(ratings: Ratings): boolean {

@@ -79,6 +79,16 @@
 	},
 	"overrides": [
 		{
+			"includes": ["**/*.test.ts", "**/__mocks__/setup-db.ts"],
+			"linter": {
+				"rules": {
+					"correctness": {
+						"noEmptyPattern": "off"
+					}
+				}
+			}
+		},
+		{
 			"includes": ["**/*.svelte", "**/*.astro", "**/*.vue"],
 			"linter": {
 				"rules": {
