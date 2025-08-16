@@ -11,12 +11,10 @@ export default defineConfig({
 			MAILGUN_API_KEY: envField.string({
 				context: 'server',
 				access: 'secret',
-				optional: true,
 			}),
 			MAILGUN_DOMAIN: envField.string({
 				context: 'server',
 				access: 'secret',
-				optional: true,
 			}),
 		},
 	},
