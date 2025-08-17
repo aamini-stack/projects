@@ -6,7 +6,6 @@
 # Build
 .turbo
 .astro
-.next
 .vercel
 dist
 node_modules

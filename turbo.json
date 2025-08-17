@@ -19,6 +19,10 @@
 			"persistent": true
 		},
 
+		"//#format": {},
+		"//#format:fix": {
+			"cache": false
+		},
 		"check-types": {
 			"dependsOn": ["build", "^check-types"]
 		},
