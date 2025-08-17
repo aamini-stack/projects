@@ -11,7 +11,6 @@ import reactHooks from 'eslint-plugin-react-hooks'
 import jsxA11y from 'eslint-plugin-jsx-a11y'
 import astro from 'eslint-plugin-astro'
 import pluginVitest from '@vitest/eslint-plugin'
-import pluginPrettier from 'eslint-config-prettier'
 import pluginPlaywright from 'eslint-plugin-playwright'
 import pluginTurbo from 'eslint-plugin-turbo'
 import { globalIgnores } from 'eslint/config'
@@ -19,8 +18,8 @@ import { globalIgnores } from 'eslint/config'
 export default tseslint.config([
 	globalIgnores(['.astro', 'dist', '.vercel']),
 	{
+		name: 'JavaScript',
 		files: ['**/*.{js,mjs,cjs,jsx,mjsx,ts,tsx,mtsx}'],
-		plugins: { js },
 		extends: [js.configs.recommended],
 		languageOptions: {
 			globals: {
@@ -30,36 +29,36 @@ export default tseslint.config([
 			},
 		},
 	},
-	{
-		files: ['**/*.json'],
-		plugins: { json },
-		language: 'json/json',
-		extends: [json.configs.recommended],
-	},
-	{
-		files: ['**/*.jsonc'],
-		plugins: { json },
-		language: 'json/jsonc',
-		extends: [json.configs.recommended],
-	},
-	{
-		files: ['**/*.json5'],
-		plugins: { json },
-		language: 'json/json5',
-		extends: [json.configs.recommended],
-	},
-	{
-		files: ['**/*.md'],
-		plugins: { markdown },
-		language: 'markdown/commonmark',
-		extends: [markdown.configs.recommended],
-	},
-	{
-		files: ['**/*.css'],
-		plugins: { css },
-		language: 'css/css',
-		extends: [css.configs.recommended],
-	},
+	// {
+	// 	files: ['**/*.json'],
+	// 	plugins: { json },
+	// 	language: 'json/json',
+	// 	extends: [json.configs.recommended],
+	// },
+	// {
+	// 	files: ['**/*.jsonc'],
+	// 	plugins: { json },
+	// 	language: 'json/jsonc',
+	// 	extends: [json.configs.recommended],
+	// },
+	// {
+	// 	files: ['**/*.json5'],
+	// 	plugins: { json },
+	// 	language: 'json/json5',
+	// 	extends: [json.configs.recommended],
+	// },
+	// {
+	// 	files: ['**/*.md'],
+	// 	plugins: { markdown },
+	// 	language: 'markdown/commonmark',
+	// 	extends: [markdown.configs.recommended],
+	// },
+	// {
+	// 	files: ['**/*.css'],
+	// 	plugins: { css },
+	// 	language: 'css/css',
+	// 	extends: [css.configs.recommended],
+	// },
 
 	// Typescript
 	{
@@ -81,14 +80,20 @@ export default tseslint.config([
 					allowConstantLoopConditions: 'only-allowed-literals',
 				},
 			],
+			'@typescript-eslint/no-confusing-void-expression': 'off',
 		},
-	},
-	{
-		files: ['**/*.{js,jsx}'],
-		extends: [tseslint.configs.disableTypeChecked],
 	},
 
 	// React
+	{
+		files: ['**/*.{js,mjs,cjs,jsx,mjsx,ts,tsx,mtsx}'],
+		settings: {
+			react: {
+				version: 'detect',
+			},
+		},
+	},
+
 	{
 		files: ['**/*.{js,mjs,cjs,jsx,mjsx,ts,tsx,mtsx}'],
 		extends: [
@@ -97,21 +102,13 @@ export default tseslint.config([
 			reactHooks.configs['recommended-latest'],
 			jsxA11y.flatConfigs.recommended,
 		],
-		settings: {
-			react: {
-				version: 'detect',
-			},
-		},
 	},
 
-	// Astro
-	{
-		files: ['**/*.astro'],
-		extends: [astro.configs.recommended, astro.configs['jsx-a11y-strict']],
-	},
+	...astro.configs.recommended,
 
 	// TurboRepo
 	{
+		name: 'Turborepo',
 		plugins: {
 			turbo: pluginTurbo,
 		},
@@ -122,6 +119,7 @@ export default tseslint.config([
 
 	// Tests (Playwright + Vitest)
 	{
+		name: 'Playwright',
 		files: ['**/*e2e.{spec,test}.ts'],
 		...pluginPlaywright.configs['flat/recommended'],
 	},
@@ -133,6 +131,7 @@ export default tseslint.config([
 	// Prevent Relative Imports like:
 	// import { x } from '../folder/module-a';
 	{
+		name: 'imports',
 		files: ['src/**/*.{ts,tsx,js,mjs,cjs,jsx}'],
 		ignores: ['**/*.test.*', '**/__tests__/**'],
 		rules: {
@@ -150,5 +149,4 @@ export default tseslint.config([
 			],
 		},
 	},
-	pluginPrettier,
 ])
