@@ -1,4 +1,4 @@
-import { testWithDb } from '__mocks__/setup-db'
+import { test } from '__mocks__/setup-db'
 import { show } from 'db/tables'
 import type { NodePgDatabase } from 'drizzle-orm/node-postgres'
 import { describe, expect } from 'vitest'
@@ -10,12 +10,12 @@ async function setUpData(db: NodePgDatabase) {
 }
 
 describe('search tests', () => {
-	testWithDb.scoped({
+	test.scoped({
 		// oxlint-disable-next-line no-empty-pattern
 		seedFunction: [async ({}, use) => use(setUpData), { scope: 'file' }],
 	})
 
-	testWithDb('exact title', async ({ db }) => {
+	test('exact title', async ({ db }) => {
 		const results = await fetchSuggestions(db, 'Game of Thrones')
 		expect(results[0]).toEqual({
 			title: 'Game of Thrones',
@@ -27,7 +27,7 @@ describe('search tests', () => {
 		})
 	})
 
-	testWithDb('prefix search', async ({ db }) => {
+	test('prefix search', async ({ db }) => {
 		const results = await fetchSuggestions(db, 'breaking')
 		expect(results[0]).toEqual({
 			title: 'Breaking Bad',
@@ -39,7 +39,7 @@ describe('search tests', () => {
 		})
 	})
 
-	testWithDb.skip('handling typos', async ({ db }) => {
+	test.skip('handling typos', async ({ db }) => {
 		const results = await fetchSuggestions(db, 'strnger thgs')
 		expect(results[0]).toEqual({
 			title: 'Stranger Things',
@@ -51,12 +51,12 @@ describe('search tests', () => {
 		})
 	})
 
-	testWithDb('non-existent results', async ({ db }) => {
+	test('non-existent results', async ({ db }) => {
 		const results = await fetchSuggestions(db, 'NonExistentShow')
 		expect(results).toHaveLength(0)
 	})
 
-	testWithDb('generic search', async ({ db }) => {
+	test('generic search', async ({ db }) => {
 		const results = await fetchSuggestions(db, 'The')
 		expect(results).toMatchInlineSnapshot(`
 			[

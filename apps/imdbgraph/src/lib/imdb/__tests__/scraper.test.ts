@@ -1,6 +1,6 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
-import { testWithDb } from '__mocks__/setup-db'
+import { test } from '__mocks__/setup-db'
 import { describe, expect, vi } from 'vitest'
 import { gameOfThronesRatings } from '@/lib/imdb/__tests__/fixtures/game-of-thrones'
 import { download, type ImdbFile } from '@/lib/imdb/file-downloader'
@@ -16,7 +16,7 @@ const SIMPSONS_ID = 'tt0096697'
 // Tests
 // =============================================================================
 describe('scraper tests', () => {
-	testWithDb('loading sample files into database', async ({ db }) => {
+	test('loading sample files into database', async ({ db }) => {
 		mockDownloads({
 			'title.basics.tsv.gz': './fixtures/imdb-files/titles.tsv',
 			'title.episode.tsv.gz': './fixtures/imdb-files/episodes.tsv',
@@ -31,7 +31,7 @@ describe('scraper tests', () => {
 		expect(await getRatings(db, SIMPSONS_ID)).toBeUndefined()
 	})
 
-	testWithDb('handling bad files', async ({ db }) => {
+	test('handling bad files', async ({ db }) => {
 		mockDownloads({
 			'title.basics.tsv.gz': './fixtures/imdb-files/titles.tsv',
 			'title.episode.tsv.gz': './fixtures/imdb-files/bad-episodes.tsv',

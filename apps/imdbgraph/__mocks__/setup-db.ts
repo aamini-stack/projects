@@ -1,3 +1,4 @@
+// oxlint-disable no-empty-pattern
 import { PostgreSqlContainer } from '@testcontainers/postgresql'
 import * as schema from 'db/tables'
 import { drizzle, type NodePgDatabase } from 'drizzle-orm/node-postgres'
@@ -15,7 +16,7 @@ interface DbFixture {
 	seedFunction: (db: Database) => Promise<void>
 }
 
-export const testWithDb = baseTest.extend<DbFixture>({
+export const test = baseTest.extend<DbFixture>({
 	seedFunction: [async ({}, use) => use(async (_) => {}), { scope: 'file' }],
 	db: [
 		async ({ seedFunction }, use) => {
