@@ -62,9 +62,12 @@ export default tseslint.config([
 	},
 
 	// Typescript
-	tseslint.configs.strictTypeChecked,
-	tseslint.configs.stylisticTypeChecked,
 	{
+		files: ['**/*.{ts,tsx,mts,mtsx}'],
+		extends: [
+			tseslint.configs.strictTypeChecked,
+			tseslint.configs.stylisticTypeChecked,
+		],
 		languageOptions: {
 			parserOptions: {
 				projectService: true,
@@ -86,10 +89,28 @@ export default tseslint.config([
 	},
 
 	// React
-	react.configs.flat.recommended,
-	react.configs.flat['jsx-runtime'],
-	reactHooks.configs['recommended-latest'],
-	jsxA11y.flatConfigs.recommended,
+	{
+		files: ['**/*.{js,mjs,cjs,jsx,mjsx,ts,tsx,mtsx}'],
+		extends: [
+			react.configs.flat.recommended,
+			react.configs.flat['jsx-runtime'],
+			reactHooks.configs['recommended-latest'],
+			jsxA11y.flatConfigs.recommended,
+		],
+		settings: {
+			react: {
+				version: 'detect',
+			},
+		},
+	},
+
+	// Astro
+	{
+		files: ['**/*.astro'],
+		extends: [astro.configs.recommended],
+	},
+
+	// Astro
 	// {
 	// 	files: ['**/*.{js,mjs,cjs,jsx,mjsx,ts,tsx,mtsx}'],
 	// 	...react.configs.flat,
