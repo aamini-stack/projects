@@ -107,7 +107,7 @@ export default tseslint.config([
 	// Astro
 	{
 		files: ['**/*.astro'],
-		extends: [astro.configs.recommended],
+		extends: [astro.configs.recommended, astro.configs['jsx-a11y-strict']],
 	},
 
 	// Astro
