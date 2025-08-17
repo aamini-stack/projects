@@ -14,55 +14,60 @@ import pluginVitest from '@vitest/eslint-plugin'
 import pluginPrettier from 'eslint-config-prettier'
 import pluginPlaywright from 'eslint-plugin-playwright'
 import pluginTurbo from 'eslint-plugin-turbo'
-import { globalIgnores } from 'eslint/config'
+import { defineConfig, globalIgnores } from 'eslint/config'
 
-export default tseslint.config(
+export default tseslint.config([
 	globalIgnores(['.astro', 'dist', '.vercel']),
 	{
-		files: ['**/*.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
+		files: ['**/*.{js,mjs,cjs,jsx,mjsx,ts,tsx,mtsx}'],
 		plugins: { js },
 		extends: [js.configs.recommended],
-		languageOptions: { globals: { ...globals.browser, ...globals.node } },
+		languageOptions: {
+			globals: {
+				...globals.browser,
+				...globals.node,
+				...globals.serviceworker,
+			},
+		},
 	},
-	// {
-	// 	files: ['**/*.json'],
-	// 	plugins: { json },
-	// 	language: 'json/json',
-	// 	extends: [json.configs.recommended],
-	// },
-	// {
-	// 	files: ['**/*.jsonc'],
-	// 	plugins: { json },
-	// 	language: 'json/jsonc',
-	// 	extends: [json.configs.recommended],
-	// },
-	// {
-	// 	files: ['**/*.json5'],
-	// 	plugins: { json },
-	// 	language: 'json/json5',
-	// 	extends: [json.configs.recommended],
-	// },
-	// {
-	// 	files: ['**/*.md'],
-	// 	plugins: { markdown },
-	// 	language: 'markdown/commonmark',
-	// 	extends: [markdown.configs.recommended],
-	// },
-	// {
-	// 	files: ['**/*.css'],
-	// 	plugins: { css },
-	// 	language: 'css/css',
-	// 	extends: [css.configs.recommended],
-	// },
 	{
-		files: ['**/*.{ts,tsx}'],
-		extends: [
-			tseslint.configs.strictTypeChecked,
-			tseslint.configs.stylisticTypeChecked,
-		],
+		files: ['**/*.json'],
+		plugins: { json },
+		language: 'json/json',
+		extends: [json.configs.recommended],
+	},
+	{
+		files: ['**/*.jsonc'],
+		plugins: { json },
+		language: 'json/jsonc',
+		extends: [json.configs.recommended],
+	},
+	{
+		files: ['**/*.json5'],
+		plugins: { json },
+		language: 'json/json5',
+		extends: [json.configs.recommended],
+	},
+	{
+		files: ['**/*.md'],
+		plugins: { markdown },
+		language: 'markdown/commonmark',
+		extends: [markdown.configs.recommended],
+	},
+	{
+		files: ['**/*.css'],
+		plugins: { css },
+		language: 'css/css',
+		extends: [css.configs.recommended],
+	},
+
+	// Typescript
+	tseslint.configs.strictTypeChecked,
+	tseslint.configs.stylisticTypeChecked,
+	{
 		languageOptions: {
 			parserOptions: {
-				project: ['./packages/*/tsconfig.json'],
+				projectService: true,
 				tsconfigRootDir: import.meta.dirname,
 			},
 		},
@@ -76,18 +81,28 @@ export default tseslint.config(
 		},
 	},
 	{
-		files: ['**/*.{js,mjs,cjs,jsx,mjsx,ts,tsx,mtsx}'],
-		...react.configs.flat,
+		files: ['**/*.{js,jsx}'],
+		extends: [tseslint.configs.disableTypeChecked],
 	},
-	{
-		files: ['**/*.{js,mjs,cjs,jsx,mjsx,ts,tsx,mtsx}'],
-		languageOptions: {
-			globals: {
-				...globals.serviceworker,
-				...globals.browser,
-			},
-		},
-	},
+
+	// React
+	react.configs.flat.recommended,
+	react.configs.flat['jsx-runtime'],
+	reactHooks.configs['recommended-latest'],
+	jsxA11y.flatConfigs.recommended,
+	// {
+	// 	files: ['**/*.{js,mjs,cjs,jsx,mjsx,ts,tsx,mtsx}'],
+	// 	...react.configs.flat,
+	// },
+	// {
+	// 	files: ['**/*.{js,mjs,cjs,jsx,mjsx,ts,tsx,mtsx}'],
+	// 	languageOptions: {
+	// 		globals: {
+	// 			...globals.serviceworker,
+	// 			...globals.browser,
+	// 		},
+	// 	},
+	// },
 	// {
 	// 	files: ['**/*.{js,mjs,cjs,jsx,mjsx,ts,tsx,mtsx}'],
 	// 	extends: [
@@ -151,4 +166,4 @@ export default tseslint.config(
 		},
 	},
 	pluginPrettier,
-)
+])
