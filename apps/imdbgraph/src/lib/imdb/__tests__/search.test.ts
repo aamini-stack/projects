@@ -11,6 +11,7 @@ async function setUpData(db: NodePgDatabase) {
 
 describe('search tests', () => {
 	testWithDb.scoped({
+		// oxlint-disable-next-line no-empty-pattern
 		seedFunction: [async ({}, use) => use(setUpData), { scope: 'file' }],
 	})
 

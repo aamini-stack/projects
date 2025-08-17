@@ -8,11 +8,14 @@
 		"format": "prettier --check **/*.{js,ts,jsx,tsx,json,jsonc,html,css,md,yml,yaml}",
 		"format:fix": "prettier --write **/*.{js,ts,jsx,tsx,json,jsonc,html,css,md,yml,yaml}",
 		"check-types": "turbo run check-types",
+		"lint": "oxlint --type-aware",
 		"test": "turbo run test",
 		"e2e": "turbo run e2e",
 		"verify": "turbo run format build lint test check-types e2e"
 	},
 	"devDependencies": {
+		"oxlint": "^1.12.0",
+		"oxlint-tsgolint": "^0.0.4",
 		"prettier": "^3.6.2",
 		"turbo": "^2.5.5"
 	},
