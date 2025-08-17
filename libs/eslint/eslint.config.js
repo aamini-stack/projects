@@ -14,7 +14,7 @@ import pluginVitest from '@vitest/eslint-plugin'
 import pluginPrettier from 'eslint-config-prettier'
 import pluginPlaywright from 'eslint-plugin-playwright'
 import pluginTurbo from 'eslint-plugin-turbo'
-import { defineConfig, globalIgnores } from 'eslint/config'
+import { globalIgnores } from 'eslint/config'
 
 export default tseslint.config([
 	globalIgnores(['.astro', 'dist', '.vercel']),
@@ -109,42 +109,6 @@ export default tseslint.config([
 		files: ['**/*.astro'],
 		extends: [astro.configs.recommended, astro.configs['jsx-a11y-strict']],
 	},
-
-	// Astro
-	// {
-	// 	files: ['**/*.{js,mjs,cjs,jsx,mjsx,ts,tsx,mtsx}'],
-	// 	...react.configs.flat,
-	// },
-	// {
-	// 	files: ['**/*.{js,mjs,cjs,jsx,mjsx,ts,tsx,mtsx}'],
-	// 	languageOptions: {
-	// 		globals: {
-	// 			...globals.serviceworker,
-	// 			...globals.browser,
-	// 		},
-	// 	},
-	// },
-	// {
-	// 	files: ['**/*.{js,mjs,cjs,jsx,mjsx,ts,tsx,mtsx}'],
-	// 	extends: [
-	// 		react.configs.flat,
-	// 		jsxA11y.flatConfigs.strict,
-	// 		reactHooks.configs['recommended-latest'],
-	// 		astro.configs['flat/recommended'],
-	// 		astro.configs['flat/jsx-a11y-strict'],
-	// 	],
-	// 	// ...pluginReact.configs.flat['jsx-runtime'],
-	// 	// // ...eslintPluginJsxA11y.flatConfigs.recommended,
-	// 	// ...pluginReactHooks.configs['recommended-latest'],
-	// 	languageOptions: {
-	// 		...react.configs.flat,
-	// 		...jsxA11y.flatConfigs.strict.languageOptions,
-	// 		globals: {
-	// 			...globals.serviceworker,
-	// 			...globals.browser,
-	// 		},
-	// 	},
-	// },
 
 	// TurboRepo
 	{
