@@ -9,7 +9,8 @@
 		"test": "turbo run test",
 		"e2e": "turbo run e2e",
 		"verify": "turbo run build lint test check-types e2e",
-		"verify:ci": "turbo run build lint:ci test check-types"
+		"verify:ci": "turbo run build lint:ci test check-types",
+		"format": "prettier --write '**/*.{js,ts,jsx,tsx,json,jsonc,html,css,md,yml,yaml}'"
 	},
 	"devDependencies": {
 		"prettier": "^3.6.2",
