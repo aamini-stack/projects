@@ -1,19 +1,17 @@
-import { test } from '__mocks__/setup-db'
+// oxlint-disable no-empty-pattern
+import { initDb, test } from '__mocks__/setup-db'
 import { show } from 'db/tables'
 import type { NodePgDatabase } from 'drizzle-orm/node-postgres'
 import { describe, expect } from 'vitest'
 import { fetchSuggestions } from '@/lib/imdb/search'
 import { shows } from './fixtures/shows'
 
-async function setUpData(db: NodePgDatabase) {
+async function seed(db: NodePgDatabase) {
 	await db.insert(show).values(shows)
 }
 
 describe('search tests', () => {
-	test.scoped({
-		// oxlint-disable-next-line no-empty-pattern
-		seedFunction: [async ({}, use) => use(setUpData), { scope: 'file' }],
-	})
+	initDb(seed)
 
 	test('exact title', async ({ db }) => {
 		const results = await fetchSuggestions(db, 'Game of Thrones')

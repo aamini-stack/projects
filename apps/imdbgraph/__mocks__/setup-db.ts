@@ -44,3 +44,9 @@ export const test = baseTest.extend<DbFixture>({
 		{ scope: 'file' },
 	],
 })
+
+export function initDb(seedFunction: (db: NodePgDatabase) => Promise<void>) {
+	test.scoped({
+		seedFunction: [async ({}, use) => use(seedFunction), { scope: 'file' }],
+	})
+}
