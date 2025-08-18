@@ -7,9 +7,11 @@ const devUrl = `http://localhost:4002`
 const useDevServer = !process.env.CI && !env.BASE_URL
 const baseUrl = useDevServer ? devUrl : env.BASE_URL
 
+const testDir = './e2e'
+
 /** See https://playwright.dev/docs/test-configuration. */
 export default defineConfig({
-	testDir: './e2e',
+	testDir: testDir,
 	/* Run tests in files in parallel */
 	fullyParallel: true,
 	/* Fail the build on CI if you accidentally left test.only in the source code. */
@@ -43,7 +45,7 @@ export default defineConfig({
 
 	expect: {
 		toHaveScreenshot: {
-			stylePath: './tests/screenshot.css',
+			stylePath: `${testDir}/screenshot.css`,
 		},
 	},
 
