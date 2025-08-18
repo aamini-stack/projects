@@ -5,14 +5,21 @@
 		"build": {
 			"dependsOn": ["^build"],
 			"inputs": ["$TURBO_DEFAULT$", ".env*"],
-			"outputs": [".astro/**", ".vercel/**", "dist/**"],
-			"env": [
-				"DATABASE_URL",
-				"CRON_SECRET",
-				"MAILGUN_API_KEY",
-				"MAILGUN_DOMAIN"
-			]
+			"outputs": [".astro/**", ".vercel/**", "dist/**"]
 		},
+		"build:imdbgraph": {
+			"dependsOn": ["^build"],
+			"inputs": ["$TURBO_DEFAULT$", ".env*"],
+			"outputs": [".astro/**", ".vercel/**", "dist/**"],
+			"env": ["DATABASE_URL", "CRON_SECRET"]
+		},
+		"build:portfolio": {
+			"dependsOn": ["^build"],
+			"inputs": ["$TURBO_DEFAULT$", ".env*"],
+			"outputs": [".astro/**", ".vercel/**", "dist/**"],
+			"env": ["MAILGUN_API_KEY", "MAILGUN_DOMAIN"]
+		},
+
 		"dev": {
 			"dependsOn": ["build"],
 			"cache": false,
@@ -23,14 +30,12 @@
 		"//#format:fix": {
 			"cache": false
 		},
+		"//#lint": {},
+		"//#lint:fix": {
+			"cache": false
+		},
 		"check-types": {
 			"dependsOn": ["build", "^check-types"]
-		},
-		"lint": {
-			"dependsOn": ["build", "check-types"]
-		},
-		"lint:ci": {
-			"dependsOn": ["build", "check-types"]
 		},
 		"test": {
 			"dependsOn": ["build", "^test"]
