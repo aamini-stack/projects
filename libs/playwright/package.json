@@ -1,0 +1,13 @@
+{
+	"name": "@aamini/config-playwright",
+	"version": "0.0.1",
+	"type": "module",
+	"private": true,
+	"exports": {
+		"./base": "./playwright.config.ts"
+	},
+	"peerDependencies": {
+		"@playwright/test": "^1.54.1",
+		"@types/node": "^24.0.15"
+	}
+}
