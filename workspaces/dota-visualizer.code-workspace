@@ -1,6 +1,13 @@
 {
 	"folders": [
 		{
+			"path": "../apps/dota-visualizer",
+		},
+		{
+			"path": "../libs",
+		},
+		{
+			"name": "@aamini/root",
 			"path": "..",
 		},
 	],
