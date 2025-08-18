@@ -5,7 +5,11 @@ test.beforeEach(async ({ page }) => {
 })
 
 test('Screenshot Armor Page', async ({ page }) => {
-	page.getByRole('combobox')
+	const comboBox = page.getByRole('combobox')
+	await expect(comboBox).toBeVisible()
+	await expect(comboBox).toContainText('Anti-Mage')
+
+	// Verify all Icons loaded
 	const allIcons = await page.getByRole('table').getByRole('img').all()
 	for (const icon of allIcons) {
 		await expect(icon).not.toHaveJSProperty('naturalWidth', 0, {
