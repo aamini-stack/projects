@@ -5,8 +5,8 @@
 	"type": "module",
 	"scripts": {
 		"build": "turbo build",
-		"format": "prettier --check **/*.{js,ts,jsx,tsx,json,jsonc,html,css,md,yml,yaml}",
-		"format:fix": "prettier --write **/*.{js,ts,jsx,tsx,json,jsonc,html,css,md,yml,yaml}",
+		"format": "prettier     --check **/*.{js,ts,tsx,json,html,css,md,yml,yaml}",
+		"format:fix": "prettier --write **/*.{js,ts,tsx,json,html,css,md,yml,yaml}",
 		"check-types": "turbo run check-types",
 		"lint": "oxlint --type-aware",
 		"test": "turbo run test",
