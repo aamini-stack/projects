@@ -1,14 +1,24 @@
 {
 	"folders": [
 		{
-			"path": "../apps/imdbgraph",
-		},
-		{
-			"path": "../libs",
-		},
-		{
 			"name": "@aamini/root",
-			"path": "..",
+			"path": ".",
+		},
+		{
+			"name": "@aamini/libs",
+			"path": "./libs",
+		},
+		{
+			"name": "dota-visualizer",
+			"path": "./apps/dota-visualizer",
+		},
+		{
+			"name": "imdbgraph",
+			"path": "./apps/imdbgraph",
+		},
+		{
+			"name": "portfolio",
+			"path": "./apps/portfolio",
 		},
 	],
 	"settings": {
@@ -51,18 +61,20 @@
 	},
 	"extensions": {
 		"recommendations": [
-			// JS
+			// Framework (Astro, React, Tailwind)
 			"astro-build.astro-vscode",
 			"bradlc.vscode-tailwindcss",
+			// JS
 			"xabikos.javascriptsnippets",
-			// Test
+			// Testing
 			"ms-playwright.playwright",
 			"vitest.explorer",
-			// Format/Lint
+			// Format
 			"editorconfig.editorconfig",
 			"esbenp.prettier-vscode",
+			// Lint
 			"oxc.oxc-vscode",
-			// Other
+			// Infra
 			"github.vscode-github-actions",
 			"mikestead.dotenv",
 		],
