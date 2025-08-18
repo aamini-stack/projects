@@ -4,7 +4,7 @@ import { getViteConfig } from 'astro/config'
 export default getViteConfig({
 	test: {
 		include: ['src/**/*.{test,spec}.?(c|m)[jt]s?(x)'],
-		setupFiles: 'vitest.setup.ts',
+		setupFiles: ['__mocks__/setup-jsdom.ts'],
 		globals: true,
 		environment: 'jsdom',
 	},
