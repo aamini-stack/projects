@@ -15,7 +15,11 @@ export const GET: APIRoute = ({ request }) => {
 		})
 	}
 
-	waitUntil(update(db).catch((e) => console.log(e)))
+	waitUntil(
+		update(db).catch((e) => {
+			console.log(e)
+		}),
+	)
 	return new Response('Update queued', {
 		status: 200,
 	})

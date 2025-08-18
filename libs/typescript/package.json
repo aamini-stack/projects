@@ -1,12 +1,12 @@
 {
-  "name": "@aamini/config-typescript",
-  "version": "0.0.1",
-  "type": "module",
-  "private": true,
-  "exports": {
-    "./*": "./tsconfig.*.json"
-  },
-  "peerDependencies": {
-    "typescript": "5.8.2"
-  }
+	"name": "@aamini/config-typescript",
+	"version": "0.0.1",
+	"type": "module",
+	"private": true,
+	"exports": {
+		"./*": "./tsconfig.*.json"
+	},
+	"peerDependencies": {
+		"typescript": "5.8.2"
+	}
 }

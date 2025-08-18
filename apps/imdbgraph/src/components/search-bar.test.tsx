@@ -36,7 +36,7 @@ test('no results', async () => {
 test('error message', async () => {
 	render(<SearchBar />)
 	const searchBar = await screen.findByRole('combobox')
-	userEvent.type(searchBar, 'error')
+	await userEvent.type(searchBar, 'error')
 	await waitFor(async () =>
 		expect(
 			await screen.findByText(/Something went wrong. Please try again./i),

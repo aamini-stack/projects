@@ -1,44 +1,53 @@
 {
-  "$schema": "https://turborepo.com/schema.json",
-  "ui": "tui",
-  "tasks": {
-    "build": {
-      "dependsOn": ["^build"],
-      "inputs": ["$TURBO_DEFAULT$", ".env*"],
-      "outputs": [".astro/**", ".vercel/**", "dist/**"],
-      "env": [
-        "DATABASE_URL",
-        "CRON_SECRET",
-        "MAILGUN_API_KEY",
-        "MAILGUN_DOMAIN"
-      ]
-    },
-    "dev": {
-      "dependsOn": ["build"],
-      "cache": false,
-      "persistent": true
-    },
-    
-    "check-types": {
-      "dependsOn": ["build", "^check-types"]
-    },
-    "lint": {
-      "dependsOn": ["build", "check-types"]
-    },
-    "lint:ci": {
-      "dependsOn": ["build", "check-types"]
-    },
-    "test": {
-      "dependsOn": ["build", "^test"]
-    },
-    "test:watch": {
-      "cache": false,
-      "persistent": true
-    },
-    "e2e": {
-      "dependsOn": ["build"],
-      "env": ["BASE_URL", "CI"],
-      "passThroughEnv": ["PLAYWRIGHT_*"]
-    }
-  }
+	"$schema": "https://turborepo.com/schema.json",
+	"ui": "tui",
+	"tasks": {
+		"build": {
+			"dependsOn": ["^build"],
+			"inputs": ["$TURBO_DEFAULT$", ".env*"],
+			"outputs": [".astro/**", ".vercel/**", "dist/**"]
+		},
+		"build:imdbgraph": {
+			"dependsOn": ["^build"],
+			"inputs": ["$TURBO_DEFAULT$", ".env*"],
+			"outputs": [".astro/**", ".vercel/**", "dist/**"],
+			"env": ["DATABASE_URL", "CRON_SECRET"]
+		},
+		"build:portfolio": {
+			"dependsOn": ["^build"],
+			"inputs": ["$TURBO_DEFAULT$", ".env*"],
+			"outputs": [".astro/**", ".vercel/**", "dist/**"],
+			"env": ["MAILGUN_API_KEY", "MAILGUN_DOMAIN"]
+		},
+
+		"dev": {
+			"dependsOn": ["build"],
+			"cache": false,
+			"persistent": true
+		},
+
+		"//#format": {},
+		"//#format:fix": {
+			"cache": false
+		},
+		"//#lint": {},
+		"//#lint:fix": {
+			"cache": false
+		},
+		"check-types": {
+			"dependsOn": ["build", "^check-types"]
+		},
+		"test": {
+			"dependsOn": ["build", "^test"]
+		},
+		"test:watch": {
+			"cache": false,
+			"persistent": true
+		},
+		"e2e": {
+			"dependsOn": ["build"],
+			"env": ["BASE_URL", "CI"],
+			"passThroughEnv": ["PLAYWRIGHT_*"]
+		}
+	}
 }

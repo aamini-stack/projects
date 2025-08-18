@@ -1,6 +1,7 @@
+// oxlint-disable no-empty-pattern
 import { PostgreSqlContainer } from '@testcontainers/postgresql'
 import * as schema from 'db/tables'
-import { drizzle, type NodePgDatabase } from 'drizzle-orm/node-postgres'
+import { type NodePgDatabase, drizzle } from 'drizzle-orm/node-postgres'
 import { migrate } from 'drizzle-orm/node-postgres/migrator'
 import { reset } from 'drizzle-seed'
 import { Pool } from 'pg'
@@ -15,7 +16,7 @@ interface DbFixture {
 	seedFunction: (db: Database) => Promise<void>
 }
 
-export const testWithDb = baseTest.extend<DbFixture>({
+export const test = baseTest.extend<DbFixture>({
 	seedFunction: [async ({}, use) => use(async (_) => {}), { scope: 'file' }],
 	db: [
 		async ({ seedFunction }, use) => {
@@ -43,3 +44,9 @@ export const testWithDb = baseTest.extend<DbFixture>({
 		{ scope: 'file' },
 	],
 })
+
+export function initDb(seedFunction: (db: NodePgDatabase) => Promise<void>) {
+	test.scoped({
+		seedFunction: [async ({}, use) => use(seedFunction), { scope: 'file' }],
+	})
+}
