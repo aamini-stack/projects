@@ -7,7 +7,7 @@
 		"build": "astro build",
 		"dev": "astro dev --port 4001",
 		"check-types": "tsc --noEmit",
-		"lint": "biome check",
+		"lint": "oxlint --type-aware",
 		"test": "vitest run",
 		"test:watch": "vitest --watch",
 		"e2e": "playwright test",

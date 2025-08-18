@@ -51,7 +51,6 @@
       "editorconfig.editorconfig",
       "github.vscode-github-actions",
       "mikestead.dotenv",
-      "biomejs.biome",
       "bradlc.vscode-tailwindcss",
       "ms-playwright.playwright",
       "xabikos.javascriptsnippets",
