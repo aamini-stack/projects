@@ -1,9 +1,9 @@
 // oxlint-disable no-empty-pattern
+import { fetchSuggestions } from '@/lib/imdb/search'
 import { initDb, test } from '__mocks__/setup-db'
 import { show } from 'db/tables'
 import type { NodePgDatabase } from 'drizzle-orm/node-postgres'
 import { describe, expect } from 'vitest'
-import { fetchSuggestions } from '@/lib/imdb/search'
 import { shows } from './fixtures/shows'
 
 async function seed(db: NodePgDatabase) {

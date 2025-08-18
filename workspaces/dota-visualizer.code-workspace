@@ -1,13 +1,6 @@
 {
 	"folders": [
 		{
-			"path": "../apps/dota-visualizer",
-		},
-		{
-			"path": "../apps/dota-visualizer-e2e",
-		},
-		{
-			"name": "@aamini/root",
 			"path": "..",
 		},
 	],
@@ -32,6 +25,10 @@
 		"editor.formatOnSave": true,
 		"editor.rulers": [80],
 		"editor.defaultFormatter": "esbenp.prettier-vscode",
+		"editor.codeActionsOnSave": {
+			"source.fixAll.oxc": "explicit",
+			"source.organizeImports": "always",
+		},
 		"typescript.preferences.importModuleSpecifier": "non-relative",
 		"[markdown]": {
 			"editor.wordWrap": "on",
@@ -44,36 +41,23 @@
 		"typescript.preferences.autoImportSpecifierExcludeRegexes": [
 			"^(node:)?os$",
 		],
-		"oxc.enable": true,
 	},
 	"extensions": {
 		"recommendations": [
+			// JS
 			"astro-build.astro-vscode",
+			"bradlc.vscode-tailwindcss",
+			"xabikos.javascriptsnippets",
+			// Test
+			"ms-playwright.playwright",
+			"vitest.explorer",
+			// Format/Lint
 			"editorconfig.editorconfig",
+			"esbenp.prettier-vscode",
+			"oxc.oxc-vscode",
+			// Other
 			"github.vscode-github-actions",
 			"mikestead.dotenv",
-			"bradlc.vscode-tailwindcss",
-			"ms-playwright.playwright",
-			"xabikos.javascriptsnippets",
-			"vitest.explorer",
-		],
-	},
-	"launch": {
-		"version": "0.2.0",
-		"configurations": [
-			{
-				"name": "Server",
-				"command": "./node_modules/.bin/astro dev --port 4001",
-				"request": "launch",
-				"type": "node-terminal",
-			},
-			{
-				"name": "Client",
-				"type": "chrome",
-				"request": "launch",
-				"cwd": "${workspaceFolder}/../dota-visualizer",
-				"url": "http://localhost:4001",
-			},
 		],
 	},
 }
