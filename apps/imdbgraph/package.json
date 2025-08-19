@@ -41,6 +41,7 @@
 	},
 	"devDependencies": {
 		"@aamini/config-typescript": "workspace:*",
+		"@aamini/ui": "workspace:*",
 		"@playwright/test": "^1.54.1",
 		"@tailwindcss/vite": "^4.1.12",
 		"@tanstack/eslint-plugin-query": "^5.83.1",
@@ -53,6 +54,7 @@
 		"@types/pg-copy-streams": "^1.2.5",
 		"@types/react": "^19.1.8",
 		"@types/react-dom": "^19.1.6",
+		"@vitejs/plugin-react": "^4.7.0",
 		"drizzle-kit": "^0.31.4",
 		"drizzle-seed": "^0.3.1",
 		"eslint": "^9.33.0",

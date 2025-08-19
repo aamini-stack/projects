@@ -1,0 +1,11 @@
+{
+	"extends": "@aamini/config-typescript/react",
+	"compilerOptions": {
+		"baseUrl": ".",
+		"paths": {
+			"@aamini/ui/*": ["./src/*"]
+		}
+	},
+	"include": ["."],
+	"exclude": ["node_modules", "dist"]
+}
