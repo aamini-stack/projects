@@ -43,10 +43,21 @@
 			"editor.wordWrap": "on",
 		},
 
-		// Ark Types: https://arktype.io/docs/intro/setup#settings
-		"editor.quickSuggestions": {
-			"strings": "on",
+		// Tailwind
+		"files.associations": {
+			"*.css": "tailwindcss",
 		},
+		"editor.quickSuggestions": {
+			"strings": true,
+		},
+		"tailwindCSS.includeLanguages": {
+			"astro": "html",
+		},
+		"tailwindCSS.experimental.configFile": {
+			"libs/ui/src/styles/globals.css": "apps/**",
+		},
+
+		// Ark Types: https://arktype.io/docs/intro/setup#settings
 		"typescript.preferences.autoImportSpecifierExcludeRegexes": [
 			"^(node:)?os$",
 		],
