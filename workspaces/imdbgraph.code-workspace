@@ -2,15 +2,15 @@
 	"folders": [
 		{
 			"name": "imdbgraph",
-			"path": "./apps/imdbgraph",
+			"path": "../apps/imdbgraph",
 		},
 		{
 			"name": "@aamini/libs",
-			"path": "./libs",
+			"path": "../libs",
 		},
 		{
 			"name": "@aamini/root",
-			"path": ".",
+			"path": "..",
 		},
 	],
 	"settings": {

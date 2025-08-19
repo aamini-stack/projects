@@ -2,15 +2,15 @@
 	"folders": [
 		{
 			"name": "dota-visualizer",
-			"path": "./apps/dota-visualizer",
+			"path": "../apps/dota-visualizer",
 		},
 				{
 			"name": "@aamini/libs",
-			"path": "./libs",
+			"path": "../libs",
 		},
 		{
 			"name": "@aamini/root",
-			"path": ".",
+			"path": "..",
 		},
 	],
 	"settings": {

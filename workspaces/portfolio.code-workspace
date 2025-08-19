@@ -2,15 +2,15 @@
 	"folders": [
 		{
 			"name": "portfolio",
-			"path": "./apps/portfolio",
+			"path": "../apps/portfolio",
 		},
 		{
 			"name": "@aamini/libs",
-			"path": "./libs",
+			"path": "../libs",
 		},
 		{
 			"name": "@aamini/root",
-			"path": ".",
+			"path": "..",
 		},
 	],
 	"settings": {

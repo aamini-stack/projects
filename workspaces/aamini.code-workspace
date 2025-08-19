@@ -2,23 +2,23 @@
 	"folders": [
 		{
 			"name": "@aamini/root",
-			"path": ".",
+			"path": "..",
 		},
 		{
 			"name": "@aamini/libs",
-			"path": "./libs",
+			"path": "../libs",
 		},
 		{
 			"name": "dota-visualizer",
-			"path": "./apps/dota-visualizer",
+			"path": "../apps/dota-visualizer",
 		},
 		{
 			"name": "imdbgraph",
-			"path": "./apps/imdbgraph",
+			"path": "../apps/imdbgraph",
 		},
 		{
 			"name": "portfolio",
-			"path": "./apps/portfolio",
+			"path": "../apps/portfolio",
 		},
 	],
 	"settings": {
