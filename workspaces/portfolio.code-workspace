@@ -5,8 +5,8 @@
 			"path": "../apps/portfolio",
 		},
 		{
-			"name": "@aamini/libs",
-			"path": "../libs",
+			"name": "@aamini/ui",
+			"path": "../libs/ui",
 		},
 		{
 			"name": "@aamini/root",

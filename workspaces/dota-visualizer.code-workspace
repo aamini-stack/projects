@@ -4,9 +4,9 @@
 			"name": "dota-visualizer",
 			"path": "../apps/dota-visualizer",
 		},
-				{
-			"name": "@aamini/libs",
-			"path": "../libs",
+		{
+			"name": "@aamini/ui",
+			"path": "../libs/ui",
 		},
 		{
 			"name": "@aamini/root",
