@@ -1,0 +1,74 @@
+{
+	"folders": [
+		{
+			"name": "portfolio",
+			"path": "./apps/portfolio",
+		},
+		{
+			"name": "@aamini/libs",
+			"path": "./libs",
+		},
+		{
+			"name": "@aamini/root",
+			"path": ".",
+		},
+	],
+	"settings": {
+		// General
+		"git.autofetch": true,
+		"files.autoSave": "afterDelay",
+		"files.exclude": {
+			"**/node_modules/": true,
+			"**/.next/": true,
+			"**/.swc/": true,
+			"**/.turbo": true,
+			"**/.astro": true,
+			"**/dist": true,
+			"**/.vercel": true,
+			"**/playwright-report": true,
+			"**/test-results": true,
+		},
+
+		// Formatting
+		"editor.formatOnPaste": true,
+		"editor.formatOnSave": true,
+		"editor.rulers": [80],
+		"editor.defaultFormatter": "esbenp.prettier-vscode",
+		"editor.codeActionsOnSave": {
+			"source.fixAll.oxc": "explicit",
+			"source.organizeImports": "always",
+		},
+		"typescript.preferences.importModuleSpecifier": "non-relative",
+		"[markdown]": {
+			"editor.wordWrap": "on",
+		},
+
+		// Ark Types: https://arktype.io/docs/intro/setup#settings
+		"editor.quickSuggestions": {
+			"strings": "on",
+		},
+		"typescript.preferences.autoImportSpecifierExcludeRegexes": [
+			"^(node:)?os$",
+		],
+	},
+	"extensions": {
+		"recommendations": [
+			// Framework (Astro, React, Tailwind)
+			"astro-build.astro-vscode",
+			"bradlc.vscode-tailwindcss",
+			// JS
+			"xabikos.javascriptsnippets",
+			// Testing
+			"ms-playwright.playwright",
+			"vitest.explorer",
+			// Format
+			"editorconfig.editorconfig",
+			"esbenp.prettier-vscode",
+			// Lint
+			"oxc.oxc-vscode",
+			// Infra
+			"github.vscode-github-actions",
+			"mikestead.dotenv",
+		],
+	},
+}
