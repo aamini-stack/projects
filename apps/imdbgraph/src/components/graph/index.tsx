@@ -1,12 +1,13 @@
 'use client'
 
+import '@/components/graph/highcharts.css'
+import type { Episode, Ratings } from '@/lib/imdb/types'
+import { theme } from '@/lib/store'
+import { cn } from '@aamini/ui/lib/utils'
+import { useStore } from '@nanostores/react'
 import Highcharts from 'highcharts'
 import { HighchartsReact } from 'highcharts-react-official'
-import type { Episode, Ratings } from '@/lib/imdb/types'
 import 'highcharts/esm/modules/accessibility'
-import { useStore } from '@nanostores/react'
-import { theme } from '@/lib/utils/client-store'
-import { cn } from '@/lib/utils/tailwind'
 
 export function Graph({ ratings }: { ratings: Ratings }) {
 	const $theme = useStore(theme)
