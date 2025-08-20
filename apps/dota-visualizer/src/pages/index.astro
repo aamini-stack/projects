@@ -27,7 +27,7 @@ const heroDictionary = await fetchLatestHeroData()
     />
     <Font cssVariable="--font-inter" preload />
   </head>
-  <body class="bg-red antialiased">
+  <body class="bg-red antialiased font-sans">
     <main class="flex min-h-screen flex-col items-center justify-center p-24">
       <h1 class="mb-8 text-4xl font-bold">Dota 2 Hero Stats</h1>
       <HeroStats client:load heroDictionary={heroDictionary} />
