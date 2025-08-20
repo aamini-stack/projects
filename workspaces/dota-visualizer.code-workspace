@@ -54,7 +54,7 @@
 			"astro": "html",
 		},
 		"tailwindCSS.experimental.configFile": {
-			"libs/ui/src/styles/globals.css": "apps/**",
+			"../libs/ui/src/styles/globals.css": "../apps/**",
 		},
 
 		// Ark Types: https://arktype.io/docs/intro/setup#settings
