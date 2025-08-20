@@ -1,13 +1,13 @@
 'use client'
 
+import type { Show } from '@/lib/imdb/types'
+import { formatYears } from '@/lib/imdb/types'
+import { queryClient } from '@/lib/react-query'
+import { cn } from '@aamini/ui/lib/utils'
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { useCombobox } from 'downshift'
 import { Search as SearchIcon, Star } from 'lucide-react'
 import { useDeferredValue, useEffect, useState } from 'react'
-import type { Show } from '@/lib/imdb/types'
-import { formatYears } from '@/lib/imdb/types'
-import { queryClient } from '@/lib/utils/client-store'
-import { cn } from '@/lib/utils/tailwind'
 
 /** https://www.w3.org/WAI/ARIA/apg/patterns/combobox/examples/combobox-autocomplete-list/ */
 export function SearchBar() {

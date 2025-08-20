@@ -1,10 +1,12 @@
 {
 	"folders": [
 		{
+			"name": "dota-visualizer",
 			"path": "../apps/dota-visualizer",
 		},
 		{
-			"path": "../libs",
+			"name": "@aamini/ui",
+			"path": "../libs/ui",
 		},
 		{
 			"name": "@aamini/root",
@@ -41,28 +43,44 @@
 			"editor.wordWrap": "on",
 		},
 
-		// Ark Types: https://arktype.io/docs/intro/setup#settings
-		"editor.quickSuggestions": {
-			"strings": "on",
+		// Tailwind
+		"files.associations": {
+			"*.css": "tailwindcss",
 		},
+		"editor.quickSuggestions": {
+			"strings": true,
+		},
+		"tailwindCSS.includeLanguages": {
+			"astro": "html",
+		},
+		"tailwindCSS.experimental.configFile": {
+			"../libs/ui/src/styles/globals.css": "../apps/**",
+		},
+
+		// Ark Types: https://arktype.io/docs/intro/setup#settings
+		// "editor.quickSuggestions": {
+		// 	"strings": "on",
+		// },
 		"typescript.preferences.autoImportSpecifierExcludeRegexes": [
 			"^(node:)?os$",
 		],
 	},
 	"extensions": {
 		"recommendations": [
-			// JS
+			// Framework (Astro, React, Tailwind)
 			"astro-build.astro-vscode",
 			"bradlc.vscode-tailwindcss",
+			// JS
 			"xabikos.javascriptsnippets",
-			// Test
+			// Testing
 			"ms-playwright.playwright",
 			"vitest.explorer",
-			// Format/Lint
+			// Format
 			"editorconfig.editorconfig",
 			"esbenp.prettier-vscode",
+			// Lint
 			"oxc.oxc-vscode",
-			// Other
+			// Infra
 			"github.vscode-github-actions",
 			"mikestead.dotenv",
 		],

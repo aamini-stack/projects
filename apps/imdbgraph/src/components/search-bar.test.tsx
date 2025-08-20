@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event'
 import { expect, test, vi } from 'vitest'
 import { SearchBar } from './search-bar'
 
-vi.mock(import('@/lib/utils/client-store'), () => ({
+vi.mock(import('@/lib/react-query'), () => ({
 	queryClient: new QueryClient({
 		defaultOptions: {
 			queries: {

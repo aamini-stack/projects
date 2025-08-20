@@ -7,6 +7,6 @@
 		"./*": "./tsconfig.*.json"
 	},
 	"peerDependencies": {
-		"typescript": "5.8.2"
+		"typescript": "^5.8.3"
 	}
 }
