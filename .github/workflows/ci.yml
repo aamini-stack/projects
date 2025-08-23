@@ -42,7 +42,7 @@ jobs:
       - name: Get Apps
         id: get-apps
         run: |
-          APPS=$(pnpm turbo ls --output=json --filter="./apps/*" | jq -c '[.packages.items[] | .name]')
+          APPS=$(pnpm turbo ls --affected --output=json --filter="./apps/*" | jq -c '[.packages.items[] | .name]')
           echo "apps=$APPS" >> $GITHUB_OUTPUT
       - name: Install Vercel CLI
         run: pnpm add --global vercel@latest
@@ -52,6 +52,7 @@ jobs:
         run: vercel deploy --yes --token=${{ secrets.VERCEL_TOKEN }} --scope=${{ vars.TURBO_TEAM }} ${{ github.ref == 'refs/heads/main' && '--prod' || '' }}
 
   e2e:
+    if: ${{ needs.deploy.outputs.apps != '[]' }}
     runs-on: windows-latest
     needs: [deploy]
     strategy:
