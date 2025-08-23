@@ -4,8 +4,11 @@ import { sendEmail } from '@/lib/email'
 
 export const server = {
 	sendEmail: defineAction({
-		input: z.object({ message: z.string().nonempty() }),
-		handler: async ({ message }, context) =>
-			sendEmail({ message, ipAddress: context.clientAddress }),
+		input: z.object({
+			message: z.string().nonempty(),
+			email: z.string().email(),
+		}),
+		handler: async ({ message, email }, context) =>
+			sendEmail({ message, email, ipAddress: context.clientAddress }),
 	}),
 }

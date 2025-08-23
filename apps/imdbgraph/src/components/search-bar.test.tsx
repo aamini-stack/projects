@@ -17,6 +17,7 @@ vi.mock(import('@/lib/react-query'), () => ({
 test('basic search', async () => {
 	const user = userEvent.setup()
 	render(<SearchBar />)
+
 	const searchBar = await screen.findByRole('combobox')
 	await user.type(searchBar, 'avatar')
 	expect(await screen.findByTestId('loading-spinner')).toBeVisible()
@@ -25,8 +26,8 @@ test('basic search', async () => {
 
 test('no results', async () => {
 	const user = userEvent.setup()
-
 	render(<SearchBar />)
+
 	const searchBar = await screen.findByRole('combobox')
 	await user.type(searchBar, 'blah')
 	expect(await screen.findByTestId('loading-spinner')).toBeVisible()
@@ -34,9 +35,11 @@ test('no results', async () => {
 })
 
 test('error message', async () => {
+	const user = userEvent.setup()
 	render(<SearchBar />)
+
 	const searchBar = await screen.findByRole('combobox')
-	await userEvent.type(searchBar, 'error')
+	await user.type(searchBar, 'error')
 	await waitFor(async () =>
 		expect(
 			await screen.findByText(/Something went wrong. Please try again./i),

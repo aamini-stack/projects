@@ -3,24 +3,27 @@
 	"type": "module",
 	"private": "true",
 	"exports": {
-		"./globals.css": "./src/styles/globals.css",
-		"./postcss.config": "./postcss.config.mjs",
+		"./globals.css": "./src/themes/standard/globals.css",
 		"./lib/*": "./src/lib/*.ts",
-		"./components/*": "./src/components/*.tsx",
-		"./hooks/*": "./src/hooks/*.ts"
+		"./components/*": "./src/themes/standard/components/*.tsx",
+		"./neobrutalist/*": "./src/themes/neobrutalist/*.tsx",
+		"./neobrutalist.css": "./src/themes/neobrutalist/neobrutalist.css"
 	},
 	"scripts": {
 		"dev": "tsc --watch",
 		"build": "tsc",
-		"check-types": "tsc --noEmit"
+		"typecheck": "tsc --noEmit"
 	},
 	"dependencies": {
+		"@radix-ui/react-label": "^2.1.7",
+		"@radix-ui/react-navigation-menu": "^1.2.14",
 		"@radix-ui/react-slot": "^1.2.3",
 		"class-variance-authority": "^0.7.1",
 		"clsx": "^2.1.1",
 		"lucide-react": "^0.525.0",
 		"react": "^19.1.0",
 		"react-dom": "^19.1.0",
+		"react-hook-form": "^7.62.0",
 		"tailwind-merge": "^3.3.1"
 	},
 	"devDependencies": {

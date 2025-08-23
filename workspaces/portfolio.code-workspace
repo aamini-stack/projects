@@ -1,22 +1,19 @@
 {
 	"folders": [
 		{
-			"name": "portfolio",
-			"path": "../apps/portfolio",
+			"name": "@aamini/root",
+			"path": "..",
 		},
 		{
 			"name": "@aamini/ui",
 			"path": "../libs/ui",
 		},
 		{
-			"name": "@aamini/root",
-			"path": "..",
+			"name": "portfolio",
+			"path": "../apps/portfolio",
 		},
 	],
 	"settings": {
-		// General
-		"git.autofetch": true,
-		"files.autoSave": "afterDelay",
 		"files.exclude": {
 			"**/node_modules/": true,
 			"**/.next/": true,
@@ -28,58 +25,28 @@
 			"**/playwright-report": true,
 			"**/test-results": true,
 		},
-
-		// Formatting
-		"editor.formatOnPaste": true,
-		"editor.formatOnSave": true,
-		"editor.rulers": [80],
-		"editor.defaultFormatter": "esbenp.prettier-vscode",
-		"editor.codeActionsOnSave": {
-			"source.fixAll.oxc": "explicit",
-			"source.organizeImports": "always",
-		},
-		"typescript.preferences.importModuleSpecifier": "non-relative",
-		"[markdown]": {
-			"editor.wordWrap": "on",
-		},
-
-		// Tailwind
 		"files.associations": {
 			"*.css": "tailwindcss",
 		},
-		"editor.quickSuggestions": {
-			"strings": true,
-		},
-		"tailwindCSS.includeLanguages": {
-			"astro": "html",
-		},
-		"tailwindCSS.experimental.configFile": {
-			"../libs/ui/src/styles/globals.css": "../apps/**",
-		},
-
-		// Ark Types: https://arktype.io/docs/intro/setup#settings
-		"typescript.preferences.autoImportSpecifierExcludeRegexes": [
-			"^(node:)?os$",
-		],
+		"tailwindCSS.classFunctions": ["cn", "cva", "clsx", "twMerge"],
 	},
-	"extensions": {
-		"recommendations": [
-			// Framework (Astro, React, Tailwind)
-			"astro-build.astro-vscode",
-			"bradlc.vscode-tailwindcss",
-			// JS
-			"xabikos.javascriptsnippets",
-			// Testing
-			"ms-playwright.playwright",
-			"vitest.explorer",
-			// Format
-			"editorconfig.editorconfig",
-			"esbenp.prettier-vscode",
-			// Lint
-			"oxc.oxc-vscode",
-			// Infra
-			"github.vscode-github-actions",
-			"mikestead.dotenv",
+	"launch": {
+		"version": "0.2.0",
+		"configurations": [
+			{
+				"name": "Server",
+				"request": "launch",
+				"cwd": "${workspaceFolder}/apps/portfolio",
+				"command": "pnpm run dev",
+				"type": "node-terminal",
+			},
+			{
+				"name": "Client",
+				"type": "chrome",
+				"request": "launch",
+				"cwd": "${workspaceFolder}/apps/portfolio",
+				"url": "http://localhost:4003",
+			},
 		],
 	},
 }

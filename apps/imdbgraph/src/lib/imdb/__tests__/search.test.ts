@@ -1,4 +1,3 @@
-// oxlint-disable no-empty-pattern
 import { fetchSuggestions } from '@/lib/imdb/search'
 import { initDb, test } from '__mocks__/setup-db'
 import { show } from 'db/tables'

@@ -3,7 +3,7 @@ import type { Tech } from '@/lib/skills'
 export function SkillBubble({ tech }: { tech: Tech }) {
 	return (
 		<div
-			className="box-shadow relative flex h-28 w-28 flex-col rounded-base border border-border bg-background p-2 text-center"
+			className="box-shadow rounded-base border-border bg-background relative flex h-28 w-28 flex-col border p-2 text-center"
 			key={tech.name}
 		>
 			{tech.name}

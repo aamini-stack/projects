@@ -10,9 +10,11 @@ const mailgun = new Mailgun(FormData)
 export async function sendEmail({
 	message,
 	ipAddress,
+	email,
 }: {
 	message: string
 	ipAddress: string
+	email: string
 }) {
 	if (!ipAddress) {
 		throw new ActionError({ code: 'BAD_REQUEST' })
@@ -36,6 +38,7 @@ export async function sendEmail({
 			to: 'Aria Amini <aamini1024@gmail.com>',
 			subject: 'New Contact Form Submission',
 			text: message,
+			'h:Reply-To': email,
 		})
 	} catch (error) {
 		throw new ActionError({
