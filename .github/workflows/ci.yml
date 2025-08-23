@@ -28,7 +28,7 @@ jobs:
       - uses: ./.github/actions/setup
       # Action
       - name: 'Verify'
-        run: pnpm turbo run format typecheck lint test
+        run: pnpm turbo run build format typecheck lint test
 
   deploy:
     runs-on: ubuntu-latest
