@@ -19,9 +19,6 @@ env:
   TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
   TURBO_TEAM: ${{ vars.TURBO_TEAM }}
 
-permissions:
-  contents: write
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -62,6 +59,7 @@ jobs:
         app: ${{ fromJson(needs.deploy.outputs.apps) }}
     permissions:
       pull-requests: write
+      contents: write
     steps:
       # Setup
       - uses: actions/checkout@v4
