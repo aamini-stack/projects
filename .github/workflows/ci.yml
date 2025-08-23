@@ -30,7 +30,7 @@ jobs:
       - name: 'Verify'
         run: pnpm turbo run build format typecheck lint test
 
-  deploy:
+  change-set:
     runs-on: ubuntu-latest
     outputs:
       apps: ${{ steps.get-apps.outputs.apps }}
@@ -44,20 +44,34 @@ jobs:
         run: |
           APPS=$(pnpm turbo ls --affected --output=json --filter="./apps/*" | jq -c '[.packages.items[] | .name]')
           echo "apps=$APPS" >> $GITHUB_OUTPUT
+  
+  deploy:
+    needs: [change-set]
+    if: ${{ needs.change-set.outputs.apps != '[]' }}
+    strategy:
+      matrix:
+        app: ${{ fromJson(needs.change-set.outputs.apps) }}
+    runs-on: ubuntu-latest
+    steps:
+      # Setup
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      # Action
       - name: Install Vercel CLI
         run: pnpm add --global vercel@latest
       - name: Link
-        run: vercel link --repo --yes --token=${{ secrets.VERCEL_TOKEN }} --scope=${{ vars.TURBO_TEAM }}
+        working-directory: ./apps/${{ matrix.app }}
+        run: vercel link --yes --token=${{ secrets.VERCEL_TOKEN }} --scope=${{ vars.TURBO_TEAM }}
       - name: Deploy
         run: vercel deploy --yes --token=${{ secrets.VERCEL_TOKEN }} --scope=${{ vars.TURBO_TEAM }} ${{ github.ref == 'refs/heads/main' && '--prod' || '' }}
 
   e2e:
-    if: ${{ needs.deploy.outputs.apps != '[]' }}
+    needs: [change-set, deploy]
+    if: ${{ needs.change-set.outputs.apps != '[]' }}
     runs-on: windows-latest
-    needs: [deploy]
     strategy:
       matrix:
-        app: ${{ fromJson(needs.deploy.outputs.apps) }}
+        app: ${{ fromJson(needs.change-set.outputs.apps) }}
     permissions:
       pull-requests: write
       contents: write
