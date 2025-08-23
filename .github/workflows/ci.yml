@@ -47,7 +47,7 @@ jobs:
   
   deploy:
     needs: [change-set]
-    if: ${{ needs.change-set.outputs.apps != '[]' }}
+    if: ${{ needs.change-set.outputs.apps != '' }}
     strategy:
       matrix:
         app: ${{ fromJson(needs.change-set.outputs.apps) }}
