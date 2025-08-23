@@ -1,0 +1,25 @@
+{
+	// General
+	"git.autofetch": true,
+	"files.autoSave": "afterDelay",
+
+	// Formatting
+	"editor.formatOnPaste": true,
+	"editor.formatOnSave": true,
+	"editor.rulers": [80],
+	"editor.defaultFormatter": "esbenp.prettier-vscode",
+	"editor.codeActionsOnSave": {
+		"source.fixAll.oxc": "explicit",
+		"source.organizeImports": "always"
+	},
+	"typescript.preferences.importModuleSpecifier": "non-relative",
+	"[markdown]": {
+		"editor.wordWrap": "on"
+	},
+
+	// Ark Types: https://arktype.io/docs/intro/setup#settings
+	"editor.quickSuggestions": {
+		"strings": "on"
+	},
+	"typescript.preferences.autoImportSpecifierExcludeRegexes": ["^(node:)?os$"]
+}

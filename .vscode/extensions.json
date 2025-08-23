@@ -1,0 +1,20 @@
+{
+	"recommendations": [
+		// Framework (Astro, React, Tailwind)
+		"astro-build.astro-vscode",
+		"bradlc.vscode-tailwindcss",
+		// JS
+		"xabikos.javascriptsnippets",
+		// Testing
+		"ms-playwright.playwright",
+		"vitest.explorer",
+		// Format
+		"editorconfig.editorconfig",
+		"esbenp.prettier-vscode",
+		// Lint
+		"oxc.oxc-vscode",
+		// Infra
+		"github.vscode-github-actions",
+		"mikestead.dotenv"
+	]
+}

@@ -1,5 +1,19 @@
 {
 	"singleQuote": true,
 	"semi": false,
-	"plugins": ["@prettier/plugin-oxc", "prettier-plugin-organize-imports"]
+	"useTabs": true,
+	"plugins": [
+		"@prettier/plugin-oxc",
+		"prettier-plugin-organize-imports",
+		"prettier-plugin-astro",
+		"prettier-plugin-tailwindcss"
+	],
+	"overrides": [
+		{
+			"files": "*.astro",
+			"options": {
+				"parser": "astro"
+			}
+		}
+	]
 }

@@ -5,21 +5,29 @@
 	"type": "module",
 	"scripts": {
 		"build": "turbo build",
-		"format": "prettier     --check **/*.{js,ts,tsx,json,html,css,md,yml,yaml}",
+		"format": "prettier --check **/*.{js,ts,tsx,json,html,css,md,yml,yaml}",
 		"format:fix": "prettier --write **/*.{js,ts,tsx,json,html,css,md,yml,yaml}",
-		"check-types": "turbo run check-types",
-		"lint": "oxlint --type-aware",
+		"typecheck": "turbo run typecheck",
+		"lint": "oxlint --type-aware --max-warnings=0",
 		"test": "turbo run test",
+		"test:projects": "vitest run",
+		"test:projects:watch": "vitest --watch",
 		"e2e": "turbo run e2e",
-		"verify": "turbo run format build lint test check-types e2e"
+		"e2e:update": "turbo run e2e:update",
+		"verify": "turbo run format build lint test typecheck e2e"
 	},
 	"devDependencies": {
 		"@prettier/plugin-oxc": "^0.0.4",
+		"@vitejs/plugin-react": "^4.7.0",
 		"oxlint": "^1.12.0",
 		"oxlint-tsgolint": "^0.0.4",
 		"prettier": "^3.6.2",
+		"prettier-plugin-astro": "^0.14.1",
 		"prettier-plugin-organize-imports": "^4.2.0",
-		"turbo": "^2.5.5"
+		"prettier-plugin-tailwindcss": "^0.6.14",
+		"turbo": "^2.5.5",
+		"vite-tsconfig-paths": "^5.1.4",
+		"vitest": "^3.2.4"
 	},
 	"packageManager": "pnpm@10.14.0",
 	"engines": {

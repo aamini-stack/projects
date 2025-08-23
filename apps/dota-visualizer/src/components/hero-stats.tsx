@@ -64,10 +64,10 @@ function StatCard({
 	)
 	return (
 		<div key={attribute} className="w-full p-2">
-			<div className="overflow-hidden truncate whitespace-nowrap font-bold text-sm">
+			<div className="overflow-hidden truncate whitespace-nowrap text-sm font-bold">
 				{displayNames[attribute]}: {hero[attribute]}
 			</div>
-			<div className="text-gray-500 text-sm">
+			<div className="text-sm text-gray-500">
 				<span style={{ color: getPercentileColor(percentile) }}>
 					{percentile}th percentile
 				</span>
@@ -91,7 +91,7 @@ function StatGroup({
 }) {
 	return (
 		<div className="min-w-[200px] flex-shrink-0 rounded border p-4">
-			<h3 className="mb-3 font-semibold text-xl">{title}</h3>
+			<h3 className="mb-3 text-xl font-semibold">{title}</h3>
 			<div className="flex flex-col gap-1">
 				{attributes.map((attr) => (
 					<StatCard
@@ -157,7 +157,7 @@ export function HeroStats({
 				/>
 			</div>
 			<div>
-				<h2 className="flex gap-2 font-bold text-2xl capitalize">
+				<h2 className="flex gap-2 text-2xl font-bold capitalize">
 					{name} <img src={hero.iconImage} alt="" width={32} height={32} />
 				</h2>
 				<div className="mt-4 flex flex-nowrap gap-8 overflow-x-auto">

@@ -10,12 +10,12 @@ export const handlers = [
 		if (query === 'avatar') {
 			return HttpResponse.json([
 				{
-					id: '1',
+					imdbId: 'tt0417299',
 					title: 'Avatar: The Last Airbender',
-					year: 2005,
-					image: '',
+					startYear: '2005',
+					endYear: '2008',
 					rating: 9.3,
-					numVotes: 1000000,
+					numVotes: 410746,
 				},
 			])
 		}

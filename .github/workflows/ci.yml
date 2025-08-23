@@ -7,6 +7,13 @@ on:
   pull_request:
     branches:
       - main
+  workflow_dispatch:
+    inputs:
+      update_snapshots:
+        description: 'Update Playwright snapshots'
+        required: false
+        type: boolean
+        default: false
 
 env:
   TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
@@ -21,9 +28,9 @@ jobs:
       - uses: ./.github/actions/setup
       # Action
       - name: 'Verify'
-        run: pnpm turbo run format check-types lint test
+        run: pnpm turbo run build format typecheck lint test
 
-  deploy:
+  change-set:
     runs-on: ubuntu-latest
     outputs:
       apps: ${{ steps.get-apps.outputs.apps }}
@@ -35,34 +42,62 @@ jobs:
       - name: Get Apps
         id: get-apps
         run: |
-          APPS=$(pnpm turbo ls --output=json --filter="./apps/*" | jq -c '[.packages.items[] | .name]')
+          APPS=$(pnpm turbo ls --affected --output=json --filter="./apps/*" | jq -c '[.packages.items[] | .name]')
           echo "apps=$APPS" >> $GITHUB_OUTPUT
-      - name: Install Vercel CLI
-        run: pnpm add --global vercel@latest
-      - name: Link
-        run: vercel link --repo --yes --token=${{ secrets.VERCEL_TOKEN }} --scope=${{ vars.TURBO_TEAM }}
-      - name: Deploy
-        run: vercel deploy --yes --token=${{ secrets.VERCEL_TOKEN }} --scope=${{ vars.TURBO_TEAM }} ${{ github.ref == 'refs/heads/main' && '--prod' || '' }}
 
-  e2e:
-    runs-on: windows-latest
-    needs: [deploy]
+  deploy:
+    needs: [change-set]
+    if: ${{ needs.change-set.outputs.apps != '' }}
     strategy:
       matrix:
-        app: ${{ fromJson(needs.deploy.outputs.apps) }}
-    permissions:
-      pull-requests: write
+        app: ${{ fromJson(needs.change-set.outputs.apps) }}
+    runs-on: ubuntu-latest
     steps:
       # Setup
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
       # Action
+      - name: Install Vercel CLI
+        run: pnpm add --global vercel@latest
+      - name: Link
+        working-directory: ./apps/${{ matrix.app }}
+        run: vercel link --yes --token=${{ secrets.VERCEL_TOKEN }} --scope=${{ vars.TURBO_TEAM }}
+      - name: Deploy
+        run: vercel deploy --yes --token=${{ secrets.VERCEL_TOKEN }} --scope=${{ vars.TURBO_TEAM }} ${{ github.ref == 'refs/heads/main' && '--prod' || '' }}
+
+  e2e:
+    needs: [change-set, deploy]
+    if: ${{ needs.change-set.outputs.apps != '' }}
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        app: ${{ fromJson(needs.change-set.outputs.apps) }}
+    permissions:
+      pull-requests: write
+      contents: write
+    steps:
+      # Setup
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
       - name: Install Playwright Browsers
-        run: pnpm dlx playwright install --with-deps
+        working-directory: ./apps/${{ matrix.app }}
+        run: pnpm exec playwright install --with-deps
+      # Run Tests
       - name: Run Playwright tests
+        working-directory: ./apps/${{ matrix.app }}
         env:
           BASE_URL: https://${{ matrix.app }}-git-${{ github.head_ref || github.ref_name }}-${{ env.TURBO_TEAM }}.vercel.app
-        run: pnpm turbo run e2e --filter=${{ matrix.app }}
+        run: pnpm turbo run e2e${{ github.event.inputs.update_snapshots == 'true' && ':update' || '' }}
+      # Update Screenshots (Optional)
+      - name: Update Screenshots
+        if: ${{ !failure() && github.event.inputs.update_snapshots == 'true' }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "*/*.png"
+          git commit -m "Update Screenshots"
+          git push
+      # Report
       - uses: actions/upload-artifact@v4
         id: artifact-upload
         if: ${{ failure() }}

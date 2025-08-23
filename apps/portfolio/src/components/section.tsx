@@ -7,7 +7,7 @@ export const Section = ({
 }: React.ComponentProps<'section'>) => {
 	return (
 		<section className={cn('border-t-2 px-6 py-16', className)} {...props}>
-			<h2 className="pb-12 text-center font-bold text-5xl">{props.title}</h2>
+			<h2 className="pb-12 text-center text-5xl font-bold">{props.title}</h2>
 			<div className="flex items-center justify-center">{props.children}</div>
 		</section>
 	)

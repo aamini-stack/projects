@@ -4,6 +4,7 @@ import * as schema from 'db/tables'
 import { type NodePgDatabase, drizzle } from 'drizzle-orm/node-postgres'
 import { migrate } from 'drizzle-orm/node-postgres/migrator'
 import { reset } from 'drizzle-seed'
+import path from 'node:path'
 import { Pool } from 'pg'
 import { test as baseTest } from 'vitest'
 
@@ -28,7 +29,9 @@ export const test = baseTest.extend<DbFixture>({
 
 			// Setup
 			await db.execute('CREATE EXTENSION pg_trgm')
-			await migrate(db, { migrationsFolder: 'db/migrations' })
+			await migrate(db, {
+				migrationsFolder: path.join(import.meta.dirname, '../db/migrations'),
+			})
 			await reset(db, schema)
 			if (seedFunction) {
 				await seedFunction(db)

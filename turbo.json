@@ -34,17 +34,23 @@
 		"//#lint:fix": {
 			"cache": false
 		},
-		"check-types": {
-			"dependsOn": ["build", "^check-types"]
+		"typecheck": {
+			"dependsOn": ["build", "^typecheck"]
 		},
 		"test": {
-			"dependsOn": ["build", "^test"]
+			"dependsOn": ["^test"]
 		},
 		"test:watch": {
 			"cache": false,
 			"persistent": true
 		},
 		"e2e": {
+			"dependsOn": ["build"],
+			"env": ["BASE_URL", "CI"],
+			"passThroughEnv": ["PLAYWRIGHT_*"]
+		},
+		"e2e:update": {
+			"cache": false,
 			"dependsOn": ["build"],
 			"env": ["BASE_URL", "CI"],
 			"passThroughEnv": ["PLAYWRIGHT_*"]

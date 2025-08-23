@@ -1,12 +1,7 @@
 'use client'
 
-import { actions } from 'astro:actions'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
-import { toast } from 'sonner'
-import * as z from 'zod'
 import Email from '@/components/icons/email.svg'
-import { Button } from '@/components/primitives/button'
+import { Button } from '@aamini/ui/neobrutalist/components/button'
 import {
 	Card,
 	CardContent,
@@ -14,7 +9,7 @@ import {
 	CardFooter,
 	CardHeader,
 	CardTitle,
-} from '@/components/primitives/card'
+} from '@aamini/ui/neobrutalist/components/card'
 import {
 	Form,
 	FormControl,
@@ -22,11 +17,21 @@ import {
 	FormItem,
 	FormLabel,
 	FormMessage,
-} from '@/components/primitives/form'
-import { Textarea } from '@/components/primitives/textarea'
+} from '@aamini/ui/neobrutalist/components/form'
+import { Textarea } from '@aamini/ui/neobrutalist/components/textarea'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { actions } from 'astro:actions'
+import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
+import * as z from 'zod'
+import { Input } from '@aamini/ui/neobrutalist/components/input'
 
 const formSchema = z.object({
-	message: z.string().nonempty(),
+	email: z
+		.string()
+		.email({ message: 'Invalid email address' })
+		.nonempty({ message: 'Email is required' }),
+	message: z.string().nonempty({ message: 'Message is required' }),
 })
 
 type FormValues = z.infer<typeof formSchema>
@@ -35,12 +40,16 @@ export function ContactCard() {
 	const form = useForm<FormValues>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
+			email: '',
 			message: '',
 		},
 	})
 
 	async function onSubmit(values: z.infer<typeof formSchema>) {
-		const { error } = await actions.sendEmail({ message: values.message })
+		const { error } = await actions.sendEmail({
+			message: values.message,
+			email: values.email,
+		})
 		if (error) {
 			toast.error('An unexpected error occurred')
 		} else {
@@ -57,7 +66,7 @@ export function ContactCard() {
 				method="POST"
 				onSubmit={form.handleSubmit(onSubmit)}
 			>
-				<Card>
+				<Card data-testid="contact-card">
 					<CardHeader>
 						<CardTitle>Reach out!</CardTitle>
 						<CardDescription>
@@ -71,7 +80,20 @@ export function ContactCard() {
 							or fill out the form below
 						</CardDescription>
 					</CardHeader>
-					<CardContent>
+					<CardContent className="flex flex-col gap-4">
+						<FormField
+							control={form.control}
+							name="email"
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>Email</FormLabel>
+									<FormControl>
+										<Input placeholder="your.email@example.com" {...field} />
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
 						<FormField
 							control={form.control}
 							name="message"

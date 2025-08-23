@@ -1,5 +1,8 @@
 'use client'
 
+import type { JobInfo } from '@/lib/jobs'
+import { Button } from '@aamini/ui/neobrutalist/components/button'
+import { Card } from '@aamini/ui/neobrutalist/components/card'
 import {
 	Collapsible,
 	CollapsibleContent,
@@ -7,9 +10,6 @@ import {
 } from '@radix-ui/react-collapsible'
 import { ChevronsUpDown } from 'lucide-react'
 import { useState } from 'react'
-import { Button } from '@/components/primitives/button'
-import { Card } from '@/components/primitives/card'
-import type { JobInfo } from '@/lib/jobs'
 
 export function JobBubble({ job }: { job: JobInfo }) {
 	const header = job.bulletPoints[0]
@@ -28,7 +28,7 @@ export function JobBubble({ job }: { job: JobInfo }) {
 						width={40}
 					/>
 				</div>
-				<hgroup className="mr-12 ml-2 flex flex-1 flex-col">
+				<hgroup className="ml-2 mr-12 flex flex-1 flex-col">
 					<h2>{job.company}</h2>
 					<p className="text-sm">{job.role}</p>
 				</hgroup>
