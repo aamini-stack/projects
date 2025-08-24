@@ -7,13 +7,13 @@
 			"inputs": ["$TURBO_DEFAULT$", ".env*"],
 			"outputs": [".astro/**", ".vercel/**", "dist/**"]
 		},
-		"build:imdbgraph": {
+		"build#imdbgraph": {
 			"dependsOn": ["^build"],
 			"inputs": ["$TURBO_DEFAULT$", ".env*"],
 			"outputs": [".astro/**", ".vercel/**", "dist/**"],
 			"env": ["DATABASE_URL", "CRON_SECRET"]
 		},
-		"build:portfolio": {
+		"build#portfolio": {
 			"dependsOn": ["^build"],
 			"inputs": ["$TURBO_DEFAULT$", ".env*"],
 			"outputs": [".astro/**", ".vercel/**", "dist/**"],
