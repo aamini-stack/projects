@@ -56,8 +56,8 @@
 			}),
 			(e.__SV = 1))
 	})(document, window.posthog || [])
-	posthog.init('phc_LWC2pawiFEeBiZTp3rxnzsebkRVJ1ZkOwsTiZARWXgC', {
-		api_host: 'https://us.i.posthog.com',
-		defaults: '2025-05-24',
+	posthog.init(import.meta.env.PUBLIC_POSTHOG_KEY, {
+		api_host: '/relay-JAXX',
+		ui_host: 'https://us.posthog.com',
 	})
 </script>

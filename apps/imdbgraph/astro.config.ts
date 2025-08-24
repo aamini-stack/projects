@@ -8,7 +8,14 @@ export default defineConfig({
 	integrations: [react()],
 	env: {
 		schema: {
-			DATABASE_URL: envField.string({ context: 'server', access: 'secret' }),
+			PUBLIC_POSTHOG_KEY: envField.string({
+				context: 'client',
+				access: 'public',
+			}),
+			DATABASE_URL: envField.string({
+				context: 'server',
+				access: 'secret',
+			}),
 			CRON_SECRET: envField.string({
 				context: 'server',
 				access: 'secret',
@@ -25,7 +32,7 @@ export default defineConfig({
 	},
 	output: 'static',
 	adapter: vercel({
-		edgeMiddleware: true
+		edgeMiddleware: true,
 	}),
 	experimental: {
 		fonts: [
