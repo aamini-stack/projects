@@ -1,10 +1,12 @@
-// @ts-check
 import tsconfigPaths from 'vite-tsconfig-paths'
 import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
 	plugins: [tsconfigPaths()],
 	test: {
-		projects: ['./apps/*/vitest*config.ts'],
+		name: 'imdbgraph (node)',
+		include: ['src/**/*.test.ts'],
+		environment: 'node',
+		testTimeout: 30_000,
 	},
 })

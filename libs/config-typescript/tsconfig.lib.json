@@ -1,9 +1,7 @@
 {
 	"$schema": "https://json.schemastore.org/tsconfig",
-	"display": "React Library",
-	"extends": "./tsconfig.base.json",
+	"extends": "./tsconfig.strict.json",
 	"compilerOptions": {
-		"jsx": "react-jsx",
 		"declaration": true,
 		"declarationMap": true,
 		"esModuleInterop": true,
@@ -13,10 +11,8 @@
 		"module": "NodeNext",
 		"moduleDetection": "force",
 		"moduleResolution": "NodeNext",
-		"noUncheckedIndexedAccess": true,
 		"resolveJsonModule": true,
 		"skipLibCheck": true,
-		"strict": true,
 		"target": "ES2022"
 	}
 }

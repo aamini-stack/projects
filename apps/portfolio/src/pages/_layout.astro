@@ -1,9 +1,8 @@
 ---
-import '@aamini/ui/neobrutalist.css'
-import { Analytics as VercelAnalytics } from '@vercel/analytics/react'
-import Font from 'astro/components/Font.astro'
 import { Toaster } from '@/components/sonner'
-import PostHogAnalytics from '@/components/analytics-client.astro'
+import Analytics from '@/lib/analytics/client.astro'
+import '@aamini/ui/neobrutalist.css'
+import Font from 'astro/components/Font.astro'
 ---
 
 <html lang="en" class="scroll-smooth">
@@ -17,14 +16,7 @@ import PostHogAnalytics from '@/components/analytics-client.astro'
 			content="Portfolio of Aria Amini, a software engineer."
 		/>
 		<Font cssVariable="--font-inter" preload />
-		<VercelAnalytics />
-		<PostHogAnalytics />
-		<script is:inline>
-			posthog.init('phc_LWC2pawiFEeBiZTp3rxnzsebkRVJ1ZkOwsTiZARWXgC', {
-				api_host: 'https://us.i.posthog.com',
-				defaults: '2025-05-24',
-			})
-		</script>
+		<Analytics />
 	</head>
 	<body class="antialiased">
 		<slot />
