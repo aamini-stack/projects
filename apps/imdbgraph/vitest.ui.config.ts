@@ -6,7 +6,7 @@ export default defineConfig({
 	plugins: [react(), tsconfigPaths()],
 	test: {
 		globals: true,
-		name: 'ui',
+		name: 'imdbgraph (ui)',
 		include: ['src/**/*.test.tsx'],
 		environment: 'jsdom',
 		setupFiles: ['./__mocks__/setup-http.ts', './__mocks__/setup-jest-dom.ts'],

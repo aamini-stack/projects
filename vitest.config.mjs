@@ -5,6 +5,6 @@ import { defineConfig } from 'vitest/config'
 export default defineConfig({
 	plugins: [tsconfigPaths()],
 	test: {
-		projects: ['./apps/imdbgraph/vitest.config.ts'],
+		projects: ['./apps/*/vitest*config.ts'],
 	},
 })
