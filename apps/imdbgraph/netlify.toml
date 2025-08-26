@@ -20,3 +20,6 @@
   for = "/api/populate"
   [headers.values]
     Access-Control-Allow-Origin = "*"
+
+[functions."populate"]
+  schedule = "0 2 * * *"
