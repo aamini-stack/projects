@@ -8,10 +8,6 @@ export default defineConfig({
 	integrations: [react()],
 	env: {
 		schema: {
-			PUBLIC_POSTHOG_KEY: envField.string({
-				context: 'client',
-				access: 'public',
-			}),
 			DATABASE_URL: envField.string({
 				context: 'server',
 				access: 'secret',
