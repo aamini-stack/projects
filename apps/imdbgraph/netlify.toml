@@ -1,0 +1,22 @@
+[[redirects]]
+  from = "/relay-JAXX/static/*"
+  to = "https://us-assets.i.posthog.com/static/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/relay-JAXX/*"
+  to = "https://us.i.posthog.com/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/populate"
+  to = "/.netlify/functions/populate"
+  status = 200
+  force = true
+
+[[headers]]
+  for = "/api/populate"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"

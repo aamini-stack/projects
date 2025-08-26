@@ -1,5 +1,5 @@
 import react from '@astrojs/react'
-import vercel from '@astrojs/vercel'
+import netlify from '@astrojs/netlify'
 import tailwindcss from '@tailwindcss/vite'
 import { defineConfig, envField, fontProviders } from 'astro/config'
 
@@ -27,7 +27,7 @@ export default defineConfig({
 		},
 	},
 	output: 'static',
-	adapter: vercel({
+	adapter: netlify({
 		edgeMiddleware: true,
 	}),
 	experimental: {

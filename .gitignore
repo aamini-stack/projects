@@ -7,6 +7,7 @@
 .turbo
 .astro
 .vercel
+.netlify
 dist
 node_modules
 
