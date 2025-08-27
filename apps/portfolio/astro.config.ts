@@ -23,7 +23,7 @@ export default defineConfig({
 	},
 	output: 'static',
 	adapter: vercel({
-		edgeMiddleware: true
+		edgeMiddleware: true,
 	}),
 	experimental: {
 		fonts: [
