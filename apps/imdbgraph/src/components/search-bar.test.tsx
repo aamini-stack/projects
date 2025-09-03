@@ -21,7 +21,11 @@ test('basic search', async () => {
 	const searchBar = await screen.findByRole('combobox')
 	await user.type(searchBar, 'avatar')
 	expect(await screen.findByTestId('loading-spinner')).toBeVisible()
-	expect(await screen.findByText(/Avatar: The Last Airbender/i)).toBeVisible()
+	expect(
+		screen.getByRole('link', {
+			name: /avatar: the last airbender 2005 - 2008/i,
+		}),
+	).toBeVisible()
 })
 
 test('no results', async () => {
