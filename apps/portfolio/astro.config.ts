@@ -10,7 +10,7 @@ export default defineConfig({
 		schema: {
 			PUBLIC_POSTHOG_KEY: envField.string({
 				context: 'client',
-				access: 'public'
+				access: 'public',
 			}),
 			MAILGUN_API_KEY: envField.string({
 				context: 'server',
