@@ -15,7 +15,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
 		Array.from(url.searchParams).filter(([key]) => key.startsWith('utm_')),
 	)
 
-	if (!utmParams) {
+	if (!Object.keys(utmParams).length) {
 		return next()
 	}
 
@@ -41,13 +41,14 @@ export const onRequest = defineMiddleware(async (context, next) => {
 	for (const key of Object.keys(utmParams)) {
 		cleanUrl.searchParams.delete(key)
 	}
-	const redirectUrl = cleanUrl.pathname + (cleanUrl.search || '')
+
+	console.log(cleanUrl)
 
 	// Redirect
 	return new Response(null, {
 		status: 301,
 		headers: {
-			Location: redirectUrl,
+			Location: cleanUrl.toString(),
 		},
 	})
 })
