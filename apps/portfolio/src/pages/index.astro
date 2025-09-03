@@ -6,7 +6,6 @@ import Pdf from '@/components/icons/pdf.svg'
 import { JobBubble } from '@/components/job-bubble'
 import { Section } from '@/components/section'
 import { SkillBubble } from '@/components/skill-bubble'
-import { logVisit } from '@/lib/analytics/server'
 import { jobs } from '@/lib/jobs'
 import { skills } from '@/lib/skills'
 import Layout from '@/pages/_layout.astro'
@@ -15,14 +14,6 @@ import {
 	ScrollButton,
 } from '@aamini/ui/neobrutalist/components/button'
 import { ArrowDown } from 'lucide-react'
-
-export const prerender = false
-
-const ref = Astro.url.searchParams.get('ref')
-
-if (ref) {
-	logVisit(ref)
-}
 ---
 
 <Layout>

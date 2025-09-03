@@ -23,7 +23,7 @@
 		"@radix-ui/react-slot": "^1.2.3",
 		"@tanstack/react-query": "^5.84.1",
 		"@vercel/functions": "^2.2.12",
-		"astro": "^5.12.7",
+		"astro": "^5.13.4",
 		"class-variance-authority": "^0.7.1",
 		"clsx": "^2.1.1",
 		"downshift": "^9.0.10",
@@ -34,6 +34,7 @@
 		"nanostores": "^1.0.1",
 		"pg": "^8.16.3",
 		"pg-copy-streams": "^7.0.0",
+		"posthog-js": "^1.260.2",
 		"react": "^19.1.0",
 		"react-dom": "^19.1.0",
 		"tailwind-merge": "^3.3.1"
