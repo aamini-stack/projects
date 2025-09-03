@@ -10,6 +10,8 @@ import type { APIRoute } from 'astro'
  * - /api/analytics/capture -> https://us.i.posthog.com/capture
  * - /api/analytics/static/array.js -> https://us-assets.i.posthog.com/static/array.js
  */
+export const prerender = false
+
 export const ALL: APIRoute = async ({ params, request }) => {
 	try {
 		const path = params.path || ''
