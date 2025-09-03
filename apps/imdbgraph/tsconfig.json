@@ -1,13 +1,12 @@
 {
-	"extends": "astro/tsconfigs/strictest",
+	"extends": "@aamini/config-typescript/astro",
 	"compilerOptions": {
 		"jsx": "react-jsx",
 		"jsxImportSource": "react",
 		"baseUrl": ".",
 		"paths": {
 			"@/*": ["./src/*"]
-		},
-		"types": ["vitest/importMeta"]
+		}
 	},
 	"include": [".astro/types.d.ts", "**/*"],
 	"exclude": ["dist"]

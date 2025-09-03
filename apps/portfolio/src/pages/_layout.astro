@@ -1,8 +1,21 @@
 ---
 import { Toaster } from '@/components/sonner'
-import Analytics from '@/lib/analytics/client.astro'
 import '@aamini/ui/neobrutalist.css'
 import Font from 'astro/components/Font.astro'
+
+// Log and remove ref tracker
+const containsUtm = Astro.url.searchParams
+	.entries()
+	.find(([key, _value]) => key.startsWith('utm_'))
+
+if (containsUtm) {
+	for (const [key, _value] of Astro.url.searchParams.entries()) {
+		if (key.startsWith('utm_')) {
+			Astro.url.searchParams.delete(key)
+		}
+	}
+	return Astro.redirect(Astro.url.pathname)
+}
 ---
 
 <html lang="en" class="scroll-smooth">
@@ -16,7 +29,16 @@ import Font from 'astro/components/Font.astro'
 			content="Portfolio of Aria Amini, a software engineer."
 		/>
 		<Font cssVariable="--font-inter" preload />
-		<Analytics />
+		<script>
+			import posthog from 'posthog-js'
+
+			posthog.init('phc_LWC2pawiFEeBiZTp3rxnzsebkRVJ1ZkOwsTiZARWXgC', {
+				api_host: '/api/analytics',
+				ui_host: 'https://us.posthog.com',
+				defaults: '2025-05-24',
+				person_profiles: 'always',
+			})
+		</script>
 	</head>
 	<body class="antialiased">
 		<slot />

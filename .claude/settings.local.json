@@ -1,0 +1,10 @@
+{
+	"permissions": {
+		"allow": [
+			"Bash(./scripts/deploy-changed-apps-enhanced.sh:*)",
+			"mcp__context7__resolve-library-id"
+		],
+		"deny": [],
+		"ask": []
+	}
+}

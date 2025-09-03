@@ -26,7 +26,7 @@ export default defineConfig({
 			noExternal: ['downshift'],
 		},
 	},
-	output: 'static',
+	output: 'server',
 	adapter: vercel({
 		edgeMiddleware: true,
 	}),

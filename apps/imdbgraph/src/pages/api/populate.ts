@@ -4,8 +4,6 @@ import type { APIRoute } from 'astro'
 import { db } from 'db/connection'
 import { update } from '@/lib/imdb/scraper'
 
-export const prerender = false
-
 export const GET: APIRoute = ({ request }) => {
 	// Check Auth
 	const authHeader = request.headers.get('authorization') ?? ''

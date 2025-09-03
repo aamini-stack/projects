@@ -37,15 +37,52 @@
 				"name": "Server",
 				"type": "node-terminal",
 				"request": "launch",
-				"cwd": "${workspaceFolder}/apps/imdbgraph",
+				"cwd": "${workspaceFolder}/apps/dota-visualizer",
 				"command": "pnpm dev",
 			},
 			{
 				"name": "Client",
 				"type": "chrome",
 				"request": "launch",
-				"cwd": "${workspaceFolder}/apps/imdbgraph",
-				"url": "http://localhost:4002",
+				"cwd": "${workspaceFolder}/apps/dota-visualizer",
+				"url": "http://localhost:4001",
+			},
+		],
+	},
+	"tasks": {
+		"version": "2.0.0",
+		"tasks": [
+			{
+				"label": "dev",
+				"type": "shell",
+				"command": "pnpm",
+				"args": ["dev"],
+				"options": {
+					"cwd": "${workspaceFolder}/apps/dota-visualizer",
+				},
+				"isBackground": true,
+				"runOptions": {
+					"runOn": "folderOpen",
+				},
+				"presentation": {
+					"group": "test",
+				},
+			},
+			{
+				"label": "test:watch",
+				"type": "shell",
+				"command": "pnpm",
+				"args": ["test:watch"],
+				"options": {
+					"cwd": "${workspaceFolder}/apps/dota-visualizer",
+				},
+				"isBackground": true,
+				"runOptions": {
+					"runOn": "folderOpen",
+				},
+				"presentation": {
+					"group": "test",
+				},
 			},
 		],
 	},
