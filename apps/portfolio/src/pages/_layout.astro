@@ -16,9 +16,10 @@ import Font from 'astro/components/Font.astro'
 		/>
 		<Font cssVariable="--font-inter" preload />
 		<script>
+			import { PUBLIC_POSTHOG_KEY } from 'astro:env/client'
 			import posthog from 'posthog-js'
 
-			posthog.init('phc_LWC2pawiFEeBiZTp3rxnzsebkRVJ1ZkOwsTiZARWXgC', {
+			posthog.init(PUBLIC_POSTHOG_KEY, {
 				api_host: '/api/analytics',
 				ui_host: 'https://us.posthog.com',
 				defaults: '2025-05-24',
