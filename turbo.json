@@ -11,13 +11,13 @@
 			"dependsOn": ["^build"],
 			"inputs": ["$TURBO_DEFAULT$", ".env*"],
 			"outputs": [".astro/**", ".vercel/**", "dist/**"],
-			"env": ["DATABASE_URL", "CRON_SECRET"]
+			"env": ["PUBLIC_POSTHOG_KEY", "DATABASE_URL", "CRON_SECRET"]
 		},
 		"build#portfolio": {
 			"dependsOn": ["^build"],
 			"inputs": ["$TURBO_DEFAULT$", ".env*"],
 			"outputs": [".astro/**", ".vercel/**", "dist/**"],
-			"env": ["MAILGUN_API_KEY", "MAILGUN_DOMAIN"]
+			"env": ["PUBLIC_POSTHOG_KEY", "MAILGUN_API_KEY", "MAILGUN_DOMAIN"]
 		},
 
 		"dev": {

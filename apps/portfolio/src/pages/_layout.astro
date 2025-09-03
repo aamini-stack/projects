@@ -2,20 +2,6 @@
 import { Toaster } from '@/components/sonner'
 import '@aamini/ui/neobrutalist.css'
 import Font from 'astro/components/Font.astro'
-
-// Log and remove ref tracker
-const containsUtm = Astro.url.searchParams
-	.entries()
-	.find(([key, _value]) => key.startsWith('utm_'))
-
-if (containsUtm) {
-	for (const [key, _value] of Astro.url.searchParams.entries()) {
-		if (key.startsWith('utm_')) {
-			Astro.url.searchParams.delete(key)
-		}
-	}
-	return Astro.redirect(Astro.url.pathname)
-}
 ---
 
 <html lang="en" class="scroll-smooth">
@@ -30,9 +16,10 @@ if (containsUtm) {
 		/>
 		<Font cssVariable="--font-inter" preload />
 		<script>
+			import { PUBLIC_POSTHOG_KEY } from 'astro:env/client'
 			import posthog from 'posthog-js'
 
-			posthog.init('phc_LWC2pawiFEeBiZTp3rxnzsebkRVJ1ZkOwsTiZARWXgC', {
+			posthog.init(PUBLIC_POSTHOG_KEY, {
 				api_host: '/api/analytics',
 				ui_host: 'https://us.posthog.com',
 				defaults: '2025-05-24',

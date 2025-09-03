@@ -8,6 +8,10 @@ export default defineConfig({
 	integrations: [react()],
 	env: {
 		schema: {
+			PUBLIC_POSTHOG_KEY: envField.string({
+				context: 'client',
+				access: 'public',
+			}),
 			MAILGUN_API_KEY: envField.string({
 				context: 'server',
 				access: 'secret',
@@ -21,7 +25,7 @@ export default defineConfig({
 	vite: {
 		plugins: [tailwindcss()],
 	},
-	output: 'static',
+	output: 'server',
 	adapter: vercel({
 		edgeMiddleware: true,
 	}),
