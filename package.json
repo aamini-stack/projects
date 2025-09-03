@@ -17,7 +17,6 @@
 		"verify": "turbo run format build lint test typecheck e2e"
 	},
 	"devDependencies": {
-		"@aamini/config-vitest": "workspace:*",
 		"@prettier/plugin-oxc": "^0.0.4",
 		"@vitejs/plugin-react": "^4.7.0",
 		"oxlint": "^1.12.0",

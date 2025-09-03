@@ -46,7 +46,6 @@
 	},
 	"devDependencies": {
 		"@aamini/config-typescript": "workspace:*",
-		"@aamini/config-vitest": "workspace:*",
 		"@aamini/ui": "workspace:*",
 		"@playwright/test": "^1.54.1",
 		"@tailwindcss/postcss": "^4.1.11",

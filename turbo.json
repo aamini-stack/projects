@@ -38,7 +38,7 @@
 			"dependsOn": ["build", "^typecheck"]
 		},
 		"test": {
-			"dependsOn": ["^test", "@aamini/config-vitest#build"]
+			"dependsOn": ["^test"]
 		},
 		"test:watch": {
 			"cache": false,
