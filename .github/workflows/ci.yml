@@ -15,6 +15,9 @@ on:
         type: boolean
         default: false
 
+permissions:
+  contents: write
+
 env:
   TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
   TURBO_TEAM: ${{ vars.TURBO_TEAM }}
@@ -22,85 +25,96 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
-    outputs:
-      apps: ${{ steps.get-apps.outputs.apps }}
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
       - name: Setup Node
         uses: ./.github/actions/setup
       - name: Build
-        run: pnpm turbo run build format typecheck lint test
-      - name: Get Changed Apps
-        id: get-apps
-        run: |
-          APPS=$(pnpm turbo ls --output=json --filter="./apps/*" | jq -c '[.packages.items[] | .name]')
-          echo "apps=$APPS" >> $GITHUB_OUTPUT
+        run: pnpm turbo run format typecheck lint test
 
-  deploy:
-    needs: [build]
+  find-apps:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        app: ${{ fromJson(needs.build.outputs.apps) }}
+    outputs:
+      apps: ${{ steps.calculate-apps.outputs.apps }}
     steps:
-      # Setup
       - name: Checkout Code
         uses: actions/checkout@v4
-      - name: Setup Node
-        uses: ./.github/actions/setup
-      # Deploy
-      - name: Install Vercel CLI
-        run: pnpm add --global vercel@latest
-      - name: Link To Project
-        working-directory: ./apps/${{ matrix.app }}
-        run: vercel link --yes --repo --token=${{ secrets.VERCEL_TOKEN }} --scope=${{ vars.TURBO_TEAM }}
-      - name: Deploy To Vercel
-        working-directory: ./apps/${{ matrix.app }}
-        run: vercel deploy --yes --token=${{ secrets.VERCEL_TOKEN }} --scope=${{ vars.TURBO_TEAM }} ${{ github.ref == 'refs/heads/main' && '--prod' || '' }}
+      - name: Get Changed Apps
+        id: calculate-apps
+        working-directory: ./apps
+        run: |
+          echo "apps=$(ls -d * | jq -R | jq -s -c)" >> $GITHUB_OUTPUT
 
   e2e:
-    needs: [build, deploy]
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.54.2-noble
+      options: --user 1001
+    needs: [find-apps]
     strategy:
       matrix:
-        app: ${{ fromJson(needs.build.outputs.apps) }}
+        app: ${{ fromJson(needs.find-apps.outputs.apps) }}
+      fail-fast: false
     steps:
       # Setup
       - name: Checkout Code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Setup Node
         uses: ./.github/actions/setup
-
-      - name: Install Playwright Browsers
+      - name: Link To Project
+        run: pnpm vercel link --yes --repo --token=${{ secrets.VERCEL_TOKEN }} --scope=${{ vars.TURBO_TEAM }}
+      - name: Deploy To Vercel
         working-directory: ./apps/${{ matrix.app }}
-        run: pnpm exec playwright install --with-deps
-
+        run: |
+          BASE_URL=$(pnpm vercel \
+            --yes \
+            ${{ github.ref_name == 'main' && '--prod' || '' }} \
+            --token=${{ secrets.VERCEL_TOKEN }} \
+            --scope=${{ vars.TURBO_TEAM }} \
+            -m githubDeployment='1' \
+            -m githubCommitRef='${{ github.head_ref || github.ref_name }}' \
+            -m githubCommitSha='${{ github.sha }}' \
+            | tail -1)
+          echo BASE_URL=$BASE_URL >> $GITHUB_ENV
       - name: Run Playwright tests
         working-directory: ./apps/${{ matrix.app }}
-        env:
-          BASE_URL: https://${{ matrix.app }}-git-${{ github.head_ref || github.ref_name }}-${{ vars.TURBO_TEAM }}.vercel.app
         run: pnpm turbo run e2e${{ inputs.update_snapshots && ':update' || '' }}
+      - name: Upload Screenshots
+        if: inputs.update_snapshots
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshots-${{ matrix.app }}
+          path: './*/**/e2e/**/*.png'
+          retention-days: 1
+      # Report
+      - name: Publish Report
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report-${{ matrix.app }}
+          path: './apps/${{ matrix.app }}/playwright-report'
+          retention-days: 30
 
-      - name: Update Screenshots
-        if: ${{ !failure() && inputs.update_snapshots }}
+  commit-screenshots:
+    runs-on: ubuntu-latest
+    needs: [e2e]
+    if: success() && inputs.update_snapshots
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      - name: Download All Screenshot Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: screenshots-*
+          merge-multiple: true
+      - name: Commit Screenshots
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add "*/*.png"
+          git pull --ff-only
+          git add *.png
           git commit -m "Update Screenshots"
           git push
-
-      - name: Publish Report
-        uses: actions/upload-artifact@v4
-        if: ${{ failure() }}
-        with:
-          name: playwright-report-${{ matrix.app }}
-          path: '**/apps/${{ matrix.app }}/playwright-report'
-          retention-days: 30
-
-  ci-successs:
-    needs: [build, deploy, e2e]
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo Done!
