@@ -1,5 +1,5 @@
 {
-	"extends": "astro/tsconfigs/strictest",
+	"extends": "@aamini/config-typescript/astro",
 	"compilerOptions": {
 		"jsx": "react-jsx",
 		"jsxImportSource": "react",
