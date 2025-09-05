@@ -1,11 +1,11 @@
 {
 	"folders": [
 		{
-			"name": "@aamini/root",
+			"name": "root",
 			"path": "..",
 		},
 		{
-			"name": "@aamini/libs",
+			"name": "libs",
 			"path": "../libs",
 		},
 		{

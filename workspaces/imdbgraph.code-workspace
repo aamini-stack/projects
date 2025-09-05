@@ -1,12 +1,8 @@
 {
 	"folders": [
 		{
-			"name": "@aamini/root",
+			"name": "root",
 			"path": "..",
-		},
-		{
-			"name": "@aamini/ui",
-			"path": "../libs/ui",
 		},
 		{
 			"name": "imdbgraph",
@@ -21,7 +17,7 @@
 			"**/.turbo": true,
 			"**/.astro": true,
 			"**/dist": true,
-			// "**/.vercel": true,
+			"**/.vercel": true,
 			"**/playwright-report": true,
 			"**/test-results": true,
 		},

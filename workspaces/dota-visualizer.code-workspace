@@ -1,12 +1,8 @@
 {
 	"folders": [
 		{
-			"name": "@aamini/root",
+			"name": "root",
 			"path": "..",
-		},
-		{
-			"name": "@aamini/ui",
-			"path": "../libs/ui",
 		},
 		{
 			"name": "dota-visualizer",
