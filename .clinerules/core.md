@@ -1,30 +1,70 @@
-# Cline's Documentation
+# Tech Stack: @aamini Monorepo
 
-I am Cline, an expert software engineer with a unique characteristic: my memory resets completely between sessions. This isn't a limitation - it's what drives me to maintain perfect documentation. After each reset, I rely ENTIRELY on my docs to understand the project and continue work effectively. I MUST read ALL doc files at the start of EVERY task - this is not optional.
+## Overview
 
-Important: The memory bank folder is located at: `$root/docs`
+This is a monorepo for Aria Amini's personal projects, serving as a central hub for development and showcasing various web applications. Each app has relatively the same tech-stack. Any major differences will be documented as exceptions. But overall, each is a web application powered by React, Astro, and Tailwind (More info below).
 
-## Docs Structure
+## Applications
 
-The docs directory consists of 2 core files:
+### apps/portfolio (Port 4001)
 
-1. `tech-stack.md` - Technologies, dependencies, and development setup
-2. `progress.md` - Scratchpad for current work focus, recent changes, and next steps
+A professional portfolio website to showcase Aria Amini's skills, experience, and projects to potential employers and collaborators.
 
-## Usage Guidelines
+### apps/imdbgraph (port 4002)
 
-1. Always read all files at the start of every task
-2. Update all files
-3. Keep files concise - focus on actionable information
+An interactive data visualization tool for exploring the IMDB movie database. It allows users to search for movies and see relationships between actors, directors, and films in a graph format.
 
-## Documentation Updates
+### apps/dota-visualizer (port 4003)
 
-Update Memory Bank files when:
+A web application that provides detailed statistics and visualizations for the game Dota 2. It helps players analyze hero performance, matchups, and other in-game data.
 
-- Starting new work (read all files)
-- Making significant technical decisions
-- Changing project scope or requirements
-- Establishing new patterns or conventions
-- After completing major features
+## Folder structure
 
-REMEMBER: After every memory reset, I begin completely fresh. The docs is my only link to previous work. It must be maintained with precision and clarity, as my effectiveness depends entirely on its accuracy.
+```
+aamini
+├── apps/
+│   ├── dota-visualizer/
+│   ├── imdbgraph/
+│   └── portfolio/
+├── libs/
+│   ├── typescript/     # (@aamini/config-typescript): TypeScript common configurations
+│   ├── ui/             # (@aamini/ui): Reusable React/ShadcnUI components + styles
+├── package.json
+├── pnpm-workspace.yaml
+└── turbo.json
+```
+
+## Core Technologies
+
+- **Framework**: Astro for static site generation across all applications
+- **Frontend**: React 19 for interactive UI components
+- **Language**: TypeScript for type safety
+- **Styling**: Tailwind CSS 4.x for utility-first styling
+- **Build Tools**: turborepo + pnpm
+- **Database**: Drizzle ORM for type-safe database manipulations
+
+## Tools
+
+- **Build System**: Turborepo for task orchestration
+- **Linting**: oxlint for fast TypeScript linting
+- **Formatting**: Prettier with custom plugins
+- **Testing**: Vitest for unit tests, Playwright for E2E
+- **Deployment**: Vercel for all applications
+
+## Installation & Setup
+
+```bash
+# Install all dependencies
+pnpm install
+
+# Start development servers
+pnpm run dev                # All apps
+pnpm --filter portfolio dev # Specific app
+
+# Build all applications
+pnpm run build
+
+# Run tests
+pnpm run test
+pnpm run e2e
+```

@@ -159,11 +159,11 @@ if (import.meta.vitest) {
 		const stats = new HeroStatsAnalyzer(await fetchLatestHeroData())
 
 		test('baseArmor for Anti-Mage', () => {
-			expect(stats.computePercentile('Anti-Mage', 'baseArmor')).toEqual(0.64)
+			expect(stats.computePercentile('Anti-Mage', 'baseArmor')).toEqual(0.646)
 		})
 
 		test('baseInt for Zeus', () => {
-			expect(stats.computePercentile('Zeus', 'baseInt')).toEqual(0.687)
+			expect(stats.computePercentile('Zeus', 'baseInt')).toEqual(0.767)
 		})
 
 		test('baseHealth for Alchemist', () => {

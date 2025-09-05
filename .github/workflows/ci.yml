@@ -49,7 +49,7 @@ jobs:
   e2e:
     runs-on: ubuntu-latest
     container:
-      image: mcr.microsoft.com/playwright:v1.54.2-noble
+      image: mcr.microsoft.com/playwright:v1.55.0-noble
       options: --user 1001
     needs: [find-apps]
     strategy:
@@ -64,6 +64,16 @@ jobs:
           fetch-depth: 0
       - name: Setup Node
         uses: ./.github/actions/setup
+      - name: Check If Changed
+        working-directory: ./apps/${{ matrix.app }}
+        run: |
+          if pnpm dlx turbo-ignore; then
+            echo "No changes detected, skipping job"
+            exit 78
+          fi
+      - name: Build
+        working-directory: ./apps/${{ matrix.app }}
+        run: pnpm run build
       - name: Link To Project
         run: pnpm vercel link --yes --repo --token=${{ secrets.VERCEL_TOKEN }} --scope=${{ vars.TURBO_TEAM }}
       - name: Deploy To Vercel
@@ -74,6 +84,7 @@ jobs:
             ${{ github.ref_name == 'main' && '--prod' || '' }} \
             --token=${{ secrets.VERCEL_TOKEN }} \
             --scope=${{ vars.TURBO_TEAM }} \
+            --prebuilt
             -m githubDeployment='1' \
             -m githubCommitRef='${{ github.head_ref || github.ref_name }}' \
             -m githubCommitSha='${{ github.sha }}' \
