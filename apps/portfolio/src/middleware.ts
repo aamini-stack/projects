@@ -1,54 +1,63 @@
-import { PUBLIC_POSTHOG_KEY } from 'astro:env/client'
-import { defineMiddleware } from 'astro:middleware'
-import { PostHog } from 'posthog-node'
+import type { MiddlewareHandler } from 'astro'
 
-// Initialize PostHog with your project API key
-const posthog = new PostHog(PUBLIC_POSTHOG_KEY, {
-	host: 'https://us.i.posthog.com',
-})
+// Basic proxy middleware for analytics routes.
+// Handles dynamic paths and query params and forwards method, headers, and body.
+export const onRequest: MiddlewareHandler = async ({ request }, next) => {
+	const url = new URL(request.url)
 
-export const onRequest = defineMiddleware(async (context, next) => {
-	const url = new URL(context.request.url)
-
-	// Extract all UTM parameters
-	const utmParams = Object.fromEntries(
-		Array.from(url.searchParams).filter(([key]) => key.startsWith('utm_')),
-	)
-
-	if (!Object.keys(utmParams).length) {
+	// Only handle analytics paths; skip otherwise
+	if (!url.pathname.startsWith('/api/analytics/')) {
 		return next()
 	}
 
-	// Log to PostHog in background (don't await to avoid delays)
+	const prefix = '/api/analytics'
+	const postHogHost = url.pathname.startsWith(`${prefix}/static/`)
+		? 'https://us-assets.i.posthog.com'
+		: 'https://us.i.posthog.com'
+
+	// Compute the remainder of the path after /api/analytics/
+	const remainder = url.pathname.replace(/^\/api\/analytics\//, '')
+	const targetUrl = new URL(remainder, postHogHost)
+	// Copy query params
+	for (const [v, k] of url.searchParams) {
+		targetUrl.searchParams.append(k, v)
+	}
+
+	// Clone headers, optionally inject auth from env
+	const forwardedHeaders = new Headers(request.headers)
+	// Remove hop-by-hop headers that upstreams may reject
+	forwardedHeaders.delete('host')
+	forwardedHeaders.delete('connection')
+	forwardedHeaders.delete('content-length')
+	forwardedHeaders.delete('transfer-encoding')
+	forwardedHeaders.delete('accept-encoding')
+
+	const apiKey = process.env.ANALYTICS_API_KEY
+	if (apiKey && !forwardedHeaders.has('authorization')) {
+		forwardedHeaders.set('authorization', `Bearer ${apiKey}`)
+	}
+
+	// Build an upstream request preserving method and body
+	const method = request.method
+	const body = method === 'GET' || method === 'HEAD' ? null : request.body
+
 	try {
-		posthog.capture({
-			distinctId: crypto.randomUUID(), // Generate anonymous ID
-			event: 'utm_visit',
-			properties: {
-				...utmParams,
-				$current_url: url.pathname,
-				$referrer: context.request.headers.get('referer'),
-				$user_agent: context.request.headers.get('user-agent'),
-				timestamp: new Date().toISOString(),
-			},
+		const upstreamRes = await fetch(targetUrl.toString(), {
+			method,
+			headers: forwardedHeaders,
+			body,
+			redirect: 'manual',
+			// @ts-ignore
+			duplex: 'half',
 		})
-	} catch (error) {
-		console.error('Failed to log UTM parameters to PostHog:', error)
+		const resHeaders = new Headers(upstreamRes.headers)
+		return new Response(upstreamRes.body, {
+			status: upstreamRes.status,
+			statusText: upstreamRes.statusText,
+			headers: resHeaders,
+		})
+	} catch (err) {
+		console.error('Analytics proxy error:', err)
+		return new Response('Upstream error', { status: 502 })
 	}
-
-	// Strip UTM
-	const cleanUrl = new URL(url)
-	for (const key of Object.keys(utmParams)) {
-		cleanUrl.searchParams.delete(key)
-	}
-
-	console.log(cleanUrl)
-
-	// Redirect
-	return new Response(null, {
-		status: 301,
-		headers: {
-			Location: cleanUrl.toString(),
-		},
-	})
-})
+}

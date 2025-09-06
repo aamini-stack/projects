@@ -18,20 +18,17 @@ import {
 	FormLabel,
 	FormMessage,
 } from '@aamini/ui/neobrutalist/components/form'
+import { Input } from '@aamini/ui/neobrutalist/components/input'
 import { Textarea } from '@aamini/ui/neobrutalist/components/textarea'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { actions } from 'astro:actions'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import * as z from 'zod'
-import { Input } from '@aamini/ui/neobrutalist/components/input'
 
 const formSchema = z.object({
-	email: z
-		.string()
-		.email({ message: 'Invalid email address' })
-		.nonempty({ message: 'Email is required' }),
-	message: z.string().nonempty({ message: 'Message is required' }),
+	email: z.string().email({ message: 'Invalid email address' }),
+	message: z.string().min(1, 'Message is required'),
 })
 
 type FormValues = z.infer<typeof formSchema>

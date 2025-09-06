@@ -1,10 +1,10 @@
-import { type } from 'arktype'
 import {
 	type Hero,
 	type HeroDictionary,
 	type HeroName,
 	heroNames,
 } from '@/lib/dota/hero'
+import { type } from 'arktype'
 
 export async function fetchLatestHeroData(): Promise<HeroDictionary> {
 	const response = await fetch('https://api.opendota.com/api/heroStats')
@@ -121,9 +121,8 @@ async function parseOpenDotaApiResponse(response: Response) {
 if (import.meta.vitest) {
 	const { test, expect } = import.meta.vitest
 
-	const allHeroes = await fetchLatestHeroData()
-
-	test('Parsing Anti-Mage', () => {
+	test('Parsing Anti-Mage', async () => {
+		const allHeroes = await fetchLatestHeroData()
 		expect(allHeroes.get('Anti-Mage')).toMatchInlineSnapshot(`
       {
         "agiGain": 2.8,

@@ -54,7 +54,6 @@
 		"@types/pg-copy-streams": "^1.2.5",
 		"@types/react": "^19.1.8",
 		"@types/react-dom": "^19.1.6",
-		"@vitejs/plugin-react": "^4.7.0",
 		"drizzle-kit": "^0.31.4",
 		"drizzle-seed": "^0.3.1",
 		"eslint": "^9.33.0",
@@ -64,7 +63,7 @@
 		"testcontainers": "^11.5.1",
 		"tw-animate-css": "^1.3.5",
 		"typescript": "5.8.3",
-		"vite": "^6.3.5",
+		"vite": "^7.1.4",
 		"vite-tsconfig-paths": "^5.1.4",
 		"vitest": "^3.2.4"
 	}

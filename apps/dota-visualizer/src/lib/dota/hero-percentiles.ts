@@ -156,21 +156,24 @@ if (import.meta.vitest) {
 
 	describe('HeroStatsAnalyzer', async () => {
 		const { fetchLatestHeroData } = await import('@/lib/dota/api')
-		const stats = new HeroStatsAnalyzer(await fetchLatestHeroData())
 
-		test('baseArmor for Anti-Mage', () => {
+		test('baseArmor for Anti-Mage', async () => {
+			const stats = new HeroStatsAnalyzer(await fetchLatestHeroData())
 			expect(stats.computePercentile('Anti-Mage', 'baseArmor')).toEqual(0.64)
 		})
 
-		test('baseInt for Zeus', () => {
+		test('baseInt for Zeus', async () => {
+			const stats = new HeroStatsAnalyzer(await fetchLatestHeroData())
 			expect(stats.computePercentile('Zeus', 'baseInt')).toEqual(0.687)
 		})
 
-		test('baseHealth for Alchemist', () => {
+		test('baseHealth for Alchemist', async () => {
+			const stats = new HeroStatsAnalyzer(await fetchLatestHeroData())
 			expect(stats.computePercentile('Alchemist', 'baseHealth')).toEqual(0.5)
 		})
 
-		test('baseStr for Medusa', () => {
+		test('baseStr for Medusa', async () => {
+			const stats = new HeroStatsAnalyzer(await fetchLatestHeroData())
 			expect(stats.computePercentile('Medusa', 'baseStr')).toEqual(0)
 		})
 	})
