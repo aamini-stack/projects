@@ -1,0 +1,24 @@
+{
+	"name": "@aamini/utils",
+	"type": "module",
+	"private": "true",
+	"imports": {
+		"#*": "./src/*"
+	},
+	"exports": {
+		"./proxy": "./src/proxy.ts"
+	},
+	"scripts": {
+		"typecheck": "tsc --noEmit"
+	},
+	"dependencies": {
+		"@vercel/functions": "^2.2.12"
+	},
+	"peerDependencies": {
+		"astro": "^5.13.5"
+	},
+	"devDependencies": {
+		"@aamini/config-typescript": "workspace:*",
+		"typescript": "^5.9.2"
+	}
+}

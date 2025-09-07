@@ -15,6 +15,8 @@
 		"verify": "turbo run build typecheck lint test e2e"
 	},
 	"dependencies": {
+		"@aamini/ui": "workspace:*",
+		"@aamini/utils": "workspace:*",
 		"@astrojs/react": "^4.3.0",
 		"@astrojs/vercel": "^8.2.5",
 		"@fontsource-variable/inter": "^5.2.6",
@@ -47,7 +49,6 @@
 	},
 	"devDependencies": {
 		"@aamini/config-typescript": "workspace:*",
-		"@aamini/ui": "workspace:*",
 		"@playwright/test": "^1.54.1",
 		"@tailwindcss/postcss": "^4.1.11",
 		"@tailwindcss/vite": "^4.1.11",
