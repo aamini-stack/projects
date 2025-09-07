@@ -64,14 +64,17 @@ jobs:
           fetch-depth: 0
       - name: Setup Node
         uses: ./.github/actions/setup
-      - name: Deploy to Vercel
+      - name: Install Vercel CLI
+        run: pnpm i -g vercel
+      - name: Link Projects
         run: |
-          pnpm i -g vercel
           pnpm vercel link \
             --yes \
             --repo \
             --token=${{ secrets.VERCEL_TOKEN }} \
             --scope=${{ vars.TURBO_TEAM }}
+      - name: Deploy to Vercel
+        run: |
           BASE_URL=$(pnpm vercel \
             --yes \
             ${{ github.ref_name == 'main' && '--prod' || '' }} \
@@ -79,7 +82,7 @@ jobs:
             --scope=${{ vars.TURBO_TEAM }} \
             -m githubDeployment='1' \
             -m githubCommitRef='${{ github.head_ref || github.ref_name }}' \
-            -m githubCommitSha='${{ github.sha }}' \
+            -m githubCommitSha='${{ github.sha }})' \
           | tail -1)
           echo BASE_URL=$BASE_URL >> $GITHUB_ENV
       - name: Run Playwright tests
