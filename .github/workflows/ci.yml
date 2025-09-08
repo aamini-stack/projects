@@ -64,40 +64,33 @@ jobs:
           fetch-depth: 0
       - name: Setup Node
         uses: ./.github/actions/setup
-      - name: Check If Changed
-        id: check_changes
+      - name: Install Vercel CLI
+        run: pnpm i -g vercel
+      - name: Link Projects
         run: |
-          echo "has_changes=$(pnpm dlx turbo@^2.5.6 \
-            run "build" \
-            --filter="${{ matrix.app }}...[main...HEAD]" \
-            --dry=json \
-          | jq '.packages | length > 0')" >> $GITHUB_OUTPUT
-      - name: Deploy to Vercel
-        if: steps.check_changes.outputs.has_changes == 'true'
-        run: |
-          pnpm run build
           pnpm vercel link \
             --yes \
             --repo \
             --token=${{ secrets.VERCEL_TOKEN }} \
             --scope=${{ vars.TURBO_TEAM }}
+      - name: Deploy to Vercel
+        working-directory: ./apps/${{ matrix.app }}
+        run: |
           BASE_URL=$(pnpm vercel \
             --yes \
             ${{ github.ref_name == 'main' && '--prod' || '' }} \
             --token=${{ secrets.VERCEL_TOKEN }} \
             --scope=${{ vars.TURBO_TEAM }} \
-            --prebuilt \
             -m githubDeployment='1' \
             -m githubCommitRef='${{ github.head_ref || github.ref_name }}' \
             -m githubCommitSha='${{ github.sha }}' \
           | tail -1)
           echo BASE_URL=$BASE_URL >> $GITHUB_ENV
       - name: Run Playwright tests
-        if: steps.check_changes.outputs.has_changes == 'true'
         working-directory: ./apps/${{ matrix.app }}
         run: pnpm turbo run e2e${{ inputs.update_snapshots && ':update' || '' }}
       - name: Upload Screenshots
-        if: inputs.update_snapshots && steps.check_changes.outputs.has_changes == 'true'
+        if: success() && inputs.update_snapshots
         uses: actions/upload-artifact@v4
         with:
           name: screenshots-${{ matrix.app }}
@@ -106,7 +99,7 @@ jobs:
       # Report
       - name: Publish Report
         uses: actions/upload-artifact@v4
-        if: failure() && steps.check_changes.outputs.has_changes == 'true'
+        if: failure()
         with:
           name: playwright-report-${{ matrix.app }}
           path: './apps/${{ matrix.app }}/playwright-report'
@@ -131,7 +124,6 @@ jobs:
         with:
           pattern: screenshots-*
           merge-multiple: true
-      # TODO: debug
       - name: Commit Screenshots
         run: |
           git config user.name "github-actions[bot]"

@@ -1,0 +1,7 @@
+{
+	"extends": "@aamini/config-typescript/lib",
+	"compilerOptions": {
+		"baseUrl": "."
+	},
+	"include": ["**/*"]
+}
