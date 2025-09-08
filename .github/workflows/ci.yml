@@ -74,6 +74,7 @@ jobs:
             --token=${{ secrets.VERCEL_TOKEN }} \
             --scope=${{ vars.TURBO_TEAM }}
       - name: Deploy to Vercel
+        working-directory: ./apps/${{ matrix.app }}
         run: |
           BASE_URL=$(pnpm vercel \
             --yes \
