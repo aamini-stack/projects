@@ -1,12 +1,11 @@
 {
 	"folders": [
 		{
-			"name": "root",
-			"path": "..",
+			"path": "../apps/portfolio",
 		},
 		{
-			"name": "portfolio",
-			"path": "../apps/portfolio",
+			"name": "root",
+			"path": "..",
 		},
 	],
 	"settings": {
@@ -24,6 +23,5 @@
 		"files.associations": {
 			"*.css": "tailwindcss",
 		},
-		"tailwindCSS.classFunctions": ["cn", "cva", "clsx", "twMerge"],
 	},
 }
