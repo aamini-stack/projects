@@ -64,18 +64,26 @@ jobs:
           fetch-depth: 0
       - name: Setup Node
         uses: ./.github/actions/setup
-      - name: Install Vercel CLI
-        run: pnpm i -g vercel
-      - name: Link Projects
+      - name: Determine if should deploy
+        id: skip-check
         run: |
+          if pnpm dlx turbo-ignore ${{ matrix.app }}; then
+            echo "No changes detected in ${{ matrix.app }}. Skipping workflow."
+            echo "skip=true" >> $GITHUB_OUTPUT
+          else
+            echo "Changes detected in ${{ matrix.app }}. Continuing workflow."
+            echo "skip=false" >> $GITHUB_OUTPUT
+          fi
+      - name: Deploy to Vercel
+        if: steps.skip-check.outputs.skip == 'false'
+        working-directory: ./apps/${{ matrix.app }}
+        run: |
+          pnpm i -g vercel
           pnpm vercel link \
             --yes \
             --repo \
             --token=${{ secrets.VERCEL_TOKEN }} \
             --scope=${{ vars.TURBO_TEAM }}
-      - name: Deploy to Vercel
-        working-directory: ./apps/${{ matrix.app }}
-        run: |
           BASE_URL=$(pnpm vercel \
             --yes \
             ${{ github.ref_name == 'main' && '--prod' || '' }} \
