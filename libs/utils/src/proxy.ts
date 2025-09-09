@@ -1,29 +1,32 @@
 import { type MiddlewareHandler } from 'astro'
 
-// Basic proxy middleware for analytics routes.
-// Handles dynamic paths and query params and forwards method, headers, and body.
-export const handleRequest: MiddlewareHandler = async ({ request }, next) => {
+export const prefix = '/api/analytics'
+
+export const config = {
+	matcher: '/api/analytics/:path*', // Prefix has to be duplicated.
+	runtime: 'nodejs',
+}
+
+export const handleRequest: MiddlewareHandler = ({ request }, next) => {
 	const url = new URL(request.url)
 
-	// Only handle analytics paths; skip otherwise
-	if (!url.pathname.startsWith('/api/analytics/')) {
+	console.log('[middleware] Starting. URL: ', url.toString())
+	if (!url.pathname.startsWith(prefix)) {
+		console.log('[middleware] Skipping')
 		return next()
 	}
 
-	const prefix = '/api/analytics'
+	console.log('[middleware] Analytics API call detected')
 	const postHogHost = url.pathname.startsWith(`${prefix}/static/`)
 		? 'https://us-assets.i.posthog.com'
 		: 'https://us.i.posthog.com'
 
-	// Compute the remainder of the path after /api/analytics/
-	const remainder = url.pathname.replace(/^\/api\/analytics\//, '')
+	const remainder = url.pathname.slice(prefix.length)
 	const targetUrl = new URL(remainder, postHogHost)
-	// Copy query params
 	for (const [v, k] of url.searchParams) {
 		targetUrl.searchParams.append(k, v)
 	}
 
-	// Clone headers, optionally inject auth from env
 	const forwardedHeaders = new Headers(request.headers)
 	// Remove hop-by-hop headers that upstreams may reject
 	forwardedHeaders.delete('host')
@@ -42,7 +45,8 @@ export const handleRequest: MiddlewareHandler = async ({ request }, next) => {
 	const body = method === 'GET' || method === 'HEAD' ? null : request.body
 
 	try {
-		return await fetch(targetUrl.toString(), {
+		console.log('[middleware] Making proxy call')
+		return fetch(targetUrl.toString(), {
 			method,
 			headers: forwardedHeaders,
 			body,
@@ -51,7 +55,7 @@ export const handleRequest: MiddlewareHandler = async ({ request }, next) => {
 			duplex: 'half',
 		})
 	} catch (err) {
-		console.error('Analytics proxy error:', err)
+		console.error('[middleware] Analytics proxy error:', err)
 		return new Response('Upstream error', { status: 502 })
 	}
 }
