@@ -3,6 +3,8 @@ import '@aamini/ui/globals.css'
 import { ThemeButton } from '@/components/theme-button'
 import '@fontsource-variable/inter'
 import Font from 'astro/components/Font.astro'
+
+export const prerender = true
 ---
 
 <html lang="en">
@@ -24,10 +26,11 @@ import Font from 'astro/components/Font.astro'
 		<Font cssVariable="--font-inter" preload />
 		<script>
 			import { PUBLIC_POSTHOG_KEY } from 'astro:env/client'
+			import { prefix } from '@aamini/utils/proxy'
 			import posthog from 'posthog-js'
 
 			posthog.init(PUBLIC_POSTHOG_KEY, {
-				api_host: '/api/analytics',
+				api_host: prefix,
 				ui_host: 'https://us.posthog.com',
 				defaults: '2025-05-24',
 				person_profiles: 'always',
