@@ -26,11 +26,10 @@ export const prerender = true
 		<Font cssVariable="--font-inter" preload />
 		<script>
 			import { PUBLIC_POSTHOG_KEY } from 'astro:env/client'
-			import { prefix } from '@aamini/utils/proxy'
 			import posthog from 'posthog-js'
 
 			posthog.init(PUBLIC_POSTHOG_KEY, {
-				api_host: prefix,
+				api_host: '/api/analytics',
 				ui_host: 'https://us.posthog.com',
 				defaults: '2025-05-24',
 				person_profiles: 'always',
