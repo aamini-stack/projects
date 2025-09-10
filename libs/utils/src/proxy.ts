@@ -1,25 +1,20 @@
-import type { MiddlewareHandler } from 'astro'
-
-/**
- * Proxies analytics requests to PostHog endpoints
- * @param request - The incoming request object
- * @param routeParams - The path parameters after the prefix
- * @returns Response or Promise<Response> from the upstream PostHog service
- */
-export const proxyAnalyticsRequest = (
-	request: Request,
-	routeParams: string,
-): Response | Promise<Response> => {
+export const proxy = ({
+	request,
+	route,
+}: {
+	request: Request
+	route: string
+}) => {
 	const url = new URL(request.url)
 
 	console.log('[analytics] Starting. URL: ', url.toString())
 	console.log('[analytics] Analytics API call detected')
 
-	const postHogHost = routeParams.startsWith('static/')
+	const postHogHost = route.startsWith('static/')
 		? 'https://us-assets.i.posthog.com'
 		: 'https://us.i.posthog.com'
 
-	const targetUrl = new URL(`/${routeParams}`, postHogHost)
+	const targetUrl = new URL(`/${route}`, postHogHost)
 	for (const [k, v] of url.searchParams) {
 		targetUrl.searchParams.append(k, v)
 	}
@@ -55,23 +50,4 @@ export const proxyAnalyticsRequest = (
 		console.error('[analytics] Analytics proxy error:', err)
 		return new Response('Upstream error', { status: 502 })
 	}
-}
-
-/**
- * Astro middleware handler for analytics requests
- * @param request - The request context
- * @param next - The next middleware function
- * @returns Response from the proxy or next middleware
- */
-export const handleRequest: MiddlewareHandler = ({ request }, next) => {
-	const url = new URL(request.url)
-
-	console.log('[middleware] Starting. URL: ', url.toString())
-	if (!url.pathname.startsWith(prefix)) {
-		console.log('[middleware] Skipping')
-		return next()
-	}
-
-	const remainder = url.pathname.slice(prefix.length + 1) // Remove leading slash
-	return proxyAnalyticsRequest(request, remainder)
 }
