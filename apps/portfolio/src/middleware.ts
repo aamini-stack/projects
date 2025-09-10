@@ -1,8 +1,8 @@
-import { config as vercelConfig, handleRequest } from '@aamini/utils/proxy'
-import type { MiddlewareHandler } from 'astro'
+import { handleRequest, config as vercelConfig } from '@aamini/utils/proxy'
+import { defineMiddleware } from 'astro:middleware'
 
-export const onRequest: MiddlewareHandler = (context, next) => {
+export const onRequest = defineMiddleware((context, next) => {
 	return handleRequest(context, next)
-}
+})
 
 export const config = vercelConfig
