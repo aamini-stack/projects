@@ -1,61 +1,53 @@
-import { type MiddlewareHandler } from 'astro'
-
-export const prefix = '/api/analytics'
-
-export const config = {
-	matcher: '/api/analytics/:path*', // Prefix has to be duplicated.
-	runtime: 'nodejs',
-}
-
-export const handleRequest: MiddlewareHandler = ({ request }, next) => {
+export const proxy = ({
+	request,
+	route,
+}: {
+	request: Request
+	route: string
+}) => {
 	const url = new URL(request.url)
 
-	console.log('[middleware] Starting. URL: ', url.toString())
-	if (!url.pathname.startsWith(prefix)) {
-		console.log('[middleware] Skipping')
-		return next()
-	}
+	console.log('[analytics] Starting. URL: ', url.toString())
+	console.log('[analytics] Analytics API call detected')
 
-	console.log('[middleware] Analytics API call detected')
-	const postHogHost = url.pathname.startsWith(`${prefix}/static/`)
+	const postHogHost = route.startsWith('static/')
 		? 'https://us-assets.i.posthog.com'
 		: 'https://us.i.posthog.com'
 
-	const remainder = url.pathname.slice(prefix.length)
-	const targetUrl = new URL(remainder, postHogHost)
-	for (const [v, k] of url.searchParams) {
+	const targetUrl = new URL(`/${route}`, postHogHost)
+	for (const [k, v] of url.searchParams) {
 		targetUrl.searchParams.append(k, v)
 	}
 
-	const forwardedHeaders = new Headers(request.headers)
 	// Remove hop-by-hop headers that upstreams may reject
-	forwardedHeaders.delete('host')
-	forwardedHeaders.delete('connection')
-	forwardedHeaders.delete('content-length')
+	// https://0xn3va.gitbook.io/cheat-sheets/web-application/abusing-http-hop-by-hop-request-headers#hop-by-hop-request-headers
+	// https://datatracker.ietf.org/doc/html/rfc2616#section-13.5.1
+	const forwardedHeaders = new Headers(request.headers)
+	forwardedHeaders.delete('keep-alive')
 	forwardedHeaders.delete('transfer-encoding')
-	forwardedHeaders.delete('accept-encoding')
-
-	const apiKey = process.env.ANALYTICS_API_KEY
-	if (apiKey && !forwardedHeaders.has('authorization')) {
-		forwardedHeaders.set('authorization', `Bearer ${apiKey}`)
-	}
+	forwardedHeaders.delete('te')
+	forwardedHeaders.delete('connection')
+	forwardedHeaders.delete('trailer')
+	forwardedHeaders.delete('upgrade')
+	forwardedHeaders.delete('proxy-authorization')
+	forwardedHeaders.delete('proxy-authenticate')
 
 	// Build an upstream request preserving method and body
 	const method = request.method
 	const body = method === 'GET' || method === 'HEAD' ? null : request.body
 
 	try {
-		console.log('[middleware] Making proxy call')
+		console.log('[analytics] Making proxy call')
 		return fetch(targetUrl.toString(), {
 			method,
 			headers: forwardedHeaders,
 			body,
 			redirect: 'manual',
-			// @ts-ignore
+			// @ts-expect-error - duplex is required for streaming request bodies but not in TypeScript definitions
 			duplex: 'half',
 		})
 	} catch (err) {
-		console.error('[middleware] Analytics proxy error:', err)
+		console.error('[analytics] Analytics proxy error:', err)
 		return new Response('Upstream error', { status: 502 })
 	}
 }

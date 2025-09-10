@@ -95,6 +95,7 @@ jobs:
           | tail -1)
           echo BASE_URL=$BASE_URL >> $GITHUB_ENV
       - name: Run Playwright tests
+        if: steps.skip-check.outputs.skip == 'false'
         working-directory: ./apps/${{ matrix.app }}
         run: pnpm turbo run e2e${{ inputs.update_snapshots && ':update' || '' }}
       - name: Upload Screenshots
