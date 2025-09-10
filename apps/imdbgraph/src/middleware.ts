@@ -27,18 +27,7 @@ export const onRequest = defineMiddleware(({ request }, next) => {
 	}
 
 	const forwardedHeaders = new Headers(request.headers)
-	// Remove hop-by-hop headers that upstreams may reject
-	forwardedHeaders.delete('host')
-	forwardedHeaders.delete('connection')
-	forwardedHeaders.delete('content-length')
-	forwardedHeaders.delete('transfer-encoding')
-	forwardedHeaders.delete('accept-encoding')
-
-	const apiKey = process.env.ANALYTICS_API_KEY
-	if (apiKey && !forwardedHeaders.has('authorization')) {
-		forwardedHeaders.set('authorization', `Bearer ${apiKey}`)
-	}
-
+	
 	// Build an upstream request preserving method and body
 	const method = request.method
 	const body = method === 'GET' || method === 'HEAD' ? null : request.body
