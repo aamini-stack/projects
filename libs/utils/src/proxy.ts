@@ -1,10 +1,9 @@
-import { type MiddlewareHandler } from 'astro'
+import type { MiddlewareHandler } from 'astro'
 
 export const prefix = '/api/analytics'
 
 export const config = {
 	matcher: '/api/analytics/:path*', // Prefix has to be duplicated.
-	runtime: 'nodejs',
 }
 
 export const handleRequest: MiddlewareHandler = ({ request }, next) => {
