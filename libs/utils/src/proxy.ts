@@ -6,22 +6,17 @@ export const config = {
 	matcher: '/api/analytics/:path*', // Prefix has to be duplicated.
 }
 
-export const handleRequest: MiddlewareHandler = ({ request }, next) => {
+export const proxyAnalyticsRequest = (request: Request, routeParams: string): Response | Promise<Response> => {
 	const url = new URL(request.url)
 
-	console.log('[middleware] Starting. URL: ', url.toString())
-	if (!url.pathname.startsWith(prefix)) {
-		console.log('[middleware] Skipping')
-		return next()
-	}
-
-	console.log('[middleware] Analytics API call detected')
-	const postHogHost = url.pathname.startsWith(`${prefix}/static/`)
+	console.log('[analytics] Starting. URL: ', url.toString())
+	console.log('[analytics] Analytics API call detected')
+	
+	const postHogHost = routeParams.startsWith('static/')
 		? 'https://us-assets.i.posthog.com'
 		: 'https://us.i.posthog.com'
 
-	const remainder = url.pathname.slice(prefix.length)
-	const targetUrl = new URL(remainder, postHogHost)
+	const targetUrl = new URL(`/${routeParams}`, postHogHost)
 	for (const [v, k] of url.searchParams) {
 		targetUrl.searchParams.append(k, v)
 	}
@@ -44,7 +39,7 @@ export const handleRequest: MiddlewareHandler = ({ request }, next) => {
 	const body = method === 'GET' || method === 'HEAD' ? null : request.body
 
 	try {
-		console.log('[middleware] Making proxy call')
+		console.log('[analytics] Making proxy call')
 		return fetch(targetUrl.toString(), {
 			method,
 			headers: forwardedHeaders,
@@ -54,7 +49,20 @@ export const handleRequest: MiddlewareHandler = ({ request }, next) => {
 			duplex: 'half',
 		})
 	} catch (err) {
-		console.error('[middleware] Analytics proxy error:', err)
+		console.error('[analytics] Analytics proxy error:', err)
 		return new Response('Upstream error', { status: 502 })
 	}
+}
+
+export const handleRequest: MiddlewareHandler = ({ request }, next) => {
+	const url = new URL(request.url)
+
+	console.log('[middleware] Starting. URL: ', url.toString())
+	if (!url.pathname.startsWith(prefix)) {
+		console.log('[middleware] Skipping')
+		return next()
+	}
+
+	const remainder = url.pathname.slice(prefix.length + 1) // Remove leading slash
+	return proxyAnalyticsRequest(request, remainder)
 }
