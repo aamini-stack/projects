@@ -1,38 +1,41 @@
 import type { MiddlewareHandler } from 'astro'
 
-export const prefix = '/api/analytics'
-
-export const config = {
-	matcher: '/api/analytics/:path*', // Prefix has to be duplicated.
-}
-
-export const proxyAnalyticsRequest = (request: Request, routeParams: string): Response | Promise<Response> => {
+/**
+ * Proxies analytics requests to PostHog endpoints
+ * @param request - The incoming request object
+ * @param routeParams - The path parameters after the prefix
+ * @returns Response or Promise<Response> from the upstream PostHog service
+ */
+export const proxyAnalyticsRequest = (
+	request: Request,
+	routeParams: string,
+): Response | Promise<Response> => {
 	const url = new URL(request.url)
 
 	console.log('[analytics] Starting. URL: ', url.toString())
 	console.log('[analytics] Analytics API call detected')
-	
+
 	const postHogHost = routeParams.startsWith('static/')
 		? 'https://us-assets.i.posthog.com'
 		: 'https://us.i.posthog.com'
 
 	const targetUrl = new URL(`/${routeParams}`, postHogHost)
-	for (const [v, k] of url.searchParams) {
+	for (const [k, v] of url.searchParams) {
 		targetUrl.searchParams.append(k, v)
 	}
 
-	const forwardedHeaders = new Headers(request.headers)
 	// Remove hop-by-hop headers that upstreams may reject
-	forwardedHeaders.delete('host')
-	forwardedHeaders.delete('connection')
-	forwardedHeaders.delete('content-length')
+	// https://0xn3va.gitbook.io/cheat-sheets/web-application/abusing-http-hop-by-hop-request-headers#hop-by-hop-request-headers
+	// https://datatracker.ietf.org/doc/html/rfc2616#section-13.5.1
+	const forwardedHeaders = new Headers(request.headers)
+	forwardedHeaders.delete('keep-alive')
 	forwardedHeaders.delete('transfer-encoding')
-	forwardedHeaders.delete('accept-encoding')
-
-	const apiKey = process.env.ANALYTICS_API_KEY
-	if (apiKey && !forwardedHeaders.has('authorization')) {
-		forwardedHeaders.set('authorization', `Bearer ${apiKey}`)
-	}
+	forwardedHeaders.delete('te')
+	forwardedHeaders.delete('connection')
+	forwardedHeaders.delete('trailer')
+	forwardedHeaders.delete('upgrade')
+	forwardedHeaders.delete('proxy-authorization')
+	forwardedHeaders.delete('proxy-authenticate')
 
 	// Build an upstream request preserving method and body
 	const method = request.method
@@ -45,7 +48,7 @@ export const proxyAnalyticsRequest = (request: Request, routeParams: string): Re
 			headers: forwardedHeaders,
 			body,
 			redirect: 'manual',
-			// @ts-ignore
+			// @ts-expect-error - duplex is required for streaming request bodies but not in TypeScript definitions
 			duplex: 'half',
 		})
 	} catch (err) {
@@ -54,6 +57,12 @@ export const proxyAnalyticsRequest = (request: Request, routeParams: string): Re
 	}
 }
 
+/**
+ * Astro middleware handler for analytics requests
+ * @param request - The request context
+ * @param next - The next middleware function
+ * @returns Response from the proxy or next middleware
+ */
 export const handleRequest: MiddlewareHandler = ({ request }, next) => {
 	const url = new URL(request.url)
 
