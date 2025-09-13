@@ -1,9 +1,15 @@
 ---
 import '@aamini/ui/globals.css'
+import { cn } from '@aamini/ui/lib/utils'
 import '@fontsource-variable/inter'
 import Font from 'astro/components/Font.astro'
+import { Apple, Calendar } from 'lucide-react'
 
 export const prerender = true
+
+const activeTabId = Astro.url.pathname
+
+const tabs = [{ id: '/', label: 'Discover', icon: Calendar }]
 ---
 
 <html lang="en">
@@ -11,48 +17,76 @@ export const prerender = true
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.ico" />
-		<title>IMDB Graph</title>
+		<title>Fruit Generator</title>
 		<meta
 			name="description"
-			content="Website to visualize IMDB TV show ratings as a graph."
+			content="Website to randomly generate different weekly fruit selections for dieting."
 		/>
 		<meta
 			name="keywords"
-			content="imdbgraph.org, imdbgraph.com, IMDB, Graph, IMDB Graph, 
-      IMDB Chart, imdbgraph, Visualize, Episode ratings, chart, season, 
-      episode"
+			content="fruit-gen, fruit-gen.com, Fruit Generator, Fruit, gen, random, weekly"
 		/>
 		<Font cssVariable="--font-inter" preload />
 	</head>
 	<body class="bg-background min-h-dvh min-w-80 antialiased">
-		<div class="flex min-h-dvh flex-col">
-			{/* Main content */}
-			<div class="flex w-full flex-1 flex-col"><slot /></div>
+		<div
+			class="min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50"
+		>
+			<header class="sticky top-0 z-50 bg-white shadow-lg">
+				<div class="mx-auto max-w-6xl px-4 py-4">
+					<div class="mb-4 flex items-center justify-between">
+						<div class="flex items-center gap-3">
+							<div
+								class="rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 p-2"
+							>
+								<Apple size={24} className="text-white" />
+							</div>
+							<div>
+								<h1 class="text-2xl font-bold text-gray-800">
+									Fruit Discovery
+								</h1>
+								<p class="text-sm text-gray-600">
+									Explore new fruits every week
+								</p>
+							</div>
+						</div>
+					</div>
+
+					<nav class="flex space-x-1 rounded-xl bg-gray-100 p-1">
+						{
+							tabs.map((tab) => {
+								const Icon = tab.icon
+								return (
+									<a
+										href={tab.id}
+										class={cn(
+											'flex items-center gap-2 rounded-lg px-4 py-2 font-medium transition-all duration-200',
+											{
+												'bg-white text-emerald-600 shadow-sm':
+													activeTabId === tab.id,
+												'text-gray-600 hover:text-gray-800':
+													activeTabId !== tab.id,
+											},
+										)}
+									>
+										<Icon size={18} />
+										{tab.label}
+									</a>
+								)
+							})
+						}
+					</nav>
+				</div>
+			</header>
+			<main class="pb-8">
+				<slot />
+			</main>
+
 			{/* Footer */}
-			<footer class="w-full px-6 py-6">
-				<div class="flex flex-col items-center justify-between gap-4">
-					<p
-						class="text-muted-foreground text-balance text-center text-sm leading-loose"
-					>
-						Built by{' '}
-						<a
-							href="https://www.linkedin.com/in/aria-amini/"
-							target="_blank"
-							rel="noreferrer"
-							class="font-medium underline underline-offset-4"
-						>
-							Aria
-						</a>
-						. The source code is available on{' '}
-						<a
-							href="https://github.com/aamini11/imdbgraph"
-							target="_blank"
-							rel="noreferrer"
-							class="font-medium underline underline-offset-4"
-						>
-							GitHub
-						</a>
-						.
+			<footer class="mt-16 bg-white shadow-lg">
+				<div class="mx-auto max-w-6xl px-4 py-8 text-center">
+					<p class="text-sm text-gray-500">
+						Made with ❤️ for your health and wellness journey
 					</p>
 				</div>
 			</footer>
