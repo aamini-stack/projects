@@ -20,26 +20,26 @@ const mockFruit: Fruit = {
 	},
 }
 
-test('title', async () => {
+test('title', () => {
 	const screen = render(<FruitCard fruit={mockFruit} />)
 	expect(screen.getByText('🍎')).toBeVisible()
 	expect(screen.getByText('Apple')).toBeVisible()
 })
 
-test('description', async () => {
+test('description', () => {
 	const screen = render(<FruitCard fruit={mockFruit} />)
 	expect(
 		screen.getByText('A crisp, sweet fruit that grows on trees.'),
 	).toBeVisible()
 })
 
-test('benefits', async () => {
+test('benefits', () => {
 	const screen = render(<FruitCard fruit={mockFruit} />)
 	expect(screen.getByText('Rich in fiber')).toBeVisible()
 	expect(screen.getByText('Good for heart health')).toBeVisible()
 })
 
-test('nutrition facts', async () => {
+test('nutrition facts', () => {
 	const screen = render(<FruitCard fruit={mockFruit} showDetails={true} />)
 	expect(screen.getByText('Nutrition Facts (per 100g)')).toBeVisible()
 	expect(screen.getByText('Calories:')).toBeVisible()
