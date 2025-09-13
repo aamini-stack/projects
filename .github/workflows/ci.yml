@@ -23,7 +23,7 @@ env:
   TURBO_TEAM: ${{ vars.TURBO_TEAM }}
 
 jobs:
-  build:
+  quality-checks:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -46,85 +46,28 @@ jobs:
         run: |
           echo "apps=$(ls -d * | jq -R | jq -s -c)" >> $GITHUB_OUTPUT
 
-  e2e:
-    runs-on: ubuntu-latest
-    container:
-      image: mcr.microsoft.com/playwright:v1.54.2-noble
-      options: --user 1001
+  test:
     needs: [find-apps]
     strategy:
       matrix:
         app: ${{ fromJson(needs.find-apps.outputs.apps) }}
       fail-fast: false
-    steps:
-      # Setup
-      - name: Checkout Code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: Setup Node
-        uses: ./.github/actions/setup
-      - name: Determine if should deploy
-        id: skip-check
-        run: |
-          if pnpm dlx turbo-ignore ${{ matrix.app }}; then
-            echo "No changes detected in ${{ matrix.app }}. Skipping workflow."
-            echo "skip=true" >> $GITHUB_OUTPUT
-          else
-            echo "Changes detected in ${{ matrix.app }}. Continuing workflow."
-            echo "skip=false" >> $GITHUB_OUTPUT
-          fi
-      - name: Deploy to Vercel
-        if: steps.skip-check.outputs.skip == 'false'
-        working-directory: ./apps/${{ matrix.app }}
-        run: |
-          pnpm i -g vercel
-          pnpm vercel link \
-            --yes \
-            --repo \
-            --token=${{ secrets.VERCEL_TOKEN }} \
-            --scope=${{ vars.TURBO_TEAM }}
-          BASE_URL=$(pnpm vercel \
-            --yes \
-            ${{ github.ref_name == 'main' && '--prod' || '' }} \
-            --token=${{ secrets.VERCEL_TOKEN }} \
-            --scope=${{ vars.TURBO_TEAM }} \
-            -m githubDeployment='1' \
-            -m githubCommitRef='${{ github.head_ref || github.ref_name }}' \
-            -m githubCommitSha='${{ github.sha }}' \
-          | tail -1)
-          echo BASE_URL=$BASE_URL >> $GITHUB_ENV
-      - name: Run Playwright tests
-        if: steps.skip-check.outputs.skip == 'false'
-        working-directory: ./apps/${{ matrix.app }}
-        run: pnpm turbo run e2e${{ inputs.update_snapshots && ':update' || '' }}
-      - name: Upload Screenshots
-        if: success() && inputs.update_snapshots
-        uses: actions/upload-artifact@v4
-        with:
-          name: screenshots-${{ matrix.app }}
-          path: './*/**/e2e/**/*.png'
-          retention-days: 1
-      # Report
-      - name: Publish Report
-        uses: actions/upload-artifact@v4
-        if: failure()
-        with:
-          name: playwright-report-${{ matrix.app }}
-          path: './apps/${{ matrix.app }}/playwright-report'
-          retention-days: 30
+    uses: ./.github/workflows/e2e.yml
+    with:
+      app: ${{ matrix.app }}
+    secrets: inherit
 
   ci-success:
     runs-on: ubuntu-latest
-    needs: [e2e]
+    needs: [quality-checks, test]
     steps:
       - name: Log Finished
         run: echo 'Run Successful'
 
   commit-screenshots:
     runs-on: ubuntu-latest
-    needs: [e2e]
-    if: always() && inputs.update_snapshots
+    needs: [quality-checks, test]
+    if: inputs.update_snapshots
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
