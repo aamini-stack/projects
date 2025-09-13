@@ -1,19 +1,30 @@
 ---
-import { SearchBar } from '@/components/search-bar'
+import { FruitCalendar } from '@/components/fruit-calendar'
 import Layout from '@/pages/_layout.astro'
+import { Calendar } from 'lucide-react'
 
 export const prerender = true
 ---
 
 <Layout>
-	<div class="flex flex-1 flex-col items-center gap-9 pt-20">
-		<h1
-			class="inline text-balance px-8 text-center text-6xl font-semibold tracking-tight lg:text-6xl"
-		>
-			Welcome to IMDB Graph
-		</h1>
-		<div class="min-w-sm flex w-full max-w-lg justify-center px-8">
-			<SearchBar client:load />
+	<div class="mx-auto max-w-4xl px-4 py-8">
+		<div class="mb-12 text-center">
+			<div
+				class="mb-12 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-100 to-pink-100 px-6 py-3"
+			>
+				<Calendar size={20} className="text-purple-600" />
+				<span class="font-medium text-purple-700">
+					Your Weekly Fruit Plan
+				</span>
+			</div>
+			<h2 class="mb-4 text-4xl font-bold text-gray-800">
+				7 Days of Fruit Discovery
+			</h2>
+			<p class="mx-auto mb-6 max-w-2xl text-xl text-gray-600">
+				A carefully curated selection of fruits for you to try throughout the
+				week. Each day brings a new flavor adventure!
+			</p>
 		</div>
+		<FruitCalendar client:load />
 	</div>
 </Layout>
