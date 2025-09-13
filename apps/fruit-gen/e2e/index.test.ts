@@ -4,7 +4,7 @@ test.beforeEach(async ({ page }) => {
 	await page.goto('/')
 })
 
-test('weekly', async ({ page }) => {
+test('home', async ({ page }) => {
 	await expect(page).toHaveScreenshot({
 		fullPage: true,
 	})
