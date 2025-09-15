@@ -1,7 +1,7 @@
 import react from '@astrojs/react'
 import vercel from '@astrojs/vercel'
 import tailwindcss from '@tailwindcss/vite'
-import { defineConfig, fontProviders } from 'astro/config'
+import { defineConfig, envField, fontProviders } from 'astro/config'
 
 // https://astro.build/config
 export default defineConfig({
@@ -9,6 +9,14 @@ export default defineConfig({
 	vite: {
 		// @ts-ignore
 		plugins: [tailwindcss()],
+	},
+	env: {
+		schema: {
+			USDA_API_KEY: envField.string({
+				context: 'server',
+				access: 'secret',
+			}),
+		},
 	},
 	output: 'server',
 	adapter: vercel(),
