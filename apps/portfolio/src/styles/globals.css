@@ -1,0 +1,5 @@
+@import '@aamini/ui-neobrutalist/globals.css';
+
+:root {
+	--header-size: 4.25rem;
+}

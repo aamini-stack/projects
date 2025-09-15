@@ -6,9 +6,7 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-	--header-size: 4.25rem;
 	--shadow-size: 4px;
-
 	--main: oklch(79.76% 0.2044 153.08);
 	--main-foreground: oklch(0% 0 0);
 	--background: oklch(96.47% 0.0401 157.79);
@@ -48,8 +46,7 @@
 
 	--font-weight-base: 500;
 	--font-weight-heading: 700;
-	--font-sans: var(--font-inter-sans);
-	--font-mono: var(--font-inter-mono);
+	--font-sans: var(--font-dm-sans);
 
 	--animate-bounce-up: bounce-up 1s infinite;
 	@keyframes bounce-up {
