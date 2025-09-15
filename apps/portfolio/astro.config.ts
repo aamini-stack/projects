@@ -32,7 +32,7 @@ export default defineConfig({
 		fonts: [
 			{
 				provider: fontProviders.fontsource(),
-				name: 'Dm Sans',
+				name: 'DM Sans',
 				cssVariable: '--font-dm-sans',
 			},
 		],
