@@ -3,7 +3,8 @@
 	"compilerOptions": {
 		"baseUrl": ".",
 		"paths": {
-			"@/*": ["./src/*"]
+			"@/*": ["./src/*"],
+			"@aamini/ui-neobrutalist/*": ["../../packages/ui-neobrutalist"]
 		}
 	},
 	"include": [".astro/types.d.ts", "**/*"],

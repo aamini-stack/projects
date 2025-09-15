@@ -1,30 +1,59 @@
 ---
-import { FruitCalendar } from '@/components/fruit-calendar'
-import Layout from '@/pages/_layout.astro'
-import { Calendar } from 'lucide-react'
+import { GenerateButton } from '@/components/generate-button'
+import { Header } from '@/components/ui/header'
+import { WeeklyShoppingCart } from '@/components/weekly-shopping-cart'
+import '@/styles/globals.css'
+import { Font } from 'astro:assets'
 
 export const prerender = true
+
+const activeTabId = Astro.url.pathname
 ---
 
-<Layout>
-	<div class="mx-auto max-w-4xl px-4 py-8">
-		<div class="mb-12 text-center">
-			<div
-				class="mb-12 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-100 to-pink-100 px-6 py-3"
-			>
-				<Calendar size={20} className="text-purple-600" />
-				<span class="font-medium text-purple-700">
-					Your Weekly Fruit Plan
-				</span>
-			</div>
-			<h2 class="mb-4 text-4xl font-bold text-gray-800">
-				7 Days of Fruit Discovery
-			</h2>
-			<p class="mx-auto mb-6 max-w-2xl text-xl text-gray-600">
-				A carefully curated selection of fruits for you to try throughout the
-				week. Each day brings a new flavor adventure!
-			</p>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.ico" />
+		<title>Fruit Generator</title>
+		<meta
+			name="description"
+			content="Website to randomly generate different weekly fruit selections for dieting."
+		/>
+		<meta
+			name="keywords"
+			content="fruit-gen, fruit-gen.com, Fruit Generator, Fruit, gen, random, weekly"
+		/>
+		<Font cssVariable="--font-dm-sans" preload />
+	</head>
+	<body class="bg-background min-h-dvh min-w-80 font-sans antialiased">
+		<div
+			class="min-h-screen bg-gradient-to-br from-green-200 via-yellow-100 to-green-300"
+		>
+			<Header activeTabId={activeTabId} client:load />
+			<main class="pb-8">
+				<div class="mx-auto max-w-6xl px-6 py-12">
+					<div class="mb-8 text-center">
+						<div class="mb-8">
+							<h1
+								class="mb-4 text-6xl font-black leading-tight text-black md:text-7xl lg:text-8xl"
+							>
+								Discover Your Next
+								<br />
+								<span class="text-green-600">Favorite Fruit</span>
+							</h1>
+							<p class="text-xl font-medium text-gray-800 md:text-2xl">
+								Stop eating the same fruits every week! Our smart generator
+								creates personalized fruit lists based on seasons, nutrition,
+								and. variety to expand your palate.
+							</p>
+						</div>
+						<GenerateButton client:load />
+					</div>
+
+					<WeeklyShoppingCart />
+				</div>
+			</main>
 		</div>
-		<FruitCalendar client:load />
-	</div>
-</Layout>
+	</body>
+</html>

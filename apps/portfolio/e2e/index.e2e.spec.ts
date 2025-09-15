@@ -1,8 +1,29 @@
 import { expect, test } from '@playwright/test'
 
-test.describe('Contact Me', () => {
+test.beforeEach(async ({ page }) => {
+	await page.goto('/')
+})
+
+test.describe('Home', () => {
+	test('Intro', async ({ page }) => {
+		await expect(page).toHaveScreenshot()
+	})
+
+	test('Experience', async ({ page }) => {
+		await page.getByRole('button', { name: 'About Me' }).click()
+		await expect(page.getByTitle('Experience')).toBeInViewport()
+		await expect(page).toHaveScreenshot()
+	})
+
+	test('Full Page', async ({ page }) => {
+		await expect(page).toHaveScreenshot({
+			fullPage: true,
+		})
+	})
+})
+
+test.describe('Contact Card', () => {
 	test.beforeEach(async ({ page }) => {
-		await page.goto('/')
 		await page.getByTestId('contact-card').scrollIntoViewIfNeeded()
 	})
 

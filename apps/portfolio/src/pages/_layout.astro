@@ -1,7 +1,7 @@
 ---
 import { Toaster } from '@/components/sonner'
-import '@aamini/ui/neobrutalist.css'
-import Font from 'astro/components/Font.astro'
+import '@/styles/globals.css'
+import { Font } from 'astro:assets'
 ---
 
 <html lang="en" class="scroll-smooth">
@@ -14,7 +14,7 @@ import Font from 'astro/components/Font.astro'
 			name="description"
 			content="Portfolio of Aria Amini, a software engineer."
 		/>
-		<Font cssVariable="--font-inter" preload />
+		<Font cssVariable="--font-dm-sans" preload />
 		<script>
 			import { PUBLIC_POSTHOG_KEY } from 'astro:env/client'
 			import posthog from 'posthog-js'

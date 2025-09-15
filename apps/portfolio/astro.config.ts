@@ -31,9 +31,9 @@ export default defineConfig({
 	experimental: {
 		fonts: [
 			{
-				provider: fontProviders.google(),
-				name: 'Inter',
-				cssVariable: '--font-inter',
+				provider: fontProviders.fontsource(),
+				name: 'DM Sans',
+				cssVariable: '--font-dm-sans',
 			},
 		],
 	},

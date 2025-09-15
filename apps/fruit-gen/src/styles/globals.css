@@ -1,0 +1,5 @@
+@import '@aamini/ui-neobrutalist/globals.css';
+
+:root {
+	--border-radius: 10px;
+}

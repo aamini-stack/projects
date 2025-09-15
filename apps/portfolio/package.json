@@ -15,11 +15,10 @@
 		"verify": "turbo run build typecheck lint test e2e"
 	},
 	"dependencies": {
-		"@aamini/ui": "workspace:*",
+		"@aamini/ui-neobrutalist": "workspace:*",
 		"@aamini/utils": "workspace:*",
 		"@astrojs/react": "^4.3.0",
 		"@astrojs/vercel": "^8.2.5",
-		"@fontsource-variable/inter": "^5.2.6",
 		"@hookform/resolvers": "^5.1.1",
 		"@nanostores/react": "^1.0.0",
 		"@radix-ui/react-accordion": "^1.2.11",
@@ -30,7 +29,7 @@
 		"@types/nodemailer": "^6.4.17",
 		"@vercel/functions": "^2.2.12",
 		"arktype": "^2.1.20",
-		"astro": "^5.13.4",
+		"astro": "^5.13.7",
 		"class-variance-authority": "^0.7.1",
 		"clsx": "^2.1.1",
 		"form-data": "^4.0.4",
