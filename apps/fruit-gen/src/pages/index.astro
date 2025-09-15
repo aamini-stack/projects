@@ -3,8 +3,7 @@ import { GenerateButton } from '@/components/generate-button'
 import { Header } from '@/components/ui/header'
 import { WeeklyShoppingCart } from '@/components/weekly-shopping-cart'
 import '@/styles/globals.css'
-import '@fontsource-variable/inter'
-import Font from 'astro/components/Font.astro'
+import { Font } from 'astro:assets'
 
 export const prerender = true
 
@@ -25,7 +24,7 @@ const activeTabId = Astro.url.pathname
 			name="keywords"
 			content="fruit-gen, fruit-gen.com, Fruit Generator, Fruit, gen, random, weekly"
 		/>
-		<Font cssVariable="--font-inter" preload />
+		<Font cssVariable="--font-dm-sans" preload />
 	</head>
 	<body class="bg-background min-h-dvh min-w-80 font-sans antialiased">
 		<div
