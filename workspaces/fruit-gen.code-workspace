@@ -4,6 +4,10 @@
 			"path": "../apps/fruit-gen",
 		},
 		{
+			"name": "ui-neobrutalist",
+			"path": "../packages/ui-neobrutalist",
+		},
+		{
 			"name": "root",
 			"path": "..",
 		},

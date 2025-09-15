@@ -40,7 +40,7 @@ aamini
 │   ├── fruit-gen/
 │   ├── imdbgraph/
 │   └── portfolio/
-├── libs/
+├── packages/
 │   ├── typescript/     # (@aamini/config-typescript): TypeScript common configurations
 │   ├── ui/             # (@aamini/ui): Reusable React/ShadcnUI components + styles
 ├── package.json

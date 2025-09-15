@@ -22,4 +22,4 @@ Part of `@aamini` monorepo with shared TypeScript config
 
 ## Styling
 
-Common base shadcn styles located in @aamini/ui package (../../libs/ui)
+Common base shadcn styles located in @aamini/ui package (../../packages/ui)

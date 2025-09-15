@@ -1,8 +1,8 @@
 'use client'
 
 import type { JobInfo } from '@/lib/jobs'
-import { Button } from '@aamini/ui/neobrutalist/components/button'
-import { Card } from '@aamini/ui/neobrutalist/components/card'
+import { Button } from '@aamini/ui-neobrutalist/components/button'
+import { Card } from '@aamini/ui-neobrutalist/components/card'
 import {
 	Collapsible,
 	CollapsibleContent,

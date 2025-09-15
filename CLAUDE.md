@@ -27,7 +27,7 @@ A web application that provides detailed statistics and visualizations for the
 game Dota 2. It helps players analyze hero performance, matchups, and other
 in-game data.
 
-## apps/fruit-gen (port 4004)
+### apps/fruit-gen (port 4004)
 
 A web application for randomly generating different fruits to try.
 
@@ -40,7 +40,7 @@ aamini
 │   ├── fruit-gen/
 │   ├── imdbgraph/
 │   └── portfolio/
-├── libs/
+├── packages/
 │   ├── typescript/     # (@aamini/config-typescript): TypeScript common configurations
 │   ├── ui/             # (@aamini/ui): Reusable React/ShadcnUI components + styles
 ├── package.json
