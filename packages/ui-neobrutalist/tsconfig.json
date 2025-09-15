@@ -1,0 +1,10 @@
+{
+	"extends": "@aamini/config-typescript/react",
+	"compilerOptions": {
+		"baseUrl": ".",
+		"paths": {
+			"@aamini/ui-neobrutalist/*": ["./src/*"]
+		}
+	},
+	"include": ["**/*"]
+}

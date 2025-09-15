@@ -1,4 +1,4 @@
-export const proxy = ({
+export const proxy = async ({
 	request,
 	route,
 }: {
@@ -7,8 +7,7 @@ export const proxy = ({
 }) => {
 	const url = new URL(request.url)
 
-	console.log('[analytics] Starting. URL: ', url.toString())
-	console.log('[analytics] Analytics API call detected')
+	console.log('[proxy.ts]', url.toString())
 
 	const postHogHost = route.startsWith('static/')
 		? 'https://us-assets.i.posthog.com'
@@ -37,8 +36,7 @@ export const proxy = ({
 	const body = method === 'GET' || method === 'HEAD' ? null : request.body
 
 	try {
-		console.log('[analytics] Making proxy call')
-		return fetch(targetUrl.toString(), {
+		return await fetch(targetUrl.toString(), {
 			method,
 			headers: forwardedHeaders,
 			body,
@@ -47,7 +45,7 @@ export const proxy = ({
 			duplex: 'half',
 		})
 	} catch (err) {
-		console.error('[analytics] Analytics proxy error:', err)
+		console.error('[proxy.ts] Analytics proxy error:', err)
 		return new Response('Upstream error', { status: 502 })
 	}
 }

@@ -1,7 +1,7 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
 
-@source "../../../../apps/**/*.{ts,tsx}";
+@source "../../apps/**/*.{ts,tsx}";
 @source "../**/*.{ts,tsx}";
 
 @custom-variant dark (&:is(.dark *));
@@ -38,6 +38,18 @@
 	--color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
 	--color-sidebar-border: var(--sidebar-border);
 	--color-sidebar-ring: var(--sidebar-ring);
+
+	/* Sophisticated Sage Color Palette for Fruit App */
+	--color-sage-50: oklch(0.97 0.01 150);
+	--color-sage-100: oklch(0.94 0.02 150);
+	--color-sage-200: oklch(0.88 0.03 150);
+	--color-sage-300: oklch(0.8 0.04 150);
+	--color-sage-400: oklch(0.69 0.06 150);
+	--color-sage-500: oklch(0.58 0.08 150);
+	--color-sage-600: oklch(0.48 0.07 150);
+	--color-sage-700: oklch(0.38 0.06 150);
+	--color-sage-800: oklch(0.3 0.05 150);
+	--color-sage-900: oklch(0.24 0.04 150);
 }
 
 :root {
@@ -105,5 +117,58 @@
 	}
 	body {
 		@apply bg-background text-foreground;
+	}
+}
+
+@layer utilities {
+	/* Premium Animation Classes */
+	.animate-gentle-float {
+		animation: gentle-float 6s ease-in-out infinite;
+	}
+
+	.animate-subtle-glow {
+		animation: subtle-glow 4s ease-in-out infinite alternate;
+	}
+
+	.animate-fade-up {
+		animation: fade-up 0.8s ease-out forwards;
+	}
+
+	.group-hover-scale {
+		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+	}
+
+	.group:hover .group-hover-scale {
+		transform: scale(1.05);
+	}
+}
+
+@keyframes gentle-float {
+	0%,
+	100% {
+		transform: translateY(0px);
+	}
+	50% {
+		transform: translateY(-4px);
+	}
+}
+
+@keyframes subtle-glow {
+	from {
+		box-shadow: 0 0 20px rgba(16, 185, 129, 0.15);
+	}
+	to {
+		box-shadow: 0 0 30px rgba(16, 185, 129, 0.25);
+	}
+}
+
+@keyframes fade-up {
+	from {
+		opacity: 0;
+		transform: translateY(20px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
 	}
 }

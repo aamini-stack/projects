@@ -1,4 +1,4 @@
-import { cn } from '@aamini/ui/lib/utils'
+import { cn } from '@aamini/ui-neobrutalist/lib/utils'
 
 function Input({ className, type, ...props }: React.ComponentProps<'input'>) {
 	return (

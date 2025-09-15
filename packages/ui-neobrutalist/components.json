@@ -1,0 +1,20 @@
+{
+	"$schema": "https://ui.shadcn.com/schema.json",
+	"style": "new-york",
+	"rsc": true,
+	"tsx": true,
+	"tailwind": {
+		"config": "",
+		"css": "src/globals.css",
+		"baseColor": "zinc",
+		"cssVariables": true
+	},
+	"iconLibrary": "lucide",
+	"aliases": {
+		"components": "@aamini/ui-neobrutalist/components",
+		"utils": "@aamini/utils/ui",
+		"hooks": "@aamini/ui-neobrutalist/hooks",
+		"lib": "@aamini/ui-neobrutalist/lib",
+		"ui": "@aamini/ui-neobrutalist/components"
+	}
+}

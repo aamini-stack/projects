@@ -1,6 +1,6 @@
 'use client'
 
-import { cn } from '@aamini/ui/lib/utils'
+import { cn } from '@aamini/ui-neobrutalist/lib/utils'
 import * as LabelPrimitive from '@radix-ui/react-label'
 
 function Label({

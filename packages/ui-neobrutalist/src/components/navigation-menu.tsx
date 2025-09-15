@@ -1,10 +1,10 @@
 'use client'
 
+import { cn } from '@aamini/ui-neobrutalist/lib/utils'
 import * as NavigationMenuPrimitive from '@radix-ui/react-navigation-menu'
 import { cva } from 'class-variance-authority'
 import { ChevronDown } from 'lucide-react'
 import type * as React from 'react'
-import { cn } from '@aamini/ui/lib/utils'
 
 function NavigationMenu({
 	className,
@@ -35,7 +35,7 @@ function NavigationMenuList({
 		<NavigationMenuPrimitive.List
 			data-slot="navigation-menu-list"
 			className={cn(
-				'ex-1 font-heading font-heading list-none items-center justify-center space-x-1',
+				'ex-1 font-heading list-none items-center justify-center space-x-1',
 				className,
 			)}
 			{...props}
@@ -73,7 +73,7 @@ function NavigationMenuTrigger({
 		>
 			{children}{' '}
 			<ChevronDown
-				className="ize-4 font-heading font-heading [1px] [1px] transition duration-200 group-data-[state=open]:rotate-180"
+				className="ize-4 font-heading [1px] [1px] transition duration-200 group-data-[state=open]:rotate-180"
 				aria-hidden="true"
 			/>
 		</NavigationMenuPrimitive.Trigger>
@@ -105,7 +105,7 @@ function NavigationMenuLink({
 		<NavigationMenuPrimitive.Link
 			data-slot="navigation-menu-link"
 			className={cn(
-				"none rounded-base rounded-base space-y-1 p-2 leading-none no-underline outline-none transition-colors focus-visible:outline-1 focus-visible:ring-4 [&_svg:not([class*='size-'])]:size-4",
+				"none rounded-base space-y-1 p-2 leading-none no-underline outline-none transition-colors focus-visible:outline-1 focus-visible:ring-4 [&_svg:not([class*='size-'])]:size-4",
 				className,
 			)}
 			{...props}
@@ -126,7 +126,7 @@ function NavigationMenuViewport({
 			<NavigationMenuPrimitive.Viewport
 				data-slot="navigation-menu-viewport"
 				className={cn(
-					'igin-top-center dataorigin-top-center -[state=open]:anrounded-base imate-in dataorigin-top-center -[state=open]:anrounded-base iborder-border mate-in ata-[state=closed]:animaterr2 erer ata-[state=closedanimateeout bg-main bg-main text-main-ftextgmainoforeground data-[state=open]:animate-in md:w-[var(--radix-navigation-menu-viewport-width)]',
+					'igin-top-center dataorigin-top-center -[state=open]:anrounded-base imate-in dataorigin-top-center -[state=open]:anrounded-base iborder-border mate-in ata-[state=closed]:animaterr2 erer ata-[state=closedanimateeout bg-main text-main-ftextgmainoforeground data-[state=open]:animate-in md:w-[var(--radix-navigation-menu-viewport-width)]',
 					className,
 				)}
 				{...props}
@@ -154,13 +154,13 @@ function NavigationMenuIndicator({
 }
 
 export {
-	navigationMenuTriggerStyle,
 	NavigationMenu,
-	NavigationMenuList,
-	NavigationMenuItem,
 	NavigationMenuContent,
-	NavigationMenuTrigger,
-	NavigationMenuLink,
 	NavigationMenuIndicator,
+	NavigationMenuItem,
+	NavigationMenuLink,
+	NavigationMenuList,
+	NavigationMenuTrigger,
+	navigationMenuTriggerStyle,
 	NavigationMenuViewport,
 }

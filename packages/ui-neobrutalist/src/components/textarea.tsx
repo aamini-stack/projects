@@ -1,5 +1,5 @@
+import { cn } from '@aamini/ui-neobrutalist/lib/utils'
 import type * as React from 'react'
-import { cn } from '@aamini/ui/lib/utils'
 
 function Textarea({ className, ...props }: React.ComponentProps<'textarea'>) {
 	return (
