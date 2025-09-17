@@ -1,0 +1,21 @@
+---
+import '@/styles/globals.css'
+import { Font } from 'astro:assets'
+---
+
+<!doctype html>
+<html lang="en" class="m-0 h-full w-full">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/vercel.svg" />
+		<meta name="generator" content={Astro.generator} />
+		<title>Sample Title</title>
+		<meta name="description" content="Sample description" />
+		<meta name="keywords" content="" />
+		<Font cssVariable="--font-dm-sans" preload />
+	</head>
+	<body class="bg-background m-0 h-full w-full antialiased">
+		<slot />
+	</body>
+</html>

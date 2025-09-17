@@ -1,0 +1,175 @@
+---
+import astroLogo from '@/assets/astro.svg'
+import background from '@/assets/background.svg'
+import { Badge } from '@aamini/ui/components/badge'
+import { Button } from '@aamini/ui/components/button'
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+} from '@aamini/ui/components/card'
+import Layout from '@/pages/_Layout.astro'
+---
+
+<Layout>
+	<!-- Background with modern gradient blur effect -->
+	<div class="fixed inset-0 -z-10">
+		<img
+			src={background.src}
+			alt=""
+			class="h-full w-full object-cover blur-[100px]"
+			fetchpriority="high"
+		/>
+		<div
+			class="from-background/20 via-background/40 to-background/60 absolute inset-0 bg-gradient-to-br"
+		>
+		</div>
+	</div>
+
+	<!-- Main container with modern layout -->
+	<div
+		class="mx-auto flex min-h-screen max-w-7xl flex-col items-center justify-center gap-8 p-4 lg:flex-row lg:p-8"
+	>
+		<!-- Hero Section -->
+		<main
+			class="flex max-w-2xl flex-1 flex-col items-center space-y-8 text-center lg:items-start lg:text-left"
+		>
+			<!-- Logo with subtle animation -->
+			<div class="group">
+				<a
+					href="https://astro.build"
+					class="inline-block transition-transform hover:scale-105"
+				>
+					<img
+						src={astroLogo.src}
+						width="120"
+						height="50"
+						alt="Astro Homepage"
+						class="drop-shadow-lg"
+					/>
+				</a>
+			</div>
+
+			<!-- Modern Hero Text -->
+			<div class="space-y-4">
+				<h1
+					class="text-foreground text-3xl font-bold leading-tight lg:text-4xl"
+				>
+					Welcome to your
+					<span
+						class="bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 bg-clip-text font-extrabold text-transparent"
+					>
+						Astro Template
+					</span>
+				</h1>
+
+				<p class="text-muted-foreground max-w-xl text-lg leading-relaxed">
+					Get started by exploring the
+					<code
+						class="text-foreground relative inline-flex items-center rounded-lg border border-pink-200 bg-gradient-to-r from-pink-100 to-purple-100 px-3 py-1 font-mono text-sm dark:border-pink-800 dark:from-pink-900/20 dark:to-purple-900/20"
+					>
+						src/pages
+					</code>
+					directory in your project.
+				</p>
+			</div>
+
+			<!-- Action Buttons -->
+			<div class="flex w-full flex-col gap-4 sm:w-auto sm:flex-row">
+				<Button
+					asChild
+					size="lg"
+					className="bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg transition-all duration-200 hover:from-blue-700 hover:to-purple-700 hover:shadow-xl"
+				>
+					<a href="https://docs.astro.build"> 📚 Read our docs </a>
+				</Button>
+
+				<Button
+					asChild
+					variant="outline"
+					size="lg"
+					className="hover:bg-accent/50 group border-2"
+				>
+					<a href="https://astro.build/chat" class="flex items-center gap-2">
+						Join Discord
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							viewBox="0 0 127.14 96.36"
+							class="h-4 w-4 transition-transform group-hover:scale-110"
+						>
+							<path
+								fill="currentColor"
+								d="M107.7 8.07A105.15 105.15 0 0 0 81.47 0a72.06 72.06 0 0 0-3.36 6.83 97.68 97.68 0 0 0-29.11 0A72.37 72.37 0 0 0 45.64 0a105.89 105.89 0 0 0-26.25 8.09C2.79 32.65-1.71 56.6.54 80.21a105.73 105.73 0 0 0 32.17 16.15 77.7 77.7 0 0 0 6.89-11.11 68.42 68.42 0 0 1-10.85-5.18c.91-.66 1.8-1.34 2.66-2a75.57 75.57 0 0 0 64.32 0c.87.71 1.76 1.39 2.66 2a68.68 68.68 0 0 1-10.87 5.19 77 77 0 0 0 6.89 11.1 105.25 105.25 0 0 0 32.19-16.14c2.64-27.38-4.51-51.11-18.9-72.15ZM42.45 65.69C36.18 65.69 31 60 31 53s5-12.74 11.43-12.74S54 46 53.89 53s-5.05 12.69-11.44 12.69Zm42.24 0C78.41 65.69 73.25 60 73.25 53s5-12.74 11.44-12.74S96.23 46 96.12 53s-5.04 12.69-11.43 12.69Z"
+							></path>
+						</svg>
+					</a>
+				</Button>
+			</div>
+		</main>
+
+		<!-- Feature Card -->
+		<aside class="w-full lg:w-80 xl:w-96">
+			<Card
+				className="bg-card/80 group border-2 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
+			>
+				<CardHeader>
+					<div class="mb-2 flex items-center gap-3">
+						<div
+							class="rounded-lg bg-gradient-to-br from-orange-400 to-red-500 p-2 text-white"
+						>
+							<svg
+								width="24"
+								height="24"
+								fill="none"
+								xmlns="http://www.w3.org/2000/svg"
+								class="transition-transform group-hover:rotate-12"
+							>
+								<path
+									d="M18.5 9c1 1.06 1.5 2.39 1.5 4 0 3.46-3.7 4.27-5.5 9C13.83 21.42 13.5 20.59 13.5 19.5c0-3.48 5-5.29 5-10.5Zm-4-4c1.2 1.24 1.8 2.57 1.8 4 0 4.95-6.05 5.68-4.8 13C10.58 20.84 9.75 19.17 9.75 17c0-3.33 5.5-6 5.5-12Zm-4.5-4C11.33 2.67 12 4.17 12 5.5c0 6.25-8.5 8.22-4 16.5-2.61-.58-4.5-3-4.5-6 0-6.5 6.5-7.5 6.5-15Z"
+									fill="currentColor"></path>
+							</svg>
+						</div>
+						<Badge variant="secondary" className="text-xs">New</Badge>
+					</div>
+					<CardTitle
+						className="group-hover:text-primary text-xl font-semibold transition-colors"
+					>
+						What's New in Astro 5.0?
+					</CardTitle>
+					<CardDescription className="text-sm leading-relaxed">
+						From content layers to server islands, discover the latest features
+						and improvements in Astro 5.0
+					</CardDescription>
+				</CardHeader>
+				<CardContent>
+					<Button
+						asChild
+						variant="ghost"
+						className="text-muted-foreground hover:text-foreground h-auto w-full justify-start p-0 font-normal"
+					>
+						<a
+							href="https://astro.build/blog/astro-5/"
+							class="flex items-center gap-2"
+						>
+							Learn more
+							<svg
+								class="h-4 w-4 transition-transform group-hover:translate-x-1"
+								fill="none"
+								stroke="currentColor"
+								viewBox="0 0 24 24"
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="M9 5l7 7-7 7"></path>
+							</svg>
+						</a>
+					</Button>
+				</CardContent>
+			</Card>
+		</aside>
+	</div>
+</Layout>
