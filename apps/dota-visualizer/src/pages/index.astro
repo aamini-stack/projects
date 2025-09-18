@@ -2,13 +2,15 @@
 import { HeroStats } from '@/components/hero-stats'
 import { HeroTable } from '@/components/hero-table'
 import { fetchLatestHeroData } from '@/lib/dota/api'
-import '@aamini/ui/globals.css'
+import Layout from '@/pages/_Layout.astro'
 
 const heroDictionary = await fetchLatestHeroData()
 ---
 
-<main class="flex min-h-screen flex-col items-center justify-center p-24">
-	<h1 class="mb-8 text-4xl font-bold">Dota 2 Hero Stats</h1>
-	<HeroStats client:load heroDictionary={heroDictionary} />
-	<HeroTable client:load heroDictionary={heroDictionary} />
-</main>
+<Layout>
+	<main class="flex min-h-screen flex-col items-center justify-center p-24">
+		<h1 class="mb-8 text-4xl font-bold">Dota 2 Hero Stats</h1>
+		<HeroStats client:load heroDictionary={heroDictionary} />
+		<HeroTable client:load heroDictionary={heroDictionary} />
+	</main>
+</Layout>
