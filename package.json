@@ -9,9 +9,8 @@
 		"format:fix": "prettier --write **/*.{js,ts,tsx,json,html,css,md,yml,yaml,astro}",
 		"typecheck": "turbo run typecheck",
 		"lint": "oxlint --type-aware --max-warnings=0",
-		"test": "turbo run test",
-		"test:projects": "vitest run",
-		"test:projects:watch": "vitest --watch",
+		"test:unit": "turbo run test:unit",
+		"test:integration": "turbo run test:integration",
 		"e2e": "turbo run e2e",
 		"e2e:update": "turbo run e2e:update",
 		"verify": "turbo run format build lint test typecheck e2e"
@@ -25,9 +24,7 @@
 		"prettier-plugin-jsdoc": "^1.3.3",
 		"prettier-plugin-organize-imports": "^4.2.0",
 		"prettier-plugin-tailwindcss": "^0.6.14",
-		"turbo": "^2.5.6",
-		"vite-tsconfig-paths": "^5.1.4",
-		"vitest": "^3.2.4"
+		"turbo": "^2.5.6"
 	},
 	"packageManager": "pnpm@10.14.0",
 	"engines": {

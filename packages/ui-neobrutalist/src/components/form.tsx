@@ -1,5 +1,3 @@
-'use client'
-
 import { Label } from '@aamini/ui-neobrutalist/components/label'
 import { cn } from '@aamini/ui-neobrutalist/lib/utils'
 import type * as LabelPrimitive from '@radix-ui/react-label'

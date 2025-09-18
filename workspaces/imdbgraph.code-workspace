@@ -4,6 +4,10 @@
 			"path": "../apps/imdbgraph",
 		},
 		{
+			"name": "ui",
+			"path": "../packages/ui",
+		},
+		{
 			"name": "root",
 			"path": "..",
 		},

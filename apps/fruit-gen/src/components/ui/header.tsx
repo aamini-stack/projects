@@ -1,4 +1,4 @@
-import { cn } from '@aamini/ui-neobrutalist/lib/utils'
+import { cn } from '@aamini/ui/lib/utils'
 import { Apple, Calendar, Menu, X } from 'lucide-react'
 import { useState } from 'react'
 

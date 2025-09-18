@@ -3,8 +3,10 @@
 	"compilerOptions": {
 		"baseUrl": ".",
 		"paths": {
-			"@/*": ["./src/*"]
-		}
+			"@/*": ["./src/*"],
+			"@aamini/ui/*": ["../../packages/ui"]
+		},
+		"types": ["vitest/importMeta"]
 	},
 	"include": [".astro/types.d.ts", "**/*"],
 	"exclude": ["dist"]

@@ -1,0 +1,16 @@
+name: aamini-infra
+runtime:
+  name: nodejs
+  options:
+    typescript: true
+description: Infrastructure as Code for @aamini monorepo using Pulumi
+template:
+  config:
+    github:token:
+      description: GitHub token for managing repositories
+      secret: true
+    vercel:apiToken:
+      description: Vercel API token for deployments
+      secret: true
+    vercel:team:
+      description: Vercel team ID or slug

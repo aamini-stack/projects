@@ -1,7 +1,5 @@
-'use client'
-
 import Email from '@/components/icons/email.svg'
-import { Button } from '@aamini/ui-neobrutalist/components/button'
+import { Button } from '@aamini/ui/components/button'
 import {
 	Card,
 	CardContent,
@@ -9,7 +7,7 @@ import {
 	CardFooter,
 	CardHeader,
 	CardTitle,
-} from '@aamini/ui-neobrutalist/components/card'
+} from '@aamini/ui/components/card'
 import {
 	Form,
 	FormControl,
@@ -17,9 +15,9 @@ import {
 	FormItem,
 	FormLabel,
 	FormMessage,
-} from '@aamini/ui-neobrutalist/components/form'
-import { Input } from '@aamini/ui-neobrutalist/components/input'
-import { Textarea } from '@aamini/ui-neobrutalist/components/textarea'
+} from '@aamini/ui/components/form'
+import { Input } from '@aamini/ui/components/input'
+import { Textarea } from '@aamini/ui/components/textarea'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { actions } from 'astro:actions'
 import { useForm } from 'react-hook-form'

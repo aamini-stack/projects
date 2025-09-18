@@ -1,0 +1,35 @@
+{
+	// General
+	"git.autofetch": true,
+	"files.autoSave": "afterDelay",
+
+	// Formatting
+	"editor.formatOnSave": true,
+	"editor.rulers": [80],
+	"editor.defaultFormatter": "esbenp.prettier-vscode",
+	"editor.codeActionsOnSave": {
+		"source.fixAll.oxc": "explicit",
+		"source.organizeImports": "always"
+	},
+	"typescript.preferences.importModuleSpecifier": "non-relative",
+
+	// Ark Types: https://arktype.io/docs/intro/setup#settings
+	"editor.quickSuggestions": {
+		"strings": "on"
+	},
+	"typescript.preferences.autoImportSpecifierExcludeRegexes": ["^(node:)?os$"],
+
+	"files.exclude": {
+		"**/node_modules/": true,
+		"**/.next/": true,
+		"**/.swc/": true,
+		"**/.turbo": true,
+		"**/.astro": true,
+		"**/dist": true,
+		"**/.vercel": true,
+		"**/playwright-report": true
+	},
+	"files.associations": {
+		"*.css": "tailwindcss"
+	}
+}

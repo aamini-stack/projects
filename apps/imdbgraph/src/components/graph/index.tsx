@@ -1,5 +1,3 @@
-'use client'
-
 import '@/components/graph/highcharts.css'
 import type { Episode, Ratings } from '@/lib/imdb/types'
 import { theme } from '@/lib/store'
@@ -137,4 +135,172 @@ const options: Highcharts.Options = {
 	credits: {
 		enabled: false,
 	},
+}
+
+// In-source tests
+if (import.meta.vitest) {
+	const { describe, it, expect } = import.meta.vitest
+
+	describe('parseRatings', () => {
+		it('should transform ratings data into Highcharts series format', () => {
+			const mockRatings: Ratings = {
+				allEpisodeRatings: {
+					'1': {
+						'1': {
+							title: 'Episode 1',
+							seasonNum: 1,
+							episodeNum: 1,
+							rating: 8.5,
+							numVotes: 1000,
+						},
+						'2': {
+							title: 'Episode 2',
+							seasonNum: 1,
+							episodeNum: 2,
+							rating: 9.0,
+							numVotes: 1200,
+						},
+					},
+					'2': {
+						'1': {
+							title: 'Season 2 Episode 1',
+							seasonNum: 2,
+							episodeNum: 1,
+							rating: 7.8,
+							numVotes: 800,
+						},
+					},
+				},
+				show: {
+					imdbId: 'tt123',
+					title: 'Test Show',
+					startYear: '2021',
+					endYear: null,
+					rating: 8.0,
+					numVotes: 5000,
+				},
+			}
+
+			const result = parseRatings(mockRatings)
+
+			expect(result).toHaveLength(2)
+			expect(result[0]?.name).toBe('Season 1')
+			expect(result[0]?.type).toBe('spline')
+			expect(result[0]?.data).toHaveLength(2)
+			const firstPoint = result[0]?.data?.[0] as Point
+			expect(firstPoint).toEqual({
+				x: 1,
+				y: 8.5,
+				custom: { episode: mockRatings.allEpisodeRatings['1']?.['1'] },
+			})
+			expect(result[1]?.name).toBe('Season 2')
+			expect(result[1]?.data).toHaveLength(1)
+		})
+
+		it('should skip episodes with zero votes', () => {
+			const mockRatings: Ratings = {
+				allEpisodeRatings: {
+					'1': {
+						'1': {
+							title: 'Episode 1',
+							seasonNum: 1,
+							episodeNum: 1,
+							rating: 8.5,
+							numVotes: 1000,
+						},
+						'2': {
+							title: 'Episode 2',
+							seasonNum: 1,
+							episodeNum: 2,
+							rating: 0,
+							numVotes: 0,
+						},
+					},
+				},
+				show: {
+					imdbId: 'tt123',
+					title: 'Test Show',
+					startYear: '2021',
+					endYear: null,
+					rating: 8.0,
+					numVotes: 5000,
+				},
+			}
+
+			const result = parseRatings(mockRatings)
+
+			expect(result).toHaveLength(1)
+			expect(result[0]?.data).toHaveLength(1)
+			const firstPoint = result[0]?.data?.[0] as Point
+			expect(firstPoint.y).toBe(8.5)
+		})
+
+		it('should return empty array for seasons with no valid episodes', () => {
+			const mockRatings: Ratings = {
+				allEpisodeRatings: {
+					'1': {
+						'1': {
+							title: 'Episode 1',
+							seasonNum: 1,
+							episodeNum: 1,
+							rating: 0,
+							numVotes: 0,
+						},
+					},
+				},
+				show: {
+					imdbId: 'tt123',
+					title: 'Test Show',
+					startYear: '2021',
+					endYear: null,
+					rating: 8.0,
+					numVotes: 5000,
+				},
+			}
+
+			const result = parseRatings(mockRatings)
+
+			expect(result).toHaveLength(0)
+		})
+
+		it('should increment x values correctly across episodes', () => {
+			const mockRatings: Ratings = {
+				allEpisodeRatings: {
+					'1': {
+						'1': {
+							title: 'Episode 1',
+							seasonNum: 1,
+							episodeNum: 1,
+							rating: 8.0,
+							numVotes: 100,
+						},
+					},
+					'2': {
+						'1': {
+							title: 'Season 2 Episode 1',
+							seasonNum: 2,
+							episodeNum: 1,
+							rating: 8.5,
+							numVotes: 150,
+						},
+					},
+				},
+				show: {
+					imdbId: 'tt123',
+					title: 'Test Show',
+					startYear: '2021',
+					endYear: null,
+					rating: 8.0,
+					numVotes: 5000,
+				},
+			}
+
+			const result = parseRatings(mockRatings)
+
+			const firstPoint = result[0]?.data?.[0] as Point
+			const secondPoint = result[1]?.data?.[0] as Point
+			expect(firstPoint.x).toBe(1)
+			expect(secondPoint.x).toBe(2)
+		})
+	})
 }

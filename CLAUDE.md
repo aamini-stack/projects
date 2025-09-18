@@ -48,8 +48,22 @@ aamini
 └── turbo.json
 ```
 
+## Package Manager
+
+**IMPORTANT: This project uses pnpm, NOT npm. Always use pnpm commands.**
+
+Common commands:
+
+- `pnpm install` - Install dependencies
+- `pnpm dev` - Start development servers
+- `pnpm build` - Build all applications
+- `pnpm test` - Run tests
+- `pnpm lint` - Run linting
+- `pnpm format` - Format code
+
 ## Tools
 
+- **Package Manager**: pnpm (required - do NOT use npm or yarn)
 - **Build System**: Turborepo for task orchestration
 - **Linting**: oxlint for fast TypeScript linting
 - **Formatting**: Prettier with custom plugins
