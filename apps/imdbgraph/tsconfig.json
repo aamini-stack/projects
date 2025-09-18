@@ -5,9 +5,9 @@
 		"paths": {
 			"@/*": ["./src/*"],
 			"@aamini/ui/*": ["../../packages/ui"]
-		}
+		},
+		"types": ["vitest/importMeta"]
 	},
-	"types": ["vitest/importMeta"],
 	"include": [".astro/types.d.ts", "**/*"],
 	"exclude": ["dist"]
 }
