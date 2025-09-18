@@ -1,0 +1,28 @@
+---
+import { Font } from 'astro:assets'
+
+export const prerender = true
+---
+
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.ico" />
+		<title>IMDB Graph</title>
+		<meta
+			name="description"
+			content="Website to visualize IMDB TV show ratings as a graph."
+		/>
+		<meta
+			name="keywords"
+			content="imdbgraph.org, imdbgraph.com, IMDB, Graph, IMDB Graph, 
+      IMDB Chart, imdbgraph, Visualize, Episode ratings, chart, season, 
+      episode"
+		/>
+		<Font cssVariable="--font-inter" preload />
+	</head>
+	<body class="font-sans antialiased">
+		<slot />
+	</body>
+</html>

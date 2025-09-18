@@ -1,13 +1,18 @@
-/// <reference types="vitest" />
-import { getViteConfig } from 'astro/config'
 import tsconfigPaths from 'vite-tsconfig-paths'
+import { defineProject } from 'vitest/config'
 
-export default getViteConfig({
-	// @ts-ignore
+export default defineProject({
 	plugins: [tsconfigPaths()],
 	test: {
-		include: ['src/**/*.{test,spec}.?(c|m)[jt]s?(x)'],
-		setupFiles: ['__mocks__/setup-http.ts'],
-		includeSource: ['src/**/*.{ts,tsx}'],
+		projects: [
+			{
+				extends: true,
+				test: {
+					name: 'unit',
+					include: ['src/**/*.test.ts'],
+					setupFiles: ['./__mocks__/setup-http.ts'],
+				},
+			},
+		],
 	},
 })

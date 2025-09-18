@@ -1,14 +1,43 @@
-/// <reference types="vitest" />
-import { getViteConfig } from 'astro/config'
 import tsconfigPaths from 'vite-tsconfig-paths'
+import { defineProject } from 'vitest/config'
 
-export default getViteConfig({
-	// @ts-ignore
+export default defineProject({
 	plugins: [tsconfigPaths()],
+	resolve: {
+		alias: {
+			'astro:actions': new URL(
+				'./src/__mocks__/astro-actions.ts',
+				import.meta.url,
+			).pathname,
+		},
+	},
 	test: {
-		include: ['src/**/*.{test,spec}.?(c|m)[jt]s?(x)'],
-		setupFiles: ['__mocks__/setup-jsdom.ts'],
-		globals: true,
-		environment: 'jsdom',
+		projects: [
+			{
+				extends: true,
+				test: {
+					name: 'browser',
+					include: ['src/**/*.test.tsx'],
+					browser: {
+						instances: [
+							{
+								browser: 'chromium',
+							},
+						],
+						provider: 'playwright',
+						enabled: true,
+						headless: true,
+					},
+				},
+			},
+			{
+				extends: true,
+				test: {
+					name: 'unit',
+					include: ['src/**/*.test.ts'],
+					environment: 'node',
+				},
+			},
+		],
 	},
 })

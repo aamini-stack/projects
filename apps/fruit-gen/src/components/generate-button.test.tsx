@@ -1,5 +1,5 @@
-import { render } from '@testing-library/react'
 import { expect, test } from 'vitest'
+import { render } from 'vitest-browser-react'
 import { GenerateButton } from './generate-button'
 
 test('title', () => {

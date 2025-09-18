@@ -1,4 +1,4 @@
-import { Button } from '@aamini/ui-neobrutalist/components/button'
+import { Button } from '@aamini/ui/components/button'
 import { Shuffle, Sparkles } from 'lucide-react'
 import { useState } from 'react'
 
@@ -9,8 +9,8 @@ export function GenerateButton() {
 		setIsGenerating(true)
 		// Reset generating state after animation completes
 		setTimeout(() => {
-			;(setIsGenerating(false), 800)
-		})
+			setIsGenerating(false)
+		}, 800)
 	}
 
 	return (

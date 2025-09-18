@@ -10,12 +10,9 @@ export default defineConfig({
 		//@ts-ignore
 		plugins: [tailwindcss()],
 	},
-	output: 'static',
+	output: 'server',
 	adapter: vercel({
 		edgeMiddleware: true,
-		webAnalytics: {
-			enabled: true,
-		},
 	}),
 	experimental: {
 		fonts: [

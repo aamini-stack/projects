@@ -22,4 +22,10 @@ Part of `@aamini` monorepo with shared TypeScript config
 
 ## Styling
 
-Common base shadcn styles located in @aamini/ui package (../../packages/ui)
+Common base neobrutalist styles located in @aamini/ui-neobrutalist package
+(../../packages/ui-neobrutalist)
+
+## New Components
+
+To add new Neobrutalist components to the app, use
+`pnpm dlx shadcn@latest add https://neobrutalism.dev/r/[COMPONENT].json`.

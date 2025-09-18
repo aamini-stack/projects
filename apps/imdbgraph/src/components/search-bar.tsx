@@ -1,5 +1,3 @@
-'use client'
-
 import type { Show } from '@/lib/imdb/types'
 import { formatYears } from '@/lib/imdb/types'
 import { queryClient } from '@/lib/react-query'

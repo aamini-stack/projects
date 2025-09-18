@@ -1,11 +1,7 @@
 {
 	"folders": [
 		{
-			"path": "../apps/imdbgraph",
-		},
-		{
-			"name": "ui",
-			"path": "../packages/ui",
+			"path": "../apps/aamini-template",
 		},
 		{
 			"name": "root",

@@ -3,9 +3,9 @@
 	"compilerOptions": {
 		"baseUrl": ".",
 		"paths": {
-			"@/*": ["./src/*"]
-		},
-		"types": ["@testing-library/jest-dom"]
+			"@/*": ["./src/*"],
+			"@aamini/ui/*": ["../../packages/ui-neobrutalist"]
+		}
 	},
 	"include": [".astro/types.d.ts", "**/*"],
 	"exclude": ["dist"]
