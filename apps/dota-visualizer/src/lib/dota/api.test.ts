@@ -1,5 +1,5 @@
-import { fetchLatestHeroData } from '#/lib/dota/api'
 import { expect, test } from 'vitest'
+import { fetchLatestHeroData } from '#/lib/dota/api'
 
 test('Parsing Anti-Mage', async () => {
 	const allHeroes = await fetchLatestHeroData()

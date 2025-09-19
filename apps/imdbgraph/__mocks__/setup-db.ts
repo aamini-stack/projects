@@ -1,10 +1,11 @@
 // oxlint-disable no-empty-pattern
+
+import path from 'node:path'
 import { PostgreSqlContainer } from '@testcontainers/postgresql'
 import * as schema from 'db/tables'
-import { type NodePgDatabase, drizzle } from 'drizzle-orm/node-postgres'
+import { drizzle, type NodePgDatabase } from 'drizzle-orm/node-postgres'
 import { migrate } from 'drizzle-orm/node-postgres/migrator'
 import { reset } from 'drizzle-seed'
-import path from 'node:path'
 import { Pool } from 'pg'
 import { test as baseTest } from 'vitest'
 

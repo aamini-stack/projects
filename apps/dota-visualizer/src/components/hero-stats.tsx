@@ -1,5 +1,3 @@
-import type { Hero, HeroDictionary, HeroName } from '#/lib/dota/hero'
-import { type Attribute, HeroStatsAnalyzer } from '#/lib/dota/hero-percentiles'
 import {
 	Select,
 	SelectContent,
@@ -8,6 +6,8 @@ import {
 	SelectValue,
 } from '@aamini/ui/components/select'
 import { useMemo, useState } from 'react'
+import type { Hero, HeroDictionary, HeroName } from '#/lib/dota/hero'
+import { type Attribute, HeroStatsAnalyzer } from '#/lib/dota/hero-percentiles'
 
 const displayNames: Record<Attribute, string> = {
 	baseMagicResistance: 'Base Magic Res',

@@ -1,8 +1,8 @@
-import { theme } from '#/lib/store'
 import { Button } from '@aamini/ui/components/button'
 import { useStore } from '@nanostores/react'
 import { Moon, Sun } from 'lucide-react'
 import { useEffect } from 'react'
+import { theme } from '#/lib/store'
 
 export function ThemeButton() {
 	const $theme = useStore(theme)
