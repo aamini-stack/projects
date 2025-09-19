@@ -20,6 +20,7 @@
 		"verify": "turbo run format build lint test typecheck e2e"
 	},
 	"devDependencies": {
+		"@biomejs/biome": "2.2.4",
 		"@prettier/plugin-oxc": "^0.0.4",
 		"oxlint": "^1.14.0",
 		"oxlint-tsgolint": "^0.1.5",

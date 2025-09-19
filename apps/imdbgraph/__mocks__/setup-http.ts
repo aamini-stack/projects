@@ -23,8 +23,8 @@ const handlers = [
 
 const worker = setupWorker(...handlers)
 
-beforeAll(() => {
-	worker.start()
+beforeAll(async () => {
+	await worker.start()
 })
 
 afterAll(() => {
