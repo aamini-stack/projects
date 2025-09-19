@@ -7,14 +7,6 @@ interface ProjectOverrides {
 
 export const createBaseConfig = (overrides: ProjectOverrides = {}) =>
 	defineConfig({
-		resolve: {
-			alias: {
-				'astro:actions': new URL(
-					'./__mocks__/astro-actions.ts',
-					import.meta.url,
-				).pathname,
-			},
-		},
 		test: {
 			projects: [
 				{

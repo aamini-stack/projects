@@ -3,8 +3,6 @@ import { userEvent } from '@vitest/browser/context'
 import { expect, test, vi } from 'vitest'
 import { render } from 'vitest-browser-react'
 
-vi.mock('astro:actions')
-
 test('render card', () => {
 	const screen = render(<ContactCard />)
 	expect(screen.getByText('Reach out!')).toBeInTheDocument()
