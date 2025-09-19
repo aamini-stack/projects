@@ -2,12 +2,12 @@
 
 import path from 'node:path'
 import { PostgreSqlContainer } from '@testcontainers/postgresql'
-import * as schema from 'db/tables'
 import { drizzle, type NodePgDatabase } from 'drizzle-orm/node-postgres'
 import { migrate } from 'drizzle-orm/node-postgres/migrator'
 import { reset } from 'drizzle-seed'
 import { Pool } from 'pg'
 import { test as baseTest } from 'vitest'
+import * as schema from '#/db/tables'
 
 type Database = NodePgDatabase & {
 	$client: Pool

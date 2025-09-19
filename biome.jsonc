@@ -3,12 +3,19 @@
 	"vcs": {
 		"enabled": false,
 		"clientKind": "git",
-		"useIgnoreFile": false
+		"useIgnoreFile": true
 	},
 	"files": {
 		"ignoreUnknown": false
 	},
 	"formatter": {
+		"includes": [
+			"**",
+			"!**/.astro",
+			"!**/.vercel",
+			"!**/dist",
+			"!**/pnpm-lock.yaml"
+		],
 		"enabled": true,
 		"formatWithErrors": false,
 		"indentStyle": "tab",
@@ -19,27 +26,17 @@
 		"bracketSameLine": false,
 		"bracketSpacing": true,
 		"expand": "auto",
-		"useEditorconfig": true,
-		"includes": [
-			"**",
-			"!**/.astro",
-			"!**/.vercel",
-			"!**/dist",
-			"!**/pnpm-lock.yaml"
-		]
+		"useEditorconfig": true
 	},
 	"linter": {
+		"domains": {
+			"react": "recommended"
+		},
+		"includes": ["**/*.astro"],
 		"enabled": true,
 		"rules": {
 			"recommended": true,
-			"a11y": "warn",
-			"complexity": "warn",
-			"correctness": "warn",
-			"nursery": "warn",
-			"performance": "warn",
-			"security": "warn",
-			"style": "warn",
-			"suspicious": "warn"
+			"correctness": "warn"
 		}
 	},
 	"javascript": {
@@ -60,8 +57,34 @@
 			"selfCloseVoidElements": "always"
 		}
 	},
-	"overrides": [{ "includes": ["*.astro"] }, { "includes": ["*.md"] }],
+	"overrides": [
+		{
+			"includes": ["**/*.svelte", "**/*.astro", "**/*.vue"],
+			"linter": {
+				"rules": {
+					"style": {
+						"useConst": "off",
+						"useImportType": "off"
+					},
+					"correctness": {
+						"noUnusedVariables": "off",
+						"noUnusedImports": "off"
+					}
+				}
+			}
+		},
+		{
+			"includes": ["*.md"]
+		}
+	],
 	"assist": {
+		"includes": [
+			"**",
+			"!**/.astro",
+			"!**/.vercel",
+			"!**/dist",
+			"!**/pnpm-lock.yaml"
+		],
 		"enabled": true,
 		"actions": {
 			"source": {

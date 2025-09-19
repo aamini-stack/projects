@@ -1,7 +1,7 @@
 import { CRON_SECRET } from 'astro:env/server'
 import { waitUntil } from '@vercel/functions'
 import type { APIRoute } from 'astro'
-import { db } from 'db/connection'
+import { db } from '#/db/'
 import { update } from '#/lib/imdb/scraper'
 
 export const GET: APIRoute = ({ request }) => {

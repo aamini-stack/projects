@@ -1,7 +1,7 @@
 import { initDb, test } from '__mocks__/setup-db'
-import { show } from 'db/tables'
 import type { NodePgDatabase } from 'drizzle-orm/node-postgres'
 import { describe, expect } from 'vitest'
+import { show } from '#/db/tables'
 import { fetchSuggestions } from '#/lib/imdb/search'
 import { shows } from './fixtures/shows'
 
