@@ -1,0 +1,19 @@
+{
+	"name": "@aamini/config-testing",
+	"version": "0.0.1",
+	"type": "module",
+	"private": true,
+	"exports": {
+		"./playwright": "./playwright.config.ts",
+		"./vitest": "./vitest.shared.ts"
+	},
+	"devDependencies": {
+		"@aamini/config-typescript": "workspace:*"
+	},
+	"peerDependencies": {
+		"@playwright/test": "^1.54.2",
+		"typescript": "^5.8.3",
+		"vite": "^7.1.6",
+		"vitest": "^3.2.4"
+	}
+}

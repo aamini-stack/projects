@@ -1,4 +1,4 @@
-import type { HeroDictionary } from '@/lib/dota/hero'
+import type { HeroDictionary } from '#/lib/dota/hero'
 
 export function HeroTable({
 	heroDictionary,

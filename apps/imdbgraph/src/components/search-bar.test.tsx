@@ -1,11 +1,10 @@
 import { QueryClient } from '@tanstack/react-query'
 import { userEvent } from '@vitest/browser/context'
-import { test } from '__mocks__/text-extend'
-import { expect, vi } from 'vitest'
+import { expect, test, vi } from 'vitest'
 import { render } from 'vitest-browser-react'
 import { SearchBar } from './search-bar'
 
-vi.mock(import('@/lib/react-query'), () => ({
+vi.mock(import('#/lib/react-query'), () => ({
 	queryClient: new QueryClient({
 		defaultOptions: {
 			queries: {

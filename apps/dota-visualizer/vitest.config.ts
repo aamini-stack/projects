@@ -1,18 +1,8 @@
-import tsconfigPaths from 'vite-tsconfig-paths'
-import { defineProject } from 'vitest/config'
+import { createBaseConfig } from '@aamini/config-testing/vitest'
 
-export default defineProject({
-	plugins: [tsconfigPaths()],
-	test: {
-		projects: [
-			{
-				extends: true,
-				test: {
-					name: 'unit',
-					include: ['src/**/*.test.ts'],
-					setupFiles: ['./__mocks__/setup-http.ts'],
-				},
-			},
-		],
-	},
-})
+export default 
+	createBaseConfig({
+		unit: {
+			setupFiles: ['./__mocks__/setup-http.ts'],
+		},
+	})

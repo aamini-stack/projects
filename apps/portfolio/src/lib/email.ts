@@ -1,8 +1,8 @@
+import { RateLimiter } from '#/lib/rate-limiter'
 import { ActionError } from 'astro:actions'
 import { MAILGUN_API_KEY, MAILGUN_DOMAIN } from 'astro:env/server'
 import FormData from 'form-data'
 import Mailgun from 'mailgun.js'
-import { RateLimiter } from '@/lib/rate-limiter'
 
 const rateLimiter = new RateLimiter()
 const mailgun = new Mailgun(FormData)

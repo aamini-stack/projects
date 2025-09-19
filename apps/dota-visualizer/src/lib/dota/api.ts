@@ -3,7 +3,7 @@ import {
 	type HeroDictionary,
 	type HeroName,
 	heroNames,
-} from '@/lib/dota/hero'
+} from '#/lib/dota/hero'
 import { type } from 'arktype'
 
 export async function fetchLatestHeroData(): Promise<HeroDictionary> {

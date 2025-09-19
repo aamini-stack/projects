@@ -1,43 +1,7 @@
-import tsconfigPaths from 'vite-tsconfig-paths'
-import { defineProject } from 'vitest/config'
+import { createBaseConfig } from '@aamini/config-testing/vitest'
 
-export default defineProject({
-	plugins: [tsconfigPaths()],
-	resolve: {
-		alias: {
-			'astro:actions': new URL(
-				'./src/__mocks__/astro-actions.ts',
-				import.meta.url,
-			).pathname,
-		},
-	},
-	test: {
-		projects: [
-			{
-				extends: true,
-				test: {
-					name: 'browser',
-					include: ['src/**/*.test.tsx'],
-					browser: {
-						instances: [
-							{
-								browser: 'chromium',
-							},
-						],
-						provider: 'playwright',
-						enabled: true,
-						headless: true,
-					},
-				},
-			},
-			{
-				extends: true,
-				test: {
-					name: 'unit',
-					include: ['src/**/*.test.ts'],
-					environment: 'node',
-				},
-			},
-		],
-	},
+export default createBaseConfig({
+	browser: {
+		setupFiles: ['./__mocks__/astro-actions.ts']
+	}
 })

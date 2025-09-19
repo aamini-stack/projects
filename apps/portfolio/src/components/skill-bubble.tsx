@@ -1,4 +1,4 @@
-import type { Tech } from '@/lib/skills'
+import type { Tech } from '#/lib/skills'
 
 export function SkillBubble({ tech }: { tech: Tech }) {
 	return (

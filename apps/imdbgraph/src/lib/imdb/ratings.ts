@@ -1,7 +1,7 @@
+import type { Episode, Ratings } from '#/lib/imdb/types'
 import { episode, show } from 'db/tables'
 import { asc, eq } from 'drizzle-orm'
 import type { NodePgDatabase } from 'drizzle-orm/node-postgres'
-import type { Episode, Ratings } from '@/lib/imdb/types'
 
 export async function getRatings(
 	db: NodePgDatabase,

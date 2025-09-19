@@ -1,9 +1,9 @@
-import { fetchLatestHeroData } from '@/lib/dota/api'
+import { fetchLatestHeroData } from '#/lib/dota/api'
 import {
 	calculateStats,
 	HeroStatsAnalyzer,
 	percentile,
-} from '@/lib/dota/hero-percentiles'
+} from '#/lib/dota/hero-percentiles'
 import { describe, expect, test } from 'vitest'
 
 describe('percentile', () => {

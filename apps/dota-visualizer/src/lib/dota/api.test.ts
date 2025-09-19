@@ -1,4 +1,4 @@
-import { fetchLatestHeroData } from '@/lib/dota/api'
+import { fetchLatestHeroData } from '#/lib/dota/api'
 import { expect, test } from 'vitest'
 
 test('Parsing Anti-Mage', async () => {

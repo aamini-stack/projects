@@ -1,4 +1,4 @@
-import type { Show } from '@/lib/imdb/types'
+import type { Show } from '#/lib/imdb/types'
 
 export const shows: Show[] = [
 	{

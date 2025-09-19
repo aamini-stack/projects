@@ -1,4 +1,4 @@
-import Email from '@/components/icons/email.svg'
+import Email from '#/components/icons/email.svg'
 import { Button } from '@aamini/ui/components/button'
 import {
 	Card,

@@ -1,4 +1,4 @@
-import { theme } from '@/lib/store'
+import { theme } from '#/lib/store'
 import { Button } from '@aamini/ui/components/button'
 import { useStore } from '@nanostores/react'
 import { Moon, Sun } from 'lucide-react'

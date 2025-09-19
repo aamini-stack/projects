@@ -1,5 +1,5 @@
-import type { Hero, HeroDictionary, HeroName } from '@/lib/dota/hero'
-import { type Attribute, HeroStatsAnalyzer } from '@/lib/dota/hero-percentiles'
+import type { Hero, HeroDictionary, HeroName } from '#/lib/dota/hero'
+import { type Attribute, HeroStatsAnalyzer } from '#/lib/dota/hero-percentiles'
 import {
 	Select,
 	SelectContent,

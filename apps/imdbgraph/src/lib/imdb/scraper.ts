@@ -1,13 +1,13 @@
+import { download } from '#/lib/imdb/file-downloader'
+import type { NodePgDatabase } from 'drizzle-orm/node-postgres'
 import { randomUUID } from 'node:crypto'
 import { createReadStream } from 'node:fs'
 import { mkdir } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
 import { pipeline } from 'node:stream/promises'
-import type { NodePgDatabase } from 'drizzle-orm/node-postgres'
 import type { Pool, PoolClient } from 'pg'
 import { from as copyFrom } from 'pg-copy-streams'
-import { download } from '@/lib/imdb/file-downloader'
 
 /**
  * Main method that downloads the latest files from IMDB and updates our

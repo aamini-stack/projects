@@ -3,12 +3,16 @@
 	"private": true,
 	"version": "0.0.0",
 	"type": "module",
+	"imports": {
+		"#*": "./src/*"
+	},
 	"scripts": {
 		"build": "turbo build",
 		"format": "prettier --check **/*.{js,ts,tsx,json,html,css,md,yml,yaml,astro}",
 		"format:fix": "prettier --write **/*.{js,ts,tsx,json,html,css,md,yml,yaml,astro}",
 		"typecheck": "turbo run typecheck",
 		"lint": "oxlint --type-aware --max-warnings=0",
+		"test": "turbo run test",
 		"test:unit": "turbo run test:unit",
 		"test:integration": "turbo run test:integration",
 		"e2e": "turbo run e2e",

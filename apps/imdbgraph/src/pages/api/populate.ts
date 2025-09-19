@@ -1,8 +1,8 @@
-import { CRON_SECRET } from 'astro:env/server'
+import { update } from '#/lib/imdb/scraper'
 import { waitUntil } from '@vercel/functions'
 import type { APIRoute } from 'astro'
+import { CRON_SECRET } from 'astro:env/server'
 import { db } from 'db/connection'
-import { update } from '@/lib/imdb/scraper'
 
 export const GET: APIRoute = ({ request }) => {
 	// Check Auth

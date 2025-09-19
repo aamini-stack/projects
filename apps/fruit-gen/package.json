@@ -3,6 +3,9 @@
 	"version": "0.0.1",
 	"private": true,
 	"type": "module",
+	"imports": {
+		"#*": "./src/*"
+	},
 	"scripts": {
 		"build": "astro build",
 		"dev": "astro dev --port 4004",
@@ -24,6 +27,7 @@
 		"react-dom": "^19.1.0"
 	},
 	"devDependencies": {
+		"@aamini/config-testing": "workspace:*",
 		"@aamini/config-typescript": "workspace:*",
 		"@astrojs/react": "^4.3.0",
 		"@astrojs/vercel": "^8.2.5",
