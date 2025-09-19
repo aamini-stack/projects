@@ -36,7 +36,8 @@
 		"enabled": true,
 		"rules": {
 			"recommended": true,
-			"correctness": "warn"
+			"correctness": "warn",
+			"complexity": "warn"
 		}
 	},
 	"javascript": {

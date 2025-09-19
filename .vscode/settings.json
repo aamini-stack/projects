@@ -8,10 +8,10 @@
 	"editor.formatOnSave": true,
 	"editor.rulers": [80],
 	"editor.defaultFormatter": "biomejs.biome",
-  "editor.codeActionsOnSave": {
-    "source.fixAll.biome": "explicit",
-    "source.action.useSortedKeys.biome": "explicit"
-  },
+	"editor.codeActionsOnSave": {
+		"source.fixAll.biome": "explicit",
+		"source.action.useSortedKeys.biome": "explicit"
+	},
 	"typescript.preferences.importModuleSpecifier": "non-relative",
 	"[markdown]": {
 		"editor.wordWrap": "on"
