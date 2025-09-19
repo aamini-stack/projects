@@ -1,11 +1,7 @@
 {
-  "permissions": {
-    "allow": [
-      "Bash(pnpm lint:*)",
-      "Bash(pnpm tsc:*)",
-      "Bash(find:*)"
-    ],
-    "deny": [],
-    "ask": []
-  }
+	"permissions": {
+		"allow": ["Bash(pnpm lint:*)", "Bash(pnpm tsc:*)", "Bash(find:*)"],
+		"deny": [],
+		"ask": []
+	}
 }

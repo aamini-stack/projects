@@ -1,16 +1,16 @@
 {
 	"folders": [
 		{
-			"path": "../apps/fruit-gen",
+			"path": "../apps/fruit-gen"
 		},
 		{
 			"name": "ui-neobrutalist",
-			"path": "../packages/ui-neobrutalist",
+			"path": "../packages/ui-neobrutalist"
 		},
 		{
 			"name": "root",
-			"path": "..",
-		},
+			"path": ".."
+		}
 	],
 	"settings": {
 		"files.exclude": {
@@ -22,11 +22,11 @@
 			"**/dist": true,
 			"**/.vercel": true,
 			"**/playwright-report": true,
-			"**/test-results": true,
+			"**/test-results": true
 		},
 		"files.associations": {
-			"*.css": "tailwindcss",
-		},
+			"*.css": "tailwindcss"
+		}
 	},
 	"launch": {
 		"version": "0.2.0",
@@ -35,15 +35,15 @@
 				"name": "Server",
 				"type": "node-terminal",
 				"request": "launch",
-				"command": "pnpm dev",
+				"command": "pnpm dev"
 			},
 			{
 				"name": "Client",
 				"type": "chrome",
 				"request": "launch",
-				"url": "http://localhost:4004",
-			},
-		],
+				"url": "http://localhost:4004"
+			}
+		]
 	},
 	"tasks": {
 		"version": "2.0.0",
@@ -55,11 +55,11 @@
 				"args": ["dev"],
 				"isBackground": true,
 				"runOptions": {
-					"runOn": "folderOpen",
+					"runOn": "folderOpen"
 				},
 				"presentation": {
-					"group": "test",
-				},
+					"group": "test"
+				}
 			},
 			{
 				"label": "test:watch",
@@ -68,12 +68,12 @@
 				"args": ["test:watch"],
 				"isBackground": true,
 				"runOptions": {
-					"runOn": "folderOpen",
+					"runOn": "folderOpen"
 				},
 				"presentation": {
-					"group": "test",
-				},
-			},
-		],
-	},
+					"group": "test"
+				}
+			}
+		]
+	}
 }

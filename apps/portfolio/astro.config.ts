@@ -23,7 +23,7 @@ export default defineConfig({
 		},
 	},
 	vite: {
-		// @ts-ignore
+		// @ts-expect-error
 		plugins: [tailwindcss()],
 	},
 	output: 'server',

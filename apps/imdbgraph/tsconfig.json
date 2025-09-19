@@ -1,7 +1,7 @@
 {
 	"extends": "@aamini/config-typescript/astro",
 	"compilerOptions": {
-		"baseUrl": ".",
+		"baseUrl": "."
 	},
 	"include": [".astro/types.d.ts", "**/*"],
 	"exclude": ["dist"]

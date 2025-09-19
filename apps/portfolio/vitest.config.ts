@@ -8,8 +8,9 @@ export default mergeConfig(
 	defineConfig({
 		resolve: {
 			alias: {
-				'astro:actions': new URL('./__mocks__/actions.ts', import.meta.url).pathname
-			}
-		}
-	})
+				'astro:actions': new URL('./__mocks__/actions.ts', import.meta.url)
+					.pathname,
+			},
+		},
+	}),
 )

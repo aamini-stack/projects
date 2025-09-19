@@ -1,16 +1,16 @@
 {
 	"folders": [
 		{
-			"path": "../apps/portfolio",
+			"path": "../apps/portfolio"
 		},
 		{
 			"name": "ui-neobrutalist",
-			"path": "../packages/ui-neobrutalist",
+			"path": "../packages/ui-neobrutalist"
 		},
 		{
 			"name": "root",
-			"path": "..",
-		},
+			"path": ".."
+		}
 	],
 	"settings": {
 		"files.exclude": {
@@ -22,10 +22,10 @@
 			"**/dist": true,
 			"**/.vercel": true,
 			"**/playwright-report": true,
-			"**/test-results": true,
+			"**/test-results": true
 		},
 		"files.associations": {
-			"*.css": "tailwindcss",
-		},
-	},
+			"*.css": "tailwindcss"
+		}
+	}
 }
