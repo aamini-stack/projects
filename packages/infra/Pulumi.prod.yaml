@@ -1,0 +1,7 @@
+config:
+  aamini-infra:apiToken:
+    secure: AAABAPN67fvVYLtzcjoqXuL/NhT2yFXkYPCqxFUSguZvowLcDaV/50LHp50IA1AIfJboyd5IycY=
+  aamini-infra:vercelAutomationBypassSecret:
+    secure: AAABAAriP1ME6Q9O7uOPIrm4q957yi4gyDW/t4Mu/2NliA7sWKwTdwGE8Fz/NodzeKLjFdRjlPDEG24dFykcvQ==
+  github:token:
+    secure: AAABAGsg2YJZWjnLyE9pPFGP4ZP/6u3nKp2Bx4VwKkVPvM6Hu5DGN5oOh/PLu7R1FmU4I+ZfjJ0HZdafcuynEU3nqDOlexsTOycYd0gN0ouvO9iHw2AItz8sJXjmTUnwzchgr9rpbaccjd6lJoyMJWyemzimU5N0AxXsciw=

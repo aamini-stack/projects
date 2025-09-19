@@ -28,6 +28,12 @@ export default defineConfig({
 		/* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
 		trace: 'on-first-retry',
 		screenshot: 'only-on-failure',
+
+		// https://vercel.com/docs/deployment-protection/methods-to-bypass-deployment-protection/protection-bypass-automation#examples
+		extraHTTPHeaders: {
+			'x-vercel-protection-bypass':
+				process.env.VERCEL_AUTOMATION_BYPASS_SECRET ?? '',
+		},
 	},
 
 	/* Run your local dev server when running tests locally */
