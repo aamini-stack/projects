@@ -101,6 +101,8 @@ jobs:
 
       # Test
       - name: Run Playwright tests
+        env:
+          VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
         working-directory: ./apps/${{ matrix.app }}
         run: pnpm turbo run e2e${{ inputs.update_snapshots && ':update' || '' }}
 
@@ -120,16 +122,19 @@ jobs:
           path: './apps/${{ matrix.app }}/playwright-report'
           retention-days: 30
 
-  ci-success:
+  collect-reports:
     runs-on: ubuntu-latest
-    needs: [quality-checks, e2e]
+    needs: [e2e]
     steps:
-      - name: Log Finished
-        run: echo 'Run Successful'
+      - name: Download All Screenshot Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: playwright-report-*
+          merge-multiple: true
 
   commit-screenshots:
     runs-on: ubuntu-latest
-    needs: [quality-checks, e2e]
+    needs: [e2e]
     if: inputs.update_snapshots
     steps:
       - name: Checkout Code
