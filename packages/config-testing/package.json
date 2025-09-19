@@ -4,7 +4,7 @@
 	"type": "module",
 	"private": true,
 	"exports": {
-		"./playwright": "./playwright.config.ts",
+		"./playwright": "./playwright.shared.config.ts",
 		"./vitest": "./vitest.shared.ts"
 	},
 	"devDependencies": {
