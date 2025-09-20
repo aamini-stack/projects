@@ -1,0 +1,9 @@
+{
+	"permissions": {
+		"allow": [
+			"Bash(pnpm e2e:*)"
+		],
+		"deny": [],
+		"ask": []
+	}
+}
