@@ -13,6 +13,7 @@
 			"**/*.{ts,tsx,js,jsx,astro,html,css,json,jsonc,md,yaml,yml}",
 			"!**/.astro",
 			"!**/.vercel",
+			"!**/.turbo",
 			"!**/dist",
 			"!**/pnpm-lock.yaml"
 		],
@@ -34,6 +35,7 @@
 			"!**/.astro",
 			"!**/.vercel",
 			"!**/dist",
+			"!**/.turbo",
 			"!**/pnpm-lock.yaml"
 		],
 		"domains": {
@@ -95,9 +97,10 @@
 	],
 	"assist": {
 		"includes": [
-			"**",
+			"**/*.{ts,tsx,js,jsx,astro,html,css,json,jsonc,md,yaml,yml}",
 			"!**/.astro",
 			"!**/.vercel",
+			"!**/.turbo",
 			"!**/dist",
 			"!**/pnpm-lock.yaml"
 		],
