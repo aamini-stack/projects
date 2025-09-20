@@ -1,8 +1,8 @@
 ---
-import { HeroStats } from '@/components/hero-stats'
-import { HeroTable } from '@/components/hero-table'
-import { fetchLatestHeroData } from '@/lib/dota/api'
-import Layout from '@/pages/_Layout.astro'
+import { HeroStats } from '#/components/hero-stats'
+import { HeroTable } from '#/components/hero-table'
+import { fetchLatestHeroData } from '#/lib/dota/api'
+import Layout from '#/pages/_Layout.astro'
 
 const heroDictionary = await fetchLatestHeroData()
 ---

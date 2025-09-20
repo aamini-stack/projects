@@ -3,17 +3,20 @@
 	"version": "0.0.1",
 	"private": true,
 	"type": "module",
+	"imports": {
+		"#*": "./src/*"
+	},
 	"scripts": {
 		"build": "astro build",
 		"dev": "astro dev --port 4001",
 		"typecheck": "tsc --noEmit",
-		"lint": "oxlint --type-aware --max-warnings=0",
+		"check": "biome check",
 		"test": "vitest run",
 		"test:unit": "vitest run --project unit",
 		"test:watch": "vitest --watch",
 		"e2e": "playwright test",
 		"e2e:update": "playwright test --update-snapshots",
-		"verify": "turbo run build typecheck lint test e2e"
+		"verify": "turbo run build check test typecheck e2e"
 	},
 	"dependencies": {
 		"@aamini/ui": "workspace:*",
@@ -27,6 +30,7 @@
 		"tailwind-merge": "^3.3.1"
 	},
 	"devDependencies": {
+		"@aamini/config-testing": "workspace:*",
 		"@aamini/config-typescript": "workspace:*",
 		"@astrojs/react": "^4.3.0",
 		"@astrojs/vercel": "^8.2.5",

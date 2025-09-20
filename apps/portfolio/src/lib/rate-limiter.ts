@@ -39,6 +39,7 @@ class TokenBucket {
 
 		// Refill tokens based on elapsed time
 		if (this.buckets.has(ip)) {
+			// biome-ignore lint/style/noNonNullAssertion: Impossible to be null
 			const bucket = this.buckets.get(ip)!
 			const elapsed = now - bucket.lastRefill
 			const refillAmount = Math.floor(elapsed / TokenBucket.REFILL_RATE)

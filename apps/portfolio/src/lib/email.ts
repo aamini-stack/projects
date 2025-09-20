@@ -2,7 +2,7 @@ import { ActionError } from 'astro:actions'
 import { MAILGUN_API_KEY, MAILGUN_DOMAIN } from 'astro:env/server'
 import FormData from 'form-data'
 import Mailgun from 'mailgun.js'
-import { RateLimiter } from '@/lib/rate-limiter'
+import { RateLimiter } from '#/lib/rate-limiter'
 
 const rateLimiter = new RateLimiter()
 const mailgun = new Mailgun(FormData)
@@ -19,7 +19,7 @@ export async function sendEmail({
 	if (!ipAddress) {
 		throw new ActionError({ code: 'BAD_REQUEST' })
 	}
-	if (!MAILGUN_DOMAIN || !MAILGUN_API_KEY) {
+	if (!(MAILGUN_DOMAIN && MAILGUN_API_KEY)) {
 		throw new ActionError({ code: 'INTERNAL_SERVER_ERROR' })
 	}
 

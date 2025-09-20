@@ -1,10 +1,10 @@
+import { type } from 'arktype'
 import {
 	type Hero,
 	type HeroDictionary,
 	type HeroName,
 	heroNames,
-} from '@/lib/dota/hero'
-import { type } from 'arktype'
+} from '#/lib/dota/hero'
 
 export async function fetchLatestHeroData(): Promise<HeroDictionary> {
 	const response = await fetch('https://api.opendota.com/api/heroStats')

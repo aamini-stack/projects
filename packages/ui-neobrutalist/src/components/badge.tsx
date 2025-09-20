@@ -1,9 +1,7 @@
+import { cn } from '@aamini/ui-neobrutalist/lib/utils'
 import { Slot } from '@radix-ui/react-slot'
 import { cva, type VariantProps } from 'class-variance-authority'
-
-import * as React from 'react'
-
-import { cn } from '@aamini/ui-neobrutalist/lib/utils'
+import type * as React from 'react'
 
 const badgeVariants = cva(
 	'inline-flex items-center justify-center border-2 border-black font-bold w-fit whitespace-nowrap shrink-0 [&>svg]:size-3 gap-1 [&>svg]:pointer-events-none transition-all duration-200 hover:translate-x-[1px] hover:translate-y-[1px]',

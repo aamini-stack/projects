@@ -3,11 +3,14 @@
 	"private": true,
 	"version": "0.0.0",
 	"type": "module",
+	"imports": {
+		"#*": "./src/*"
+	},
 	"scripts": {
 		"build": "astro build",
 		"dev": "astro dev --port 4321",
 		"typecheck": "tsc --noEmit",
-		"lint": "oxlint --type-aware --max-warnings=0",
+		"check": "biome check",
 		"format": "prettier --check **/*.{js,ts,tsx,json,html,css,md,yml,yaml,astro}",
 		"format:fix": "prettier --write **/*.{js,ts,tsx,json,html,css,md,yml,yaml,astro}",
 		"test": "vitest run",
@@ -29,6 +32,7 @@
 		"tailwind-merge": "^3.3.1"
 	},
 	"devDependencies": {
+		"@aamini/config-testing": "workspace:*",
 		"@aamini/config-typescript": "workspace:*",
 		"@astrojs/react": "^4.3.0",
 		"@astrojs/vercel": "^8.2.5",

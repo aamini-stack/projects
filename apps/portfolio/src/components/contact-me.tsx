@@ -1,4 +1,4 @@
-import Email from '@/components/icons/email.svg'
+import { actions } from 'astro:actions'
 import { Button } from '@aamini/ui/components/button'
 import {
 	Card,
@@ -19,10 +19,10 @@ import {
 import { Input } from '@aamini/ui/components/input'
 import { Textarea } from '@aamini/ui/components/textarea'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { actions } from 'astro:actions'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import * as z from 'zod'
+import Email from '#/components/icons/email.svg'
 
 const formSchema = z.object({
 	email: z.string().email({ message: 'Invalid email address' }),

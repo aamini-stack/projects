@@ -7,7 +7,7 @@ import { defineConfig, fontProviders } from 'astro/config'
 export default defineConfig({
 	integrations: [react()],
 	vite: {
-		// @ts-ignore
+		// @ts-expect-error
 		plugins: [tailwindcss()],
 	},
 	output: 'server',

@@ -1,5 +1,5 @@
-import * as React from 'react'
 import { cn } from '@aamini/ui/lib/utils'
+import type * as React from 'react'
 
 interface FruitAvatarProps extends React.HTMLAttributes<HTMLDivElement> {
 	emoji: string

@@ -22,6 +22,7 @@ export function FeatureCard() {
 								xmlns="http://www.w3.org/2000/svg"
 								className="transition-transform group-hover:rotate-12"
 							>
+								<title>RSS Blog Logo</title>
 								<path
 									d="M18.5 9c1 1.06 1.5 2.39 1.5 4 0 3.46-3.7 4.27-5.5 9C13.83 21.42 13.5 20.59 13.5 19.5c0-3.48 5-5.29 5-10.5Zm-4-4c1.2 1.24 1.8 2.57 1.8 4 0 4.95-6.05 5.68-4.8 13C10.58 20.84 9.75 19.17 9.75 17c0-3.33 5.5-6 5.5-12Zm-4.5-4C11.33 2.67 12 4.17 12 5.5c0 6.25-8.5 8.22-4 16.5-2.61-.58-4.5-3-4.5-6 0-6.5 6.5-7.5 6.5-15Z"
 									fill="currentColor"
@@ -57,6 +58,7 @@ export function FeatureCard() {
 								stroke="currentColor"
 								viewBox="0 0 24 24"
 							>
+								<title>Astro Logo</title>
 								<path
 									strokeLinecap="round"
 									strokeLinejoin="round"

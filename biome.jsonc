@@ -1,0 +1,114 @@
+{
+	"$schema": "https://biomejs.dev/schemas/2.2.4/schema.json",
+	"vcs": {
+		"enabled": false,
+		"clientKind": "git",
+		"useIgnoreFile": true
+	},
+	"files": {
+		"ignoreUnknown": false
+	},
+	"formatter": {
+		"includes": [
+			"**/*.{ts,tsx,js,jsx,astro,html,css,json,jsonc,md,yaml,yml}",
+			"!**/.astro",
+			"!**/.vercel",
+			"!**/.turbo",
+			"!**/dist",
+			"!**/pnpm-lock.yaml"
+		],
+		"enabled": true,
+		"formatWithErrors": false,
+		"indentStyle": "tab",
+		"indentWidth": 2,
+		"lineEnding": "lf",
+		"lineWidth": 80,
+		"attributePosition": "auto",
+		"bracketSameLine": false,
+		"bracketSpacing": true,
+		"expand": "auto",
+		"useEditorconfig": true
+	},
+	"linter": {
+		"includes": [
+			"**/*.{ts,tsx,js,jsx,astro,html,css,json,jsonc,md,yaml,yml}",
+			"!**/.astro",
+			"!**/.vercel",
+			"!**/dist",
+			"!**/.turbo",
+			"!**/pnpm-lock.yaml"
+		],
+		"domains": {
+			"react": "recommended"
+		},
+		"enabled": true,
+		"rules": {
+			"recommended": true,
+			"correctness": {
+				"noEmptyPattern": "off"
+			},
+			"suspicious": {
+				"noUnknownAtRules": "off"
+			}
+			// "complexity": {
+			// 	"noExcessiveLinesPerFunction": "off"
+			// },
+			// "a11y": "warn"
+			// "a11y": "warn"
+		}
+	},
+	"javascript": {
+		"formatter": {
+			"jsxQuoteStyle": "double",
+			"quoteProperties": "asNeeded",
+			"trailingCommas": "all",
+			"semicolons": "asNeeded",
+			"arrowParentheses": "always",
+			"bracketSameLine": false,
+			"quoteStyle": "single",
+			"attributePosition": "auto",
+			"bracketSpacing": true
+		}
+	},
+	"html": {
+		"formatter": {
+			"selfCloseVoidElements": "always"
+		}
+	},
+	"overrides": [
+		{
+			"includes": ["**/*.svelte", "**/*.astro", "**/*.vue"],
+			"linter": {
+				"rules": {
+					"style": {
+						"useConst": "off",
+						"useImportType": "off"
+					},
+					"correctness": {
+						"noUnusedVariables": "off",
+						"noUnusedImports": "off"
+					}
+				}
+			}
+		},
+		{
+			"includes": ["*.md"]
+		}
+	],
+	"assist": {
+		"includes": [
+			"**/*.{ts,tsx,js,jsx,astro,html,css,json,jsonc,md,yaml,yml}",
+			"!**/.astro",
+			"!**/.vercel",
+			"!**/.turbo",
+			"!**/dist",
+			"!**/pnpm-lock.yaml"
+		],
+		"enabled": true,
+		"actions": {
+			"source": {
+				"organizeImports": "on"
+			}
+		}
+	}
+}

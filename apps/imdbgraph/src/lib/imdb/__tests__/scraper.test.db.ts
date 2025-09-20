@@ -2,12 +2,12 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 import { test } from '__mocks__/setup-db'
 import { describe, expect, vi } from 'vitest'
-import { gameOfThronesRatings } from '@/lib/imdb/__tests__/fixtures/game-of-thrones'
-import { download, type ImdbFile } from '@/lib/imdb/file-downloader'
-import { getRatings } from '@/lib/imdb/ratings'
-import { update } from '@/lib/imdb/scraper'
+import { gameOfThronesRatings } from '#/lib/imdb/__tests__/fixtures/game-of-thrones'
+import { download, type ImdbFile } from '#/lib/imdb/file-downloader'
+import { getRatings } from '#/lib/imdb/ratings'
+import { update } from '#/lib/imdb/scraper'
 
-vi.mock(import('@/lib/imdb/file-downloader'))
+vi.mock(import('#/lib/imdb/file-downloader'))
 
 const GAME_OF_THRONES_ID = 'tt0944947'
 const SIMPSONS_ID = 'tt0096697'

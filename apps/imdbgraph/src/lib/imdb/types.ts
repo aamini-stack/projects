@@ -15,7 +15,7 @@ export interface Episode {
 	numVotes: number
 }
 
-export type RatingsData = Record<string, Record<string, Episode>>
+export type RatingsData = Record<number, Record<number, Episode>>
 
 export interface Ratings {
 	show: Show

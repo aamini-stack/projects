@@ -13,12 +13,8 @@
 			"persistent": true
 		},
 
-		"//#format": {},
-		"//#format:fix": {
-			"cache": false
-		},
-		"//#lint": {},
-		"//#lint:fix": {
+		"//#check": {},
+		"//#check:fix": {
 			"cache": false
 		},
 		"typecheck": {

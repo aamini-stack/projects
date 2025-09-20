@@ -1,5 +1,5 @@
-import type * as React from 'react'
 import { cn } from '@aamini/ui-neobrutalist/lib/utils'
+import type * as React from 'react'
 
 function Card({ className, ...props }: React.ComponentProps<'div'>) {
 	return (

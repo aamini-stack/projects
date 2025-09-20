@@ -1,7 +1,7 @@
-import { ContactCard } from '@/components/contact-me'
 import { userEvent } from '@vitest/browser/context'
 import { expect, test } from 'vitest'
 import { render } from 'vitest-browser-react'
+import { ContactCard } from '#/components/contact-me'
 
 test('render card', () => {
 	const screen = render(<ContactCard />)

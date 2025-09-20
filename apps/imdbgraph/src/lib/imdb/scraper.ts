@@ -7,7 +7,7 @@ import { pipeline } from 'node:stream/promises'
 import type { NodePgDatabase } from 'drizzle-orm/node-postgres'
 import type { Pool, PoolClient } from 'pg'
 import { from as copyFrom } from 'pg-copy-streams'
-import { download } from '@/lib/imdb/file-downloader'
+import { download } from '#/lib/imdb/file-downloader'
 
 /**
  * Main method that downloads the latest files from IMDB and updates our

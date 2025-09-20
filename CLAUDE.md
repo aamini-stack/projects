@@ -65,7 +65,6 @@ Common commands:
 
 - **Package Manager**: pnpm (required - do NOT use npm or yarn)
 - **Build System**: Turborepo for task orchestration
-- **Linting**: oxlint for fast TypeScript linting
-- **Formatting**: Prettier with custom plugins
+- **Linting/Formatting**: biome for fast linting + formatting
 - **Testing**: Vitest for unit tests, Playwright for E2E
 - **Deployment**: Vercel for all applications

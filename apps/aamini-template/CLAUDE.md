@@ -14,9 +14,7 @@ All commands are run from the root of the project, from a terminal:
 | `pnpm build`      | Build your production site to `./dist/`         |
 | `pnpm preview`    | Preview your build locally, before deploying    |
 | `pnpm typecheck`  | Run TypeScript type checking                    |
-| `pnpm lint`       | Run oxlint with type-aware checking             |
-| `pnpm format`     | Check code formatting with Prettier             |
-| `pnpm format:fix` | Fix code formatting with Prettier               |
+| `pnpm check`      | Run biome to lint + format                      |
 | `pnpm test`       | Run unit tests with Vitest                      |
 | `pnpm test:watch` | Run unit tests in watch mode                    |
 | `pnpm e2e`        | Run end-to-end tests with Playwright            |
@@ -46,7 +44,7 @@ This is an Astro 5 project with React integration. Key architectural decisions:
 
 ## 🔧 Development Tools
 
-- **Linting**: oxlint with type-aware checking and zero warnings tolerance
+- **Linting**: biome with type-aware checking and zero warnings tolerance
 - **Formatting**: Prettier with plugins for Astro, JSDoc, import organization,
   and TailwindCSS
 

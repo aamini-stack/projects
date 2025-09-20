@@ -70,6 +70,7 @@ export function Header({ activeTabId = '/', className }: HeaderProps) {
 
 					{/* Mobile Menu Button */}
 					<button
+						type="button"
 						onClick={() => {
 							setMobileMenuOpen(!mobileMenuOpen)
 						}}

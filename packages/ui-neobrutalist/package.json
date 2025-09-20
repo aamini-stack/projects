@@ -2,6 +2,9 @@
 	"name": "@aamini/ui-neobrutalist",
 	"type": "module",
 	"private": "true",
+	"imports": {
+		"#*": "./src/*"
+	},
 	"exports": {
 		"./globals.css": "./src/globals.css",
 		"./components/*": "./src/components/*.tsx",
