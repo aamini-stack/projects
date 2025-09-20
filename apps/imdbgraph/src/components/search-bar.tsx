@@ -137,7 +137,7 @@ export function SearchBar() {
 						'bg-popover absolute left-0 right-0 top-full z-50 mt-3 w-full rounded-xl border p-2 shadow-lg',
 						{
 							hidden:
-								!(isOpen &&deferredValue ) ||
+								!(isOpen && deferredValue) ||
 								(isFetching && !searchResults?.length),
 						},
 					)}
