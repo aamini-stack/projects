@@ -1,5 +1,3 @@
-// oxlint-disable no-empty-pattern
-
 import path from 'node:path'
 import { PostgreSqlContainer } from '@testcontainers/postgresql'
 import { drizzle, type NodePgDatabase } from 'drizzle-orm/node-postgres'
@@ -30,8 +28,10 @@ export const test = baseTest.extend<DbFixture>({
 
 			// Setup
 			await db.execute('CREATE EXTENSION pg_trgm')
+			console.log("WTFFFFF")
+			console.log(path.join(import.meta.dirname, '../src/db/migrations'))
 			await migrate(db, {
-				migrationsFolder: path.join(import.meta.dirname, '../db/migrations'),
+				migrationsFolder: path.join(import.meta.dirname, '../src/db/migrations'),
 			})
 			await reset(db, schema)
 			if (seedFunction) {

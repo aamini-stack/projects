@@ -8,8 +8,8 @@ if (!url) {
 }
 
 export default defineConfig({
-	schema: './db/tables.ts',
-	out: './db/migrations',
+	schema: './src/db/tables.ts',
+	out: './src/db/migrations',
 	dialect: 'postgresql',
 	dbCredentials: {
 		url: url,

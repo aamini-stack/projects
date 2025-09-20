@@ -19,7 +19,7 @@ export async function sendEmail({
 	if (!ipAddress) {
 		throw new ActionError({ code: 'BAD_REQUEST' })
 	}
-	if (!MAILGUN_DOMAIN || !MAILGUN_API_KEY) {
+	if (!(MAILGUN_DOMAIN && MAILGUN_API_KEY)) {
 		throw new ActionError({ code: 'INTERNAL_SERVER_ERROR' })
 	}
 

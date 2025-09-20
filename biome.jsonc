@@ -10,7 +10,7 @@
 	},
 	"formatter": {
 		"includes": [
-			"**",
+			"**/*.{ts,tsx,js,jsx,astro,html,css,json,jsonc,md,yaml,yml}",
 			"!**/.astro",
 			"!**/.vercel",
 			"!**/dist",
@@ -29,15 +29,30 @@
 		"useEditorconfig": true
 	},
 	"linter": {
+		"includes": [
+			"**/*.{ts,tsx,js,jsx,astro,html,css,json,jsonc,md,yaml,yml}",
+			"!**/.astro",
+			"!**/.vercel",
+			"!**/dist",
+			"!**/pnpm-lock.yaml"
+		],
 		"domains": {
 			"react": "recommended"
 		},
-		"includes": ["**/*.astro"],
 		"enabled": true,
 		"rules": {
 			"recommended": true,
-			"correctness": "warn",
-			"complexity": "warn"
+			"correctness": {
+				"noEmptyPattern": "off"
+			},
+			"suspicious": {
+				"noUnknownAtRules": "off"
+			}
+			// "complexity": {
+			// 	"noExcessiveLinesPerFunction": "off"
+			// },
+			// "a11y": "warn"
+			// "a11y": "warn"
 		}
 	},
 	"javascript": {

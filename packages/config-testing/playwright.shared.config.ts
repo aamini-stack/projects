@@ -13,7 +13,7 @@ export const baseConfig = (
 	overrides?: PlaywrightTestConfig,
 ) => {
 	const devUrl = `http://localhost:${port}`
-	const useDevServer = !process.env.CI && !env.BASE_URL
+	const useDevServer = !(process.env.CI || env.BASE_URL)
 	const baseUrl = useDevServer ? devUrl : env.BASE_URL
 	const testDir = './e2e'
 	return defineConfig(
