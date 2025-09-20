@@ -73,7 +73,7 @@ export function SearchBar() {
 		itemToString: (item) => item?.title ?? '',
 		onSelectedItemChange(event) {
 			const { selectedItem } = event
-			if (Boolean(selectedItem) && searchResults) {
+			if (selectedItem && searchResults) {
 				window.location.href = `/ratings/${selectedItem.imdbId}`
 			}
 		},
