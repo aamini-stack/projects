@@ -17,7 +17,7 @@
 		"test:watch": "vitest --watch",
 		"e2e": "playwright test",
 		"e2e:update": "playwright test --update-snapshots",
-		"verify": "turbo run build typecheck lint test e2e"
+		"verify": "turbo run build check test typecheck e2e"
 	},
 	"dependencies": {
 		"@aamini/ui": "workspace:@aamini/ui-neobrutalist@*",
