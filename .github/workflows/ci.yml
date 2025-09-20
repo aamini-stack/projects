@@ -31,7 +31,7 @@ jobs:
       - name: Setup Node
         uses: ./.github/actions/setup
       - name: Test
-        run: pnpm turbo run format typecheck lint test:unit
+        run: pnpm turbo run check typecheck test:unit
 
   integration-tests:
     runs-on: ubuntu-latest
