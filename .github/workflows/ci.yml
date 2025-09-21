@@ -139,6 +139,8 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
       - name: Download All Screenshot Artifacts
         uses: actions/download-artifact@v4
         with:
@@ -146,10 +148,10 @@ jobs:
           merge-multiple: true
       - name: Commit Screenshots
         run: |
+          # https://github.com/actions/checkout?tab=readme-ov-file#push-a-commit-to-a-pr-using-the-built-in-token
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git pull --ff-only
-          git status
-          git add .
+          git add *.png
           git commit -m "Update Screenshots"
           git push
+      
