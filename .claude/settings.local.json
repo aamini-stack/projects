@@ -1,8 +1,6 @@
 {
 	"permissions": {
-		"allow": [
-			"Bash(pnpm e2e:*)"
-		],
+		"allow": ["Bash(pnpm e2e:*)"],
 		"deny": [],
 		"ask": []
 	}
