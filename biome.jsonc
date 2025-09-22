@@ -15,7 +15,8 @@
 			"!**/.vercel",
 			"!**/.turbo",
 			"!**/dist",
-			"!**/pnpm-lock.yaml"
+			"!**/pnpm-lock.yaml",
+			"!**/test-results/**"
 		],
 		"enabled": true,
 		"formatWithErrors": false,
@@ -34,9 +35,10 @@
 			"**/*.{ts,tsx,js,jsx,astro,html,css,json,jsonc,md,yaml,yml}",
 			"!**/.astro",
 			"!**/.vercel",
-			"!**/dist",
 			"!**/.turbo",
-			"!**/pnpm-lock.yaml"
+			"!**/dist",
+			"!**/pnpm-lock.yaml",
+			"!**/test-results/**"
 		],
 		"domains": {
 			"react": "recommended"
@@ -102,7 +104,8 @@
 			"!**/.vercel",
 			"!**/.turbo",
 			"!**/dist",
-			"!**/pnpm-lock.yaml"
+			"!**/pnpm-lock.yaml",
+			"!**/test-results/**"
 		],
 		"enabled": true,
 		"actions": {
