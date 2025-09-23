@@ -14,7 +14,8 @@
 	},
 	"typescript.preferences.importModuleSpecifier": "non-relative",
 	"[markdown]": {
-		"editor.wordWrap": "on"
+		"editor.wordWrap": "on",
+		"editor.defaultFormatter": "vscode.markdown-language-features"
 	},
 
 	// Ark Types: https://arktype.io/docs/intro/setup#settings

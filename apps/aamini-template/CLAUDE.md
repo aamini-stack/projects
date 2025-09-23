@@ -7,19 +7,18 @@ code in this repository.
 
 All commands are run from the root of the project, from a terminal:
 
-| Command           | Action                                          |
-| :---------------- | :---------------------------------------------- |
-| `pnpm install`    | Installs dependencies                           |
-| `pnpm dev`        | Starts local dev server at `localhost:4321`     |
-| `pnpm build`      | Build your production site to `./dist/`         |
-| `pnpm preview`    | Preview your build locally, before deploying    |
-| `pnpm typecheck`  | Run TypeScript type checking                    |
-| `pnpm check`      | Run biome to lint + format                      |
-| `pnpm test`       | Run unit tests with Vitest                      |
-| `pnpm test:watch` | Run unit tests in watch mode                    |
-| `pnpm e2e`        | Run end-to-end tests with Playwright            |
-| `pnpm e2e:update` | Update Playwright test snapshots                |
-| `pnpm verify`     | Run all checks (format, build, lint, test, e2e) |
+| Command                 | Action                                             |
+| :----------------       | :--------------------------------------------------|
+| `pnpm install`          | Installs dependencies                              |
+| `pnpm dev`              | Starts local dev server at `localhost:${APP_PORT}` |
+| `pnpm build`            | Build your production site to `./dist/`            |
+| `pnpm typecheck`        | Run TypeScript type checking                       |
+| `pnpm check`            | Run biome to lint + format                         |
+| `pnpm test:unit`        | Run unit tests with Vitest                         |
+| `pnpm test:integration` | Run integration tests                              |
+| `pnpm e2e`              | Run end-to-end tests with Playwright               |
+| `pnpm e2e:update`       | Update Playwright test snapshots                   |
+| `pnpm verify`           | Run all checks (check, typecheck, build, test, e2e)|
 
 ## 🏗️ Architecture
 
@@ -30,14 +29,13 @@ This is an Astro 5 project with React integration. Key architectural decisions:
 - **Package Manager**: pnpm (required - see packageManager field)
 - **Node Version**: Requires Node.js >=22
 - **TypeScript**: Strict configuration with comprehensive linting rules
-- **Path Mapping**: `@/*` maps to `./src/*` for clean imports
+- **Path Mapping**: `#/*` maps to `./src/*` for clean imports
 
 ## 🧪 Testing
 
-- **Unit Tests**: Vitest with two test environments:
-  - `node` environment for `.test.ts` files (Testing pure functions/lib code)
-  - `jsdom` environment for `.test.tsx` files with React Testing Library (ui)
-- **E2E Tests**: Playwright
+- **Unit Tests**: Vitest with two test projects:
+  - `unit`: Plain node environment for simple unit tests
+  - `integration`: Integration tests involving either database operations using ad ad asf 
   - Runs on `localhost:4321` in development
   - Uses screenshot testing with custom CSS
   - Automatic dev server startup for local testing
