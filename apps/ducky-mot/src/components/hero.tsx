@@ -29,7 +29,7 @@ export function Hero() {
 
 				{/* Main headline with gradient text */}
 				<div className="space-y-4">
-					<h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white leading-tight">
+					<h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white leading-tight font-hero-title">
 						<span className="bg-gradient-to-r from-white via-blue-100 to-white bg-clip-text text-transparent">
 							An international community,
 						</span>

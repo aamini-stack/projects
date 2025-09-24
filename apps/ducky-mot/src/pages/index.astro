@@ -6,7 +6,6 @@ import { Events } from '#/components/events'
 import { Footer } from '#/components/footer'
 import { Header } from '#/components/header'
 import { Hero } from '#/components/hero'
-import { OurEvents } from '#/components/our-events'
 import { OurMission } from '#/components/our-mission'
 import Layout from '#/pages/_Layout.astro'
 ---
@@ -28,17 +27,14 @@ import Layout from '#/pages/_Layout.astro'
 			<!-- Hero Section -->
 			<Hero client:load />
 
-			<!-- Aftermovie -->
-			<Aftermovie client:load />
-
 			<!-- Ducky Events -->
 			<Events client:load />
 
+			<!-- Aftermovie -->
+			<Aftermovie client:load />
+
 			<!-- Our Mission -->
 			<OurMission client:load />
-
-			<!-- Our Events -->
-			<OurEvents client:load />
 
 			<!-- Business Inquiries -->
 			<BusinessInquiries client:load />

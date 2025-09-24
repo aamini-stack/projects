@@ -3,7 +3,7 @@ import { ExternalLink, Instagram, Menu, Youtube } from 'lucide-react'
 
 export function Header() {
 	return (
-		<header className="relative z-50 w-full border-b border-gray-700/30 bg-black/80 backdrop-blur-xl">
+		<header className="sticky top-0 z-50 w-full border-b border-gray-700/30 bg-black/80 backdrop-blur-xl supports-backdrop:bg-black/60">
 			<div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 				<div className="flex h-20 items-center justify-between">
 					{/* Social links */}
