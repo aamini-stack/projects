@@ -108,7 +108,8 @@ export function ImageGallery() {
 				{/* Enhanced image grid */}
 				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
 					{filteredImages.map((image, index) => (
-						<div
+						<button
+							type="button"
 							key={image.id}
 							className="group relative aspect-square overflow-hidden rounded-2xl bg-gray-800 cursor-pointer transform transition-all duration-500 hover:scale-110 hover:shadow-2xl hover:shadow-yellow-400/20 hover:z-10"
 							onClick={() => setSelectedImage(image)}
@@ -119,7 +120,6 @@ export function ImageGallery() {
 								}
 							}}
 							tabIndex={0}
-							role="button"
 							aria-label={`View ${image.alt} in full size`}
 							style={{ animationDelay: `${index * 100}ms` }}
 						>
@@ -141,7 +141,7 @@ export function ImageGallery() {
 							</div>
 							{/* Subtle border glow on hover */}
 							<div className="absolute inset-0 rounded-2xl ring-2 ring-yellow-400/0 group-hover:ring-yellow-400/30 transition-all duration-500"></div>
-						</div>
+						</button>
 					))}
 				</div>
 
