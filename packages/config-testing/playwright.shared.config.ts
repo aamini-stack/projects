@@ -21,6 +21,8 @@ export const baseConfig = (
 			testDir: testDir,
 			/* Run tests in files in parallel */
 			fullyParallel: true,
+			// Opt out of parallel tests on CI.
+			workers: process.env.CI ? 1 : '50%',
 			/* Fail the build on CI if you accidentally left test.only in the source code. */
 			forbidOnly: !!process.env.CI,
 			retries: process.env.CI ? 3 : 0,
@@ -49,7 +51,7 @@ export const baseConfig = (
 			...(useDevServer
 				? {
 						webServer: {
-							command: 'pnpm dev',
+							command: `pnpm dev --port ${port}`,
 							url: devUrl,
 							reuseExistingServer: true,
 						},

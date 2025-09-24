@@ -8,7 +8,7 @@
 	},
 	"scripts": {
 		"build": "astro build",
-		"dev": "astro dev --port 4001",
+		"dev": "astro dev",
 		"typecheck": "tsc --noEmit",
 		"check": "biome check",
 		"test": "vitest run",

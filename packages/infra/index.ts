@@ -9,8 +9,7 @@ const provider = new vercel.Provider('vercel-provider', {
 	team: 'team_BMB11Zck0xVJiYVTGXOUqLiz',
 })
 
-// Define the applications from the monorepo
-const apps = [
+const apps: { name: string; overrides?: vercel.ProjectArgs }[] = [
 	{
 		name: 'aamini-template',
 	},
@@ -25,6 +24,12 @@ const apps = [
 	},
 	{
 		name: 'fruit-gen',
+	},
+	{
+		name: 'ducky-mot',
+		overrides: {
+			vercelAuthentication: { deploymentType: 'none' },
+		},
 	},
 ]
 
@@ -52,6 +57,7 @@ const vercelProjects = Object.fromEntries(
 					nodeVersion: '22.x',
 					rootDirectory: `apps/${app.name}`,
 					teamId: 'team_BMB11Zck0xVJiYVTGXOUqLiz',
+					...app.overrides,
 				},
 				{ provider },
 			),

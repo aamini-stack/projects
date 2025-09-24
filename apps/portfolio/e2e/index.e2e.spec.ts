@@ -23,13 +23,8 @@ test.describe('Home', () => {
 })
 
 test.describe('Contact Card', () => {
-	test.beforeEach(async ({ page }) => {
-		await page.getByTestId('contact-card').scrollIntoViewIfNeeded()
-	})
-
 	test('Basic', async ({ page }) => {
-		const contactCard = page.getByTestId('contact-card')
-		await expect(contactCard).toHaveScreenshot()
+		await expect(page.getByTestId('contact-card')).toHaveScreenshot()
 	})
 
 	test('Error State', async ({ page }) => {

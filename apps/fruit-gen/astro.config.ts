@@ -23,7 +23,7 @@ export default defineConfig({
 	experimental: {
 		fonts: [
 			{
-				provider: fontProviders.google(),
+				provider: fontProviders.fontsource(),
 				name: 'DM Sans',
 				cssVariable: '--font-dm-sans',
 			},
