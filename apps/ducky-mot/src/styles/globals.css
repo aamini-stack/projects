@@ -1,10 +1,6 @@
-@import "@aamini/ui/globals.css";
 @import url('https://fonts.cdnfonts.com/css/vcr-osd-mono');
+@import "@aamini/ui/globals.css";
 
 :root {
 	--font-family: 'VCR OSD Mono', var(--font-dm-sans);
-}
-
-.font-hero-title {
-	font-family: var(--font-dm-sans);
 }

@@ -8,7 +8,7 @@ export function ContactUs() {
 			<div className="max-w-4xl mx-auto">
 				{/* Section Header */}
 				<div className="text-center mb-16">
-					<h2 className="text-4xl md:text-5xl font-bold text-white mb-4 bg-gradient-to-r from-white via-white to-gray-300 bg-clip-text text-transparent">
+					<h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-white via-white to-gray-300 bg-clip-text text-transparent">
 						Contact Us
 					</h2>
 					<p className="text-gray-400 text-lg max-w-2xl mx-auto">
@@ -20,17 +20,21 @@ export function ContactUs() {
 					</div>
 				</div>
 
-				<Card className="bg-gray-900/50 border-gray-700/50 backdrop-blur-sm shadow-2xl">
+				<Card className="bg-gray-900/50 border-gray-700/50 backdrop-blur-sm shadow-2xl transition-none transform-none">
 					<CardContent className="p-8">
 						<form className="space-y-6" aria-label="Contact form (UI only)">
 							<div className="space-y-6">
 								{/* Email Input */}
 								<div className="space-y-2">
-									<label className="text-sm font-medium text-gray-300 flex items-center gap-2">
+									<label
+										htmlFor="contact-email"
+										className="text-sm font-medium text-gray-300 flex items-center gap-2"
+									>
 										<Mail className="w-4 h-4" />
 										Email Address
 									</label>
 									<input
+										id="contact-email"
 										type="email"
 										placeholder="your.email@example.com"
 										className="w-full rounded-lg border border-gray-600/50 bg-gray-800/50 px-4 py-3 text-white placeholder-gray-400 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-400/20 transition-all duration-200 backdrop-blur-sm"
@@ -41,11 +45,15 @@ export function ContactUs() {
 
 								{/* Subject Input */}
 								<div className="space-y-2">
-									<label className="text-sm font-medium text-gray-300 flex items-center gap-2">
+									<label
+										htmlFor="contact-subject"
+										className="text-sm font-medium text-gray-300 flex items-center gap-2"
+									>
 										<MessageCircle className="w-4 h-4" />
 										Subject
 									</label>
 									<input
+										id="contact-subject"
 										type="text"
 										placeholder="What's this about?"
 										className="w-full rounded-lg border border-gray-600/50 bg-gray-800/50 px-4 py-3 text-white placeholder-gray-400 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-400/20 transition-all duration-200 backdrop-blur-sm"
@@ -56,10 +64,14 @@ export function ContactUs() {
 
 								{/* Message Textarea */}
 								<div className="space-y-2">
-									<label className="text-sm font-medium text-gray-300">
+									<label
+										htmlFor="contact-message"
+										className="text-sm font-medium text-gray-300"
+									>
 										Message
 									</label>
 									<textarea
+										id="contact-message"
 										placeholder="Tell us about your project, event, or collaboration idea..."
 										rows={6}
 										className="w-full rounded-lg border border-gray-600/50 bg-gray-800/50 px-4 py-3 text-white placeholder-gray-400 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-400/20 transition-all duration-200 resize-none backdrop-blur-sm"
