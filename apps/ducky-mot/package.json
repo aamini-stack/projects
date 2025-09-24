@@ -11,10 +11,6 @@
 		"dev": "astro dev",
 		"typecheck": "tsc --noEmit",
 		"check": "biome check",
-		"test": "vitest run",
-		"test:unit": "vitest run --project unit",
-		"test:integration": "vitest run --project browser",
-		"test:watch": "vitest --watch",
 		"e2e": "playwright test",
 		"e2e:update": "playwright test --update-snapshots",
 		"verify": "turbo run build check typecheck test e2e"
