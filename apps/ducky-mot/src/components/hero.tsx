@@ -64,14 +64,6 @@ export function Hero() {
 					</Button>
 				</div>
 
-				{/* Scroll indicator */}
-				<div className="pt-8">
-					<div className="animate-bounce">
-						<div className="w-6 h-10 border-2 border-gray-400 rounded-full mx-auto flex justify-center">
-							<div className="w-1 h-3 bg-gray-400 rounded-full mt-2 animate-pulse" />
-						</div>
-					</div>
-				</div>
 			</div>
 		</section>
 	)
