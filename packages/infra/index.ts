@@ -57,6 +57,7 @@ const vercelProjects = Object.fromEntries(
 					nodeVersion: '22.x',
 					rootDirectory: `apps/${app.name}`,
 					teamId: 'team_BMB11Zck0xVJiYVTGXOUqLiz',
+					enableAffectedProjectsDeployments: true,
 					...app.overrides,
 				},
 				{ provider },
