@@ -41,7 +41,7 @@ const vercelProjects = Object.fromEntries(
 				app.name,
 				{
 					framework: 'astro',
-					gitComments: { onCommit: false, onPullRequest: false },
+					gitComments: { onCommit: false, onPullRequest: true },
 					gitRepository: {
 						productionBranch: 'main',
 						repo: 'aamini11/aamini',
@@ -52,7 +52,7 @@ const vercelProjects = Object.fromEntries(
 					protectionBypassForAutomationSecret: config.requireSecret(
 						'vercelAutomationBypassSecret',
 					),
-					ignoreCommand: 'exit 0',
+					ignoreCommand: 'npx turbo-ignore',
 					name: app.name,
 					nodeVersion: '22.x',
 					rootDirectory: `apps/${app.name}`,
@@ -88,15 +88,34 @@ const repo = new github.Repository('repo', {
 	visibility: 'public',
 })
 
-const variables = [
-	new github.ActionsSecret('repoVariables', {
+const secrets = [
+	new github.ActionsSecret('vercelAutomationBypassSecret', {
 		repository: 'aamini',
 		plaintextValue: config.requireSecret('vercelAutomationBypassSecret'),
 		secretName: 'VERCEL_AUTOMATION_BYPASS_SECRET',
 	}),
+	new github.ActionsSecret('vercelToken', {
+		repository: 'aamini',
+		plaintextValue: config.requireSecret('vercelToken'),
+		secretName: 'VERCEL_TOKEN',
+	}),
+	new github.ActionsSecret('turboToken', {
+		repository: 'aamini',
+		plaintextValue: config.requireSecret('turboToken'),
+		secretName: 'TURBO_TOKEN',
+	}),
 ]
 
-export const variableNames = variables.map((envVar) => envVar.secretName)
+const variables = [
+	new github.ActionsVariable('turboTeam', {
+		repository: 'aamini',
+		value: 'team_BMB11Zck0xVJiYVTGXOUqLiz',
+		variableName: 'TURBO_TEAM',
+	}),
+]
+
+export const variableNames = variables.map((variable) => variable.variableName)
+export const secretNames = secrets.map((secret) => secret.secretName)
 export const projectIds = Object.fromEntries(
 	Object.entries(vercelProjects).map(([name, { project }]) => [
 		name,
