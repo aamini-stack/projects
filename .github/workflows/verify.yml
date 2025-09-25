@@ -34,6 +34,6 @@ jobs:
       - name: Setup Node
         uses: ./.github/actions/setup
       - name: Install Playwright Browsers
-        run: pnpm playwright install --with-deps
+        run: pnpm exec playwright install
       - name: Test
         run: pnpm test:integration
