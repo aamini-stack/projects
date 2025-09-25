@@ -1,4 +1,4 @@
-import { cn } from '#/lib/utils'
+import { cn } from '@aamini/ui/lib/utils'
 
 /** https://getpublii.com/blog/one-line-css-solution-to-prevent-anchor-links-from-scrolling-behind-a-sticky-header.html */
 export const Section = ({

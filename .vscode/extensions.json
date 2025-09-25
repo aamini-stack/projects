@@ -10,7 +10,7 @@
 		"vitest.explorer",
 		// Format + Lint
 		"editorconfig.editorconfig",
-		"oxc.oxc-vscode",
+		"biomejs.biome",
 		// Infra
 		"github.vscode-github-actions",
 		"mikestead.dotenv"

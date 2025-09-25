@@ -1,6 +1,11 @@
 {
 	"permissions": {
-		"allow": ["Bash(pnpm e2e:*)"],
+		"allow": [
+			"Bash(pnpm e2e:*)",
+			"Bash(pnpm e2e:update:*)",
+			"Bash(pnpm check:*)",
+			"Bash(pnpm typecheck:*)"
+		],
 		"deny": [],
 		"ask": []
 	}

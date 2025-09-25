@@ -1,0 +1,15 @@
+{
+	"files.exclude": {
+		"**/node_modules/": true,
+		"**/.next/": true,
+		"**/.swc/": true,
+		"**/.turbo": true,
+		"**/.astro": true,
+		"**/dist": true,
+		"**/.vercel": true,
+		"**/playwright-report": true
+	},
+	"files.associations": {
+		"*.css": "tailwindcss"
+	}
+}

@@ -1,0 +1,54 @@
+{
+	"name": "ducky-mot",
+	"private": true,
+	"version": "0.0.0",
+	"type": "module",
+	"imports": {
+		"#/*": "./src/*"
+	},
+	"scripts": {
+		"build": "astro build",
+		"dev": "astro dev",
+		"typecheck": "tsc --noEmit",
+		"check": "biome check",
+		"e2e": "playwright test",
+		"e2e:update": "playwright test --update-snapshots",
+		"verify": "turbo run build check typecheck test e2e"
+	},
+	"dependencies": {
+		"@aamini/ui": "workspace:*",
+		"@radix-ui/react-aspect-ratio": "^1.1.7",
+		"@radix-ui/react-separator": "^1.1.7",
+		"@radix-ui/react-slot": "^1.2.3",
+		"class-variance-authority": "^0.7.1",
+		"clsx": "^2.1.1",
+		"lucide-react": "^0.544.0",
+		"react": "^19.1.0",
+		"react-dom": "^19.1.0",
+		"tailwind-merge": "^3.3.1"
+	},
+	"devDependencies": {
+		"@aamini/config-testing": "workspace:*",
+		"@aamini/config-typescript": "workspace:*",
+		"@astrojs/react": "^4.3.0",
+		"@astrojs/vercel": "^8.2.5",
+		"@playwright/test": "^1.54.1",
+		"@tailwindcss/vite": "^4.1.12",
+		"@types/node": "^22.12.0",
+		"@types/react": "^19.1.8",
+		"@types/react-dom": "^19.1.6",
+		"@vitest/browser": "^3.2.4",
+		"astro": "^5.13.4",
+		"tailwindcss": "^4.1.12",
+		"tw-animate-css": "^1.3.8",
+		"typescript": "5.8.3",
+		"vite": "^7.1.5",
+		"vite-tsconfig-paths": "^5.1.4",
+		"vitest": "^3.2.4",
+		"vitest-browser-react": "^1.0.1"
+	},
+	"packageManager": "pnpm@10.14.0",
+	"engines": {
+		"node": ">=22"
+	}
+}

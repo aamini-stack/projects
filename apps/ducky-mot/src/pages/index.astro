@@ -1,0 +1,49 @@
+---
+import { Aftermovie } from '#/components/aftermovie'
+import { BusinessInquiries } from '#/components/business-inquiries'
+import { ContactUs } from '#/components/contact-us'
+import { Events } from '#/components/events'
+import { Footer } from '#/components/footer'
+import { Header } from '#/components/header'
+import { Hero } from '#/components/hero'
+import { OurMission } from '#/components/our-mission'
+import Layout from '#/pages/_Layout.astro'
+---
+
+<Layout>
+	<!-- Enhanced dark background with multiple layers -->
+	<div class="fixed inset-0 -z-10 bg-gradient-to-br from-gray-900 via-black to-gray-800"></div>
+	<div class="fixed inset-0 -z-10 bg-gradient-to-t from-black/20 via-transparent to-black/40"></div>
+
+	<!-- Main container -->
+	<div class="min-h-screen flex flex-col">
+		<!-- Skip to content -->
+		<a href="#content" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 bg-yellow-400 text-black px-4 py-2 rounded">Skip to content</a>
+
+		<!-- Header -->
+		<Header client:load />
+
+		<main id="content">
+			<!-- Hero Section -->
+			<Hero client:load />
+
+			<!-- Ducky Events -->
+			<Events client:load />
+
+			<!-- Aftermovie -->
+			<Aftermovie client:load />
+
+			<!-- Our Mission -->
+			<OurMission client:load />
+
+			<!-- Business Inquiries -->
+			<BusinessInquiries client:load />
+
+			<!-- Contact Us -->
+			<ContactUs client:load />
+		</main>
+
+		<!-- Footer -->
+		<Footer client:load />
+	</div>
+</Layout>

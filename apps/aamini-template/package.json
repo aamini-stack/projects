@@ -8,17 +8,15 @@
 	},
 	"scripts": {
 		"build": "astro build",
-		"dev": "astro dev --port 4321",
+		"dev": "astro dev",
 		"typecheck": "tsc --noEmit",
 		"check": "biome check",
-		"format": "prettier --check **/*.{js,ts,tsx,json,html,css,md,yml,yaml,astro}",
-		"format:fix": "prettier --write **/*.{js,ts,tsx,json,html,css,md,yml,yaml,astro}",
 		"test": "vitest run",
 		"test:integration": "vitest run --project browser",
 		"test:watch": "vitest --watch",
 		"e2e": "playwright test",
 		"e2e:update": "playwright test --update-snapshots",
-		"verify": "turbo run format build lint test typecheck e2e"
+		"verify": "turbo run build check typecheck test e2e"
 	},
 	"dependencies": {
 		"@aamini/ui": "workspace:*",

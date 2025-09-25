@@ -12,7 +12,8 @@
 		"./lib/*": "./src/lib/*.ts"
 	},
 	"scripts": {
-		"typecheck": "tsc --noEmit"
+		"typecheck": "tsc --noEmit",
+		"shadcn": "pnpm dlx shadcn@latest add"
 	},
 	"dependencies": {
 		"@radix-ui/react-avatar": "^1.1.10",
