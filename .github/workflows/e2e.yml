@@ -23,7 +23,7 @@ jobs:
   run-e2e:
     runs-on: ubuntu-latest
     env:
-      APP_NAME: github.event.client_payload.project.name
+      APP_NAME: ${{ github.event.client_payload.project.name }}
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
