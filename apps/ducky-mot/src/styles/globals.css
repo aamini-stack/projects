@@ -6,6 +6,14 @@
 	--font-family-mono: 'VCR OSD Mono';
 }
 
+:root {
+	--header-size: 5rem;
+}
+
+[id] {
+  scroll-margin-top: var(--header-size);
+}
+
 .spinning-duck {
 	background-image: url("/spinning-duck.gif");
 	background-size: contain;
