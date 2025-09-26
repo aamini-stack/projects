@@ -73,6 +73,8 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
+      - name: Setup Node
+        uses: ./.github/actions/setup
       # Deploy
       - name: Deploy to Vercel
         working-directory: ./apps/${{ matrix.app }}
