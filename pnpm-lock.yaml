@@ -12,7 +12,7 @@ importers:
         specifier: 2.2.4
         version: 2.2.4
       '@playwright/test':
-        specifier: ^1.55.0
+        specifier: ^1.55.1
         version: 1.55.1
       turbo:
         specifier: ^2.5.6
@@ -61,7 +61,7 @@ importers:
         specifier: ^8.2.5
         version: 8.2.5(@aws-sdk/credential-provider-web-identity@3.864.0)(astro@5.13.7(@types/node@22.18.3)(@vercel/blob@1.0.2)(@vercel/functions@2.2.12(@aws-sdk/credential-provider-web-identity@3.864.0))(encoding@0.1.13)(jiti@2.5.1)(lightningcss@1.30.1)(rollup@4.50.2)(typescript@5.8.3)(yaml@2.8.1))(encoding@0.1.13)(next@15.4.2(@babel/core@7.28.0)(@opentelemetry/api@1.9.0)(@playwright/test@1.55.1)(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(react@19.1.1)(rollup@4.50.2)
       '@playwright/test':
-        specifier: ^1.55.0
+        specifier: ^1.55.1
         version: 1.55.1
       '@tailwindcss/vite':
         specifier: ^4.1.12
@@ -146,7 +146,7 @@ importers:
         specifier: ^8.2.5
         version: 8.2.5(@aws-sdk/credential-provider-web-identity@3.864.0)(astro@5.13.5(@types/node@22.18.1)(@vercel/blob@1.0.2)(encoding@0.1.13)(jiti@2.5.1)(lightningcss@1.30.1)(rollup@4.50.2)(typescript@5.8.3)(yaml@2.8.1))(encoding@0.1.13)(next@15.4.2(@opentelemetry/api@1.9.0)(@playwright/test@1.55.1)(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(react@19.1.1)(rollup@4.50.2)
       '@playwright/test':
-        specifier: ^1.55.0
+        specifier: ^1.55.1
         version: 1.55.1
       '@tailwindcss/vite':
         specifier: ^4.1.11
@@ -237,7 +237,7 @@ importers:
         specifier: ^8.2.5
         version: 8.2.5(@aws-sdk/credential-provider-web-identity@3.864.0)(astro@5.13.7(@types/node@22.18.3)(@vercel/blob@1.0.2)(@vercel/functions@2.2.12(@aws-sdk/credential-provider-web-identity@3.864.0))(encoding@0.1.13)(jiti@2.5.1)(lightningcss@1.30.1)(rollup@4.50.2)(typescript@5.8.3)(yaml@2.8.1))(encoding@0.1.13)(next@15.4.2(@babel/core@7.28.0)(@opentelemetry/api@1.9.0)(@playwright/test@1.55.1)(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(react@19.1.1)(rollup@4.50.2)
       '@playwright/test':
-        specifier: ^1.55.0
+        specifier: ^1.55.1
         version: 1.55.1
       '@tailwindcss/vite':
         specifier: ^4.1.12
@@ -313,7 +313,7 @@ importers:
         specifier: ^8.2.5
         version: 8.2.5(@aws-sdk/credential-provider-web-identity@3.864.0)(astro@5.13.5(@types/node@22.18.1)(@vercel/blob@1.0.2)(encoding@0.1.13)(jiti@2.5.1)(lightningcss@1.30.1)(rollup@4.50.2)(typescript@5.8.3)(yaml@2.8.1))(encoding@0.1.13)(next@15.4.2(@opentelemetry/api@1.9.0)(@playwright/test@1.55.1)(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(react@19.1.1)(rollup@4.50.2)
       '@playwright/test':
-        specifier: ^1.55.0
+        specifier: ^1.55.1
         version: 1.55.1
       '@tailwindcss/vite':
         specifier: ^4.1.12
@@ -428,7 +428,7 @@ importers:
         specifier: ^8.2.5
         version: 8.2.5(@aws-sdk/credential-provider-web-identity@3.864.0)(astro@5.13.5(@types/node@22.18.1)(@vercel/blob@1.0.2)(encoding@0.1.13)(jiti@2.5.1)(lightningcss@1.30.1)(rollup@4.50.2)(typescript@5.8.3)(yaml@2.8.1))(encoding@0.1.13)(next@15.4.2(@opentelemetry/api@1.9.0)(@playwright/test@1.55.1)(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(react@19.1.1)(rollup@4.50.2)
       '@playwright/test':
-        specifier: ^1.55.0
+        specifier: ^1.55.1
         version: 1.55.1
       '@tailwindcss/vite':
         specifier: ^4.1.12
@@ -585,7 +585,7 @@ importers:
         specifier: ^8.2.5
         version: 8.2.5(@aws-sdk/credential-provider-web-identity@3.864.0)(astro@5.13.7(@types/node@22.18.1)(@vercel/blob@1.0.2)(@vercel/functions@2.2.12(@aws-sdk/credential-provider-web-identity@3.864.0))(encoding@0.1.13)(jiti@2.5.1)(lightningcss@1.30.1)(rollup@4.50.2)(typescript@5.9.2)(yaml@2.8.1))(encoding@0.1.13)(next@15.4.2(@opentelemetry/api@1.9.0)(@playwright/test@1.55.1)(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(react@19.1.1)(rollup@4.50.2)
       '@playwright/test':
-        specifier: ^1.55.0
+        specifier: ^1.55.1
         version: 1.55.1
       '@tailwindcss/vite':
         specifier: ^4.1.11
@@ -636,7 +636,7 @@ importers:
   packages/config-testing:
     dependencies:
       '@playwright/test':
-        specifier: ^1.55.0
+        specifier: ^1.55.1
         version: 1.55.1
       typescript:
         specifier: ^5.8.3
