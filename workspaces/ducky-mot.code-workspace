@@ -1,16 +1,16 @@
 {
 	"folders": [
 		{
+			"name": "root",
+			"path": ".."
+		},
+		{
 			"path": "../apps/ducky-mot"
 		},
 		{
 			"name": "ui",
 			"path": "../packages/ui"
 		},
-		{
-			"name": "root",
-			"path": ".."
-		}
 	],
 	"settings": {
 		"files.exclude": {
