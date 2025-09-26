@@ -21,7 +21,6 @@ permissions:
 env:
   TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
   TURBO_TEAM: ${{ vars.TURBO_TEAM }}
-  TURBO_SCM_BASE: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
 
 jobs:
   quality-checks:
@@ -59,25 +58,29 @@ jobs:
         id: calculate-apps
         run: |
           APPS=$(npx turbo run build --filter="{./apps/*}[HEAD^1]" --dry=json | jq -c .packages)
+          echo $APPS
           echo "apps=$APPS" >> $GITHUB_OUTPUT
-
-  e2e:
+  
+  deploy:
     needs: [find-apps]
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         app: ${{ fromJson(needs.find-apps.outputs.apps) }}
       fail-fast: false
-    runs-on: ubuntu-latest
-    container:
-      image: mcr.microsoft.com/playwright:v1.55.1-noble
-      options: --user 1001
     steps:
-      # Setup
       - name: Checkout Code
         uses: actions/checkout@v4
-      - name: Setup Node
-        uses: ./.github/actions/setup
-
+        with:
+          fetch-depth: 2
+      - name: Get Changed Apps
+        id: calculate-apps
+        env:
+          TURBO_SCM_BASE: ${{ github.event.before }}
+        run: |
+          APPS=$(npx turbo run build --filter="{./apps/*}[HEAD^1]" --dry=json | jq -c .packages)
+          echo $APPS
+          echo "apps=$APPS" >> $GITHUB_OUTPUT
       # Deploy
       - name: Deploy to Vercel
         working-directory: ./apps/${{ matrix.app }}
@@ -99,27 +102,37 @@ jobs:
           | tail -1)
           echo BASE_URL=$BASE_URL >> $GITHUB_ENV
 
+  e2e:
+    needs: [deploy]
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.55.1-noble
+      options: --user 1001
+    steps:
+      # Setup
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: ./.github/actions/setup
       # Test
       - name: Run Playwright tests
         env:
           VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
-        working-directory: ./apps/${{ matrix.app }}
-        run: pnpm turbo run e2e${{ inputs.update_snapshots && ':update' || '' }}
-
+        run: pnpm e2e${{ inputs.update_snapshots && ':update' || '' }}
       # Upload screenshots + report
       - name: Upload Screenshots
         if: success() && inputs.update_snapshots
         uses: actions/upload-artifact@v4
         with:
-          name: screenshots-${{ matrix.app }}
+          name: screenshots
           path: "./*/**/e2e/**/*.png"
           retention-days: 1
       - name: Publish Report
         uses: actions/upload-artifact@v4
         if: failure()
         with:
-          name: playwright-report-${{ matrix.app }}
-          path: "./apps/${{ matrix.app }}/playwright-report"
+          name: playwright-report
+          path: "./**/playwright-report"
           retention-days: 30
 
   collect-reports:
