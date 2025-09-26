@@ -63,7 +63,7 @@ jobs:
           echo $APPS
           echo "apps=$APPS" >> $GITHUB_OUTPUT
 
-  deploy:
+  e2e:
     needs: [find-apps]
     runs-on: ubuntu-latest
     strategy:
@@ -95,20 +95,9 @@ jobs:
             -m githubCommitSha='${{ github.sha }}' \
           | tail -1)
           echo BASE_URL=$BASE_URL >> $GITHUB_ENV
-
-  e2e:
-    needs: [deploy]
-    runs-on: ubuntu-latest
-    container:
-      image: mcr.microsoft.com/playwright:v1.55.1-noble
-      options: --user 1001
-    steps:
-      # Setup
-      - name: Checkout Code
-        uses: actions/checkout@v4
-      - name: Setup Node
-        uses: ./.github/actions/setup
       # Test
+      - name: Install Playwright Browsers
+        run: pnpm dlx playwright install --with-deps
       - name: Run Playwright tests
         env:
           VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
