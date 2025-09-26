@@ -34,7 +34,7 @@
 		"@aamini/config-typescript": "workspace:*",
 		"@astrojs/react": "^4.3.0",
 		"@astrojs/vercel": "^8.2.5",
-		"@playwright/test": "^1.54.1",
+		"@playwright/test": "^1.55.0",
 		"@tailwindcss/vite": "^4.1.12",
 		"@types/node": "^22.12.0",
 		"@types/react": "^19.1.8",
