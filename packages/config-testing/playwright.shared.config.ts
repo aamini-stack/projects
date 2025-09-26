@@ -45,10 +45,6 @@ export const baseConfig = (
 					'x-vercel-protection-bypass':
 						process.env.VERCEL_AUTOMATION_BYPASS_SECRET ?? '',
 				},
-
-				launchOptions: {
-					args: ['--disable-lcd-text'],
-				},
 			},
 
 			/* Run your local dev server when running tests locally */
@@ -72,7 +68,12 @@ export const baseConfig = (
 			projects: [
 				{
 					name: 'chromium',
-					use: { ...devices['Desktop Chrome'] },
+					use: {
+						...devices['Desktop Chrome'],
+						launchOptions: {
+							args: ['--disable-lcd-text'],
+						},
+					},
 				},
 
 				// {
@@ -92,7 +93,12 @@ export const baseConfig = (
 				// },
 				{
 					name: 'mobile',
-					use: { ...devices['iPhone 12'] },
+					use: {
+						...devices['iPhone 12'],
+						launchOptions: {
+							args: ['--disable-lcd-text'],
+						},
+					},
 				},
 
 				/* Test against branded browsers. */
