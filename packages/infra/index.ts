@@ -52,7 +52,7 @@ const vercelProjects = Object.fromEntries(
 					protectionBypassForAutomationSecret: config.requireSecret(
 						'vercelAutomationBypassSecret',
 					),
-					ignoreCommand: 'npx turbo-ignore',
+					ignoreCommand: 'exit 0',
 					name: app.name,
 					nodeVersion: '22.x',
 					rootDirectory: `apps/${app.name}`,
