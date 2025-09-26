@@ -56,7 +56,7 @@ jobs:
         id: calculate-apps
         working-directory: ./apps
         run: |
-          APPS=$(pnpm dlx turbo run build --filter='./apps/*' --dry=json | jq -c .packages)
+          APPS=$(npx turbo run build --filter='./apps/*' --dry=json | jq -c .packages)
           echo "apps=$APPS" >> $GITHUB_OUTPUT
 
   e2e:
