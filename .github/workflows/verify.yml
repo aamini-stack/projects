@@ -21,6 +21,7 @@ permissions:
 env:
   TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
   TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+  TURBO_SCM_BASE: "origin/main"
 
 jobs:
   quality-checks:
