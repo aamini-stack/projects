@@ -3,33 +3,31 @@ import { ArrowRight, Ticket } from 'lucide-react'
 
 export function Hero() {
 	return (
-		<section className="relative flex min-h-[60vh] items-center justify-center px-4 py-20 sm:px-6 lg:px-8">
-			{/* Background with enhanced gradients */}
+		<section className="relative flex min-h-screen items-center justify-center px-4 py-20 sm:px-6 lg:px-8">
 			<div className="absolute inset-0 bg-gradient-to-br from-black via-gray-900/80 to-black" />
 			<div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/20" />
-
-			{/* Animated background elements */}
 			<div className="absolute inset-0 overflow-hidden">
 				<div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-500/5 rounded-full blur-3xl animate-pulse" />
 				<div className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-500/5 rounded-full blur-3xl animate-pulse [animation-delay:2s]" />
 			</div>
+			<div className="absolute inset-0 bg-transparent spinning-duck opacity-10"></div>
 
 			<div className="relative z-10 text-center max-w-4xl mx-auto space-y-8">
-				{/* Logo with enhanced styling */}
+				{/* Title (ducky.mot) */}
 				<div className="relative group">
 					<img
 						src="https://duckymot.com/wp-content/uploads/2023/08/Asset-2.svg"
 						alt="DuckyMot logo"
-						className="mx-auto h-24 sm:h-32 md:h-36 w-auto opacity-95 transition-all duration-500 group-hover:opacity-100 group-hover:scale-105"
+						className="mx-auto h-24 sm:h-32 md:h-36 w-auto"
 						loading="lazy"
 					/>
-					{/* Subtle glow effect */}
-					<div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-blue-500/10 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+					{/* Glow */}
+					<div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-blue-500/10 blur-xl transition-opacity duration-500" />
 				</div>
 
-				{/* Main headline with gradient text */}
+				{/* Sub-Header */}
 				<div className="space-y-4">
-					<h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white leading-tight font-hero-title">
+					<h1 className="font-mono text-3xl sm:text-4xl md:text-5xl font-bold text-white leading-tight font-hero-title">
 						<span className="bg-gradient-to-r from-white via-blue-100 to-white bg-clip-text text-transparent">
 							An international community,
 						</span>
@@ -45,7 +43,7 @@ export function Hero() {
 					</p>
 				</div>
 
-				{/* CTA Button with enhanced styling */}
+				{/* Ticket Button */}
 				<div className="pt-4">
 					<Button
 						asChild

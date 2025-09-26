@@ -42,7 +42,7 @@
 		"@aamini/config-typescript": "workspace:*",
 		"@astrojs/react": "^4.3.0",
 		"@astrojs/vercel": "^8.2.5",
-		"@playwright/test": "^1.54.1",
+		"@playwright/test": "^1.55.1",
 		"@tailwindcss/vite": "^4.1.12",
 		"@tanstack/eslint-plugin-query": "^5.83.1",
 		"@testcontainers/postgresql": "^11.5.1",

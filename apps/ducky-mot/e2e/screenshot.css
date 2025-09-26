@@ -5,3 +5,7 @@ astro-dev-toolbar {
 vercel-live-feedback {
 	display: none;
 }
+
+.spinning-duck {
+	background-image: none;
+}

@@ -1,7 +1,15 @@
 import { Button } from '@aamini/ui/components/button'
-import { ExternalLink, Instagram, Menu, Youtube } from 'lucide-react'
+import { cn } from '@aamini/ui/lib/utils'
+import { ExternalLink, Instagram, Menu, X, Youtube } from 'lucide-react'
+import { useState } from 'react'
 
 export function Header() {
+	const [isMenuOpen, setIsMenuOpen] = useState(false)
+
+	const toggleMenu = () => {
+		setIsMenuOpen(!isMenuOpen)
+	}
+
 	return (
 		<header className="sticky top-0 z-50 w-full border-b border-gray-700/30 bg-black/80 backdrop-blur-xl supports-backdrop:bg-black/60">
 			<div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -69,12 +77,71 @@ export function Header() {
 							size="sm"
 							className="text-gray-300 hover:text-white hover:bg-gray-800/50 border-gray-700/50"
 							aria-label="Open menu"
+							onClick={toggleMenu}
 						>
-							<Menu className="h-6 w-6" />
+							{isMenuOpen ? (
+								<X className="h-6 w-6" />
+							) : (
+								<Menu className="h-6 w-6" />
+							)}
 						</Button>
 					</div>
 				</div>
 			</div>
+
+			{/* Mobile menu */}
+			<nav
+				className={cn(
+					`md:hidden bg-black/90 backdrop-blur-xl transition-all duration-300 ease-in-out`,
+					{
+						block: isMenuOpen,
+						hidden: !isMenuOpen,
+					},
+				)}
+			>
+				<div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+					<MobileNavButton href="#duckyevents" onClick={toggleMenu}>
+						Ducky Events
+					</MobileNavButton>
+					<MobileNavButton
+						href="#duckyfest2023-aftermovie"
+						onClick={toggleMenu}
+					>
+						Aftermovie
+					</MobileNavButton>
+					<MobileNavButton href="#about-us" onClick={toggleMenu}>
+						Our Mission
+					</MobileNavButton>
+					<MobileNavButton href="#business-inquiries" onClick={toggleMenu}>
+						Business Inquiries
+					</MobileNavButton>
+				</div>
+			</nav>
 		</header>
+	)
+}
+
+interface MobileNavButtonProps {
+	href: string
+	onClick: () => void
+	children: React.ReactNode
+}
+
+export function MobileNavButton({
+	href,
+	onClick,
+	children,
+}: MobileNavButtonProps) {
+	return (
+		<Button
+			variant="ghost"
+			className="block w-full justify-start text-gray-300 hover:text-white hover:bg-gray-800/50 px-3 py-2 rounded-md text-base font-medium"
+			onClick={() => {
+				onClick()
+				window.location.href = href
+			}}
+		>
+			{children}
+		</Button>
 	)
 }

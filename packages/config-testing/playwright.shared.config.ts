@@ -45,6 +45,10 @@ export const baseConfig = (
 					'x-vercel-protection-bypass':
 						process.env.VERCEL_AUTOMATION_BYPASS_SECRET ?? '',
 				},
+
+				launchOptions: {
+					args: ['--disable-lcd-text'],
+				},
 			},
 
 			/* Run your local dev server when running tests locally */
