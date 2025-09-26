@@ -20,7 +20,7 @@ const eventsByYear: YearGroup[] = [
 		items: [
 			{
 				date: '17th May 2025',
-				title: 'Ducky',
+				title: 'Ducky.fest',
 				href: 'https://duckymot.com/photos-ducky-17th-may-2025',
 				img: 'https://duckymot.com/wp-content/uploads/2025/09/DSC00243-1024x684.jpg',
 			},
