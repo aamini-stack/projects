@@ -14,7 +14,7 @@ export function OurMission() {
 					<p>
 						We are actively bridging this gap through frequent events that host
 						local and international artists alike. For instance, our most recent
-						annual festival has hosted DJ's from 10 different nationalities, and
+						annual festival hosted DJ's from 10 different nationalities, and
 						this is reflected in the diversity of our audience.
 					</p>
 				</div>
