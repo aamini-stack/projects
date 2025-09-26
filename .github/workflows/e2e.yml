@@ -26,12 +26,10 @@ jobs:
       - name: Setup Node
         uses: ./.github/actions/setup
       - name: Run Playwright tests
-        working-directory: \
-          ./apps/${{ env.APP_NAME }}
+        working-directory: ./apps/${{ env.APP_NAME }}
         env:
           BASE_URL: ${{ github.event.client_payload.url }}
-          VERCEL_AUTOMATION_BYPASS_SECRET: \
-            ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
+          VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
         run: pnpm run e2e
       - name: Publish Report
         uses: actions/upload-artifact@v4
