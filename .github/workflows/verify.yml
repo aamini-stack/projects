@@ -56,11 +56,13 @@ jobs:
           fetch-depth: 2
       - name: Get Changed Apps
         id: calculate-apps
+        env:
+          TURBO_SCM_BASE: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
         run: |
           APPS=$(npx turbo run build --filter="{./apps/*}[HEAD^1]" --dry=json | jq -c .packages)
           echo $APPS
           echo "apps=$APPS" >> $GITHUB_OUTPUT
-  
+
   deploy:
     needs: [find-apps]
     runs-on: ubuntu-latest
@@ -71,16 +73,6 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 2
-      - name: Get Changed Apps
-        id: calculate-apps
-        env:
-          TURBO_SCM_BASE: ${{ github.event.before }}
-        run: |
-          APPS=$(npx turbo run build --filter="{./apps/*}[HEAD^1]" --dry=json | jq -c .packages)
-          echo $APPS
-          echo "apps=$APPS" >> $GITHUB_OUTPUT
       # Deploy
       - name: Deploy to Vercel
         working-directory: ./apps/${{ matrix.app }}
