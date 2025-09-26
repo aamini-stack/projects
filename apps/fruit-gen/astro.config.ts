@@ -25,7 +25,14 @@ export default defineConfig({
 			{
 				provider: fontProviders.fontsource(),
 				name: 'DM Sans',
-				cssVariable: '--font-dm-sans',
+				cssVariable: '--font-family-sans',
+				subsets: ['latin'],
+			},
+			{
+				provider: fontProviders.fontsource(),
+				name: 'DM Mono',
+				cssVariable: '--font-family-mono',
+				subsets: ['latin'],
 			},
 		],
 	},
