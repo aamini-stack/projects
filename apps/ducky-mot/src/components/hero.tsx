@@ -3,15 +3,7 @@ import { ArrowRight, Ticket } from 'lucide-react'
 
 export function Hero() {
 	return (
-		<section className="relative flex min-h-screen items-center justify-center px-4 py-20 sm:px-6 lg:px-8">
-			{/* Spinning GIF Background */}
-			<div
-				className="absolute inset-0 z-0 overflow-hidden bg-contain bg-no-repeat animate-spin-slow"
-				style={{
-					backgroundImage: `url('https://duckymot.com/wp-content/uploads/2023/08/final.gif'), top center`,
-				}}
-			></div>
-
+		<section className="relative flex min-h-[60vh] items-center justify-center px-4 py-20 sm:px-6 lg:px-8">
 			{/* Background with enhanced gradients */}
 			<div className="absolute inset-0 bg-gradient-to-br from-black via-gray-900/80 to-black" />
 			<div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/20" />

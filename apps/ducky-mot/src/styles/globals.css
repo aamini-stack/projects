@@ -5,7 +5,3 @@
   --font-family-sans: var(--font-dm-sans);
 	--font-family-mono: 'VCR OSD Mono';
 }
-
-.animate-spin-slow {
-  animation: spin-slow 60s linear infinite; /* Adjust duration as needed */
-}
