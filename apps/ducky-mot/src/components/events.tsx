@@ -86,7 +86,7 @@ export function Events() {
 			<div className="max-w-7xl mx-auto">
 				{/* Section Header */}
 				<div className="text-center mb-16">
-					<h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-white via-white to-gray-300 bg-clip-text text-transparent">
+					<h2 className="font-mono text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-white via-white to-gray-300 bg-clip-text text-transparent">
 						Ducky Events
 					</h2>
 					<p className="text-gray-400 text-lg max-w-2xl mx-auto">
