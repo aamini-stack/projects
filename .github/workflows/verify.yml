@@ -69,7 +69,7 @@ jobs:
       fail-fast: false
     runs-on: ubuntu-latest
     container:
-      image: mcr.microsoft.com/playwright:v1.55.0-noble
+      image: mcr.microsoft.com/playwright:v1.55.1-noble
       options: --user 1001
     steps:
       # Setup
@@ -94,7 +94,7 @@ jobs:
             --token=${{ secrets.VERCEL_TOKEN }} \
             --scope=${{ vars.TURBO_TEAM }} \
             -m githubDeployment='1' \
-            -m githubCommitRef='${{ github.head_ref || github.ref_name }}' \
+            -m githubCommitRef='feature/${{ github.head_ref || github.ref_name }}' \
             -m githubCommitSha='${{ github.sha }}' \
           | tail -1)
           echo BASE_URL=$BASE_URL >> $GITHUB_ENV
