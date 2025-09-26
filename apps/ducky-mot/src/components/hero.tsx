@@ -20,11 +20,11 @@ export function Hero() {
 					<img
 						src="https://duckymot.com/wp-content/uploads/2023/08/Asset-2.svg"
 						alt="DuckyMot logo"
-						className="mx-auto h-24 sm:h-32 md:h-36 w-auto opacity-95 transition-all duration-500 group-hover:opacity-100 group-hover:scale-105"
+						className="mx-auto h-24 sm:h-32 md:h-36 w-auto"
 						loading="lazy"
 					/>
 					{/* Subtle glow effect */}
-					<div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-blue-500/10 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+					<div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-blue-500/10 blur-xl transition-opacity duration-500" />
 				</div>
 
 				{/* Main headline with gradient text */}
