@@ -65,7 +65,7 @@ jobs:
 
   e2e:
     needs: [find-apps]
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     strategy:
       matrix:
         app: ${{ fromJson(needs.find-apps.outputs.apps) }}
@@ -85,16 +85,16 @@ jobs:
             --repo \
             --token=${{ secrets.VERCEL_TOKEN }} \
             --scope=${{ vars.TURBO_TEAM }}
-          BASE_URL=$(pnpm vercel \
-            --yes \
-            ${{ github.ref_name == 'main' && '--prod' || '' }} \
-            --token=${{ secrets.VERCEL_TOKEN }} \
-            --scope=${{ vars.TURBO_TEAM }} \
-            -m githubDeployment='1' \
-            -m githubCommitRef='feature/${{ github.head_ref || github.ref_name }}' \
-            -m githubCommitSha='${{ github.sha }}' \
-          | tail -1)
-          echo BASE_URL=$BASE_URL >> $GITHUB_ENV
+          $BASE_URL = pnpm vercel `
+            --yes `
+            '${{ github.ref_name == 'main' && '--prod' || '' }}' `
+            --token=${{ secrets.VERCEL_TOKEN }} `
+            --scope=${{ vars.TURBO_TEAM }} `
+            -m githubDeployment='1' `
+            -m githubCommitRef='feature/${{ github.head_ref || github.ref_name }}' `
+            -m githubCommitSha='${{ github.sha }}' |
+            Select-Object -Last 1
+          echo "BASE_URL=$BASE_URL" >> $env:GITHUB_ENV
       # Test
       - name: Install Playwright Browsers
         run: pnpm dlx playwright install --with-deps
