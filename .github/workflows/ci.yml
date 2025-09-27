@@ -80,11 +80,11 @@ jobs:
         working-directory: ./apps/${{ matrix.app }}
         run: |
           pnpm i -g vercel
-          pnpm vercel link \
-            --yes \
-            --repo \
-            --token=${{ secrets.VERCEL_TOKEN }} \
-            --scope=${{ vars.TURBO_TEAM }}
+          pnpm vercel link `
+            --yes `
+            --repo `
+            --token=${{ secrets.VERCEL_TOKEN }} `
+            --scope=${{ vars.TURBO_TEAM }} `
           $BASE_URL = pnpm vercel `
             --yes `
             '${{ github.ref_name == 'main' && '--prod' || '' }}' `
