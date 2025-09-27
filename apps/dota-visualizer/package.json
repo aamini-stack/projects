@@ -10,7 +10,7 @@
 		"build": "astro build",
 		"dev": "astro dev",
 		"typecheck": "tsc --noEmit",
-		"check": "biome check",
+		"lint": "oxlint --type-aware --max-warnings=0",
 		"test": "vitest run",
 		"test:unit": "vitest run --project unit",
 		"test:watch": "vitest --watch",

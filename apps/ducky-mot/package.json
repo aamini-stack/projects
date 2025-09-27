@@ -10,7 +10,7 @@
 		"build": "astro build",
 		"dev": "astro dev",
 		"typecheck": "tsc --noEmit",
-		"check": "biome check",
+		"lint": "oxlint --type-aware --max-warnings=0",
 		"e2e": "playwright test",
 		"e2e:update": "playwright test --update-snapshots",
 		"verify": "turbo run build check typecheck test e2e"

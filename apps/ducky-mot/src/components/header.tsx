@@ -11,62 +11,62 @@ export function Header() {
 	}
 
 	return (
-		<header className="sticky top-0 z-50 w-full border-b border-gray-700/30 bg-black/80 backdrop-blur-xl supports-backdrop:bg-black/60">
+		<header className="supports-backdrop:bg-black/60 sticky top-0 z-50 w-full border-b border-gray-700/30 bg-black/80 backdrop-blur-xl">
 			<div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 				<div className="flex h-20 items-center justify-between">
 					{/* Social links */}
 					<div className="flex items-center gap-4">
 						<a
 							href="https://www.instagram.com/ducky.mot/"
-							className="group flex items-center gap-2 text-gray-300 hover:text-blue-400 transition-all duration-300 font-medium px-3 py-2 rounded-lg hover:bg-gray-800/50"
+							className="group flex items-center gap-2 rounded-lg px-3 py-2 font-medium text-gray-300 transition-all duration-300 hover:bg-gray-800/50 hover:text-blue-400"
 							target="_blank"
 							rel="noopener noreferrer"
 						>
-							<Instagram className="w-4 h-4" />
+							<Instagram className="h-4 w-4" />
 							<span className="hidden sm:inline">Instagram</span>
-							<ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
+							<ExternalLink className="h-3 w-3 opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
 						</a>
 						<a
 							href="https://www.youtube.com/@duckymot"
-							className="group flex items-center gap-2 text-gray-300 hover:text-red-400 transition-all duration-300 font-medium px-3 py-2 rounded-lg hover:bg-gray-800/50"
+							className="group flex items-center gap-2 rounded-lg px-3 py-2 font-medium text-gray-300 transition-all duration-300 hover:bg-gray-800/50 hover:text-red-400"
 							target="_blank"
 							rel="noopener noreferrer"
 						>
-							<Youtube className="w-4 h-4" />
+							<Youtube className="h-4 w-4" />
 							<span className="hidden sm:inline">YouTube</span>
-							<ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
+							<ExternalLink className="h-3 w-3 opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
 						</a>
 					</div>
 
 					{/* Navigation */}
-					<nav className="hidden md:flex items-center space-x-8">
+					<nav className="hidden items-center space-x-8 md:flex">
 						<a
 							href="#duckyfest2023-aftermovie"
-							className="text-gray-300 hover:text-white transition-all duration-300 font-medium relative group px-3 py-2 rounded-lg hover:bg-gray-800/30"
+							className="group relative rounded-lg px-3 py-2 font-medium text-gray-300 transition-all duration-300 hover:bg-gray-800/30 hover:text-white"
 						>
 							Aftermovie
-							<span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-blue-400 to-purple-400 transition-all duration-300 group-hover:w-3/4 rounded-full"></span>
+							<span className="absolute -bottom-1 left-1/2 h-0.5 w-0 -translate-x-1/2 rounded-full bg-gradient-to-r from-blue-400 to-purple-400 transition-all duration-300 group-hover:w-3/4"></span>
 						</a>
 						<a
 							href="#duckyevents"
-							className="text-gray-300 hover:text-white transition-all duration-300 font-medium relative group px-3 py-2 rounded-lg hover:bg-gray-800/30"
+							className="group relative rounded-lg px-3 py-2 font-medium text-gray-300 transition-all duration-300 hover:bg-gray-800/30 hover:text-white"
 						>
 							Ducky Events
-							<span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-blue-400 to-purple-400 transition-all duration-300 group-hover:w-3/4 rounded-full"></span>
+							<span className="absolute -bottom-1 left-1/2 h-0.5 w-0 -translate-x-1/2 rounded-full bg-gradient-to-r from-blue-400 to-purple-400 transition-all duration-300 group-hover:w-3/4"></span>
 						</a>
 						<a
 							href="#about-us"
-							className="text-gray-300 hover:text-white transition-all duration-300 font-medium relative group px-3 py-2 rounded-lg hover:bg-gray-800/30"
+							className="group relative rounded-lg px-3 py-2 font-medium text-gray-300 transition-all duration-300 hover:bg-gray-800/30 hover:text-white"
 						>
 							Our Mission
-							<span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-blue-400 to-purple-400 transition-all duration-300 group-hover:w-3/4 rounded-full"></span>
+							<span className="absolute -bottom-1 left-1/2 h-0.5 w-0 -translate-x-1/2 rounded-full bg-gradient-to-r from-blue-400 to-purple-400 transition-all duration-300 group-hover:w-3/4"></span>
 						</a>
 						<a
 							href="#business-inquiries"
-							className="text-gray-300 hover:text-white transition-all duration-300 font-medium relative group px-3 py-2 rounded-lg hover:bg-gray-800/30"
+							className="group relative rounded-lg px-3 py-2 font-medium text-gray-300 transition-all duration-300 hover:bg-gray-800/30 hover:text-white"
 						>
 							Business Inquiries
-							<span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-blue-400 to-purple-400 transition-all duration-300 group-hover:w-3/4 rounded-full"></span>
+							<span className="absolute -bottom-1 left-1/2 h-0.5 w-0 -translate-x-1/2 rounded-full bg-gradient-to-r from-blue-400 to-purple-400 transition-all duration-300 group-hover:w-3/4"></span>
 						</a>
 					</nav>
 
@@ -75,7 +75,7 @@ export function Header() {
 						<Button
 							variant="ghost"
 							size="sm"
-							className="text-gray-300 hover:text-white hover:bg-gray-800/50 border-gray-700/50"
+							className="border-gray-700/50 text-gray-300 hover:bg-gray-800/50 hover:text-white"
 							aria-label="Open menu"
 							onClick={toggleMenu}
 						>
@@ -92,14 +92,14 @@ export function Header() {
 			{/* Mobile menu */}
 			<nav
 				className={cn(
-					`md:hidden bg-black/90 backdrop-blur-xl transition-all duration-300 ease-in-out`,
+					`bg-black/90 backdrop-blur-xl transition-all duration-300 ease-in-out md:hidden`,
 					{
 						block: isMenuOpen,
 						hidden: !isMenuOpen,
 					},
 				)}
 			>
-				<div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+				<div className="space-y-1 px-2 pb-3 pt-2 sm:px-3">
 					<MobileNavButton href="#duckyevents" onClick={toggleMenu}>
 						Ducky Events
 					</MobileNavButton>
@@ -135,7 +135,7 @@ export function MobileNavButton({
 	return (
 		<Button
 			variant="ghost"
-			className="block w-full justify-start text-gray-300 hover:text-white hover:bg-gray-800/50 px-3 py-2 rounded-md text-base font-medium"
+			className="block w-full justify-start rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-800/50 hover:text-white"
 			onClick={() => {
 				onClick()
 				window.location.href = href

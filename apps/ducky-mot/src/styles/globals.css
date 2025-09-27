@@ -1,9 +1,9 @@
-@import url("https://fonts.cdnfonts.com/css/vcr-osd-mono");
-@import "@aamini/ui/globals.css";
+@import url('https://fonts.cdnfonts.com/css/vcr-osd-mono');
+@import '@aamini/ui/globals.css';
 
 @theme {
 	--font-family-sans: var(--font-dm-sans);
-	--font-family-mono: "VCR OSD Mono";
+	--font-family-mono: 'VCR OSD Mono';
 }
 
 :root {
@@ -15,7 +15,7 @@
 }
 
 .spinning-duck {
-	background-image: url("/spinning-duck.gif");
+	background-image: url('/spinning-duck.gif');
 	background-size: contain;
 	background-repeat: no-repeat;
 	background-position: center;

@@ -7,18 +7,18 @@ export function Hero() {
 			<div className="absolute inset-0 bg-gradient-to-br from-black via-gray-900/80 to-black" />
 			<div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/20" />
 			<div className="absolute inset-0 overflow-hidden">
-				<div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-500/5 rounded-full blur-3xl animate-pulse" />
-				<div className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-500/5 rounded-full blur-3xl animate-pulse [animation-delay:2s]" />
+				<div className="absolute -right-40 -top-40 h-80 w-80 animate-pulse rounded-full bg-blue-500/5 blur-3xl" />
+				<div className="absolute -bottom-40 -left-40 h-80 w-80 animate-pulse rounded-full bg-purple-500/5 blur-3xl [animation-delay:2s]" />
 			</div>
-			<div className="absolute inset-0 bg-transparent spinning-duck opacity-10"></div>
+			<div className="spinning-duck absolute inset-0 bg-transparent opacity-10"></div>
 
-			<div className="relative z-10 text-center max-w-4xl mx-auto space-y-8">
+			<div className="relative z-10 mx-auto max-w-4xl space-y-8 text-center">
 				{/* Title (ducky.mot) */}
-				<div className="relative group">
+				<div className="group relative">
 					<img
 						src="https://duckymot.com/wp-content/uploads/2023/08/Asset-2.svg"
 						alt="DuckyMot logo"
-						className="mx-auto h-24 sm:h-32 md:h-36 w-auto"
+						className="mx-auto h-24 w-auto sm:h-32 md:h-36"
 						loading="lazy"
 					/>
 					{/* Glow */}
@@ -27,7 +27,7 @@ export function Hero() {
 
 				{/* Sub-Header */}
 				<div className="space-y-4">
-					<h1 className="font-mono text-3xl sm:text-4xl md:text-5xl font-bold text-white leading-tight font-hero-title">
+					<h1 className="font-hero-title font-mono text-3xl font-bold leading-tight text-white sm:text-4xl md:text-5xl">
 						<span className="bg-gradient-to-r from-white via-blue-100 to-white bg-clip-text text-transparent">
 							An international community,
 						</span>
@@ -37,7 +37,7 @@ export function Hero() {
 						</span>
 					</h1>
 
-					<p className="text-lg md:text-xl text-gray-300 max-w-2xl mx-auto leading-relaxed">
+					<p className="mx-auto max-w-2xl text-lg leading-relaxed text-gray-300 md:text-xl">
 						Join us for unforgettable experiences, incredible music, and
 						connections that last a lifetime.
 					</p>
@@ -48,16 +48,16 @@ export function Hero() {
 					<Button
 						asChild
 						size="lg"
-						className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold px-8 py-4 text-lg shadow-2xl shadow-blue-500/25 hover:shadow-blue-500/40 transition-all duration-300 group border-0"
+						className="group border-0 bg-gradient-to-r from-blue-500 to-purple-600 px-8 py-4 text-lg font-semibold text-white shadow-2xl shadow-blue-500/25 transition-all duration-300 hover:from-blue-600 hover:to-purple-700 hover:shadow-blue-500/40"
 					>
 						<a
 							href="https://spaces.toffolo.studio/267526bf-c657-11ed-94ba-6a57c78572ab.html"
 							target="_blank"
 							rel="noopener noreferrer"
 						>
-							<Ticket className="w-5 h-5 mr-2" />
+							<Ticket className="mr-2 h-5 w-5" />
 							Get Tickets
-							<ArrowRight className="w-4 h-4 ml-2 transition-transform duration-200 group-hover:translate-x-1" />
+							<ArrowRight className="ml-2 h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
 						</a>
 					</Button>
 				</div>

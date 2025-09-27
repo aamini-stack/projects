@@ -13,9 +13,9 @@ use Shadcn as a baseline. Below are steps/guidelines for refining the final
 design.
 
 **CRITICAL**: You can add new Shadcn components using:
-`cd && <rootDir>/packages/ui && pnpm shadcn $COMPONENT_NAME`
-cd into the shared UI library first then run the `pnpm shadcn $COMPONENT_NAME`
-to add a new component.
+`cd && <rootDir>/packages/ui && pnpm shadcn $COMPONENT_NAME` cd into the shared
+UI library first then run the `pnpm shadcn $COMPONENT_NAME` to add a new
+component.
 
 Design Standards:
 

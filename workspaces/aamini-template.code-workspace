@@ -1,12 +1,16 @@
 {
 	"folders": [
 		{
-			"path": "../apps/aamini-template"
+			"path": "../apps/aamini-template",
 		},
 		{
 			"name": "root",
-			"path": ".."
-		}
+			"path": "..",
+		},
+		{
+			"name": "ui",
+			"path": "../packages/ui",
+		},
 	],
 	"settings": {
 		"files.exclude": {
@@ -18,10 +22,10 @@
 			"**/dist": true,
 			"**/.vercel": true,
 			"**/playwright-report": true,
-			"**/test-results": true
+			"**/test-results": true,
 		},
 		"files.associations": {
-			"*.css": "tailwindcss"
-		}
-	}
+			"*.css": "tailwindcss",
+		},
+	},
 }

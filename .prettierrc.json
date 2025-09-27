@@ -1,0 +1,26 @@
+{
+	"singleQuote": true,
+	"semi": false,
+	"useTabs": true,
+	"plugins": [
+		"@prettier/plugin-oxc",
+		"prettier-plugin-jsdoc",
+		"prettier-plugin-organize-imports",
+		"prettier-plugin-astro",
+		"prettier-plugin-tailwindcss"
+	],
+	"overrides": [
+		{
+			"files": "*.astro",
+			"options": {
+				"parser": "astro"
+			}
+		},
+		{
+			"files": "*.md",
+			"options": {
+				"proseWrap": "always"
+			}
+		}
+	]
+}
