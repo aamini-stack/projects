@@ -84,7 +84,7 @@ jobs:
             --yes `
             --repo `
             --token=${{ secrets.VERCEL_TOKEN }} `
-            --scope=${{ vars.TURBO_TEAM }} `
+            --scope=${{ vars.TURBO_TEAM }}
           $BASE_URL = pnpm vercel `
             --yes `
             '${{ github.ref_name == 'main' && '--prod' || '' }}' `
