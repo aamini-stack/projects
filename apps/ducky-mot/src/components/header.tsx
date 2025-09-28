@@ -11,7 +11,12 @@ export function Header() {
 	}
 
 	return (
-		<header className="supports-backdrop:bg-black/60 sticky top-0 z-50 w-full border-b border-gray-700/30 bg-black/80 backdrop-blur-xl">
+		<header
+			className={cn(
+				'supports-backdrop:bg-black/60 sticky top-0 z-50 w-full border-b border-gray-700/30 backdrop-blur-xl',
+				isMenuOpen ? 'bg-black/95' : 'bg-black/80',
+			)}
+		>
 			<div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 				<div className="flex h-20 items-center justify-between">
 					{/* Social links */}
@@ -92,7 +97,7 @@ export function Header() {
 			{/* Mobile menu */}
 			<nav
 				className={cn(
-					`absolute left-0 top-full w-full bg-black/90 backdrop-blur-xl transition-all duration-300 ease-in-out md:hidden`,
+					`absolute left-0 top-full w-full bg-black/95 backdrop-blur-xl transition-all duration-300 ease-in-out md:hidden`,
 					{
 						block: isMenuOpen,
 						hidden: !isMenuOpen,
