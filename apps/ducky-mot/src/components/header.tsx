@@ -92,7 +92,7 @@ export function Header() {
 			{/* Mobile menu */}
 			<nav
 				className={cn(
-					`bg-black/90 backdrop-blur-xl transition-all duration-300 ease-in-out md:hidden`,
+					`absolute left-0 top-full w-full bg-black/90 backdrop-blur-xl transition-all duration-300 ease-in-out md:hidden`,
 					{
 						block: isMenuOpen,
 						hidden: !isMenuOpen,
