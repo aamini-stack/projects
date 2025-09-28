@@ -18,7 +18,6 @@
 			"**/dist": true,
 			"**/.vercel": true,
 			"**/playwright-report": true,
-			"**/test-results": true,
 		},
 		"files.associations": {
 			"*.css": "tailwindcss",
