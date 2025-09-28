@@ -7,16 +7,12 @@
 	"editor.formatOnPaste": true,
 	"editor.formatOnSave": true,
 	"editor.rulers": [80],
-	"editor.defaultFormatter": "biomejs.biome",
+	"editor.defaultFormatter": "esbenp.prettier-vscode",
 	"editor.codeActionsOnSave": {
 		"source.fixAll.biome": "explicit",
 		"source.action.useSortedKeys.biome": "explicit"
 	},
 	"typescript.preferences.importModuleSpecifier": "non-relative",
-	"[markdown]": {
-		"editor.wordWrap": "wordWrapColumn",
-		"editor.defaultFormatter": "vscode.markdown-language-features"
-	},
 
 	// Ark Types: https://arktype.io/docs/intro/setup#settings
 	"editor.quickSuggestions": {

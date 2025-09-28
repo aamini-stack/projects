@@ -1,11 +1,11 @@
 export function OurMission() {
 	return (
-		<section id="about-us" className="py-16 px-4 sm:px-6 lg:px-8">
-			<div className="max-w-4xl mx-auto">
-				<h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
+		<section id="about-us" className="px-4 py-16 sm:px-6 lg:px-8">
+			<div className="mx-auto max-w-4xl">
+				<h2 className="mb-6 text-3xl font-bold text-white md:text-4xl">
 					our mission
 				</h2>
-				<div className="space-y-4 text-gray-200 leading-relaxed">
+				<div className="space-y-4 leading-relaxed text-gray-200">
 					<p>
 						Our mission is to create the best festival experience possible for
 						all young adults - not just new internationals or Dutch students

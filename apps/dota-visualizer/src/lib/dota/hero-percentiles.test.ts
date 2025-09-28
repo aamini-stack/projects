@@ -47,7 +47,7 @@ describe('stats', () => {
 	})
 })
 
-describe('HeroStatsAnalyzer', async () => {
+describe('HeroStatsAnalyzer', () => {
 	test('baseArmor for Anti-Mage', async () => {
 		const stats = new HeroStatsAnalyzer(await fetchLatestHeroData())
 		expect(stats.computePercentile('Anti-Mage', 'baseArmor')).toEqual(0.64)

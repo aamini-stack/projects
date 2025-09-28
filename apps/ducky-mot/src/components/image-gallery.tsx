@@ -73,31 +73,31 @@ export function ImageGallery() {
 	return (
 		<section
 			id="gallery"
-			className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900"
+			className="bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 px-4 py-24 sm:px-6 lg:px-8"
 		>
-			<div className="max-w-7xl mx-auto">
+			<div className="mx-auto max-w-7xl">
 				{/* Enhanced section header */}
-				<div className="text-center mb-16">
-					<h2 className="text-5xl md:text-6xl lg:text-7xl font-black text-white mb-6 tracking-tight">
+				<div className="mb-16 text-center">
+					<h2 className="mb-6 text-5xl font-black tracking-tight text-white md:text-6xl lg:text-7xl">
 						Festival <span className="text-yellow-400">Highlights</span>
 					</h2>
-					<p className="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
+					<p className="mx-auto max-w-3xl text-xl leading-relaxed text-gray-300 md:text-2xl">
 						Relive the magic of Ducky Fest through these incredible moments
 						captured at our events
 					</p>
 				</div>
 
 				{/* Enhanced category filters */}
-				<div className="flex flex-wrap justify-center gap-6 mb-16">
+				<div className="mb-16 flex flex-wrap justify-center gap-6">
 					{categories.map((category) => (
 						<button
 							key={category}
 							type="button"
 							onClick={() => setSelectedCategory(category)}
-							className={`px-8 py-3 rounded-full font-bold text-lg transition-all duration-300 transform hover:scale-105 ${
+							className={`transform rounded-full px-8 py-3 text-lg font-bold transition-all duration-300 hover:scale-105 ${
 								selectedCategory === category
 									? 'bg-yellow-400 text-black shadow-lg shadow-yellow-400/25'
-									: 'bg-gray-800/70 text-gray-300 hover:bg-yellow-400/20 hover:text-yellow-400 border border-gray-700 hover:border-yellow-400'
+									: 'border border-gray-700 bg-gray-800/70 text-gray-300 hover:border-yellow-400 hover:bg-yellow-400/20 hover:text-yellow-400'
 							}`}
 						>
 							{category.charAt(0).toUpperCase() + category.slice(1)}
@@ -106,12 +106,12 @@ export function ImageGallery() {
 				</div>
 
 				{/* Enhanced image grid */}
-				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+				<div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
 					{filteredImages.map((image, index) => (
 						<button
 							type="button"
 							key={image.id}
-							className="group relative aspect-square overflow-hidden rounded-2xl bg-gray-800 cursor-pointer transform transition-all duration-500 hover:scale-110 hover:shadow-2xl hover:shadow-yellow-400/20 hover:z-10"
+							className="group relative aspect-square transform cursor-pointer overflow-hidden rounded-2xl bg-gray-800 transition-all duration-500 hover:z-10 hover:scale-110 hover:shadow-2xl hover:shadow-yellow-400/20"
 							onClick={() => setSelectedImage(image)}
 							onKeyDown={(e) => {
 								if (e.key === 'Enter' || e.key === ' ') {
@@ -126,21 +126,21 @@ export function ImageGallery() {
 							<img
 								src={image.src}
 								alt={image.alt}
-								className="h-full w-full object-cover transition-all duration-500 group-hover:brightness-125 group-hover:contrast-110"
+								className="group-hover:contrast-110 h-full w-full object-cover transition-all duration-500 group-hover:brightness-125"
 								loading="lazy"
 							/>
-							<div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500">
+							<div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 transition-all duration-500 group-hover:opacity-100">
 								<div className="absolute bottom-6 left-6 right-6">
-									<p className="text-white text-lg font-bold mb-2 leading-tight">
+									<p className="mb-2 text-lg font-bold leading-tight text-white">
 										{image.alt}
 									</p>
-									<span className="inline-block px-4 py-2 bg-yellow-400 text-black text-sm font-black rounded-full">
+									<span className="inline-block rounded-full bg-yellow-400 px-4 py-2 text-sm font-black text-black">
 										{image.category}
 									</span>
 								</div>
 							</div>
 							{/* Subtle border glow on hover */}
-							<div className="absolute inset-0 rounded-2xl ring-2 ring-yellow-400/0 group-hover:ring-yellow-400/30 transition-all duration-500"></div>
+							<div className="absolute inset-0 rounded-2xl ring-2 ring-yellow-400/0 transition-all duration-500 group-hover:ring-yellow-400/30"></div>
 						</button>
 					))}
 				</div>
@@ -159,7 +159,7 @@ export function ImageGallery() {
 						aria-modal="true"
 						aria-label="Image preview modal"
 					>
-						<div className="relative max-w-4xl max-h-[90vh]">
+						<div className="relative max-h-[90vh] max-w-4xl">
 							<img
 								src={selectedImage.src}
 								alt={selectedImage.alt}
@@ -167,7 +167,7 @@ export function ImageGallery() {
 							/>
 							<button
 								type="button"
-								className="absolute top-4 right-4 text-white hover:text-gray-300 transition-colors"
+								className="absolute right-4 top-4 text-white transition-colors hover:text-gray-300"
 								onClick={() => setSelectedImage(null)}
 								aria-label="Close image preview"
 							>
@@ -187,9 +187,9 @@ export function ImageGallery() {
 									/>
 								</svg>
 							</button>
-							<div className="absolute bottom-4 left-4 right-4 bg-black/60 backdrop-blur-sm rounded-lg p-4">
-								<p className="text-white font-medium">{selectedImage.alt}</p>
-								<span className="inline-block mt-2 px-3 py-1 bg-yellow-400 text-black text-sm font-medium rounded">
+							<div className="absolute bottom-4 left-4 right-4 rounded-lg bg-black/60 p-4 backdrop-blur-sm">
+								<p className="font-medium text-white">{selectedImage.alt}</p>
+								<span className="mt-2 inline-block rounded bg-yellow-400 px-3 py-1 text-sm font-medium text-black">
 									{selectedImage.category}
 								</span>
 							</div>

@@ -1,15 +1,15 @@
 {
 	"folders": [
 		{
-			"name": "root",
-			"path": ".."
-		},
-		{
-			"path": "../apps/ducky-mot"
+			"path": "../apps/ducky-mot",
 		},
 		{
 			"name": "ui",
-			"path": "../packages/ui"
+			"path": "../packages/ui",
+		},
+		{
+			"name": "root",
+			"path": "..",
 		},
 	],
 	"settings": {
@@ -22,10 +22,9 @@
 			"**/dist": true,
 			"**/.vercel": true,
 			"**/playwright-report": true,
-			"**/test-results": true
 		},
 		"files.associations": {
-			"*.css": "tailwindcss"
-		}
-	}
+			"*.css": "tailwindcss",
+		},
+	},
 }

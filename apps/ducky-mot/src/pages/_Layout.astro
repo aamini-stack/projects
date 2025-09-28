@@ -11,16 +11,28 @@ import { Font } from 'astro:assets'
 		<link rel="icon" type="image/svg+xml" href="/ducky.svg" />
 		<meta name="generator" content={Astro.generator} />
 		<title>DuckyMot – Events</title>
-		<meta name="description" content="Join us at Ducky Fest for an unforgettable music festival experience featuring world-class artists, amazing performances, and incredible vibes." />
-		<meta name="keywords" content="ducky fest, music festival, live music, concerts, artists, entertainment" />
-		<meta property="og:title" content="Ducky Fest - The Ultimate Music Festival Experience" />
-		<meta property="og:description" content="Join us at Ducky Fest for an unforgettable music festival experience featuring world-class artists, amazing performances, and incredible vibes." />
+		<meta
+			name="description"
+			content="Join us at Ducky Fest for an unforgettable music festival experience featuring world-class artists, amazing performances, and incredible vibes."
+		/>
+		<meta
+			name="keywords"
+			content="ducky fest, music festival, live music, concerts, artists, entertainment"
+		/>
+		<meta
+			property="og:title"
+			content="Ducky Fest - The Ultimate Music Festival Experience"
+		/>
+		<meta
+			property="og:description"
+			content="Join us at Ducky Fest for an unforgettable music festival experience featuring world-class artists, amazing performances, and incredible vibes."
+		/>
 		<meta property="og:type" content="website" />
 		<meta name="twitter:card" content="summary_large_image" />
 		<Font cssVariable="--font-family-sans" preload />
 		<Font cssVariable="--font-family-mono" preload />
 	</head>
-	<body class="font-sans bg-black text-white m-0 h-full w-full antialiased">
+	<body class="m-0 h-full w-full bg-black font-sans text-white antialiased">
 		<slot />
 	</body>
 </html>
