@@ -6,6 +6,13 @@ import { useState } from 'react'
 export function Header() {
 	const [isMenuOpen, setIsMenuOpen] = useState(false)
 
+	const navItems = [
+		{ href: '#duckyevents', label: 'Events' },
+		{ href: '#duckyfest2023-aftermovie', label: 'Aftermovie' },
+		{ href: '#about-us', label: 'Our Mission' },
+		{ href: '#business-inquiries', label: 'Business Inquiries' },
+	]
+
 	const toggleMenu = () => {
 		setIsMenuOpen(!isMenuOpen)
 	}
@@ -45,34 +52,16 @@ export function Header() {
 
 					{/* Navigation */}
 					<nav className="hidden items-center space-x-8 md:flex">
-						<a
-							href="#duckyfest2023-aftermovie"
-							className="group relative rounded-lg px-3 py-2 font-medium text-gray-300 transition-all duration-300 hover:bg-gray-800/30 hover:text-white"
-						>
-							Aftermovie
-							<span className="absolute -bottom-1 left-1/2 h-0.5 w-0 -translate-x-1/2 rounded-full bg-gradient-to-r from-blue-400 to-purple-400 transition-all duration-300 group-hover:w-3/4"></span>
-						</a>
-						<a
-							href="#duckyevents"
-							className="group relative rounded-lg px-3 py-2 font-medium text-gray-300 transition-all duration-300 hover:bg-gray-800/30 hover:text-white"
-						>
-							Ducky Events
-							<span className="absolute -bottom-1 left-1/2 h-0.5 w-0 -translate-x-1/2 rounded-full bg-gradient-to-r from-blue-400 to-purple-400 transition-all duration-300 group-hover:w-3/4"></span>
-						</a>
-						<a
-							href="#about-us"
-							className="group relative rounded-lg px-3 py-2 font-medium text-gray-300 transition-all duration-300 hover:bg-gray-800/30 hover:text-white"
-						>
-							Our Mission
-							<span className="absolute -bottom-1 left-1/2 h-0.5 w-0 -translate-x-1/2 rounded-full bg-gradient-to-r from-blue-400 to-purple-400 transition-all duration-300 group-hover:w-3/4"></span>
-						</a>
-						<a
-							href="#business-inquiries"
-							className="group relative rounded-lg px-3 py-2 font-medium text-gray-300 transition-all duration-300 hover:bg-gray-800/30 hover:text-white"
-						>
-							Business Inquiries
-							<span className="absolute -bottom-1 left-1/2 h-0.5 w-0 -translate-x-1/2 rounded-full bg-gradient-to-r from-blue-400 to-purple-400 transition-all duration-300 group-hover:w-3/4"></span>
-						</a>
+						{navItems.map((item) => (
+							<a
+								key={item.href}
+								href={item.href}
+								className="group relative rounded-lg px-3 py-2 font-medium text-gray-300 transition-all duration-300 hover:bg-gray-800/30 hover:text-white"
+							>
+								{item.label}
+								<span className="absolute -bottom-1 left-1/2 h-0.5 w-0 -translate-x-1/2 rounded-full bg-gradient-to-r from-blue-400 to-purple-400 transition-all duration-300 group-hover:w-3/4"></span>
+							</a>
+						))}
 					</nav>
 
 					{/* Mobile menu button */}
@@ -105,21 +94,15 @@ export function Header() {
 				)}
 			>
 				<div className="space-y-1 px-2 pb-3 pt-2 sm:px-3">
-					<MobileNavButton href="#duckyevents" onClick={toggleMenu}>
-						Ducky Events
-					</MobileNavButton>
-					<MobileNavButton
-						href="#duckyfest2023-aftermovie"
-						onClick={toggleMenu}
-					>
-						Aftermovie
-					</MobileNavButton>
-					<MobileNavButton href="#about-us" onClick={toggleMenu}>
-						Our Mission
-					</MobileNavButton>
-					<MobileNavButton href="#business-inquiries" onClick={toggleMenu}>
-						Business Inquiries
-					</MobileNavButton>
+					{navItems.map((item) => (
+						<MobileNavButton
+							key={item.href}
+							href={item.href}
+							onClick={toggleMenu}
+						>
+							{item.label}
+						</MobileNavButton>
+					))}
 				</div>
 			</nav>
 		</header>
