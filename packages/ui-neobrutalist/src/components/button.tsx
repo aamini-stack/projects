@@ -55,6 +55,7 @@ function LinkButton({
 	}) {
 	return (
 		<a
+			title='Link Button'
 			data-slot="button"
 			className={cn(buttonVariants({ variant, size, className }))}
 			{...props}

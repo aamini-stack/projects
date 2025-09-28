@@ -1,6 +1,18 @@
 {
 	"$schema": "./node_modules/oxlint/configuration_schema.json",
-	"plugins": ["eslint", "unicorn", "typescript", "oxc", "react", "react-perf", "nextjs", "import", "jsdoc", "jsx-a11y", "node", "promise", "jest", "vitest"],
+	"plugins": [
+		"eslint",
+		"unicorn",
+		"typescript",
+		"oxc",
+		"react",
+		"react-perf",
+		"import",
+		"jsdoc",
+		"jsx-a11y",
+		"node",
+		"promise"
+	],
 	"categories": {},
 	"rules": {
 		"no-empty-pattern": "off"
@@ -10,9 +22,6 @@
 			"polymorphicPropName": null,
 			"components": {},
 			"attributes": {}
-		},
-		"next": {
-			"rootDir": []
 		},
 		"react": {
 			"formComponents": [],
