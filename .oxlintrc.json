@@ -1,6 +1,6 @@
 {
 	"$schema": "./node_modules/oxlint/configuration_schema.json",
-	"plugins": ["unicorn", "typescript", "oxc"],
+	"plugins": ["eslint", "unicorn", "typescript", "oxc", "react", "react-perf", "nextjs", "import", "jsdoc", "jsx-a11y", "node", "promise", "jest", "vitest"],
 	"categories": {},
 	"rules": {
 		"no-empty-pattern": "off"
