@@ -52,8 +52,6 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
-        with:
-          ref: my-feature-branch 
       - name: Get Changed Apps
         id: calculate-apps
         run: |
