@@ -3,7 +3,7 @@ import { ArrowRight, Ticket } from 'lucide-react'
 
 export function Hero() {
 	return (
-		<section className="relative flex min-h-screen items-center justify-center px-4 py-20 sm:px-6 lg:px-8">
+		<section className="relative flex min-h-screen items-start justify-center px-4 py-20 sm:px-6 lg:px-8">
 			<div className="absolute inset-0 bg-gradient-to-br from-black via-gray-900/80 to-black" />
 			<div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/20" />
 			<div className="absolute inset-0 overflow-hidden">
@@ -27,7 +27,7 @@ export function Hero() {
 
 				{/* Sub-Header */}
 				<div className="space-y-4">
-					<h1 className="font-hero-title font-mono text-3xl font-bold leading-tight text-white sm:text-4xl md:text-5xl">
+					<h1 className="font-hero-title text-3xl font-bold leading-tight text-white sm:text-4xl md:text-5xl">
 						<span className="bg-gradient-to-r from-white via-blue-100 to-white bg-clip-text text-transparent">
 							An international community,
 						</span>

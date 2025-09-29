@@ -6,12 +6,24 @@ import { useState } from 'react'
 export function Header() {
 	const [isMenuOpen, setIsMenuOpen] = useState(false)
 
+	const navItems = [
+		{ href: '#duckyevents', label: 'Events' },
+		{ href: '#duckyfest2023-aftermovie', label: 'Aftermovie' },
+		{ href: '#about-us', label: 'Our Mission' },
+		{ href: '#business-inquiries', label: 'Business Inquiries' },
+	]
+
 	const toggleMenu = () => {
 		setIsMenuOpen(!isMenuOpen)
 	}
 
 	return (
-		<header className="supports-backdrop:bg-black/60 sticky top-0 z-50 w-full border-b border-gray-700/30 bg-black/80 backdrop-blur-xl">
+		<header
+			className={cn(
+				'supports-backdrop:bg-black/60 sticky top-0 z-50 w-full border-b border-gray-700/30 backdrop-blur-xl',
+				isMenuOpen ? 'bg-black/95' : 'bg-black/80',
+			)}
+		>
 			<div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 				<div className="flex h-20 items-center justify-between">
 					{/* Social links */}
@@ -40,34 +52,16 @@ export function Header() {
 
 					{/* Navigation */}
 					<nav className="hidden items-center space-x-8 md:flex">
-						<a
-							href="#duckyfest2023-aftermovie"
-							className="group relative rounded-lg px-3 py-2 font-medium text-gray-300 transition-all duration-300 hover:bg-gray-800/30 hover:text-white"
-						>
-							Aftermovie
-							<span className="absolute -bottom-1 left-1/2 h-0.5 w-0 -translate-x-1/2 rounded-full bg-gradient-to-r from-blue-400 to-purple-400 transition-all duration-300 group-hover:w-3/4"></span>
-						</a>
-						<a
-							href="#duckyevents"
-							className="group relative rounded-lg px-3 py-2 font-medium text-gray-300 transition-all duration-300 hover:bg-gray-800/30 hover:text-white"
-						>
-							Ducky Events
-							<span className="absolute -bottom-1 left-1/2 h-0.5 w-0 -translate-x-1/2 rounded-full bg-gradient-to-r from-blue-400 to-purple-400 transition-all duration-300 group-hover:w-3/4"></span>
-						</a>
-						<a
-							href="#about-us"
-							className="group relative rounded-lg px-3 py-2 font-medium text-gray-300 transition-all duration-300 hover:bg-gray-800/30 hover:text-white"
-						>
-							Our Mission
-							<span className="absolute -bottom-1 left-1/2 h-0.5 w-0 -translate-x-1/2 rounded-full bg-gradient-to-r from-blue-400 to-purple-400 transition-all duration-300 group-hover:w-3/4"></span>
-						</a>
-						<a
-							href="#business-inquiries"
-							className="group relative rounded-lg px-3 py-2 font-medium text-gray-300 transition-all duration-300 hover:bg-gray-800/30 hover:text-white"
-						>
-							Business Inquiries
-							<span className="absolute -bottom-1 left-1/2 h-0.5 w-0 -translate-x-1/2 rounded-full bg-gradient-to-r from-blue-400 to-purple-400 transition-all duration-300 group-hover:w-3/4"></span>
-						</a>
+						{navItems.map((item) => (
+							<a
+								key={item.href}
+								href={item.href}
+								className="group relative rounded-lg px-3 py-2 font-medium text-gray-300 transition-all duration-300 hover:bg-gray-800/30 hover:text-white"
+							>
+								{item.label}
+								<span className="absolute -bottom-1 left-1/2 h-0.5 w-0 -translate-x-1/2 rounded-full bg-gradient-to-r from-blue-400 to-purple-400 transition-all duration-300 group-hover:w-3/4"></span>
+							</a>
+						))}
 					</nav>
 
 					{/* Mobile menu button */}
@@ -92,7 +86,7 @@ export function Header() {
 			{/* Mobile menu */}
 			<nav
 				className={cn(
-					`bg-black/90 backdrop-blur-xl transition-all duration-300 ease-in-out md:hidden`,
+					`absolute left-0 top-full w-full bg-black/95 backdrop-blur-xl transition-all duration-300 ease-in-out md:hidden`,
 					{
 						block: isMenuOpen,
 						hidden: !isMenuOpen,
@@ -100,21 +94,15 @@ export function Header() {
 				)}
 			>
 				<div className="space-y-1 px-2 pb-3 pt-2 sm:px-3">
-					<MobileNavButton href="#duckyevents" onClick={toggleMenu}>
-						Ducky Events
-					</MobileNavButton>
-					<MobileNavButton
-						href="#duckyfest2023-aftermovie"
-						onClick={toggleMenu}
-					>
-						Aftermovie
-					</MobileNavButton>
-					<MobileNavButton href="#about-us" onClick={toggleMenu}>
-						Our Mission
-					</MobileNavButton>
-					<MobileNavButton href="#business-inquiries" onClick={toggleMenu}>
-						Business Inquiries
-					</MobileNavButton>
+					{navItems.map((item) => (
+						<MobileNavButton
+							key={item.href}
+							href={item.href}
+							onClick={toggleMenu}
+						>
+							{item.label}
+						</MobileNavButton>
+					))}
 				</div>
 			</nav>
 		</header>
