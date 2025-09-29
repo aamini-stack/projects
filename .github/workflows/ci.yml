@@ -57,7 +57,7 @@ jobs:
       - name: Get Changed Apps
         id: calculate-apps
         run: |
-          APPS=$(npx turbo build --filter='{./apps/*}[main...HEAD]' --dry=json | jq -c .packages)
+          APPS=$(npx turbo build --filter='{./apps/*}[origin/main...HEAD]' --dry=json | jq -c .packages)
           echo $APPS
           echo "apps=$APPS" >> $GITHUB_OUTPUT
 
