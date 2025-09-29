@@ -54,4 +54,45 @@ function Button({
 	)
 }
 
-export { Button, buttonVariants }
+// https://github.com/shadcn-ui/ui/issues/1979
+function LinkButton({
+	className,
+	variant,
+	size,
+	...props
+}: React.ComponentProps<'a'> &
+	VariantProps<typeof buttonVariants> & {
+		href: string
+		download?: boolean
+	}) {
+	return (
+		<a
+			title="Link Button"
+			data-slot="button"
+			className={cn(buttonVariants({ variant, size, className }))}
+			{...props}
+		/>
+	)
+}
+
+function ScrollButton({
+	className,
+	variant,
+	size,
+	scrollToId,
+	...props
+}: React.ComponentProps<'button'> &
+	VariantProps<typeof buttonVariants> & {
+		scrollToId: string
+	}) {
+	return (
+		<button
+			onClick={() => document.getElementById(scrollToId)?.scrollIntoView()}
+			data-slot="button"
+			className={cn(buttonVariants({ variant, size, className }))}
+			{...props}
+		/>
+	)
+}
+
+export { Button, LinkButton, ScrollButton, buttonVariants }

@@ -1,12 +1,11 @@
 ---
-import { Aftermovie } from '#/components/aftermovie'
-import { BusinessInquiries } from '#/components/business-inquiries'
-import { ContactUs } from '#/components/contact-us'
+import Aftermovie from '#/components/aftermovie.astro'
+import BusinessInquiries from '#/components/business-inquiries.astro'
 import { Events } from '#/components/events'
-import { Footer } from '#/components/footer'
+import Footer from '#/components/footer.astro'
 import { Header } from '#/components/header'
-import { Hero } from '#/components/hero'
-import { OurMission } from '#/components/our-mission'
+import Hero from '#/components/hero.astro'
+import OurMission from '#/components/our-mission.astro'
 import Layout from '#/pages/_Layout.astro'
 ---
 
@@ -23,37 +22,27 @@ import Layout from '#/pages/_Layout.astro'
 
 	<!-- Main container -->
 	<div class="flex min-h-screen flex-col">
-		<!-- Skip to content -->
-		<a
-			href="#content"
-			class="sr-only rounded bg-yellow-400 px-4 py-2 text-black focus:not-sr-only focus:absolute focus:left-2 focus:top-2"
-			>Skip to content</a
-		>
-
 		<!-- Header -->
 		<Header client:load />
 
 		<main id="content">
 			<!-- Hero Section -->
-			<Hero client:load />
+			<Hero />
 
 			<!-- Ducky Events -->
 			<Events client:load />
 
 			<!-- Aftermovie -->
-			<Aftermovie client:load />
+			<Aftermovie />
 
 			<!-- Our Mission -->
-			<OurMission client:load />
+			<OurMission />
 
 			<!-- Business Inquiries -->
-			<BusinessInquiries client:load />
-
-			<!-- Contact Us -->
-			<ContactUs client:load />
+			<BusinessInquiries />
 		</main>
 
 		<!-- Footer -->
-		<Footer client:load />
+		<Footer />
 	</div>
 </Layout>

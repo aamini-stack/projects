@@ -22,6 +22,7 @@ export const createBaseConfig = (overrides: ProjectOverrides = {}) =>
 					test: {
 						name: 'browser',
 						include: ['src/**/*.test.tsx'],
+						environment: 'browser',
 						browser: {
 							instances: [
 								{
