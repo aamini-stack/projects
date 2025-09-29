@@ -27,7 +27,7 @@ export function Hero() {
 
 				{/* Sub-Header */}
 				<div className="space-y-4">
-					<h1 className="font-hero-title font-mono text-3xl font-bold leading-tight text-white sm:text-4xl md:text-5xl">
+					<h1 className="font-hero-title text-3xl font-bold leading-tight text-white sm:text-4xl md:text-5xl">
 						<span className="bg-gradient-to-r from-white via-blue-100 to-white bg-clip-text text-transparent">
 							An international community,
 						</span>
