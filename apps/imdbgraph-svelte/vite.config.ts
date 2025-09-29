@@ -1,7 +1,45 @@
+import { defineConfig } from 'vitest/config'
 import { sveltekit } from '@sveltejs/kit/vite'
-import { defineConfig } from 'vite'
 import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
 	plugins: [sveltekit(), tailwindcss()],
+	test: {
+		expect: { requireAssertions: true },
+		projects: [
+			{
+				extends: './vite.config.ts',
+				test: {
+					name: 'browser',
+					environment: 'browser',
+					browser: {
+						enabled: true,
+						provider: 'playwright',
+						instances: [{ browser: 'chromium' }],
+					},
+					include: ['src/**/*.svelte.{test,spec}.{js,ts}'],
+					exclude: ['src/lib/server/**'],
+					setupFiles: ['./vitest-setup-client.ts'],
+				},
+			},
+			{
+				extends: './vite.config.ts',
+				test: {
+					name: 'unit',
+					environment: 'node',
+					include: ['src/**/*.{test,spec}.{js,ts}'],
+					exclude: ['src/**/*.svelte.{test,spec}.{js,ts}'],
+				},
+			},
+			{
+				extends: true,
+				test: {
+					name: 'db',
+					include: ['src/**/*.db.test.ts'],
+					setupFiles: ['./__mocks__/setup-db.ts'],
+					testTimeout: 30_000,
+				},
+			},
+		],
+	},
 })
