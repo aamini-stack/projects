@@ -5,7 +5,7 @@ test.beforeEach(async ({ page }) => {
 	await page.route('**/*.{png,jpg,jpeg,gif}', (route) => route.abort())
 
 	// Block YouTube domains
-	await page.route(/.*youtube\.com.*/, (route) => route.abort());
+	await page.route(/.*youtube\.com.*/, (route) => route.abort())
 
 	await page.goto('/')
 })
