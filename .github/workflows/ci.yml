@@ -53,11 +53,11 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 2
+          ref: my-feature-branch 
       - name: Get Changed Apps
         id: calculate-apps
         run: |
-          APPS=$(npx turbo build --filter='{./apps/*}[main]' --dry=json | jq -c .packages)
+          APPS=$(npx turbo build --filter='{./apps/*}[main...HEAD]' --dry=json | jq -c .packages)
           echo $APPS
           echo "apps=$APPS" >> $GITHUB_OUTPUT
 
