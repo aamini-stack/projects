@@ -59,7 +59,7 @@ jobs:
         env:
           TURBO_SCM_BASE: ${{ github.event_name == 'push' && github.event.before || github.event.pull_request.base.sha }}
         run: |
-          APPS=$(npx turbo build --filter='{./apps/*}[main...${{ env.TURBO_SCM_BASE }}]' --dry=json | jq -c .packages)
+          APPS=$(npx turbo build --filter='{./apps/*}[${{ env.TURBO_SCM_BASE }}...HEAD]' --dry=json | jq -c .packages)
           echo $APPS
           echo "apps=$APPS" >> $GITHUB_OUTPUT
 
