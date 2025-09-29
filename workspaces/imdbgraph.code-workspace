@@ -1,16 +1,16 @@
 {
 	"folders": [
 		{
+			"name": "root",
+			"path": "..",
+		},
+		{
 			"path": "../apps/imdbgraph",
 		},
 		{
 			"name": "ui",
 			"path": "../packages/ui",
-		},
-		{
-			"name": "root",
-			"path": "..",
-		},
+		}
 	],
 	"settings": {
 		"files.exclude": {
