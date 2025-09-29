@@ -2,10 +2,9 @@ import path from 'node:path'
 import { PostgreSqlContainer } from '@testcontainers/postgresql'
 import { drizzle, type NodePgDatabase } from 'drizzle-orm/node-postgres'
 import { migrate } from 'drizzle-orm/node-postgres/migrator'
-import { reset } from 'drizzle-seed'
 import { Pool } from 'pg'
 import { test as baseTest } from 'vitest'
-import * as schema from '#/db/tables'
+// import * as schema from '#/db/tables'
 
 type Database = NodePgDatabase & {
 	$client: Pool
@@ -34,7 +33,7 @@ export const test = baseTest.extend<DbFixture>({
 					'../src/db/migrations',
 				),
 			})
-			await reset(db, schema)
+			// await reset(db, schema)
 			if (seedFunction) {
 				await seedFunction(db)
 			}

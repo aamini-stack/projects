@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte'
-	import { theme } from '$lib/store'
+	import { theme } from '#/lib/store'
 	
 	let currentTheme: 'light' | 'dark' = 'light'
 	

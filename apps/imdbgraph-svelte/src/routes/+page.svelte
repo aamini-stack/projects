@@ -1,5 +1,5 @@
 <script lang="ts">
-	import SearchBar from '$components/search-bar.svelte'
+	import SearchBar from '#/components/search-bar.svelte'
 	import { onMount } from 'svelte'
 	
 	onMount(() => {

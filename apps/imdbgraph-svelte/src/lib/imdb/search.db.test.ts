@@ -1,4 +1,4 @@
-import { initDb, test } from '__mocks__/setup-db'
+import { initDb, test } from '#mocks/setup-db'
 import type { NodePgDatabase } from 'drizzle-orm/node-postgres'
 import { describe, expect } from 'vitest'
 import { show } from '#/db/tables'

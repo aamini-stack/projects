@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte'
-	import { theme } from '$lib/store'
 	import Highcharts from 'highcharts'
 	import HighchartsReact from 'highcharts-react-official'
 	import 'highcharts/esm/modules/accessibility'

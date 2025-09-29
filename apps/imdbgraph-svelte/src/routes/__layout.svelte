@@ -2,7 +2,6 @@
 	import '../styles/globals.css'
 	import { onMount } from 'svelte'
 	import { PUBLIC_POSTHOG_KEY } from '$env/static/public'
-	import { theme } from '$lib/store'
 
 	// Initialize theme
 	onMount(() => {

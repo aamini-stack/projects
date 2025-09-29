@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { formatYears } from '$lib/imdb/types'
+	import { formatYears } from '#/lib/imdb/types'
 	
 	// Props
 	export let placeholder = "Search for any TV show..."
