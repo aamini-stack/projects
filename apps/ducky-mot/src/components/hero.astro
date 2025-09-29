@@ -1,5 +1,5 @@
 ---
-import { Button } from '@aamini/ui/components/button'
+import { Button, LinkButton } from '@aamini/ui/components/button'
 import { ArrowRight, Ticket } from 'lucide-react'
 ---
 
@@ -68,25 +68,23 @@ import { ArrowRight, Ticket } from 'lucide-react'
 			</p>
 		</div>
 
-		{/* Ticket Button */}
+		{
+			/* Ticket Button 				className="bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-blue-500/25 transition-all duration-300 hover:from-blue-600 hover:to-purple-700 hover:shadow-blue-500/40"
+			 */
+		}
 		<div class="pt-4">
-			<Button
-				asChild
+			<LinkButton
+				href="https://spaces.toffolo.studio/267526bf-c657-11ed-94ba-6a57c78572ab.html"
+				client:load
 				size="lg"
-				className="group border-0 bg-gradient-to-r from-blue-500 to-purple-600 px-8 py-4 text-lg font-semibold text-white shadow-2xl shadow-blue-500/25 transition-all duration-300 hover:from-blue-600 hover:to-purple-700 hover:shadow-blue-500/40"
+				className="bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-blue-500/25 transition-all duration-300 hover:from-blue-600 hover:to-purple-700 hover:shadow-blue-500/40"
 			>
-				<a
-					href="https://spaces.toffolo.studio/267526bf-c657-11ed-94ba-6a57c78572ab.html"
-					target="_blank"
-					rel="noopener noreferrer"
-				>
-					<Ticket className="mr-2 h-5 w-5" />
-					Get Tickets
-					<ArrowRight
-						className="ml-2 h-4 w-4 transition-transform duration-200 group-hover:translate-x-1"
-					/>
-				</a>
-			</Button>
+				<Ticket className="mr-2 h-5 w-5" />
+				Get Tickets
+				<ArrowRight
+					className="ml-2 h-4 w-4 transition-transform duration-200 group-hover:translate-x-1"
+				/>
+			</LinkButton>
 		</div>
 	</div>
 </section>
