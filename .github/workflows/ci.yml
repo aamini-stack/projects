@@ -57,7 +57,7 @@ jobs:
       - name: Get Changed Apps
         id: calculate-apps
         env:
-          TURBO_SCM_BASE: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
+          TURBO_SCM_BASE: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.ref || github.event.before }}
         run: |
           APPS=$(npx turbo build --filter='{./apps/*}[main]' --dry=json | jq -c .packages)
           echo $APPS
