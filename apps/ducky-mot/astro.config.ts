@@ -10,7 +10,7 @@ export default defineConfig({
 		// @ts-expect-error
 		plugins: [tailwindcss()],
 	},
-	output: 'server',
+	output: 'static',
 	adapter: vercel(),
 	experimental: {
 		fonts: [

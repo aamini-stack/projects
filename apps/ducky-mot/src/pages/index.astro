@@ -1,12 +1,11 @@
 ---
-import { Aftermovie } from '#/components/aftermovie'
-import { BusinessInquiries } from '#/components/business-inquiries'
-import { ContactUs } from '#/components/contact-us'
+import Aftermovie from '#/components/aftermovie.astro'
+import BusinessInquiries from '#/components/business-inquiries.astro'
 import { Events } from '#/components/events'
-import { Footer } from '#/components/footer'
+import Footer from '#/components/footer.astro'
 import { Header } from '#/components/header'
-import { Hero } from '#/components/hero'
-import { OurMission } from '#/components/our-mission'
+import Hero from '#/components/hero.astro'
+import OurMission from '#/components/our-mission.astro'
 import Layout from '#/pages/_Layout.astro'
 ---
 
@@ -35,22 +34,22 @@ import Layout from '#/pages/_Layout.astro'
 
 		<main id="content">
 			<!-- Hero Section -->
-			<Hero client:load />
+			<Hero />
 
 			<!-- Ducky Events -->
 			<Events client:load />
 
 			<!-- Aftermovie -->
-			<Aftermovie client:load />
+			<Aftermovie />
 
 			<!-- Our Mission -->
-			<OurMission client:load />
+			<OurMission />
 
 			<!-- Business Inquiries -->
-			<BusinessInquiries client:load />
+			<BusinessInquiries />
 		</main>
 
 		<!-- Footer -->
-		<Footer client:load />
+		<Footer />
 	</div>
 </Layout>
