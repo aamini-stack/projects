@@ -3,7 +3,7 @@
 	"extends": ["//"],
 	"tasks": {
 		"build": {
-			"env": ["DATABASE_URL", "CRON_SECRET"]
+			"env": ["MAILGUN_API_KEY", "MAILGUN_DOMAIN"]
 		}
 	}
 }
