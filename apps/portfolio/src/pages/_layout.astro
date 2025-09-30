@@ -20,12 +20,16 @@ import { Font } from 'astro:assets'
 			import { PUBLIC_POSTHOG_KEY } from 'astro:env/client'
 			import posthog from 'posthog-js'
 
-			posthog.init(PUBLIC_POSTHOG_KEY, {
-				api_host: '/api/analytics',
-				ui_host: 'https://us.posthog.com',
-				defaults: '2025-05-24',
-				person_profiles: 'always',
-			})
+			if (import.meta.env.MODE !== 'development') {
+				posthog.init(PUBLIC_POSTHOG_KEY, {
+					api_host: '/api/analytics',
+					ui_host: 'https://us.posthog.com',
+					defaults: '2025-05-24',
+					person_profiles: 'always',
+				})
+			} else {
+				console.log('Posthog not initialized in dev mode.')
+			}
 		</script>
 	</head>
 	<body class="antialiased">
