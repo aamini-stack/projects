@@ -11,3 +11,7 @@ test('Title works', async ({ page }) => {
 		}),
 	).toBeVisible()
 })
+
+test('Ratings Screenshot', async ({ page }) => {
+	await expect(page).toHaveScreenshot()
+})
