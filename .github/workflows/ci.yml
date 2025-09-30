@@ -58,7 +58,7 @@ jobs:
         id: calculate-apps
         env:
           BASE_REF: |
-            ${{ github.event_name == 'push' && github.event.before || github.event.base_ref }}
+            ${{ github.event_name == 'push' && github.event.before || 'origin/main' }}
         run: |
           APPS=$(npx turbo build --filter='{./apps/*}[${{ env.BASE_REF }}...HEAD]' --dry=json | jq -c .packages)
           echo $APPS
