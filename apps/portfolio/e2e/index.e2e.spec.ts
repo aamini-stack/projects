@@ -29,6 +29,7 @@ test.describe('Contact Card', () => {
 
 	test('Error State', async ({ page }) => {
 		const contactCard = page.getByTestId('contact-card')
+		await contactCard.scrollIntoViewIfNeeded()
 		await page.getByRole('button', { name: 'Send Message' }).click()
 		await expect(contactCard.getByText('Invalid email address')).toBeVisible()
 		await expect(contactCard.getByText('Message is required')).toBeVisible()
