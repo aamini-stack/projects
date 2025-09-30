@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
     inputs:
       update_snapshots:
-        description: 'Whether to update the playwright reference screenshots'
+        description: "Whether to update the playwright reference screenshots"
         required: false
         type: boolean
         default: false
@@ -100,7 +100,7 @@ jobs:
           echo BASE_URL=$BASE_URL >> $GITHUB_ENV
       # Test
       - name: Run Playwright tests
-        working-directory: './apps/${{ matrix.app }}'
+        working-directory: "./apps/${{ matrix.app }}"
         env:
           VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
         run: pnpm e2e${{ inputs.update_snapshots && ':update' || '' }}
@@ -110,14 +110,14 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: screenshots-${{ matrix.app }}
-          path: './*/**/e2e/**/*.png'
+          path: "./*/**/e2e/**/*.png"
           retention-days: 1
       - name: Publish Report
         uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: playwright-report-${{ matrix.app }}
-          path: './apps/${{ matrix.app }}/playwright-report'
+          path: "./apps/${{ matrix.app }}/playwright-report"
           retention-days: 30
 
   collect-reports:
@@ -149,6 +149,7 @@ jobs:
           # https://github.com/actions/checkout?tab=readme-ov-file#push-a-commit-to-a-pr-using-the-built-in-token
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git pull --ff-only
           git add *.png
           git commit -m "Update Screenshots"
           git push
