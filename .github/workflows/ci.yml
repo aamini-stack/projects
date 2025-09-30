@@ -56,11 +56,8 @@ jobs:
           fetch-depth: 0
       - name: Get Changed Apps
         id: calculate-apps
-        env:
-          BASE_REF: |
-            ${{ github.event_name == 'push' && github.event.before || 'origin/main' }}
         run: |
-          APPS=$(npx turbo build --filter='{./apps/*}[${{ env.BASE_REF }}...HEAD]' --dry=json | jq -c .packages)
+          APPS=$(npx turbo build --filter='{./apps/*}[${{ github.event_name == 'push' && github.event.before || 'origin/main' }}...HEAD]' --dry=json | jq -c .packages)
           echo $APPS
           echo "apps=$APPS" >> $GITHUB_OUTPUT
 
