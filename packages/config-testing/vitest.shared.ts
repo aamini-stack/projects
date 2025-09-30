@@ -1,4 +1,4 @@
-import { defineConfig, type ViteUserConfig } from 'vitest/config'
+import { defineConfig, mergeConfig, type ViteUserConfig } from 'vitest/config'
 
 interface ProjectOverrides {
 	unit?: Partial<ViteUserConfig['test']>
@@ -10,31 +10,33 @@ export const createBaseConfig = (overrides: ProjectOverrides = {}) =>
 		test: {
 			projects: [
 				{
-					extends: true,
-					test: {
-						name: 'unit',
-						include: ['src/**/*.test.ts'],
-						...overrides.unit,
-					},
+					test: mergeConfig(
+						{
+							name: 'unit',
+							include: ['src/**/*.test.ts'],
+						},
+						overrides.unit ?? {},
+					),
 				},
 				{
-					extends: true,
-					test: {
-						name: 'browser',
-						include: ['src/**/*.test.tsx'],
-						environment: 'browser',
-						browser: {
-							instances: [
-								{
-									browser: 'chromium',
-								},
-							],
-							provider: 'playwright',
-							enabled: true,
-							headless: true,
+					test: mergeConfig(
+						{
+							name: 'browser',
+							include: ['src/**/*.test.tsx'],
+							environment: 'browser',
+							browser: {
+								instances: [
+									{
+										browser: 'chromium',
+									},
+								],
+								provider: 'playwright',
+								enabled: true,
+								headless: true,
+							},
 						},
-						...overrides.browser,
-					},
+						overrides.browser ?? {},
+					),
 				},
 			],
 		},
