@@ -2,7 +2,14 @@ import { createBaseConfig } from '@aamini/config-testing/vitest'
 import { defineProject, mergeConfig } from 'vitest/config'
 
 export default mergeConfig(
-	createBaseConfig({ browser: { setupFiles: ['./__mocks__/setup-http.ts'] } }),
+	createBaseConfig({
+		browser: {
+			setupFiles: ['./__mocks__/setup-http.ts'],
+		},
+		unit: {
+			exclude: ['src/**/*.db.test.ts'],
+		},
+	}),
 	defineProject({
 		test: {
 			projects: [
