@@ -1,14 +1,15 @@
+# AGENTS.md
+
+This file provides guidance to agentic LLMs when working with code in this
+repository.
+
 # @aamini Monorepo
 
 This document outlines the structure of the @aamini monorepo and provides a
-brief overview of the common packages used across various applications.
-
-## Monorepo Overview
-
-The monorepo is organized into `apps/` for individual applications and
-`packages/` for shared libraries and configurations. This structure promotes
-code reuse, simplifies dependency management, and ensures consistency across
-projects.
+brief overview of the common packages used across various applications. The
+monorepo is organized into `apps/` for individual applications and `packages/`
+for shared libraries and configurations. This structure promotes code reuse,
+simplifies dependency management, and ensures consistency across projects.
 
 ## Packages
 
