@@ -4,10 +4,14 @@ import { defineProject, mergeConfig } from 'vitest/config'
 export default mergeConfig(
 	createBaseConfig({
 		browser: {
-			setupFiles: ['./__mocks__/setup-http.ts'],
+			test: {
+				setupFiles: ['./__mocks__/setup-http.ts'],
+			},
 		},
 		unit: {
-			exclude: ['src/**/*.db.test.ts'],
+			test: {
+				exclude: ['src/**/*.db.test.ts'],
+			},
 		},
 	}),
 	defineProject({

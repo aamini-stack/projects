@@ -1,26 +1,26 @@
 import { defineConfig, mergeConfig, type ViteUserConfig } from 'vitest/config'
 
 interface ProjectOverrides {
-	unit?: Partial<ViteUserConfig['test']>
-	browser?: Partial<ViteUserConfig['test']>
+	unit?: Partial<ViteUserConfig>
+	browser?: Partial<ViteUserConfig>
 }
 
 export const createBaseConfig = (overrides: ProjectOverrides = {}) =>
 	defineConfig({
 		test: {
 			projects: [
-				{
-					test: mergeConfig(
-						{
+				mergeConfig(
+					{
+						test: {
 							name: 'unit',
 							include: ['src/**/*.test.ts'],
 						},
-						overrides.unit ?? {},
-					),
-				},
-				{
-					test: mergeConfig(
-						{
+					},
+					overrides.unit ?? {},
+				),
+				mergeConfig(
+					{
+						test: {
 							name: 'browser',
 							include: ['src/**/*.test.tsx'],
 							environment: 'browser',
@@ -35,9 +35,9 @@ export const createBaseConfig = (overrides: ProjectOverrides = {}) =>
 								headless: true,
 							},
 						},
-						overrides.browser ?? {},
-					),
-				},
+					},
+					overrides.browser ?? {},
+				),
 			],
 		},
 	})
