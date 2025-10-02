@@ -3,6 +3,12 @@
 This file provides guidance to agentic LLMs when working with code in this
 repository.
 
+## ducky-mot
+
+ducky-mot is an app for my European promoter friend to advertise his parties.
+It's mostly going to be a front-page with ticket links and some photos and
+social media links. The name of his org is called 'Ducky Mot'
+
 ## 🧞 Commands
 
 All commands are run from the root of the project, from a terminal:
