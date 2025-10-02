@@ -15,9 +15,9 @@
 		"test": "turbo run test",
 		"test:unit": "turbo run test:unit",
 		"test:integration": "turbo run test:integration",
-		"e2e": "turbo run e2e",
-		"e2e:update": "turbo run e2e:update",
-		"verify": "turbo run build lint format test typecheck e2e"
+		"e2e": "turbo run --continue=dependencies-successful e2e",
+		"e2e:update": "turbo run --continue=dependencies-successful e2e:update",
+		"verify": "turbo run --continue=dependencies-successful build lint format test typecheck e2e"
 	},
 	"devDependencies": {
 		"@playwright/test": "^1.55.1",
