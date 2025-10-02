@@ -21,7 +21,7 @@ import { Textarea } from '@aamini/ui/components/textarea'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
-import * as z from 'zod'
+import { z } from 'zod/v4'
 import Email from '#/components/icons/email.svg'
 
 const formSchema = z.object({
