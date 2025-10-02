@@ -25,7 +25,7 @@ import * as z from 'zod'
 import Email from '#/components/icons/email.svg'
 
 const formSchema = z.object({
-	email: z.string().email({ message: 'Invalid email address' }),
+	email: z.email({ message: 'Invalid email address' }),
 	message: z.string().min(1, 'Message is required'),
 })
 

@@ -95,7 +95,14 @@ export const baseConfig = (
 				{
 					name: 'mobile',
 					use: {
-						...devices['iPhone 12'],
+						...devices['Desktop Chrome'],
+						viewport: {
+							width: 320,
+							height: 800,
+						},
+						launchOptions: {
+							args: ['--disable-lcd-text'],
+						},
 					},
 				},
 
