@@ -57,12 +57,18 @@ jobs:
       - name: Get Changed Apps
         id: calculate-apps
         run: |
-          REF=${{ github.event_name == 'push' && github.event.before || github.event.pull_request.base.sha }}
+          if [ "${{ github.event_name }}" = "push" ]; then
+            BASE=${{ github.event.before }}
+          else:
+            BASE=$(git merge-base HEAD main)
+          fi
+
           if [ "${{ inputs.update_snapshots }}" = "true" ]; then
             FILTER='{./apps/*}'
           else
-            FILTER="{./apps/*}[${REF}...HEAD]"
+            FILTER="{./apps/*}[${BASE}...HEAD]"
           fi
+
           APPS=$(npx turbo build --filter="$FILTER" --dry=json | jq -c .packages)
           echo $APPS
           echo "apps=$APPS" >> $GITHUB_OUTPUT
@@ -143,7 +149,6 @@ jobs:
           # https://github.com/actions/checkout?tab=readme-ov-file#push-a-commit-to-a-pr-using-the-built-in-token
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git pull --ff-only
           git add *.png
           git commit -m "Update Screenshots"
           git push
