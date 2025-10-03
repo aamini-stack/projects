@@ -3,7 +3,7 @@
 	"type": "module",
 	"private": "true",
 	"imports": {
-		"#*": "./src/*"
+		"#/*": "./src/*"
 	},
 	"exports": {
 		"./globals.css": "./src/globals.css",

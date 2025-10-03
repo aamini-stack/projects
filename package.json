@@ -3,9 +3,6 @@
 	"private": true,
 	"version": "0.0.0",
 	"type": "module",
-	"imports": {
-		"#*": "./src/*"
-	},
 	"scripts": {
 		"build": "turbo build",
 		"format": "prettier --check **/*.{js,ts,tsx,json,html,css,md,yml,yaml,astro}",

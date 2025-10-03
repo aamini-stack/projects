@@ -40,3 +40,8 @@ This is an Astro 5 project with React integration. Key architectural decisions:
 - `integration`:
   - Database tests with testcontainers.
   - UI component tests with vitest browser mode.
+
+## Shadcn
+
+New Shadcn components can be installed with this command:
+`pnpm dlx shadcn@latest add $COMPONENT_NAME`
