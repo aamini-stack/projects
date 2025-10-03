@@ -1,2 +1,60 @@
 # pagescms template for creating a CMS UI to allow editing by Michael
 # https://pagescms.org/docs/configuration/
+
+# Media configuration - where uploaded files will be stored
+media:
+  input: public/media
+  output: /media
+
+# Content collections
+content:
+  - name: events
+    label: Ducky Events
+    type: collection
+    path: content/events
+    view:
+      fields: [year, date, title]
+    fields:
+      - name: year
+        label: Year
+        type: number
+        required: true
+        description: Event year for grouping (e.g., 2025)
+        options:
+          min: 2020
+          max: 2030
+
+      - name: date
+        label: Event Date
+        type: string
+        required: true
+        description: Display date (e.g., "17th May 2025")
+
+      - name: title
+        label: Event Title
+        type: string
+        required: true
+        description: Event name (e.g., "ducky.fest")
+
+      - name: href
+        label: Photo Gallery Link
+        type: string
+        required: true
+        description: URL to the event photo gallery
+        pattern:
+          regex: ^https?://.*$
+          message: Must be a valid URL starting with http:// or https://
+
+      - name: img
+        label: Cover Image
+        type: image
+        required: true
+        description: Main cover image for the event card
+
+      - name: photos_zip
+        label: Event Photos (ZIP)
+        type: file
+        description: Upload a zip file containing all event photos
+        options:
+          categories: [compressed]
+          extensions: [zip]

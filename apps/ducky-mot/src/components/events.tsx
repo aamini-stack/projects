@@ -14,73 +14,11 @@ type YearGroup = {
 	items: EventItem[]
 }
 
-const eventsByYear: YearGroup[] = [
-	{
-		year: 2025,
-		items: [
-			{
-				date: '17th May 2025',
-				title: 'ducky.fest',
-				href: 'https://duckymot.com/photos-ducky-17th-may-2025',
-				img: 'https://duckymot.com/wp-content/uploads/2025/09/DSC00243-1024x684.jpg',
-			},
-			{
-				date: '22nd February 2025',
-				title: 'ducky.lorre',
-				href: 'https://duckymot.com/photos-ducky-lorre-2-02-2025',
-				img: 'https://duckymot.com/wp-content/uploads/2025/03/feb2025-CAM1-Edited-1.2_237.jpg',
-			},
-		],
-	},
-	{
-		year: 2024,
-		items: [
-			{
-				date: '29th November 2024',
-				title: 'ducky.room',
-				href: 'https://duckymot.com/photos-ducky-room-29th-november-2024/',
-				img: 'https://duckymot.com/wp-content/uploads/2025/01/DSC02952-scaled.jpg',
-			},
-			{
-				date: '20th September 2024',
-				title: 'ducky.fest',
-				href: 'https://duckymot.com/photos-ducky-fest-20th-september-2024/',
-				img: 'https://duckymot.com/wp-content/uploads/2024/10/IMG_8090-scaled.jpg',
-			},
-			{
-				date: '1st June 2024',
-				title: 'ducky.fest',
-				href: 'https://duckymot.com/photos-ducky-fest-2024/',
-				img: 'https://duckymot.com/wp-content/uploads/2024/08/DSC00278-scaled.jpg',
-			},
-		],
-	},
-	{
-		year: 2023,
-		items: [
-			{
-				date: '15th December 2023',
-				title: 'ducky.room',
-				href: 'https://duckymot.com/photos-ducky-room/',
-				img: 'https://duckymot.com/wp-content/uploads/2024/01/DSC_8026-scaled.jpg',
-			},
-			{
-				date: '23rd September 2023',
-				title: 'ducky.fest',
-				href: 'https://duckymot.com/photos-ducky-fest-2023/',
-				img: 'https://duckymot.com/wp-content/uploads/2023/10/Main1-1024x683.jpg',
-			},
-			{
-				date: '21st April 2023',
-				title: 'ducky.house',
-				href: 'https://duckymot.com/photos-ducky-house/',
-				img: 'https://duckymot.com/wp-content/uploads/2023/08/Photo2-1024x683.jpg',
-			},
-		],
-	},
-]
+type EventsProps = {
+	eventsByYear: YearGroup[]
+}
 
-export function Events() {
+export function Events({ eventsByYear }: EventsProps) {
 	return (
 		<section id="duckyevents" className="px-4 py-20 sm:px-6 lg:px-8">
 			<div className="mx-auto max-w-7xl">

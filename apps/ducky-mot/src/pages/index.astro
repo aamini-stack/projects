@@ -1,4 +1,5 @@
 ---
+import { getCollection } from 'astro:content'
 import Aftermovie from '#/components/aftermovie.astro'
 import BusinessInquiries from '#/components/business-inquiries.astro'
 import { Events } from '#/components/events'
@@ -7,6 +8,33 @@ import { Header } from '#/components/header'
 import Hero from '#/components/hero.astro'
 import OurMission from '#/components/our-mission.astro'
 import Layout from '#/pages/_Layout.astro'
+
+// Fetch and group events by year
+const allEvents = await getCollection('events')
+const eventsByYear = allEvents.reduce(
+	(acc, event) => {
+		const year = event.data.year
+		if (!acc[year]) {
+			acc[year] = []
+		}
+		acc[year].push({
+			date: event.data.date,
+			title: event.data.title,
+			href: event.data.href,
+			img: event.data.img,
+		})
+		return acc
+	},
+	{} as Record<number, Array<{ date: string; title: string; href: string; img: string }>>,
+)
+
+// Convert to array and sort by year descending
+const eventGroups = Object.entries(eventsByYear)
+	.map(([year, items]) => ({
+		year: Number(year),
+		items,
+	}))
+	.sort((a, b) => b.year - a.year)
 ---
 
 <Layout>
@@ -30,7 +58,7 @@ import Layout from '#/pages/_Layout.astro'
 			<Hero />
 
 			<!-- Ducky Events -->
-			<Events client:load />
+			<Events client:load eventsByYear={eventGroups} />
 
 			<!-- Aftermovie -->
 			<Aftermovie />
