@@ -1,5 +1,5 @@
 ---
-import { Graph } from '#/components/graph'
+import { RatingsGraph } from '#/components/graph/ratings'
 import { SearchBar } from '#/components/search-bar'
 import { db } from '#/db/connection'
 import { getRatings } from '#/lib/imdb/ratings'
@@ -74,14 +74,14 @@ function hasRatings(ratings: Ratings): boolean {
 						No Ratings Found
 					</h1>
 				) : (
-					<Graph client:only="react" ratings={ratings}>
+					<RatingsGraph client:load ratings={ratings}>
 						<div
 							slot="fallback"
 							class="flex flex-1 items-center justify-center"
 						>
 							<h1 class="animate-pulse rounded-md text-xl">LOADING...</h1>
 						</div>
-					</Graph>
+					</RatingsGraph>
 				)
 			}
 		</div>
