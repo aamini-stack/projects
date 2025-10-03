@@ -7,7 +7,7 @@ import Highcharts from 'highcharts'
 import { HighchartsReact } from 'highcharts-react-official'
 import 'highcharts/esm/modules/accessibility'
 
-export function Graph({ ratings }: { ratings: Ratings }) {
+export function LineGraph({ ratings }: { ratings: Ratings }) {
 	const $theme = useStore(theme)
 	return (
 		<div
