@@ -57,7 +57,19 @@ jobs:
       - name: Get Changed Apps
         id: calculate-apps
         run: |
-          APPS=$(npx turbo build --filter='{./apps/*}[${{ github.event_name == 'push' && github.event.before || 'origin/main' }}...HEAD]' --dry=json | jq -c .packages)
+          if [ "${{ github.event_name }}" = "push" ]; then
+            BASE=${{ github.event.before }}
+          else
+            BASE=$(git merge-base HEAD origin/main)
+          fi
+
+          if [ "${{ inputs.update_snapshots }}" = "true" ]; then
+            FILTER='{./apps/*}'
+          else
+            FILTER="{./apps/*}["$BASE"...HEAD]"
+          fi
+
+          APPS=$(npx turbo build --filter="$FILTER" --dry=json | jq -c .packages)
           echo $APPS
           echo "apps=$APPS" >> $GITHUB_OUTPUT
 
@@ -118,16 +130,6 @@ jobs:
           path: './apps/${{ matrix.app }}/playwright-report'
           retention-days: 30
 
-  collect-reports:
-    runs-on: ubuntu-latest
-    needs: [e2e]
-    steps:
-      - name: Download All Screenshot Artifacts
-        uses: actions/download-artifact@v4
-        with:
-          pattern: playwright-report-*
-          merge-multiple: true
-
   commit-screenshots:
     runs-on: ubuntu-latest
     needs: [e2e]
@@ -147,7 +149,6 @@ jobs:
           # https://github.com/actions/checkout?tab=readme-ov-file#push-a-commit-to-a-pr-using-the-built-in-token
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git pull --ff-only
           git add *.png
           git commit -m "Update Screenshots"
           git push

@@ -10,7 +10,7 @@
 		{
 			"name": "ui",
 			"path": "../packages/ui",
-		}
+		},
 	],
 	"settings": {
 		"files.exclude": {
