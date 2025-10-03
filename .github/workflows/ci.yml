@@ -59,8 +59,8 @@ jobs:
         run: |
           if [ "${{ github.event_name }}" = "push" ]; then
             BASE=${{ github.event.before }}
-          else:
-            BASE=$(git merge-base HEAD main)
+          else
+            BASE=$(git merge-base HEAD origin/main)
           fi
 
           if [ "${{ inputs.update_snapshots }}" = "true" ]; then
@@ -69,9 +69,6 @@ jobs:
             FILTER="{./apps/*}[${BASE}...HEAD]"
           fi
 
-          echo "$(git merge-base HEAD main)"
-          echo $BASE
-          echo $FILTER
           APPS=$(npx turbo build --filter="$FILTER" --dry=json | jq -c .packages)
           echo $APPS
           echo "apps=$APPS" >> $GITHUB_OUTPUT
