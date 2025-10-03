@@ -1,0 +1,11 @@
+# docker build -f apps/imdbgraph/Dockerfile.playwright -t imdbgraph:latest .
+# docker run -it --rm --ipc=host imdbgraph:latest /bin/bash
+
+FROM mcr.microsoft.com/playwright:v1.55.1-noble AS base
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable
+WORKDIR /app
+COPY . .
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm i
+CMD [ "pnpm", "e2e:update" ]

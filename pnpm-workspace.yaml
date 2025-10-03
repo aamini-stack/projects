@@ -1,3 +1,9 @@
 packages:
   - apps/*
   - packages/*
+
+# For docker:
+# https://pnpm.io/docker#example-2-build-multiple-docker-images-in-a-monorepo
+syncInjectedDepsAfterScripts:
+- build
+injectWorkspacePackages: true

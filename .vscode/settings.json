@@ -7,7 +7,9 @@
 	"editor.formatOnPaste": true,
 	"editor.formatOnSave": true,
 	"editor.rulers": [80],
-	"editor.defaultFormatter": "esbenp.prettier-vscode",
+	"[typescript][javascript][typescriptreact][javascriptreact][html][css][json][jsonc][markdown][yaml][astro][github-actions-workflow]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
 	"editor.codeActionsOnSave": {
 		"source.fixAll.biome": "explicit",
 		"source.action.useSortedKeys.biome": "explicit"

@@ -10,6 +10,7 @@
 dist
 node_modules
 .svelte-kit
+out
 
 # System Files
 .DS_Store
