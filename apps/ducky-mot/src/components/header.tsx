@@ -1,6 +1,6 @@
 import { Button } from '@aamini/ui/components/button'
 import { cn } from '@aamini/ui/lib/utils'
-import { ExternalLink, Instagram, Menu, X, Youtube } from 'lucide-react'
+import { Instagram, Menu, X, Youtube } from 'lucide-react'
 import { useState } from 'react'
 
 export function Header() {
@@ -35,8 +35,6 @@ export function Header() {
 							rel="noopener noreferrer"
 						>
 							<Instagram className="h-4 w-4" />
-							<span className="hidden sm:inline">Instagram</span>
-							<ExternalLink className="h-3 w-3 opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
 						</a>
 						<a
 							href="https://www.youtube.com/@duckymot"
@@ -45,8 +43,6 @@ export function Header() {
 							rel="noopener noreferrer"
 						>
 							<Youtube className="h-4 w-4" />
-							<span className="hidden sm:inline">YouTube</span>
-							<ExternalLink className="h-3 w-3 opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
 						</a>
 					</div>
 
