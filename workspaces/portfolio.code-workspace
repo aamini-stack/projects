@@ -1,15 +1,15 @@
 {
 	"folders": [
 		{
-			"name": "root",
-			"path": "..",
-		},
-		{
 			"path": "../apps/portfolio",
 		},
 		{
 			"name": "ui-neobrutalist",
 			"path": "../packages/ui-neobrutalist",
+		},
+		{
+			"name": "root",
+			"path": "..",
 		},
 	],
 	"settings": {

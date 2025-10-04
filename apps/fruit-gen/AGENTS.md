@@ -3,9 +3,9 @@
 This file provides guidance to agentic LLMs when working with code in this
 repository.
 
-## ${{ APP_NAME }}
+## fruit-gen
 
-\${{ APP_DESCRIPTION }}
+**fruit-gen** is a React-based fruit discovery web application built with Astro. The app helps users discover new fruits, track weekly fruit goals, and manage favorites.
 
 ## 🧞 Commands
 

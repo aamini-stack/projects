@@ -1,16 +1,16 @@
 {
 	"folders": [
 		{
-			"name": "root",
-			"path": "..",
-		},
-		{
 			"path": "../apps/fruit-gen",
 		},
 		{
 			"name": "ui-neobrutalist",
 			"path": "../packages/ui-neobrutalist",
-		}
+		},
+		{
+			"name": "root",
+			"path": "..",
+		},
 	],
 	"settings": {
 		"files.exclude": {

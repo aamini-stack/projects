@@ -1,11 +1,11 @@
 {
 	"folders": [
 		{
-			"name": "root",
-			"path": "..",
+			"path": "../apps/dota-visualizer",
 		},
 		{
-			"path": "../apps/dota-visualizer",
+			"name": "root",
+			"path": "..",
 		},
 	],
 	"settings": {
