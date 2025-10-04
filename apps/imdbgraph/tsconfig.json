@@ -4,7 +4,7 @@
 		"baseUrl": ".",
 		"paths": {
 			"#/*": ["./src/*"],
-			"@aamini/*": ["../../../packages/ui"]
+			"@aamini/ui": ["../../packages/ui"]
 		}
 	},
 	"include": [".astro/types.d.ts", "**/*"],

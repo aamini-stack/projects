@@ -1,0 +1,31 @@
+{
+	"folders": [
+		{
+			"name": "root",
+			"path": "..",
+		},
+		{
+			"path": "../apps/imdbgraph-svelte",
+		},
+		{
+			"name": "ui",
+			"path": "../packages/ui",
+		},
+	],
+	"settings": {
+		"files.exclude": {
+			"**/node_modules/": true,
+			"**/.next/": true,
+			"**/.swc/": true,
+			"**/.turbo": true,
+			"**/.astro": true,
+			"**/dist": true,
+			"**/.vercel": true,
+			"**/playwright-report": true,
+			"**/.svelte-kit": true,
+		},
+		"files.associations": {
+			"*.css": "tailwindcss",
+		},
+	},
+}
