@@ -1,48 +1,8 @@
 ---
-import Aftermovie from '#/components/aftermovie.astro'
-import BusinessInquiries from '#/components/business-inquiries.astro'
-import { Events } from '#/components/events'
-import Footer from '#/components/footer.astro'
-import { Header } from '#/components/header'
-import Hero from '#/components/hero.astro'
-import OurMission from '#/components/our-mission.astro'
+import { PremiumPrankHero } from '#/components/premium-prank-hero'
 import Layout from '#/pages/_Layout.astro'
 ---
 
 <Layout>
-	<!-- Enhanced dark background with multiple layers -->
-	<div
-		class="fixed inset-0 -z-10 bg-gradient-to-br from-gray-900 via-black to-gray-800"
-	>
-	</div>
-	<div
-		class="fixed inset-0 -z-10 bg-gradient-to-t from-black/20 via-transparent to-black/40"
-	>
-	</div>
-
-	<!-- Main container -->
-	<div class="flex min-h-screen flex-col">
-		<!-- Header -->
-		<Header client:load />
-
-		<main id="content">
-			<!-- Hero Section -->
-			<Hero />
-
-			<!-- Ducky Events -->
-			<Events client:load />
-
-			<!-- Aftermovie -->
-			<Aftermovie />
-
-			<!-- Our Mission -->
-			<OurMission />
-
-			<!-- Business Inquiries -->
-			<BusinessInquiries />
-		</main>
-
-		<!-- Footer -->
-		<Footer />
-	</div>
+	<PremiumPrankHero client:load />
 </Layout>
