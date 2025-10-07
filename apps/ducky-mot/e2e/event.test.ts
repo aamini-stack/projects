@@ -8,7 +8,6 @@ test.beforeEach(async ({ page }) => {
 	await page.goto('/events/ducky-endless-summer-2025-09-19')
 })
 
-
 test('Screenshot Gallery Header', async ({ page }) => {
 	await page.waitForLoadState('networkidle')
 	await expect(page).toHaveScreenshot()
