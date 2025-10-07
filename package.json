@@ -17,9 +17,9 @@
 		"verify": "turbo run --continue=dependencies-successful build lint format test typecheck e2e"
 	},
 	"devDependencies": {
-		"@playwright/test": "^1.55.1",
+		"@playwright/test": "^1.56.0",
 		"@prettier/plugin-oxc": "^0.0.4",
-		"oxlint": "^1.18.0",
+		"oxlint": "^1.20.0",
 		"oxlint-tsgolint": "^0.2.0",
 		"prettier": "^3.6.2",
 		"prettier-plugin-astro": "^0.14.1",

@@ -4,13 +4,17 @@
 	"private": true,
 	"module": "true",
 	"dependencies": {
-		"@pulumi/pulumi": "^3.0.0",
-		"@pulumiverse/vercel": "^3.0.0"
+		"@pulumi/azure-native": "^2.90.0",
+		"@pulumi/github": "^6.7.3",
+		"@pulumi/local": "^0.1.6",
+		"@pulumi/pulumi": "^3.201.0",
+		"@pulumi/tls": "^5.2.2",
+		"@pulumiverse/vercel": "^3.15.1",
+		"@worawat/flux": "^1.0.1"
 	},
 	"devDependencies": {
 		"@aamini/config-typescript": "workspace:*",
-		"@pulumi/github": "^6.7.3",
-		"@types/node": "^20.0.0",
-		"typescript": "^5.0.0"
+		"@types/node": "^20.19.19",
+		"typescript": "^5.9.3"
 	}
 }

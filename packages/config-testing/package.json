@@ -8,12 +8,11 @@
 		"./vitest": "./vitest.shared.ts"
 	},
 	"devDependencies": {
-		"@aamini/config-typescript": "workspace:*"
-	},
-	"peerDependencies": {
-		"@playwright/test": "^1.55.1",
+		"@aamini/config-typescript": "workspace:*",
+		"@playwright/test": "^1.56.0",
+		"@types/node": "^24.7.0",
 		"typescript": "^5.8.3",
-		"vite": "^7.1.6",
 		"vitest": "^3.2.4"
-	}
+	},
+	"peerDependencies": {}
 }
