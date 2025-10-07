@@ -11,6 +11,19 @@ monorepo is organized into `apps/` for individual applications and `packages/`
 for shared libraries and configurations. This structure promotes code reuse,
 simplifies dependency management, and ensures consistency across projects.
 
+## Build Tools & Package Management
+
+This monorepo uses **pnpm** as the package manager and **Turbo** as the build
+system. When working with this codebase:
+
+- **Always use `pnpm`** for installing dependencies and running scripts (e.g.,
+  `pnpm install`, `pnpm add <package>`), never `npm` or `yarn`.
+- **Use Turbo for builds and tasks** via `pnpm` scripts (e.g., `pnpm build`,
+  `pnpm dev`, `pnpm test`). Turbo handles caching and parallelization across the
+  monorepo workspace.
+- The workspace is configured with pnpm workspaces, allowing packages to depend
+  on each other efficiently.
+
 ## Packages
 
 Here's a summary of the common packages located in the `packages/` directory:
