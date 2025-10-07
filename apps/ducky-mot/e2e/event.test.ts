@@ -5,12 +5,11 @@ test.beforeEach(async ({ page }) => {
 	await page.route('**/*.{png,jpg,jpeg,gif}', (route) => route.abort())
 	// Block YouTube domains
 	await page.route(/.*youtube\.com.*/, (route) => route.abort())
-	await page.goto('/')
+	await page.goto('/events/ducky-endless-summer-2025-09-19')
 })
 
 
 test('Screenshot Gallery Header', async ({ page }) => {
-	await page.goto('/events/ducky-endless-summer-2025-09-19')
 	await page.waitForLoadState('networkidle')
 	await expect(page).toHaveScreenshot()
 })
