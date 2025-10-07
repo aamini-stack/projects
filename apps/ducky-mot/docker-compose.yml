@@ -1,0 +1,8 @@
+services:
+  e2e:
+    image: ducky-mot-e2e
+    build:
+      context: ../..
+      dockerfile: apps/ducky-mot/Dockerfile.e2e
+    volumes:
+      - ./e2e:/app/apps/ducky-mot/e2e
