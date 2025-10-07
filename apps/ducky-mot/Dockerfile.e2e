@@ -1,0 +1,27 @@
+FROM mcr.microsoft.com/playwright:v1.56.0-noble AS base
+ENV CI="true"
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0
+RUN corepack enable pnpm
+
+FROM base AS pruned
+WORKDIR /app
+COPY . .
+RUN pnpm i -g turbo@^2
+RUN turbo prune ducky-mot --docker
+
+FROM pruned AS build
+WORKDIR /app
+COPY --from=pruned /app/out/json ./
+RUN  --mount=type=cache,id=pnpm,target=/pnpm/store pnpm fetch
+COPY --from=pruned /app/out/full ./
+RUN  --mount=type=cache,id=pnpm,target=/pnpm/store pnpm i --offline
+RUN pnpm build --filter=ducky-mot 
+RUN pnpm deploy --filter=ducky-mot /prod
+
+FROM base
+WORKDIR /app
+COPY --from=build /prod/node_modules ./
+COPY --from=build /prod/dist ./
+ENTRYPOINT ["pnpm", "e2e"]

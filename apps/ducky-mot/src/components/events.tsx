@@ -1,33 +1,33 @@
 import { Badge } from '@aamini/ui/components/badge'
 import { Card, CardContent } from '@aamini/ui/components/card'
-import { ExternalLink } from 'lucide-react'
-
-type EventItem = {
-	date: string
-	title: string
-	href: string
-	img: string
-}
-
-type YearGroup = {
-	year: number
-	items: EventItem[]
-}
+import { ExternalLink, Images } from 'lucide-react'
+import type { EventItem, YearGroup } from '#/types/events'
+import { isLegacyEvent } from '#/types/events'
 
 const eventsByYear: YearGroup[] = [
 	{
 		year: 2025,
 		items: [
 			{
+				kind: 'modern',
+				date: '19th September 2025',
+				title: 'ducky.endless summer',
+				href: '/events/ducky-endless-summer-2025-09-19',
+				galleryId: 'ducky-endless-summer-2025-09-19',
+				img: '/ducky-sept-2025/20200101-DSC00025_01.jpg',
+			},
+			{
+				kind: 'legacy',
 				date: '17th May 2025',
 				title: 'ducky.fest',
-				href: 'https://duckymot.com/photos-ducky-17th-may-2025',
+				legacyHref: 'https://duckymot.com/photos-ducky-17th-may-2025',
 				img: 'https://duckymot.com/wp-content/uploads/2025/09/DSC00243-1024x684.jpg',
 			},
 			{
+				kind: 'legacy',
 				date: '22nd February 2025',
 				title: 'ducky.lorre',
-				href: 'https://duckymot.com/photos-ducky-lorre-2-02-2025',
+				legacyHref: 'https://duckymot.com/photos-ducky-lorre-2-02-2025',
 				img: 'https://duckymot.com/wp-content/uploads/2025/03/feb2025-CAM1-Edited-1.2_237.jpg',
 			},
 		],
@@ -36,21 +36,26 @@ const eventsByYear: YearGroup[] = [
 		year: 2024,
 		items: [
 			{
+				kind: 'legacy',
 				date: '29th November 2024',
 				title: 'ducky.room',
-				href: 'https://duckymot.com/photos-ducky-room-29th-november-2024/',
+				legacyHref:
+					'https://duckymot.com/photos-ducky-room-29th-november-2024/',
 				img: 'https://duckymot.com/wp-content/uploads/2025/01/DSC02952-scaled.jpg',
 			},
 			{
+				kind: 'legacy',
 				date: '20th September 2024',
 				title: 'ducky.fest',
-				href: 'https://duckymot.com/photos-ducky-fest-20th-september-2024/',
+				legacyHref:
+					'https://duckymot.com/photos-ducky-fest-20th-september-2024/',
 				img: 'https://duckymot.com/wp-content/uploads/2024/10/IMG_8090-scaled.jpg',
 			},
 			{
+				kind: 'legacy',
 				date: '1st June 2024',
 				title: 'ducky.fest',
-				href: 'https://duckymot.com/photos-ducky-fest-2024/',
+				legacyHref: 'https://duckymot.com/photos-ducky-fest-2024/',
 				img: 'https://duckymot.com/wp-content/uploads/2024/08/DSC00278-scaled.jpg',
 			},
 		],
@@ -59,21 +64,24 @@ const eventsByYear: YearGroup[] = [
 		year: 2023,
 		items: [
 			{
+				kind: 'legacy',
 				date: '15th December 2023',
 				title: 'ducky.room',
-				href: 'https://duckymot.com/photos-ducky-room/',
+				legacyHref: 'https://duckymot.com/photos-ducky-room/',
 				img: 'https://duckymot.com/wp-content/uploads/2024/01/DSC_8026-scaled.jpg',
 			},
 			{
+				kind: 'legacy',
 				date: '23rd September 2023',
 				title: 'ducky.fest',
-				href: 'https://duckymot.com/photos-ducky-fest-2023/',
+				legacyHref: 'https://duckymot.com/photos-ducky-fest-2023/',
 				img: 'https://duckymot.com/wp-content/uploads/2023/10/Main1-1024x683.jpg',
 			},
 			{
+				kind: 'legacy',
 				date: '21st April 2023',
 				title: 'ducky.house',
-				href: 'https://duckymot.com/photos-ducky-house/',
+				legacyHref: 'https://duckymot.com/photos-ducky-house/',
 				img: 'https://duckymot.com/wp-content/uploads/2023/08/Photo2-1024x683.jpg',
 			},
 		],
@@ -112,7 +120,10 @@ export function Events() {
 							{/* Events Grid */}
 							<div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
 								{group.items.map((event) => (
-									<EventCard key={event.href} event={event} />
+									<EventCard
+										key={isLegacyEvent(event) ? event.legacyHref : event.href}
+										event={event}
+									/>
 								))}
 							</div>
 
@@ -131,15 +142,21 @@ export function Events() {
 }
 
 function EventCard({ event }: { event: EventItem }) {
+	const legacy = isLegacyEvent(event)
+	const href = legacy ? event.legacyHref : event.href
+	const linkTarget = legacy ? '_blank' : undefined
+	const linkRel = legacy ? 'noopener noreferrer' : undefined
+	const LinkIcon = legacy ? ExternalLink : Images
+
 	return (
 		<Card className="group/card overflow-hidden border-gray-700/50 bg-gray-900/50 backdrop-blur-sm transition-all duration-500 hover:border-gray-600/60 hover:bg-gray-800/60 hover:shadow-2xl hover:shadow-blue-500/10">
 			<CardContent className="space-y-0 p-0">
 				{/* Image Container */}
 				<div className="relative overflow-hidden">
 					<a
-						href={event.href}
-						target="_blank"
-						rel="noopener noreferrer"
+						href={href}
+						target={linkTarget}
+						rel={linkRel}
 						className="block"
 						aria-label={`View photos from ${event.title} - ${event.date}`}
 					>
@@ -155,9 +172,9 @@ function EventCard({ event }: { event: EventItem }) {
 						{/* Overlay with gradient */}
 						<div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover/card:opacity-100" />
 
-						{/* External link icon */}
+						{/* Link icon */}
 						<div className="absolute right-4 top-4 rounded-full bg-white/10 p-2 opacity-0 backdrop-blur-sm transition-all duration-300 group-hover/card:bg-white/20 group-hover/card:opacity-100">
-							<ExternalLink className="h-4 w-4 text-white" />
+							<LinkIcon className="h-4 w-4 text-white" />
 						</div>
 					</a>
 				</div>
@@ -177,13 +194,13 @@ function EventCard({ event }: { event: EventItem }) {
 
 					{/* View Photos Link */}
 					<a
-						href={event.href}
-						target="_blank"
-						rel="noopener noreferrer"
+						href={href}
+						target={linkTarget}
+						rel={linkRel}
 						className="group/link inline-flex items-center gap-2 text-sm text-blue-400 transition-colors duration-200 hover:text-blue-300"
 					>
 						<span>View Photos</span>
-						<ExternalLink className="h-3 w-3 transition-transform duration-200 group-hover/link:-translate-y-0.5 group-hover/link:translate-x-0.5" />
+						<LinkIcon className="h-3 w-3 transition-transform duration-200 group-hover/link:-translate-y-0.5 group-hover/link:translate-x-0.5" />
 					</a>
 				</div>
 			</CardContent>

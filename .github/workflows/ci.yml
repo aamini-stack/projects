@@ -63,11 +63,7 @@ jobs:
             BASE=$(git merge-base HEAD origin/main)
           fi
 
-          if [ "${{ inputs.update_snapshots }}" = "true" ]; then
-            FILTER='{./apps/*}'
-          else
-            FILTER="{./apps/*}["$BASE"...HEAD]"
-          fi
+          FILTER="{./apps/*}["$BASE"...HEAD]"
 
           APPS=$(npx turbo build --filter="$FILTER" --dry=json | jq -c .packages)
           echo $APPS
