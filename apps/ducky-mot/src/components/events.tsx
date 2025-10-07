@@ -9,18 +9,18 @@ const eventsByYear: YearGroup[] = [
 		year: 2025,
 		items: [
 			{
+				kind: 'modern',
+				date: '19th September 2025',
+				title: 'ducky.endless summer',
+				href: '/events/ducky-endless-summer-2025-09-19',
+				galleryId: 'ducky-endless-summer-2025-09-19',
+				img: '/ducky-sept-2025/20200101-DSC00025_01.jpg',
+			},
+			{
 				kind: 'legacy',
 				date: '17th May 2025',
 				title: 'ducky.fest',
 				legacyHref: 'https://duckymot.com/photos-ducky-17th-may-2025',
-				img: 'https://duckymot.com/wp-content/uploads/2025/09/DSC00243-1024x684.jpg',
-			},
-			{
-				kind: 'modern',
-				date: '15th March 2025',
-				title: 'ducky.test',
-				href: '/events/ducky-test-2025-03-15',
-				galleryId: 'ducky-test-2025-03-15',
 				img: 'https://duckymot.com/wp-content/uploads/2025/09/DSC00243-1024x684.jpg',
 			},
 			{
@@ -39,14 +39,16 @@ const eventsByYear: YearGroup[] = [
 				kind: 'legacy',
 				date: '29th November 2024',
 				title: 'ducky.room',
-				legacyHref: 'https://duckymot.com/photos-ducky-room-29th-november-2024/',
+				legacyHref:
+					'https://duckymot.com/photos-ducky-room-29th-november-2024/',
 				img: 'https://duckymot.com/wp-content/uploads/2025/01/DSC02952-scaled.jpg',
 			},
 			{
 				kind: 'legacy',
 				date: '20th September 2024',
 				title: 'ducky.fest',
-				legacyHref: 'https://duckymot.com/photos-ducky-fest-20th-september-2024/',
+				legacyHref:
+					'https://duckymot.com/photos-ducky-fest-20th-september-2024/',
 				img: 'https://duckymot.com/wp-content/uploads/2024/10/IMG_8090-scaled.jpg',
 			},
 			{
