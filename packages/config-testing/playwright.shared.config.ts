@@ -3,9 +3,6 @@ import {
 	devices,
 	type PlaywrightTestConfig,
 } from '@playwright/test'
-import { loadEnv } from 'vite'
-
-const env = loadEnv('test', process.cwd(), '')
 
 /** See https://playwright.dev/docs/test-configuration. */
 export const baseConfig = (
@@ -13,8 +10,8 @@ export const baseConfig = (
 	overrides?: PlaywrightTestConfig,
 ) => {
 	const devUrl = `http://localhost:${port}`
-	const useDevServer = !(process.env.CI || env.BASE_URL)
-	const baseUrl = useDevServer ? devUrl : env.BASE_URL
+	const useDevServer = !(process.env.CI || process.env.BASE_URL)
+	const baseUrl = useDevServer ? devUrl : process.env.BASE_URL
 	const testDir = './e2e'
 	return defineConfig(
 		{
@@ -27,7 +24,7 @@ export const baseConfig = (
 			forbidOnly: !!process.env.CI,
 			retries: process.env.CI ? 3 : 0,
 			/* Reporter to use. See https://playwright.dev/docs/test-reporters */
-			reporter: [['html', { open: 'on-failure' }]],
+			reporter: [['html', { open: 'never' }]],
 
 			/* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
 			use: {
