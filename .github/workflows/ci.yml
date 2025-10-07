@@ -18,137 +18,35 @@ on:
 permissions:
   contents: write
 
-env:
-  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-  TURBO_TEAM: ${{ vars.TURBO_TEAM }}
-
 jobs:
-  quality-checks:
+  dagger:
     runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-      - name: Setup Node
-        uses: ./.github/actions/setup
-      - name: Run Checks
-        run: pnpm turbo run format typecheck lint test:unit
-
-  integration-tests:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-      - name: Setup Node
-        uses: ./.github/actions/setup
-      - name: Install Playwright Browsers
-        run: pnpm dlx playwright install --with-deps
-      - name: Test
-        run: pnpm test:integration
-
-  find-apps:
-    runs-on: ubuntu-latest
-    outputs:
-      apps: ${{ steps.calculate-apps.outputs.apps }}
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
-      - name: Get Changed Apps
-        id: calculate-apps
-        run: |
-          if [ "${{ github.event_name }}" = "push" ]; then
-            BASE=${{ github.event.before }}
-          else
-            BASE=$(git merge-base HEAD origin/main)
-          fi
+          fetch-depth: 0 # Need full history for changed apps detection
 
-          if [ "${{ inputs.update_snapshots }}" = "true" ]; then
-            FILTER='{./apps/*}'
-          else
-            FILTER="{./apps/*}["$BASE"...HEAD]"
-          fi
+      - name: Install Dagger
+        uses: dagger/dagger-action/install@v0.7.0
 
-          APPS=$(npx turbo build --filter="$FILTER" --dry=json | jq -c .packages)
-          echo $APPS
-          echo "apps=$APPS" >> $GITHUB_OUTPUT
-
-  e2e:
-    needs: [find-apps]
-    runs-on: ubuntu-latest
-    container:
-      image: mcr.microsoft.com/playwright:v1.55.1-noble
-      options: --user 1001
-    strategy:
-      matrix:
-        app: ${{ fromJson(needs.find-apps.outputs.apps) }}
-      fail-fast: false
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-      - name: Setup Node
-        uses: ./.github/actions/setup
-      # Deploy
-      - name: Deploy to Vercel
-        working-directory: ./apps/${{ matrix.app }}
-        run: |
-          pnpm i -g vercel
-          pnpm vercel link \
-            --yes \
-            --repo \
-            --token=${{ secrets.VERCEL_TOKEN }} \
-            --scope=${{ vars.TURBO_TEAM }}
-          BASE_URL=$(pnpm vercel \
-            --yes \
-            ${{ github.ref_name == 'main' && '--prod' || '' }} \
-            --token=${{ secrets.VERCEL_TOKEN }} \
-            --scope=${{ vars.TURBO_TEAM }} \
-            -m githubDeployment='1' \
-            -m githubCommitRef='feature/${{ github.head_ref || github.ref_name }}' \
-            -m githubCommitSha='${{ github.sha }}' \
-          | tail -1)
-          echo BASE_URL=$BASE_URL >> $GITHUB_ENV
-      # Test
-      - name: Run Playwright tests
-        working-directory: './apps/${{ matrix.app }}'
+      - name: Run CI Pipeline
+        uses: dagger/dagger-action@v0.7.0
         env:
+          TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+          TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
           VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
-        run: pnpm e2e${{ inputs.update_snapshots && ':update' || '' }}
-      # Upload screenshots + report
-      - name: Upload Screenshots
-        if: success() && inputs.update_snapshots
-        uses: actions/upload-artifact@v4
         with:
-          name: screenshots-${{ matrix.app }}
-          path: './*/**/e2e/**/*.png'
-          retention-days: 1
-      - name: Publish Report
-        uses: actions/upload-artifact@v4
-        if: failure()
-        with:
-          name: playwright-report-${{ matrix.app }}
-          path: './apps/${{ matrix.app }}/playwright-report'
-          retention-days: 30
-
-  commit-screenshots:
-    runs-on: ubuntu-latest
-    needs: [e2e]
-    if: inputs.update_snapshots
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ github.head_ref }}
-      - name: Download All Screenshot Artifacts
-        uses: actions/download-artifact@v4
-        with:
-          pattern: screenshots-*
-          merge-multiple: true
-      - name: Commit Screenshots
-        run: |
-          # https://github.com/actions/checkout?tab=readme-ov-file#push-a-commit-to-a-pr-using-the-built-in-token
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add *.png
-          git commit -m "Update Screenshots"
-          git push
+          verb: "call"
+          args: |
+            ci --source=. \
+            --turbo-token=env:TURBO_TOKEN \
+            --turbo-team="${{ vars.TURBO_TEAM }}" \
+            --vercel-token=env:VERCEL_TOKEN \
+            --bypass-secret=env:VERCEL_AUTOMATION_BYPASS_SECRET \
+            --base="${{ github.event.before }}" \
+            --update-snapshots=${{ inputs.update_snapshots || false }} \
+            --is-prod=${{ github.ref_name == 'main' }} \
+            --branch-name="${{ github.head_ref || github.ref_name }}" \
+            --commit-sha="${{ github.sha }}"
