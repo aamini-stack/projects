@@ -10,7 +10,7 @@ COPY . .
 RUN pnpm i -g turbo@^2
 RUN turbo prune fruit-gen --docker
 
-FROM pruned AS build
+FROM base AS build
 WORKDIR /app
 COPY --from=pruned /app/out/json/pnpm-lock.yaml .
 RUN  --mount=type=cache,id=pnpm,target=/pnpm/store pnpm fetch
