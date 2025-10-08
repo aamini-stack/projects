@@ -1,0 +1,15 @@
+services:
+  server:
+    image: aamini-template
+    build: 
+      context: ../..
+      dockerfile: apps/aamini-template/Dockerfile
+    ports:
+      - 4321:4321
+  e2e:
+    image: aamini-template-e2e
+    build:
+      context: ../..
+      dockerfile: apps/aamini-template/Dockerfile.e2e
+    volumes:
+      - ./e2e:/app/apps/aamini-template/e2e
