@@ -1,5 +1,5 @@
 import react from '@astrojs/react'
-import vercel from '@astrojs/vercel'
+import node from '@astrojs/node'
 import tailwindcss from '@tailwindcss/vite'
 import { defineConfig, fontProviders } from 'astro/config'
 
@@ -11,7 +11,9 @@ export default defineConfig({
 		plugins: [tailwindcss()],
 	},
 	output: 'server',
-	adapter: vercel(),
+	adapter: node({
+		mode: 'standalone',
+	}),
 	experimental: {
 		fonts: [
 			{
