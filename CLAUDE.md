@@ -1,1 +1,1 @@
-./.clinerules/AGENTS.md
+AGENTS.md
