@@ -1,0 +1,17 @@
+services:
+  server:
+    image: pc-tune-ups
+    build:
+      context: ../..
+      dockerfile: apps/pc-tune-ups/Dockerfile
+    ports:
+      - 4321:4321
+  e2e:
+    image: pc-tune-ups-e2e
+    build:
+      context: ../..
+      dockerfile: apps/pc-tune-ups/Dockerfile.e2e
+    volumes:
+      - ./e2e:/app/apps/pc-tune-ups/e2e
+      - ./test-results:/app/apps/pc-tune-ups/test-results
+      - ./playwright-report:/app/apps/pc-tune-ups/playwright-report
