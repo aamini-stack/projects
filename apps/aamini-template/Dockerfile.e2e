@@ -8,7 +8,7 @@ FROM base AS pruned
 WORKDIR /app
 COPY . .
 RUN pnpm i -g turbo@^2
-RUN turbo prune ducky-mot --docker
+RUN turbo prune aamini-template --docker
 
 FROM base AS build
 WORKDIR /app
@@ -17,5 +17,5 @@ RUN  --mount=type=cache,id=pnpm,target=/pnpm/store pnpm fetch
 COPY --from=pruned /app/out/json ./
 RUN  --mount=type=cache,id=pnpm,target=/pnpm/store pnpm i
 COPY --from=pruned /app/out/full ./
-WORKDIR /app/apps/ducky-mot
+WORKDIR /app/apps/aamini-template
 ENTRYPOINT ["pnpm", "e2e"]

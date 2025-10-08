@@ -1,0 +1,17 @@
+services:
+  server:
+    image: portfolio
+    build:
+      context: ../..
+      dockerfile: apps/portfolio/Dockerfile
+    ports:
+      - 4321:4321
+  e2e:
+    image: portfolio-e2e
+    build:
+      context: ../..
+      dockerfile: apps/portfolio/Dockerfile.e2e
+    volumes:
+      - ./e2e:/app/apps/portfolio/e2e
+      - ./test-results:/app/apps/portfolio/test-results
+      - ./playwright-report:/app/apps/portfolio/playwright-report

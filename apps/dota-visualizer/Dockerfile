@@ -1,21 +1,29 @@
-FROM mcr.microsoft.com/playwright:v1.56.0-noble AS base
+FROM node:lts AS runtime
+
+FROM runtime AS pruned
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0
 RUN corepack enable pnpm
-
-FROM base AS pruned
 WORKDIR /app
 COPY . .
 RUN pnpm i -g turbo@^2
-RUN turbo prune ducky-mot --docker
+RUN turbo prune dota-visualizer --docker
 
-FROM base AS build
+FROM pruned AS build
 WORKDIR /app
 COPY --from=pruned /app/out/json/pnpm-lock.yaml .
 RUN  --mount=type=cache,id=pnpm,target=/pnpm/store pnpm fetch
 COPY --from=pruned /app/out/json ./
 RUN  --mount=type=cache,id=pnpm,target=/pnpm/store pnpm i
 COPY --from=pruned /app/out/full ./
-WORKDIR /app/apps/ducky-mot
-ENTRYPOINT ["pnpm", "e2e"]
+RUN pnpm build --filter=dota-visualizer 
+
+FROM runtime
+WORKDIR /app
+COPY --from=build /app/node_modules ./node_modules
+COPY --from=build /app/apps/dota-visualizer/dist ./dist
+ENV HOST=0.0.0.0
+ENV PORT=4321
+EXPOSE 4321
+CMD [ "node", "./dist/server/entry.mjs" ]

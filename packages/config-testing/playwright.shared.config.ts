@@ -59,6 +59,7 @@ export const baseConfig = (
 			expect: {
 				toHaveScreenshot: {
 					stylePath: `${testDir}/screenshot.css`,
+					maxDiffPixelRatio: 0.001,
 				},
 			},
 

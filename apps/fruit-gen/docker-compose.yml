@@ -1,0 +1,17 @@
+services:
+  server:
+    image: fruit-gen
+    build:
+      context: ../..
+      dockerfile: apps/fruit-gen/Dockerfile
+    ports:
+      - 4321:4321
+  e2e:
+    image: fruit-gen-e2e
+    build:
+      context: ../..
+      dockerfile: apps/fruit-gen/Dockerfile.e2e
+    volumes:
+      - ./e2e:/app/apps/fruit-gen/e2e
+      - ./test-results:/app/apps/fruit-gen/test-results
+      - ./playwright-report:/app/apps/fruit-gen/playwright-report

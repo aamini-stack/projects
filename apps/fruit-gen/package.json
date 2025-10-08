@@ -16,6 +16,8 @@
 		"test:watch": "vitest --watch",
 		"e2e": "playwright test",
 		"e2e:update": "playwright test --update-snapshots",
+		"e2e:ci": "docker compose run --build --rm e2e",
+		"e2e:ci:update": "docker compose run --build --rm e2e --update-snapshots",
 		"verify": "turbo run build lint format test typecheck e2e"
 	},
 	"dependencies": {
