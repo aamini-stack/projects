@@ -8,7 +8,7 @@ RUN corepack enable pnpm
 WORKDIR /app
 COPY . .
 RUN pnpm i -g turbo@^2
-RUN turbo prune aamini-template --docker
+RUN turbo prune ducky-mot --docker
 
 FROM pruned AS build
 WORKDIR /app
@@ -17,12 +17,12 @@ RUN  --mount=type=cache,id=pnpm,target=/pnpm/store pnpm fetch
 COPY --from=pruned /app/out/json ./
 RUN  --mount=type=cache,id=pnpm,target=/pnpm/store pnpm i
 COPY --from=pruned /app/out/full ./
-RUN pnpm build --filter=aamini-template 
+RUN pnpm build --filter=ducky-mot 
 
 FROM runtime
 WORKDIR /app
 COPY --from=build /app/node_modules ./node_modules
-COPY --from=build /app/apps/aamini-template/dist ./dist
+COPY --from=build /app/apps/ducky-mot/dist ./dist
 ENV HOST=0.0.0.0
 ENV PORT=4321
 EXPOSE 4321

@@ -1,5 +1,4 @@
 FROM mcr.microsoft.com/playwright:v1.56.0-noble AS base
-ENV CI="true"
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0
@@ -13,12 +12,10 @@ RUN turbo prune ducky-mot --docker
 
 FROM pruned AS build
 WORKDIR /app
-COPY --from=pruned /app/out/json ./
+COPY --from=pruned /app/out/json/pnpm-lock.yaml .
 RUN  --mount=type=cache,id=pnpm,target=/pnpm/store pnpm fetch
+COPY --from=pruned /app/out/json ./
+RUN  --mount=type=cache,id=pnpm,target=/pnpm/store pnpm i
 COPY --from=pruned /app/out/full ./
-RUN  --mount=type=cache,id=pnpm,target=/pnpm/store pnpm i --offline
-
-FROM base
-WORKDIR /app
-COPY --from=build /app ./
-ENTRYPOINT ["turbo", "e2e:ci", "--filter=ducky-mot"]
+WORKDIR /app/apps/ducky-mot
+ENTRYPOINT ["pnpm", "e2e"]

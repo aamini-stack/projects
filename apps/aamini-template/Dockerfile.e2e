@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/playwright:v1.55.1-noble AS base
+FROM mcr.microsoft.com/playwright:v1.56.0-noble AS base
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0
@@ -12,14 +12,10 @@ RUN turbo prune aamini-template --docker
 
 FROM pruned AS build
 WORKDIR /app
+COPY --from=pruned /app/out/json/pnpm-lock.yaml .
+RUN  --mount=type=cache,id=pnpm,target=/pnpm/store pnpm fetch
 COPY --from=pruned /app/out/json ./
 RUN  --mount=type=cache,id=pnpm,target=/pnpm/store pnpm i
 COPY --from=pruned /app/out/full ./
-RUN pnpm build --filter=aamini-template 
-RUN pnpm deploy --filter=aamini-template /prod
-
-FROM base
-WORKDIR /app
-COPY --from=build /prod/node_modules ./
-COPY --from=build /prod/dist ./
-CMD ["pnpm", "e2e"]
+WORKDIR /app/apps/aamini-template
+ENTRYPOINT ["pnpm", "e2e"]
