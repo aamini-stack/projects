@@ -9,7 +9,7 @@
 	"scripts": {
 		"build": "astro build",
 		"dev": "astro dev",
-		"docker": "docker compose run  --rm --build server",
+		"docker": "docker compose run --rm --build server",
 		"typecheck": "tsc --noEmit",
 		"lint": "oxlint --type-aware --max-warnings=0",
 		"e2e": "playwright test",
