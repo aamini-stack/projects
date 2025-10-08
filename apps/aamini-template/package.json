@@ -35,7 +35,6 @@
 	"devDependencies": {
 		"@aamini/config-testing": "workspace:*",
 		"@aamini/config-typescript": "workspace:*",
-		"@astrojs/node": "^9.4.4",
 		"@astrojs/react": "^4.3.0",
 		"@astrojs/vercel": "^8.2.5",
 		"@playwright/test": "^1.55.1",
