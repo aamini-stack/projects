@@ -13,3 +13,5 @@ services:
       dockerfile: apps/fruit-gen/Dockerfile.e2e
     volumes:
       - ./e2e:/app/apps/fruit-gen/e2e
+      - ./test-results:/app/apps/fruit-gen/test-results
+      - ./playwright-report:/app/apps/fruit-gen/playwright-report

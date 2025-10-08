@@ -13,3 +13,5 @@ services:
       dockerfile: apps/dota-visualizer/Dockerfile.e2e
     volumes:
       - ./e2e:/app/apps/dota-visualizer/e2e
+      - ./test-results:/app/apps/dota-visualizer/test-results
+      - ./playwright-report:/app/apps/dota-visualizer/playwright-report

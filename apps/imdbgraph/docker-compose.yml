@@ -13,3 +13,5 @@ services:
       dockerfile: apps/imdbgraph/Dockerfile.e2e
     volumes:
       - ./e2e:/app/apps/imdbgraph/e2e
+      - ./test-results:/app/apps/imdbgraph/test-results
+      - ./playwright-report:/app/apps/imdbgraph/playwright-report

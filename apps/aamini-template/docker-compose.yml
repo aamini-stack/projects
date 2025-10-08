@@ -1,7 +1,7 @@
 services:
   server:
     image: aamini-template
-    build: 
+    build:
       context: ../..
       dockerfile: apps/aamini-template/Dockerfile
     ports:
@@ -13,3 +13,5 @@ services:
       dockerfile: apps/aamini-template/Dockerfile.e2e
     volumes:
       - ./e2e:/app/apps/aamini-template/e2e
+      - ./test-results:/app/apps/aamini-template/test-results
+      - ./playwright-report:/app/apps/aamini-template/playwright-report
