@@ -1,1 +1,261 @@
 @import '@aamini/ui/globals.css';
+@import 'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap';
+@import 'https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&display=swap';
+
+@theme {
+  /* Dark theme with tech-focused accent colors */
+  --color-background: #0a0a0f;
+  --color-foreground: #f8fafc;
+  --color-muted: #1e293b;
+  --color-muted-foreground: #94a3b8;
+  --color-popover: #1e293b;
+  --color-popover-foreground: #f8fafc;
+  --color-card: #1e293b;
+  --color-card-foreground: #f8fafc;
+  --color-border: #334155;
+  --color-input: #1e293b;
+  --color-ring: #0ea5e9;
+  
+  /* Tech-focused accent colors */
+  --color-primary: #0ea5e9;
+  --color-primary-foreground: #0a0a0f;
+  --color-secondary: #1e40af;
+  --color-secondary-foreground: #f8fafc;
+  --color-accent: #06b6d4;
+  --color-accent-foreground: #0a0a0f;
+  --color-destructive: #ef4444;
+  --color-destructive-foreground: #f8fafc;
+  
+  /* Additional tech colors for gradients and highlights */
+  --color-cyan: #06b6d4;
+  --color-blue: #3b82f6;
+  --color-indigo: #6366f1;
+  --color-purple: #8b5cf6;
+  --color-teal: #14b8a6;
+  
+  /* Custom gradients for tech theme */
+  --gradient-tech: linear-gradient(135deg, #0ea5e9 0%, #1e40af 50%, #6366f1 100%);
+  --gradient-cyber: linear-gradient(135deg, #06b6d4 0%, #0ea5e9 50%, #3b82f6 100%);
+  --gradient-dark: linear-gradient(180deg, #0a0a0f 0%, #1e293b 100%);
+  
+  /* Typography */
+  --font-family-sans: 'Inter', system-ui, sans-serif;
+  --font-family-serif: 'Playfair Display', serif;
+  
+  /* Spacing following 8px grid */
+  --spacing-xs: 0.25rem;   /* 4px */
+  --spacing-sm: 0.5rem;    /* 8px */
+  --spacing-md: 1rem;      /* 16px */
+  --spacing-lg: 1.5rem;    /* 24px */
+  --spacing-xl: 2rem;      /* 32px */
+  --spacing-2xl: 3rem;     /* 48px */
+  --spacing-3xl: 4rem;     /* 64px */
+  --spacing-4xl: 6rem;     /* 96px */
+  
+  /* Border radius for modern look */
+  --radius-sm: 0.25rem;    /* 4px */
+  --radius-md: 0.5rem;     /* 8px */
+  --radius-lg: 0.75rem;    /* 12px */
+  --radius-xl: 1rem;       /* 16px */
+  --radius-2xl: 1.5rem;    /* 24px */
+  
+  /* Shadows for depth */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  --shadow-glow: 0 0 20px rgb(14 165 233 / 0.3);
+  --shadow-glow-cyan: 0 0 20px rgb(6 182 212 / 0.3);
+}
+
+/* Base styles */
+* {
+  border-color: var(--color-border);
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-family-sans);
+  font-feature-settings: "rlig" 1, "calt" 1;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-muted);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-primary);
+  border-radius: var(--radius-md);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-accent);
+}
+
+/* Selection styles */
+::selection {
+  background-color: var(--color-primary);
+  color: var(--color-primary-foreground);
+}
+
+/* Focus styles for accessibility */
+:focus-visible {
+  outline: 2px solid var(--color-ring);
+  outline-offset: 2px;
+}
+
+/* Animation utilities */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 20px rgb(14 165 233 / 0.3); }
+  50% { box-shadow: 0 0 30px rgb(14 165 233 / 0.6); }
+}
+
+@keyframes gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* Custom component styles */
+.gradient-tech {
+  background: var(--gradient-tech);
+}
+
+.gradient-cyber {
+  background: var(--gradient-cyber);
+}
+
+.gradient-dark {
+  background: var(--gradient-dark);
+}
+
+.text-gradient {
+  background: var(--gradient-tech);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.glow-effect {
+  box-shadow: var(--shadow-glow);
+}
+
+.glow-effect-cyan {
+  box-shadow: var(--shadow-glow-cyan);
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradient-shift 3s ease infinite;
+}
+
+/* Glass morphism effect */
+.glass {
+  background: rgba(30, 41, 59, 0.5);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(51, 65, 85, 0.3);
+}
+
+/* Tech grid pattern background */
+.tech-grid {
+  background-image: 
+    linear-gradient(rgba(14, 165, 233, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(14, 165, 233, 0.1) 1px, transparent 1px);
+  background-size: 50px 50px;
+}
+
+/* Responsive typography */
+.text-responsive-h1 {
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  line-height: 1.1;
+}
+
+.text-responsive-h2 {
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 1.2;
+}
+
+.text-responsive-h3 {
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  line-height: 1.3;
+}
+
+.text-responsive-body {
+  font-size: clamp(1rem, 2vw, 1.125rem);
+  line-height: 1.7;
+}
+
+/* Custom button hover effects */
+.btn-tech {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.btn-tech::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transition: left 0.5s ease;
+}
+
+.btn-tech:hover::before {
+  left: 100%;
+}
+
+/* Card hover effects */
+.card-tech {
+  transition: all 0.3s ease;
+  border: 1px solid transparent;
+}
+
+.card-tech:hover {
+  transform: translateY(-4px);
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-glow);
+}
+
+/* Scroll animations */
+.scroll-reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.6s ease;
+}
+
+.scroll-reveal.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Parallax effect */
+.parallax {
+  transform: translateZ(0);
+  will-change: transform;
+}

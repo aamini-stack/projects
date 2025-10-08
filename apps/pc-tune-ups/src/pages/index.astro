@@ -1,465 +1,300 @@
 ---
+import Header from '#/components/Header'
+import Hero from '#/components/Hero'
+import Values from '#/components/Values'
+import Services from '#/components/Services'
+import Statistics from '#/components/Statistics'
+import Testimonials from '#/components/Testimonials'
+import Contact from '#/components/Contact'
+import Footer from '#/components/Footer'
 import Layout from '#/pages/_Layout.astro'
 
 const currentYear = new Date().getFullYear()
 ---
 
 <Layout>
-	<div class="min-h-screen bg-[#05030F] text-white">
-		<header class="border-b border-white/10 bg-black/30">
+	<div class="bg-background min-h-screen">
+		<!-- Background with modern gradient blur effect -->
+		<div class="fixed inset-0 -z-10">
 			<div
-				class="mx-auto flex max-w-4xl flex-wrap justify-between gap-4 px-6 py-6 text-sm text-white/70 sm:px-8"
+				class="from-background via-background/95 to-background/90 absolute inset-0 bg-gradient-to-br"
 			>
-				<div class="space-y-1">
-					<p class="text-xs uppercase tracking-widest text-emerald-200">Call</p>
-					<a
-						class="text-base font-semibold text-white hover:text-emerald-200"
-						href="tel:15048851635">1-504-885-1635</a
-					>
-				</div>
-				<div class="space-y-1">
-					<p class="text-xs uppercase tracking-widest text-emerald-200">
-						Visit
-					</p>
-					<a
-						class="hover:text-emerald-200"
-						href="https://maps.google.com/?q=5416+Veterans+Blvd,+Metairie,+LA+70003"
-						target="_blank"
-						rel="noreferrer"
-					>
-						5416 Veterans Blvd, Metairie, LA 70003
-					</a>
-				</div>
-				<div class="space-y-1">
-					<p class="text-xs uppercase tracking-widest text-emerald-200">
-						Hours
-					</p>
-					<p>Monday – Saturday, 10:00 a.m. – 6:00 p.m.</p>
-				</div>
-				<nav
-					class="flex flex-wrap gap-3 text-xs uppercase tracking-widest text-white/60"
-				>
-					<a class="hover:text-emerald-200" href="#overview">Overview</a>
-					<a class="hover:text-emerald-200" href="#why-us">Why Us</a>
-					<a class="hover:text-emerald-200" href="#services">Services</a>
-					<a class="hover:text-emerald-200" href="#pricing">Pricing</a>
-					<a class="hover:text-emerald-200" href="#warranty">Warranty</a>
-					<a class="hover:text-emerald-200" href="#happy-customers">Reviews</a>
-					<a class="hover:text-emerald-200" href="#contact">Contact</a>
-				</nav>
 			</div>
-		</header>
+			<div class="tech-grid absolute inset-0 opacity-5"></div>
+			<div
+				class="bg-primary/5 absolute left-1/4 top-0 h-96 w-96 animate-pulse rounded-full blur-3xl"
+			>
+			</div>
+			<div
+				class="bg-accent/5 absolute bottom-0 right-1/4 h-64 w-64 animate-pulse rounded-full blur-3xl"
+				style="animation-delay: '2s'"
+			>
+			</div>
+		</div>
 
-		<main
-			class="mx-auto flex max-w-4xl flex-col gap-16 px-6 py-16 sm:px-8 lg:py-20"
-		>
-			<section class="space-y-6" id="overview">
-				<h1 class="text-4xl font-semibold tracking-tight sm:text-5xl">
-					PC Tune-Ups
-				</h1>
-				<p class="text-lg text-white/80 sm:text-xl">
-					Your neighborhood team for fast, friendly computer and device repair
-					in the Greater New Orleans area—with 10+ years of hands-on experience.
-				</p>
-				<ul class="grid gap-3 text-sm text-white/80 sm:grid-cols-2">
-					<li>
-						<strong>Address:</strong> 5416 Veterans Blvd, Metairie, LA 70003
-					</li>
-					<li>
-						<strong>Phone:</strong>
-						<a class="underline hover:text-emerald-200" href="tel:15048851635"
-							>1-504-885-1635</a
-						>
-					</li>
-					<li>
-						<strong>Email:</strong>
-						<a
-							class="underline hover:text-emerald-200"
-							href="mailto:info@afcom-inc.com">info@afcom-inc.com</a
-						>
-						·
-						<a
-							class="underline hover:text-emerald-200"
-							href="mailto:sales@afcom-inc.com">sales@afcom-inc.com</a
-						>
-					</li>
-					<li>
-						<strong>Hours:</strong> Monday – Saturday, 10:00 a.m. – 6:00 p.m.
-					</li>
-					<li class="sm:col-span-2">
-						<strong>Social:</strong>
-						<a
-							class="underline hover:text-emerald-200"
-							href="https://www.facebook.com/PCTuneUps365/"
-							target="_blank"
-							rel="noreferrer">Facebook</a
-						>
-						·
-						<a
-							class="underline hover:text-emerald-200"
-							href="https://www.instagram.com/pc_tuneups/"
-							target="_blank"
-							rel="noreferrer">Instagram</a
-						>
-						·
-						<a
-							class="underline hover:text-emerald-200"
-							href="https://twitter.com/pctuneups"
-							target="_blank"
-							rel="noreferrer">Twitter</a
-						>
-						·
-						<a
-							class="underline hover:text-emerald-200"
-							href="https://www.linkedin.com/company/pctuneups"
-							target="_blank"
-							rel="noreferrer">LinkedIn</a
-						>
-						·
-						<a
-							class="underline hover:text-emerald-200"
-							href="https://www.youtube.com/channel/UCLBMfHkUR9qu9WyNBGigPlg"
-							target="_blank"
-							rel="noreferrer">YouTube</a
-						>
-					</li>
-				</ul>
-			</section>
+		<!-- Header Navigation -->
+		<Header />
 
-			<hr class="border-white/10" />
+		<!-- Main Content -->
+		<main>
+			<!-- Hero Section -->
+			<Hero />
 
-			<section class="space-y-4" id="why-us">
-				<h2 class="text-3xl font-semibold tracking-tight">
-					Why Local Customers Choose Us
-				</h2>
-				<ul class="space-y-3 text-white/80">
-					<li>
-						<strong>Certified engineers with heart.</strong> We pair technical excellence
-						with a friendly, can-do attitude—and we're passionate about every repair.
-					</li>
-					<li>
-						<strong>Quality parts, guaranteed.</strong> We stand behind each fix
-						and never cut corners with unknown components.
-					</li>
-					<li>
-						<strong>Quick repair process.</strong> Most work is completed in-house
-						so you get your device back fast.
-					</li>
-					<li>
-						<strong>Always improving.</strong> Technology changes daily; we stay
-						on the cutting edge so you're never left behind.
-					</li>
-					<li>
-						<strong>Free estimates & honest advice.</strong> Walk in or schedule
-						an appointment and get up-front guidance before we begin.
-					</li>
-				</ul>
-			</section>
+			<!-- Values Section -->
+			<Values />
 
-			<hr class="border-white/10" />
+			<!-- Services Section -->
+			<Services />
 
-			<section class="space-y-6" id="services">
-				<h2 class="text-3xl font-semibold tracking-tight">Services</h2>
-				<div class="space-y-10 text-white/80">
-					<article class="space-y-2">
-						<h3 class="text-2xl font-semibold text-white">
-							Computer &amp; Laptop Repair
-						</h3>
-						<p>
-							Trusted diagnostic and repair work for any desktop or laptop
-							brand—hardware replacement, OS reinstalls, cracked hinges or
-							panels, LCD repairs, and complete tune-ups that keep machines
-							running at peak performance.
-						</p>
-					</article>
-					<article class="space-y-2">
-						<h3 class="text-2xl font-semibold text-white">
-							Apple Device Repair
-						</h3>
-						<p>
-							Certified support for Mac, iPhone, and iPad. We handle memory
-							upgrades, water damage repair, battery swaps, logic-board
-							diagnostics, and more—with 30-day workmanship assurance.
-						</p>
-					</article>
-					<article class="space-y-2">
-						<h3 class="text-2xl font-semibold text-white">
-							Data Backup &amp; Recovery
-						</h3>
-						<p>
-							On-site and in-shop recovery for hard drives, flash storage, and
-							memory cards, plus proactive backup planning so you never lose
-							critical files again.
-						</p>
-					</article>
-					<article class="space-y-2">
-						<h3 class="text-2xl font-semibold text-white">
-							Networking &amp; On-Site Support
-						</h3>
-						<p>
-							Secure wireless setup, router troubleshooting, small-business
-							networking, and scheduled maintenance visits—delivered at your
-							office or home.
-						</p>
-					</article>
-					<article class="space-y-2">
-						<h3 class="text-2xl font-semibold text-white">
-							Virus &amp; Spyware Removal
-						</h3>
-						<p>
-							Deep malware cleaning, registry repair, security audits, and
-							prevention strategies that keep downtime to a minimum.
-						</p>
-					</article>
-					<article class="space-y-2">
-						<h3 class="text-2xl font-semibold text-white">Hardware Upgrades</h3>
-						<p>
-							Affordable RAM, SSD, GPU, and component upgrades that extend the
-							life of existing systems without the cost of full replacement.
-						</p>
-					</article>
-					<article class="space-y-2">
-						<h3 class="text-2xl font-semibold text-white">
-							Custom-Built Computers
-						</h3>
-						<p>
-							Consultation, sourcing, and assembly for purpose-built rigs—gaming
-							systems, creative workstations, and business-ready desktops that
-							fit your exact specs.
-						</p>
-					</article>
-					<article class="space-y-2">
-						<h3 class="text-2xl font-semibold text-white">
-							Control4 Home Automation
-						</h3>
-						<p>
-							Installation, configuration, and ongoing support for Control4
-							smart-home systems across the New Orleans metro area. Let your
-							home work for you.
-						</p>
-					</article>
-				</div>
-			</section>
+			<!-- Statistics Section -->
+			<Statistics />
 
-			<hr class="border-white/10" />
+			<!-- Testimonials Section -->
+			<Testimonials />
 
-			<section class="space-y-6" id="pricing">
-				<h2 class="text-3xl font-semibold tracking-tight">Pricing Snapshot</h2>
-				<div
-					class="overflow-x-auto rounded-2xl border border-white/10 bg-black/30"
-				>
-					<table
-						class="min-w-full divide-y divide-white/10 text-left text-sm text-white/80"
-					>
-						<thead
-							class="bg-white/5 text-xs uppercase tracking-wider text-white/60"
-						>
-							<tr>
-								<th class="px-4 py-3 font-medium">Service Tier</th>
-								<th class="px-4 py-3 font-medium">Rate / Fee</th>
-							</tr>
-						</thead>
-						<tbody class="divide-y divide-white/10">
-							<tr>
-								<td class="px-4 py-3">In-Shop PC Labor</td>
-								<td class="px-4 py-3">$50 per hour</td>
-							</tr>
-							<tr>
-								<td class="px-4 py-3">In-Shop Laptop Labor</td>
-								<td class="px-4 py-3">$65 per hour</td>
-							</tr>
-							<tr>
-								<td class="px-4 py-3">On-Site Labor</td>
-								<td class="px-4 py-3">$90 per hour</td>
-							</tr>
-							<tr>
-								<td class="px-4 py-3">After-Hours / Priority On-Site</td>
-								<td class="px-4 py-3"
-									>$135 per hour (6:00 p.m. – 12:00 a.m. Mon–Fri)</td
-								>
-							</tr>
-							<tr>
-								<td class="px-4 py-3">Critical On-Site Response</td>
-								<td class="px-4 py-3"
-									>$180 per hour (6:00 p.m. – 12:00 a.m. Mon–Fri)</td
-								>
-							</tr>
-							<tr>
-								<td class="px-4 py-3">Priority Queue Upgrade</td>
-								<td class="px-4 py-3"
-									>$65 (moves your device to "next to be serviced")</td
-								>
-							</tr>
-							<tr>
-								<td class="px-4 py-3">Critical Queue Upgrade</td>
-								<td class="px-4 py-3"
-									>$125 (drops current job and starts yours immediately)</td
-								>
-							</tr>
-						</tbody>
-					</table>
-				</div>
-				<p class="text-sm italic text-white/60">
-					Need something special? We're happy to quote project-based or
-					recurring maintenance plans.
-				</p>
-			</section>
-
-			<hr class="border-white/10" />
-
-			<section class="space-y-4" id="warranty">
-				<h2 class="text-3xl font-semibold tracking-tight">
-					Extended Warranty Options
-				</h2>
-				<p class="text-white/80">
-					Protect your purchase with coverage that starts the day you bring your
-					device home.
-				</p>
-				<ul class="space-y-3 text-white/80">
-					<li>
-						<strong>Parts &amp; Labor:</strong> Full coverage to restore factory
-						performance; if repair isn't possible, we'll replace with comparable
-						hardware.
-					</li>
-					<li>
-						<strong>Normal Wear &amp; Tear:</strong> Everyday use is covered. (Sharp
-						blows, excessive abuse, and food/liquid spills on notebooks are not.)
-					</li>
-					<li>
-						<strong>Power Surge Protection:</strong> Safeguards against outages,
-						spikes, and surges.
-					</li>
-					<li>
-						<strong>No Deductibles:</strong> Every qualifying claim is covered from
-						the first dollar—no hidden fees.
-					</li>
-					<li>
-						<strong>No Lemon Policy:</strong> Four qualifying repairs trigger a like-for-like
-						replacement, even if the current price is lower.
-					</li>
-					<li>
-						<strong>Transferable:</strong> Hand the receipt to a new owner and the
-						warranty goes with the device.
-					</li>
-				</ul>
-				<p class="text-white/80">
-					Pricing: <strong>10%/year</strong> of purchase price for new products (minimum
-					$9.95). <strong>15%/year</strong> for used products (minimum $14.95).
-				</p>
-				<p class="text-sm italic text-white/60">
-					Notebook batteries remain under the original manufacturer's warranty.
-				</p>
-			</section>
-
-			<hr class="border-white/10" />
-
-			<section class="space-y-6" id="happy-customers">
-				<h2 class="text-3xl font-semibold tracking-tight">Happy Customers</h2>
-				<div class="space-y-6 text-white/80">
-					<blockquote class="rounded-2xl border border-white/10 bg-white/5 p-6">
-						<p class="text-lg text-white">
-							"Had two of my business PCs crash—PC Tune-Ups had them running
-							smoother than ever."
-						</p>
-						<p class="mt-4 text-sm text-white/60">
-							— <strong>Rory</strong>, business owner
-						</p>
-					</blockquote>
-					<blockquote class="rounded-2xl border border-white/10 bg-white/5 p-6">
-						<p class="text-lg text-white">
-							"Struggling with network reliability, they were able to help right
-							away."
-						</p>
-						<p class="mt-4 text-sm text-white/60">
-							— <strong>Sue</strong>, Metairie
-						</p>
-					</blockquote>
-					<blockquote class="rounded-2xl border border-white/10 bg-white/5 p-6">
-						<p class="text-lg text-white">
-							"They knew exactly what was wrong with our router and fixed it
-							fast."
-						</p>
-						<p class="mt-4 text-sm text-white/60">
-							— <strong>Ralph</strong>, nolabusinessdirectory.com
-						</p>
-					</blockquote>
-					<blockquote class="rounded-2xl border border-white/10 bg-white/5 p-6">
-						<p class="text-lg text-white">
-							"Very professional and honest—scheduled my repair for the next
-							day."
-						</p>
-						<p class="mt-4 text-sm text-white/60">
-							— <strong>Mike</strong>, Kenner
-						</p>
-					</blockquote>
-					<blockquote class="rounded-2xl border border-white/10 bg-white/5 p-6">
-						<p class="text-lg text-white">
-							"Great group of people—my PC works flawlessly now."
-						</p>
-						<p class="mt-4 text-sm text-white/60">
-							— <strong>Damian</strong>, Metairie
-						</p>
-					</blockquote>
-				</div>
-			</section>
-
-			<hr class="border-white/10" />
-
-			<section class="space-y-4" id="contact">
-				<h2 class="text-3xl font-semibold tracking-tight">
-					Service Area &amp; Next Steps
-				</h2>
-				<p class="text-white/80">
-					We proudly serve Metairie, Kenner, New Orleans, and surrounding
-					communities.
-				</p>
-				<p class="text-white/80">
-					Stop by our shop, call 1-504-885-1635, or email <a
-						class="underline hover:text-emerald-200"
-						href="mailto:info@afcom-inc.com">info@afcom-inc.com</a
-					> for a free estimate—let's get your tech tuned up today.
-				</p>
-			</section>
+			<!-- Contact Section -->
+			<Contact />
 		</main>
 
-		<footer class="border-t border-white/10 bg-black/30">
-			<div
-				class="mx-auto flex max-w-4xl flex-col gap-6 px-6 py-8 text-sm text-white/60 sm:flex-row sm:items-center sm:justify-between sm:px-8"
-			>
-				<p>© {currentYear} PC Tune-Ups. All rights reserved.</p>
-				<div class="flex flex-wrap gap-3 text-lg text-white/60">
-					<a
-						class="hover:text-emerald-200"
-						href="https://www.facebook.com/PCTuneUps365/"
-						target="_blank"
-						rel="noreferrer">Fb</a
-					>
-					<a
-						class="hover:text-emerald-200"
-						href="https://twitter.com/pctuneups"
-						target="_blank"
-						rel="noreferrer">Tw</a
-					>
-					<a
-						class="hover:text-emerald-200"
-						href="https://www.instagram.com/pc_tuneups/"
-						target="_blank"
-						rel="noreferrer">Ig</a
-					>
-					<a
-						class="hover:text-emerald-200"
-						href="https://www.linkedin.com/company/pctuneups"
-						target="_blank"
-						rel="noreferrer">In</a
-					>
-					<a
-						class="hover:text-emerald-200"
-						href="https://www.youtube.com/channel/UCLBMfHkUR9qu9WyNBGigPlg"
-						target="_blank"
-						rel="noreferrer">Yt</a
-					>
-				</div>
-			</div>
-		</footer>
+		<!-- Footer -->
+		<Footer />
 	</div>
+
+	<!-- Custom Scripts -->
+	<script>
+		// Smooth scrolling for anchor links
+		document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+			anchor.addEventListener(
+				'click',
+				function (this: HTMLAnchorElement, e: Event) {
+					e.preventDefault()
+					const target = document.querySelector(this.getAttribute('href') || '')
+					if (target) {
+						target.scrollIntoView({
+							behavior: 'smooth',
+							block: 'start',
+						})
+					}
+				},
+			)
+		})
+
+		// Parallax effect for background elements
+		window.addEventListener('scroll', () => {
+			const scrolled = window.pageYOffset
+			const parallaxElements = document.querySelectorAll('.parallax')
+
+			parallaxElements.forEach((element) => {
+				const el = element as HTMLElement
+				const speed = parseFloat(el.dataset.speed || '0.5')
+				el.style.transform = `translateY(${scrolled * speed}px)`
+			})
+		})
+
+		// Intersection Observer for scroll animations
+		const observerOptions: IntersectionObserverInit = {
+			threshold: 0.1,
+			rootMargin: '0px 0px -50px 0px',
+		}
+
+		const observer = new IntersectionObserver((entries) => {
+			entries.forEach((entry) => {
+				if (entry.isIntersecting) {
+					entry.target.classList.add('animate-in')
+				}
+			})
+		}, observerOptions)
+
+		// Observe all scroll-reveal elements
+		document.querySelectorAll('.scroll-reveal').forEach((el) => {
+			observer.observe(el)
+		})
+
+		// Add hover effect to cards
+		document.querySelectorAll('.card-tech').forEach((card) => {
+			const cardEl = card as HTMLElement
+			cardEl.addEventListener('mouseenter', function () {
+				cardEl.style.transform = 'translateY(-4px)'
+			})
+
+			cardEl.addEventListener('mouseleave', function () {
+				cardEl.style.transform = 'translateY(0)'
+			})
+		})
+	</script>
+
+	<!-- Enhanced Animation Styles -->
+	<style>
+		@keyframes float {
+			0%,
+			100% {
+				transform: translateY(0px);
+			}
+			50% {
+				transform: translateY(-20px);
+			}
+		}
+
+		@keyframes fade-in {
+			from {
+				opacity: 0;
+				transform: translateY(30px);
+			}
+			to {
+				opacity: 1;
+				transform: translateY(0);
+			}
+		}
+
+		@keyframes gradient {
+			0% {
+				background-position: 0% 50%;
+			}
+			50% {
+				background-position: 100% 50%;
+			}
+			100% {
+				background-position: 0% 50%;
+			}
+		}
+
+		.animate-float {
+			animation: float 6s ease-in-out infinite;
+		}
+
+		.animate-fade-in {
+			animation: fade-in 0.6s ease-out forwards;
+		}
+
+		.animate-gradient {
+			background-size: 200% 200%;
+			animation: gradient 3s ease infinite;
+		}
+
+		.scroll-reveal {
+			opacity: 0;
+			transform: translateY(30px);
+			transition: all 0.6s ease-out;
+		}
+
+		.scroll-reveal.animate-in {
+			opacity: 1;
+			transform: translateY(0);
+		}
+
+		/* Enhanced hover effects */
+		.card-tech {
+			transition: all 0.3s ease;
+		}
+
+		.card-tech:hover {
+			transform: translateY(-4px);
+			box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+		}
+
+		/* Tech grid background */
+		.tech-grid {
+			background-image:
+				linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+				linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+			background-size: 50px 50px;
+		}
+
+		/* Gradient text */
+		.text-gradient {
+			background: linear-gradient(
+				135deg,
+				hsl(var(--primary)),
+				hsl(var(--accent))
+			);
+			-webkit-background-clip: text;
+			-webkit-text-fill-color: transparent;
+			background-clip: text;
+		}
+
+		/* Glass morphism effect */
+		.glass {
+			background: rgba(255, 255, 255, 0.05);
+			backdrop-filter: blur(10px);
+			border: 1px solid rgba(255, 255, 255, 0.1);
+		}
+
+		/* Glow effects */
+		.glow-effect {
+			box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+		}
+
+		/* Button effects */
+		.btn-tech {
+			position: relative;
+			overflow: hidden;
+			transition: all 0.3s ease;
+		}
+
+		.btn-tech::before {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: -100%;
+			width: 100%;
+			height: 100%;
+			background: linear-gradient(
+				90deg,
+				transparent,
+				rgba(255, 255, 255, 0.2),
+				transparent
+			);
+			transition: left 0.5s ease;
+		}
+
+		.btn-tech:hover::before {
+			left: 100%;
+		}
+
+		/* Gradient buttons */
+		.gradient-cyber {
+			background: linear-gradient(
+				135deg,
+				hsl(var(--primary)),
+				hsl(var(--accent))
+			);
+		}
+
+		.gradient-tech {
+			background: linear-gradient(
+				135deg,
+				hsl(var(--accent)),
+				hsl(var(--primary))
+			);
+		}
+
+		/* Responsive typography */
+		.text-responsive-h1 {
+			font-size: clamp(2.5rem, 5vw, 3.5rem);
+			line-height: 1.2;
+		}
+
+		.text-responsive-h2 {
+			font-size: clamp(2rem, 4vw, 2.5rem);
+			line-height: 1.3;
+		}
+
+		.text-responsive-body {
+			font-size: clamp(1rem, 2vw, 1.125rem);
+			line-height: 1.7;
+		}
+
+		/* Performance optimizations */
+		@media (prefers-reduced-motion: reduce) {
+			.animate-float,
+			.animate-gradient,
+			.animate-fade-in {
+				animation: none;
+			}
+
+			.card-tech {
+				transition: none;
+			}
+		}
+	</style>
 </Layout>

@@ -1,24 +1,61 @@
 ---
-import '#/styles/globals.css'
-import { Font } from 'astro:assets'
+import '#/styles/globals.css';
+import { Font } from 'astro:assets';
 ---
 
 <!doctype html>
 <html lang="en" class="bg-[#05030F] m-0 h-full w-full">
 	<head>
 		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/vercel.svg" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
-		<title>PC Tune-Ups | Same-Day Device Repair in Metro New Orleans</title>
-		<meta
-			name="description"
-			content="PC Tune-Ups delivers fast, professional phone, tablet, and computer repairs in Metairie with certified technicians and concierge-level service."
-		/>
-		<meta
-			name="keywords"
-			content="pc repair, iphone repair, tablet repair, laptop repair, metairie, new orleans"
-		/>
+		<title>PC Tune-Ups - Professional Computer Repair in Metairie, LA</title>
+		<meta name="description" content="Expert computer repair services in Metairie, LA. Specializing in laptop repair, data recovery, Apple products, and more. Fast, reliable service with 15+ years experience." />
+		<meta name="keywords" content="computer repair, laptop repair, data recovery, PC repair, Metairie, New Orleans, iPhone repair, Apple products, hardware upgrade, networking" />
+		
+		<!-- Open Graph / Facebook -->
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content="https://afcom-inc.com/" />
+		<meta property="og:title" content="PC Tune-Ups - Professional Computer Repair in Metairie, LA" />
+		<meta property="og:description" content="Expert computer repair services in Metairie, LA. Specializing in laptop repair, data recovery, Apple products, and more. Fast, reliable service with 15+ years experience." />
+		<meta property="og:image" content="/og-image.jpg" />
+
+		<!-- Twitter -->
+		<meta property="twitter:card" content="summary_large_image" />
+		<meta property="twitter:url" content="https://afcom-inc.com/" />
+		<meta property="twitter:title" content="PC Tune-Ups - Professional Computer Repair in Metairie, LA" />
+		<meta property="twitter:description" content="Expert computer repair services in Metairie, LA. Specializing in laptop repair, data recovery, Apple products, and more. Fast, reliable service with 15+ years experience." />
+		<meta property="twitter:image" content="/og-image.jpg" />
+
+		<!-- Structured Data -->
+		<script type="application/ld+json">
+		{
+			"@context": "https://schema.org",
+			"@type": "LocalBusiness",
+			"name": "PC Tune-Ups",
+			"description": "Professional computer repair services in Metairie, LA",
+			"address": {
+				"@type": "PostalAddress",
+				"streetAddress": "5416 Veterans Blvd",
+				"addressLocality": "Metairie",
+				"addressRegion": "LA",
+				"postalCode": "70003",
+				"addressCountry": "US"
+			},
+			"geo": {
+				"@type": "GeoCoordinates",
+				"latitude": "29.9844",
+				"longitude": "-90.1869"
+			},
+			"telephone": "1-504-885-1635",
+			"email": "info@afcom-inc.com",
+			"openingHours": "Mo-Sa 10:00-18:00",
+			"serviceArea": "New Orleans Metropolitan Area",
+			"servesCuisine": ["Computer Repair", "Data Recovery", "Laptop Repair", "Apple Products Repair"]
+		}
+		</script>
+
 		<Font cssVariable="--font-family-sans" preload />
 		<Font cssVariable="--font-family-mono" preload />
 	</head>
