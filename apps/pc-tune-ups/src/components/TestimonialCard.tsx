@@ -13,9 +13,7 @@ export function TestimonialCard({
 }: TestimonialCardProps) {
 	return (
 		<blockquote className="relative rounded-2xl border border-[#E1D4B6] bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#C75C2F]/40 hover:shadow-lg hover:shadow-[#E3B493]/40">
-			<div className="absolute right-4 top-4 text-4xl text-[#F0CBB0]">
-				"
-			</div>
+			<div className="absolute right-4 top-4 text-4xl text-[#F0CBB0]">"</div>
 			<div className="space-y-4">
 				<p className="relative z-10 text-base leading-relaxed text-[#4F4A3F]">
 					{quote}

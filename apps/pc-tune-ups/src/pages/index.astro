@@ -40,8 +40,7 @@ const testimonials = [
 		initial: 'R',
 	},
 	{
-		quote:
-			'Very professional and honest—scheduled my repair for the next day.',
+		quote: 'Very professional and honest—scheduled my repair for the next day.',
 		name: 'Mike',
 		role: 'Kenner',
 		initial: 'M',
@@ -165,11 +164,7 @@ const testimonials = [
 				<div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
 					{
 						testimonials.map((testimonial, index) => (
-							<div
-								class:list={[
-									index === 4 && 'sm:col-span-2 lg:col-span-1',
-								]}
-							>
+							<div class:list={[index === 4 && 'sm:col-span-2 lg:col-span-1']}>
 								<TestimonialCard
 									quote={testimonial.quote}
 									name={testimonial.name}
