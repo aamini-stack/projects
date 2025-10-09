@@ -81,10 +81,3 @@ export function getGallery(id: string): EventGallery | undefined {
 export function getAllGalleryIds(): string[] {
 	return Object.keys(galleries)
 }
-
-/**
- * Get all galleries
- */
-export function getAllGalleries(): EventGallery[] {
-	return Object.values(galleries)
-}
