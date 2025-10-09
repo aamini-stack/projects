@@ -1,5 +1,6 @@
 ---
 import Layout from '#/pages/_Layout.astro'
+import { StorePhotos } from '#/components/store-photos'
 
 const currentYear = new Date().getFullYear()
 ---
@@ -124,6 +125,11 @@ const currentYear = new Date().getFullYear()
 						>
 					</li>
 				</ul>
+			</section>
+
+			<section class="scroll-mt-8 space-y-6">
+				<h2 class="text-3xl font-semibold tracking-tight">Visit Our Store</h2>
+				<StorePhotos client:load />
 			</section>
 
 			<hr class="border-white/10" />
