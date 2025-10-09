@@ -4,7 +4,7 @@ import { Phone, Mail } from 'lucide-react'
 ---
 
 <section
-	class="scroll-mt-8 space-y-8"
+	class="scroll-mt-8 space-y-8 rounded-3xl bg-white/80 p-8 shadow-sm sm:p-10"
 	id="overview"
 	role="region"
 	aria-labelledby="hero-title"
@@ -14,39 +14,39 @@ import { Phone, Mail } from 'lucide-react'
 		<div class="order-1 space-y-6">
 			<h1
 				id="hero-title"
-				class="bg-gradient-to-br from-white via-white to-emerald-200/60 bg-clip-text text-5xl font-bold tracking-tight text-transparent sm:text-6xl"
+				class="text-5xl font-extrabold leading-tight text-[#C75C2F] sm:text-6xl"
 			>
 				PC Tune-Ups
 			</h1>
 			<p
-				class="max-w-3xl text-xl leading-relaxed text-white/90 sm:text-2xl"
+				class="max-w-3xl text-xl leading-relaxed text-[#4F4A3F] sm:text-2xl"
 			>
 				Your neighborhood team for fast, friendly computer and device repair
 				in the Greater New Orleans area—with <span
-					class="font-semibold text-emerald-200">10+ years</span
+					class="font-semibold text-[#C75C2F]">10+ years</span
 				> of hands-on experience.
 			</p>
 
 			<div class="flex flex-wrap gap-4 pt-4">
 				<a
 					href="tel:15048851635"
-					class="inline-flex items-center gap-2 rounded-xl bg-emerald-200 px-6 py-3 font-semibold text-[#05030F] transition-all duration-200 hover:scale-105 hover:bg-emerald-300 hover:shadow-lg hover:shadow-emerald-200/50"
+					class="inline-flex items-center gap-2 rounded-full bg-[#C75C2F] px-7 py-3 text-lg font-semibold text-white transition-all duration-200 hover:translate-y-[-1px] hover:bg-[#B6562B] hover:shadow-lg hover:shadow-[#E3B493]/40"
 				>
-					<Phone className="h-5 w-5" client:load />
+					<Phone className="h-6 w-6" client:load />
 					<span>Call Now</span>
 				</a>
 				<a
 					href="mailto:info@afcom-inc.com"
-					class="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/10 px-6 py-3 font-semibold text-white backdrop-blur-sm transition-all duration-200 hover:scale-105 hover:bg-white/20"
+					class="inline-flex items-center gap-2 rounded-full border border-[#C75C2F]/30 bg-white px-7 py-3 text-lg font-semibold text-[#2D2A26] transition-all duration-200 hover:translate-y-[-1px] hover:bg-[#FFE8D5]"
 				>
-					<Mail className="h-5 w-5" client:load />
+					<Mail className="h-6 w-6 text-[#C75C2F]" client:load />
 					<span>Email Us</span>
 				</a>
 			</div>
 		</div>
 		<!-- Integrated Store Photos Carousel -->
 		<div
-			class="order-2 overflow-hidden rounded-2xl border border-white/10 shadow-lg"
+			class="order-2 overflow-hidden rounded-2xl border border-[#E1D4B6] shadow-lg shadow-[#D9C7A4]/40"
 		>
 			<StorePhotos client:load />
 		</div>

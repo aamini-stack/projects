@@ -12,21 +12,21 @@ export function TestimonialCard({
 	initial,
 }: TestimonialCardProps) {
 	return (
-		<blockquote className="relative rounded-2xl border border-white/10 bg-gradient-to-br from-white/[0.07] to-white/[0.02] p-6 transition-all duration-300 hover:border-emerald-200/30 hover:shadow-lg hover:shadow-emerald-200/5">
-			<div className="absolute right-4 top-4 text-4xl text-emerald-200/20">
+		<blockquote className="relative rounded-2xl border border-[#E1D4B6] bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#C75C2F]/40 hover:shadow-lg hover:shadow-[#E3B493]/40">
+			<div className="absolute right-4 top-4 text-4xl text-[#F0CBB0]">
 				"
 			</div>
 			<div className="space-y-4">
-				<p className="relative z-10 text-base leading-relaxed text-white/90">
+				<p className="relative z-10 text-base leading-relaxed text-[#4F4A3F]">
 					{quote}
 				</p>
-				<div className="flex items-center gap-3 border-t border-white/10 pt-2">
-					<div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-200/10 font-semibold text-emerald-200">
+				<div className="flex items-center gap-3 border-t border-[#F0E3C7] pt-2">
+					<div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#F9DCC4] font-semibold text-[#C75C2F]">
 						{initial}
 					</div>
 					<div>
-						<p className="text-sm font-semibold text-white">{name}</p>
-						<p className="text-xs text-white/60">{role}</p>
+						<p className="text-sm font-semibold text-[#2D2A26]">{name}</p>
+						<p className="text-xs text-[#6B655A]">{role}</p>
 					</div>
 				</div>
 			</div>
