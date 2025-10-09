@@ -1,18 +1,18 @@
 ---
-url: "https://afcom-inc.com/services/services-style-2/"
-title: "Services Style 2 - My blog"
+url: 'https://afcom-inc.com/services/services-style-2/'
+title: 'Services Style 2 - My blog'
 ---
 
 - 5416 Veterans Blvd. Metairie, LA 70003
 - info@afcom-inc.com
 
-- [Facebook](https://www.facebook.com/PCTuneUps365/ "Facebook")
-- [Google+](https://www.google.com/search?rlz=1C1GCEA_enUS850US850&ei=UmAmXfn0AsvOtQbX75eACw&q=pc+tune+ups+&oq=pc+tune+ups+&gs_l=psy-ab.3..35i39j0i22i30l3j38.16232.16232..16580...0.0..0.94.94.1......0....1..gws-wiz.......0i71.YC_HGYoKHs8 "Google+")
-- [Twitter](https://twitter.com/pctuneups "Twitter")
-- [LinkedIn](https://www.linkedin.com/company/pctuneups?trk=public_profile_position_image "LinkedIn")
-- [Instagram](https://www.instagram.com/pc_tuneups/ "Instagram")
+- [Facebook](https://www.facebook.com/PCTuneUps365/ 'Facebook')
+- [Google+](https://www.google.com/search?rlz=1C1GCEA_enUS850US850&ei=UmAmXfn0AsvOtQbX75eACw&q=pc+tune+ups+&oq=pc+tune+ups+&gs_l=psy-ab.3..35i39j0i22i30l3j38.16232.16232..16580...0.0..0.94.94.1......0....1..gws-wiz.......0i71.YC_HGYoKHs8 'Google+')
+- [Twitter](https://twitter.com/pctuneups 'Twitter')
+- [LinkedIn](https://www.linkedin.com/company/pctuneups?trk=public_profile_position_image 'LinkedIn')
+- [Instagram](https://www.instagram.com/pc_tuneups/ 'Instagram')
 
-[![My blog](https://afcom-inc.com/wp-content/uploads/2017/08/logo1.png)](https://afcom-inc.com/ "My blog")
+[![My blog](https://afcom-inc.com/wp-content/uploads/2017/08/logo1.png)](https://afcom-inc.com/ 'My blog')
 
 - [Home](https://afcom-inc.com/)
 - [Our Services](https://afcom-inc.com/services/services-style-2/)
@@ -56,7 +56,9 @@ title: "Services Style 2 - My blog"
 
 #### [Data Backup & Recovery](https://afcom-inc.com/service/data-backup-recovery/)
 
-In order to save your memory card data, hard disk data or pen drive data after sudden down your system then you need to call PC TUNE-UPS. We have specialization for data recovery service since a long time.
+In order to save your memory card data, hard disk data or pen drive data after
+sudden down your system then you need to call PC TUNE-UPS. We have
+specialization for data recovery service since a long time.
 
 [Learn More](https://afcom-inc.com/service/data-backup-recovery/)
 
@@ -64,7 +66,8 @@ In order to save your memory card data, hard disk data or pen drive data after s
 
 #### [Laptop Repair](https://afcom-inc.com/service/laptop-repair/)
 
-We are one of the best laptop repairing service provider company in New Orleans and repair your system at your home/office at very cheapest price.
+We are one of the best laptop repairing service provider company in New Orleans
+and repair your system at your home/office at very cheapest price.
 
 [Learn More](https://afcom-inc.com/service/laptop-repair/)
 
@@ -72,7 +75,8 @@ We are one of the best laptop repairing service provider company in New Orleans 
 
 #### [Computer Repair](https://afcom-inc.com/service/computer-repair/)
 
-We are oldest and trusted organization for resolving computer related issue and always step up to except the new challenge.
+We are oldest and trusted organization for resolving computer related issue and
+always step up to except the new challenge.
 
 [Learn More](https://afcom-inc.com/service/computer-repair/)
 
@@ -80,7 +84,9 @@ We are oldest and trusted organization for resolving computer related issue and 
 
 #### [Apple Products Repair](https://afcom-inc.com/service/apple-products-repair/)
 
-We are a dedicated Apple Service Provider serving Apple consumers with a professional team which is always up-to-date with professional knowledge of Apple products and required treatment procedures.
+We are a dedicated Apple Service Provider serving Apple consumers with a
+professional team which is always up-to-date with professional knowledge of
+Apple products and required treatment procedures.
 
 [Learn More](https://afcom-inc.com/service/apple-products-repair/)
 
@@ -88,7 +94,8 @@ We are a dedicated Apple Service Provider serving Apple consumers with a profess
 
 #### [Hardware Update](https://afcom-inc.com/service/hardware-update/)
 
-We can help you keep up with rapidly changing technology by performing simple, low cost upgrades to your existing computer.
+We can help you keep up with rapidly changing technology by performing simple,
+low cost upgrades to your existing computer.
 
 [Learn More](https://afcom-inc.com/service/hardware-update/)
 
@@ -96,7 +103,9 @@ We can help you keep up with rapidly changing technology by performing simple, l
 
 #### [Networking / Onsite](https://afcom-inc.com/service/networking-issues-solving/)
 
-Our technicians can set up a secure wireless network in your home that will allow you to share everything between as many computers as you like with 100% security.
+Our technicians can set up a secure wireless network in your home that will
+allow you to share everything between as many computers as you like with 100%
+security.
 
 [Learn More](https://afcom-inc.com/service/networking-issues-solving/)
 
@@ -104,7 +113,8 @@ Our technicians can set up a secure wireless network in your home that will allo
 
 #### [Virus & Spyware Removal](https://afcom-inc.com/service/virus-spyware-removal/)
 
-We working hard to build a reputation of customer satisfaction through technical excellence and friendly staff.
+We working hard to build a reputation of customer satisfaction through technical
+excellence and friendly staff.
 
 [Learn More](https://afcom-inc.com/service/virus-spyware-removal/)
 
@@ -112,7 +122,8 @@ We working hard to build a reputation of customer satisfaction through technical
 
 #### [Custom Built Computers](https://afcom-inc.com/service/custom-built-computers/)
 
-We are one of the leading computer service center, we undertake desktop and laptop service with all major brands
+We are one of the leading computer service center, we undertake desktop and
+laptop service with all major brands
 
 [Learn More](https://afcom-inc.com/service/custom-built-computers/)
 
@@ -120,7 +131,8 @@ We are one of the leading computer service center, we undertake desktop and lapt
 
 #### [iPhone and iPad Repair](https://afcom-inc.com/service/iphone-and-ipad-repair/)
 
-We working hard to build a reputation of customer satisfaction through technical excellence and friendly staff.
+We working hard to build a reputation of customer satisfaction through technical
+excellence and friendly staff.
 
 [Learn More](https://afcom-inc.com/service/iphone-and-ipad-repair/)
 
@@ -128,18 +140,20 @@ We working hard to build a reputation of customer satisfaction through technical
 
 #### [Control4 Home Automation](https://afcom-inc.com/service/control4-new-orleans/)
 
-We are one of the leading computer service center, we undertake desktop and laptop service with all major brands
+We are one of the leading computer service center, we undertake desktop and
+laptop service with all major brands
 
 [Learn More](https://afcom-inc.com/service/control4-new-orleans/)
 
 ![Ostrya](https://afcom-inc.com/wp-content/uploads/2017/08/logo1.png)
 
-Being the best in our field means that we are committed to every project, we have ingenious ideas that become reality and we make every client happy.
+Being the best in our field means that we are committed to every project, we
+have ingenious ideas that become reality and we make every client happy.
 
-- [Facebook](https://www.facebook.com/PCTuneUps365/ "Facebook")
-- [Twitter](https://twitter.com/pctuneups "Twitter")
-- [Instagram](https://www.instagram.com/pc_tuneups/ "Instagram")
-- [Youtube](https://www.youtube.com/channel/UCLBMfHkUR9qu9WyNBGigPlg "Youtube")
+- [Facebook](https://www.facebook.com/PCTuneUps365/ 'Facebook')
+- [Twitter](https://twitter.com/pctuneups 'Twitter')
+- [Instagram](https://www.instagram.com/pc_tuneups/ 'Instagram')
+- [Youtube](https://www.youtube.com/channel/UCLBMfHkUR9qu9WyNBGigPlg 'Youtube')
 
 ### Latest News
 
@@ -147,12 +161,13 @@ Being the best in our field means that we are committed to every project, we hav
 
 Contact our Technicans for Small Business IT Solutions.
 
-- 5416 Veterans Blvd.
-Metairie, LA 70003
+- 5416 Veterans Blvd. Metairie, LA 70003
 - 1-504-885-1635
 - [info@afcom-inc.com](mailto:info@afcom-inc.com)
 
-© Copyright 2017+ [New Orleans Website Designs](http://break-thruproductions.com/) by Break-thru Productions \| [SITEMAP](https://afcom-inc.com/sitemap_index.xml)
+© Copyright 2017+
+[New Orleans Website Designs](http://break-thruproductions.com/) by Break-thru
+Productions \| [SITEMAP](https://afcom-inc.com/sitemap_index.xml)
 
 - [Home](https://afcom-inc.com/home/)
 - [About Us](https://afcom-inc.com/pages/about-us/)

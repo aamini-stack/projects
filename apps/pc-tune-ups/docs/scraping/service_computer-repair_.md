@@ -1,18 +1,18 @@
 ---
-url: "https://afcom-inc.com/service/computer-repair/"
-title: "Computer Repair - My blog"
+url: 'https://afcom-inc.com/service/computer-repair/'
+title: 'Computer Repair - My blog'
 ---
 
 - 5416 Veterans Blvd. Metairie, LA 70003
 - info@afcom-inc.com
 
-- [Facebook](https://www.facebook.com/PCTuneUps365/ "Facebook")
-- [Google+](https://www.google.com/search?rlz=1C1GCEA_enUS850US850&ei=UmAmXfn0AsvOtQbX75eACw&q=pc+tune+ups+&oq=pc+tune+ups+&gs_l=psy-ab.3..35i39j0i22i30l3j38.16232.16232..16580...0.0..0.94.94.1......0....1..gws-wiz.......0i71.YC_HGYoKHs8 "Google+")
-- [Twitter](https://twitter.com/pctuneups "Twitter")
-- [LinkedIn](https://www.linkedin.com/company/pctuneups?trk=public_profile_position_image "LinkedIn")
-- [Instagram](https://www.instagram.com/pc_tuneups/ "Instagram")
+- [Facebook](https://www.facebook.com/PCTuneUps365/ 'Facebook')
+- [Google+](https://www.google.com/search?rlz=1C1GCEA_enUS850US850&ei=UmAmXfn0AsvOtQbX75eACw&q=pc+tune+ups+&oq=pc+tune+ups+&gs_l=psy-ab.3..35i39j0i22i30l3j38.16232.16232..16580...0.0..0.94.94.1......0....1..gws-wiz.......0i71.YC_HGYoKHs8 'Google+')
+- [Twitter](https://twitter.com/pctuneups 'Twitter')
+- [LinkedIn](https://www.linkedin.com/company/pctuneups?trk=public_profile_position_image 'LinkedIn')
+- [Instagram](https://www.instagram.com/pc_tuneups/ 'Instagram')
 
-[![My blog](https://afcom-inc.com/wp-content/uploads/2017/08/logo1.png)](https://afcom-inc.com/ "My blog")
+[![My blog](https://afcom-inc.com/wp-content/uploads/2017/08/logo1.png)](https://afcom-inc.com/ 'My blog')
 
 - [Home](https://afcom-inc.com/)
 - [Our Services](https://afcom-inc.com/services/services-style-2/)
@@ -54,11 +54,14 @@ title: "Computer Repair - My blog"
 
 ### Computer Repairs
 
-“We are oldest and trusted organization for resolving computer related issue and always step up to except the new challenge.”
+“We are oldest and trusted organization for resolving computer related issue and
+always step up to except the new challenge.”
 
-– PC Tune-Ups is the oldest, as well as the most reputable, computer repair store in Metairie. Come see why local is better for your device and your wallet.
+– PC Tune-Ups is the oldest, as well as the most reputable, computer repair
+store in Metairie. Come see why local is better for your device and your wallet.
 
-“We are one of the leading computer service center, we undertake desktop and laptop service with all major brands.”
+“We are one of the leading computer service center, we undertake desktop and
+laptop service with all major brands.”
 
 [Get a Free Quote](https://afcom-inc.com/service/computer-repair/#)
 
@@ -97,8 +100,7 @@ title: "Computer Repair - My blog"
 
 ### Office Address
 
-- 5416 Veterans Blvd.
-Metairie, LA 70003
+- 5416 Veterans Blvd. Metairie, LA 70003
 - 1-504-885-1635
 - [sales@afcom-inc.com](mailto:sales@afcom-inc.com)
 
@@ -106,12 +108,13 @@ Metairie, LA 70003
 
 ![Ostrya](https://afcom-inc.com/wp-content/uploads/2017/08/logo1.png)
 
-Being the best in our field means that we are committed to every project, we have ingenious ideas that become reality and we make every client happy.
+Being the best in our field means that we are committed to every project, we
+have ingenious ideas that become reality and we make every client happy.
 
-- [Facebook](https://www.facebook.com/PCTuneUps365/ "Facebook")
-- [Twitter](https://twitter.com/pctuneups "Twitter")
-- [Instagram](https://www.instagram.com/pc_tuneups/ "Instagram")
-- [Youtube](https://www.youtube.com/channel/UCLBMfHkUR9qu9WyNBGigPlg "Youtube")
+- [Facebook](https://www.facebook.com/PCTuneUps365/ 'Facebook')
+- [Twitter](https://twitter.com/pctuneups 'Twitter')
+- [Instagram](https://www.instagram.com/pc_tuneups/ 'Instagram')
+- [Youtube](https://www.youtube.com/channel/UCLBMfHkUR9qu9WyNBGigPlg 'Youtube')
 
 ### Latest News
 
@@ -119,12 +122,13 @@ Being the best in our field means that we are committed to every project, we hav
 
 Contact our Technicans for Small Business IT Solutions.
 
-- 5416 Veterans Blvd.
-Metairie, LA 70003
+- 5416 Veterans Blvd. Metairie, LA 70003
 - 1-504-885-1635
 - [info@afcom-inc.com](mailto:info@afcom-inc.com)
 
-© Copyright 2017+ [New Orleans Website Designs](http://break-thruproductions.com/) by Break-thru Productions \| [SITEMAP](https://afcom-inc.com/sitemap_index.xml)
+© Copyright 2017+
+[New Orleans Website Designs](http://break-thruproductions.com/) by Break-thru
+Productions \| [SITEMAP](https://afcom-inc.com/sitemap_index.xml)
 
 - [Home](https://afcom-inc.com/home/)
 - [About Us](https://afcom-inc.com/pages/about-us/)
