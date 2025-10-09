@@ -117,6 +117,56 @@ const resource = new flux.FluxBootstrapGit(
 	},
 )
 
+// Storage Account for Ducky MOT Images
+const storageAccount = new azure.storage.StorageAccount('duckyMotStorage', {
+	accountName: 'duckymotimages', // Must be globally unique, lowercase, 3-24 chars
+	resourceGroupName: resourceGroup.name,
+	location: resourceGroup.location,
+	sku: {
+		name: 'Standard_LRS', // Locally redundant storage
+	},
+	kind: 'StorageV2',
+	allowBlobPublicAccess: true,
+	enableHttpsTrafficOnly: true,
+	minimumTlsVersion: 'TLS1_2',
+})
+
+// Blob Container for images
+const imageContainer = new azure.storage.BlobContainer('images', {
+	containerName: 'images',
+	accountName: storageAccount.name,
+	resourceGroupName: resourceGroup.name,
+	publicAccess: 'Blob', // Allow public read access to blobs
+})
+
+// Enable static website hosting (optional, useful for serving images)
+const staticWebsite = new azure.storage.StorageAccountStaticWebsite(
+	'staticWebsite',
+	{
+		accountName: storageAccount.name,
+		resourceGroupName: resourceGroup.name,
+		indexDocument: 'index.html',
+		error404Document: '404.html',
+	},
+)
+
+// Configure CORS for the blob service (allows web access)
+new azure.storage.BlobServiceProperties('blobServiceProperties', {
+	accountName: storageAccount.name,
+	resourceGroupName: resourceGroup.name,
+	cors: {
+		corsRules: [
+			{
+				allowedOrigins: ['*'], // Update this to specific domains in production
+				allowedMethods: ['GET', 'HEAD', 'OPTIONS'],
+				allowedHeaders: ['*'],
+				exposedHeaders: ['*'],
+				maxAgeInSeconds: 3600,
+			},
+		],
+	},
+})
+
 // Outputs
 export const bootstrapId = resource.id
 
@@ -127,4 +177,14 @@ const creds = azure.containerservice.listManagedClusterUserCredentialsOutput({
 const encoded = creds.kubeconfigs[0]?.value
 export const kubeconfig = pulumi.secret(
 	encoded?.apply((enc) => Buffer.from(enc, 'base64').toString()) ?? '',
+)
+
+// Storage outputs
+export const storageAccountName = storageAccount.name
+export const storageAccountPrimaryEndpoint = storageAccount.primaryEndpoints.apply(
+	(endpoints) => endpoints?.blob,
+)
+export const imageContainerUrl = pulumi.interpolate`${storageAccount.primaryEndpoints.apply((e) => e?.blob)}${imageContainer.name}/`
+export const staticWebsiteUrl = storageAccount.primaryEndpoints.apply(
+	(endpoints) => endpoints?.web,
 )
