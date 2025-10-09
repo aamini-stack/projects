@@ -1,106 +1,274 @@
 ---
-import { Button } from '@aamini/ui/components/button'
-import astroLogo from '#/assets/astro.svg'
-import background from '#/assets/background.svg'
-import { FeatureCard } from '#/components/feature-card'
 import Layout from '#/pages/_Layout.astro'
+
+const currentYear = new Date().getFullYear()
 ---
 
 <Layout>
-	<!-- Background with modern gradient blur effect -->
-	<div class="fixed inset-0 -z-10">
-		<img
-			src={background.src}
-			alt=""
-			class="h-full w-full object-cover blur-[100px]"
-			fetchpriority="high"
-		/>
-		<div
-			class="from-background/20 via-background/40 to-background/60 absolute inset-0 bg-gradient-to-br"
-		>
-		</div>
-	</div>
-
-	<!-- Main container with modern layout -->
-	<div
-		class="mx-auto flex min-h-screen max-w-7xl flex-col items-center justify-center gap-8 p-4 lg:flex-row lg:p-8"
-	>
-		<!-- Hero Section -->
-		<main
-			class="flex max-w-2xl flex-1 flex-col items-center space-y-8 text-center lg:items-start lg:text-left"
-		>
-			<!-- Logo with subtle animation -->
-			<div class="group">
-				<a
-					href="https://astro.build"
-					class="inline-block transition-transform hover:scale-105"
-				>
-					<img
-						src={astroLogo.src}
-						width="120"
-						height="50"
-						alt="Astro Homepage"
-						class="drop-shadow-lg"
-					/>
-				</a>
-			</div>
-
-			<!-- Modern Hero Text -->
-			<div class="space-y-4">
-				<h1
-					class="text-foreground text-3xl font-bold leading-tight lg:text-4xl"
-				>
-					Welcome to your
-					<span
-						class="bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 bg-clip-text font-extrabold text-transparent"
-					>
-						Astro Template
-					</span>
-				</h1>
-
-				<p class="text-muted-foreground max-w-xl text-lg leading-relaxed">
-					Get started by exploring the
-					<code
-						class="text-foreground relative inline-flex items-center rounded-lg border border-pink-200 bg-gradient-to-r from-pink-100 to-purple-100 px-3 py-1 font-mono text-sm dark:border-pink-800 dark:from-pink-900/20 dark:to-purple-900/20"
-					>
-						src/pages
-					</code>
-					directory in your project.
-				</p>
-			</div>
-
-			<!-- Action Buttons -->
-			<div class="flex w-full flex-col gap-4 sm:w-auto sm:flex-row">
-				<Button
-					asChild
-					size="lg"
-					className="bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg transition-all duration-200 hover:from-blue-700 hover:to-purple-700 hover:shadow-xl"
-				>
-					<a href="https://docs.astro.build"> 📚 Read our docs </a>
-				</Button>
-
-				<Button
-					asChild
-					variant="outline"
-					size="lg"
-					className="hover:bg-accent/50 group border-2"
-				>
-					<a href="https://astro.build/chat" class="flex items-center gap-2">
-						Join Discord
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							viewBox="0 0 127.14 96.36"
-							class="h-4 w-4 transition-transform group-hover:scale-110"
-						>
-							<path
-								fill="currentColor"
-								d="M107.7 8.07A105.15 105.15 0 0 0 81.47 0a72.06 72.06 0 0 0-3.36 6.83 97.68 97.68 0 0 0-29.11 0A72.37 72.37 0 0 0 45.64 0a105.89 105.89 0 0 0-26.25 8.09C2.79 32.65-1.71 56.6.54 80.21a105.73 105.73 0 0 0 32.17 16.15 77.7 77.7 0 0 0 6.89-11.11 68.42 68.42 0 0 1-10.85-5.18c.91-.66 1.8-1.34 2.66-2a75.57 75.57 0 0 0 64.32 0c.87.71 1.76 1.39 2.66 2a68.68 68.68 0 0 1-10.87 5.19 77 77 0 0 0 6.89 11.1 105.25 105.25 0 0 0 32.19-16.14c2.64-27.38-4.51-51.11-18.9-72.15ZM42.45 65.69C36.18 65.69 31 60 31 53s5-12.74 11.43-12.74S54 46 53.89 53s-5.05 12.69-11.44 12.69Zm42.24 0C78.41 65.69 73.25 60 73.25 53s5-12.74 11.44-12.74S96.23 46 96.12 53s-5.04 12.69-11.43 12.69Z"
-							></path>
-						</svg>
+	<div class="min-h-screen bg-[#05030F] text-white">
+		<header class="border-b border-white/10 bg-black/30">
+			<div class="mx-auto flex max-w-4xl flex-wrap justify-between gap-4 px-6 py-6 text-sm text-white/70 sm:px-8">
+				<div class="space-y-1">
+					<p class="text-xs uppercase tracking-widest text-emerald-200">Call</p>
+					<a class="text-base font-semibold text-white hover:text-emerald-200" href="tel:15048851635">1-504-885-1635</a>
+				</div>
+				<div class="space-y-1">
+					<p class="text-xs uppercase tracking-widest text-emerald-200">Visit</p>
+					<a class="hover:text-emerald-200" href="https://maps.google.com/?q=5416+Veterans+Blvd,+Metairie,+LA+70003" target="_blank" rel="noreferrer">
+						5416 Veterans Blvd, Metairie, LA 70003
 					</a>
-				</Button>
+				</div>
+				<div class="space-y-1">
+					<p class="text-xs uppercase tracking-widest text-emerald-200">Hours</p>
+					<p>Monday – Saturday, 10:00 a.m. – 6:00 p.m.</p>
+				</div>
+				<nav class="flex flex-wrap gap-3 text-xs uppercase tracking-widest text-white/60">
+					<a class="hover:text-emerald-200" href="#overview">Overview</a>
+					<a class="hover:text-emerald-200" href="#why-us">Why Us</a>
+					<a class="hover:text-emerald-200" href="#services">Services</a>
+					<a class="hover:text-emerald-200" href="#pricing">Pricing</a>
+					<a class="hover:text-emerald-200" href="#warranty">Warranty</a>
+					<a class="hover:text-emerald-200" href="#happy-customers">Reviews</a>
+					<a class="hover:text-emerald-200" href="#contact">Contact</a>
+				</nav>
 			</div>
+		</header>
+
+		<main class="mx-auto flex max-w-4xl flex-col gap-16 px-6 py-16 sm:px-8 lg:py-20">
+			<section class="space-y-6" id="overview">
+				<h1 class="text-4xl font-semibold tracking-tight sm:text-5xl">PC Tune-Ups</h1>
+				<p class="text-lg text-white/80 sm:text-xl">
+					Your neighborhood team for fast, friendly computer and device repair in the
+					Greater New Orleans area—with 10+ years of hands-on experience.
+				</p>
+				<ul class="grid gap-3 text-sm text-white/80 sm:grid-cols-2">
+					<li><strong>Address:</strong> 5416 Veterans Blvd, Metairie, LA 70003</li>
+					<li><strong>Phone:</strong> <a class="underline hover:text-emerald-200" href="tel:15048851635">1-504-885-1635</a></li>
+					<li>
+						<strong>Email:</strong>
+						<a class="underline hover:text-emerald-200" href="mailto:info@afcom-inc.com">info@afcom-inc.com</a>
+						·
+						<a class="underline hover:text-emerald-200" href="mailto:sales@afcom-inc.com">sales@afcom-inc.com</a>
+					</li>
+					<li><strong>Hours:</strong> Monday – Saturday, 10:00 a.m. – 6:00 p.m.</li>
+					<li class="sm:col-span-2">
+						<strong>Social:</strong>
+						<a class="underline hover:text-emerald-200" href="https://www.facebook.com/PCTuneUps365/" target="_blank" rel="noreferrer">Facebook</a>
+						·
+						<a class="underline hover:text-emerald-200" href="https://www.instagram.com/pc_tuneups/" target="_blank" rel="noreferrer">Instagram</a>
+						·
+						<a class="underline hover:text-emerald-200" href="https://twitter.com/pctuneups" target="_blank" rel="noreferrer">Twitter</a>
+						·
+						<a class="underline hover:text-emerald-200" href="https://www.linkedin.com/company/pctuneups" target="_blank" rel="noreferrer">LinkedIn</a>
+						·
+						<a class="underline hover:text-emerald-200" href="https://www.youtube.com/channel/UCLBMfHkUR9qu9WyNBGigPlg" target="_blank" rel="noreferrer">YouTube</a>
+					</li>
+				</ul>
+			</section>
+
+			<hr class="border-white/10" />
+
+			<section class="space-y-4" id="why-us">
+				<h2 class="text-3xl font-semibold tracking-tight">Why Local Customers Choose Us</h2>
+				<ul class="space-y-3 text-white/80">
+					<li><strong>Certified engineers with heart.</strong> We pair technical excellence with a friendly, can-do attitude—and we're passionate about every repair.</li>
+					<li><strong>Quality parts, guaranteed.</strong> We stand behind each fix and never cut corners with unknown components.</li>
+					<li><strong>Quick repair process.</strong> Most work is completed in-house so you get your device back fast.</li>
+					<li><strong>Always improving.</strong> Technology changes daily; we stay on the cutting edge so you're never left behind.</li>
+					<li><strong>Free estimates & honest advice.</strong> Walk in or schedule an appointment and get up-front guidance before we begin.</li>
+				</ul>
+			</section>
+
+			<hr class="border-white/10" />
+
+			<section class="space-y-6" id="services">
+				<h2 class="text-3xl font-semibold tracking-tight">Services</h2>
+				<div class="space-y-10 text-white/80">
+					<article class="space-y-2">
+						<h3 class="text-2xl font-semibold text-white">Computer &amp; Laptop Repair</h3>
+						<p>
+							Trusted diagnostic and repair work for any desktop or laptop brand—hardware
+							replacement, OS reinstalls, cracked hinges or panels, LCD repairs, and complete
+							tune-ups that keep machines running at peak performance.
+						</p>
+					</article>
+					<article class="space-y-2">
+						<h3 class="text-2xl font-semibold text-white">Apple Device Repair</h3>
+						<p>
+							Certified support for Mac, iPhone, and iPad. We handle memory upgrades, water
+							damage repair, battery swaps, logic-board diagnostics, and more—with 30-day
+							workmanship assurance.
+						</p>
+					</article>
+					<article class="space-y-2">
+						<h3 class="text-2xl font-semibold text-white">Data Backup &amp; Recovery</h3>
+						<p>
+							On-site and in-shop recovery for hard drives, flash storage, and memory cards,
+							plus proactive backup planning so you never lose critical files again.
+						</p>
+					</article>
+					<article class="space-y-2">
+						<h3 class="text-2xl font-semibold text-white">Networking &amp; On-Site Support</h3>
+						<p>
+							Secure wireless setup, router troubleshooting, small-business networking, and
+							scheduled maintenance visits—delivered at your office or home.
+						</p>
+					</article>
+					<article class="space-y-2">
+						<h3 class="text-2xl font-semibold text-white">Virus &amp; Spyware Removal</h3>
+						<p>
+							Deep malware cleaning, registry repair, security audits, and prevention
+							strategies that keep downtime to a minimum.
+						</p>
+					</article>
+					<article class="space-y-2">
+						<h3 class="text-2xl font-semibold text-white">Hardware Upgrades</h3>
+						<p>
+							Affordable RAM, SSD, GPU, and component upgrades that extend the life of
+							existing systems without the cost of full replacement.
+						</p>
+					</article>
+					<article class="space-y-2">
+						<h3 class="text-2xl font-semibold text-white">Custom-Built Computers</h3>
+						<p>
+							Consultation, sourcing, and assembly for purpose-built rigs—gaming systems,
+							creative workstations, and business-ready desktops that fit your exact specs.
+						</p>
+					</article>
+					<article class="space-y-2">
+						<h3 class="text-2xl font-semibold text-white">Control4 Home Automation</h3>
+						<p>
+							Installation, configuration, and ongoing support for Control4 smart-home systems
+							across the New Orleans metro area. Let your home work for you.
+						</p>
+					</article>
+				</div>
+			</section>
+
+			<hr class="border-white/10" />
+
+			<section class="space-y-6" id="pricing">
+				<h2 class="text-3xl font-semibold tracking-tight">Pricing Snapshot</h2>
+				<div class="overflow-x-auto rounded-2xl border border-white/10 bg-black/30">
+					<table class="min-w-full divide-y divide-white/10 text-left text-sm text-white/80">
+						<thead class="bg-white/5 text-xs uppercase tracking-wider text-white/60">
+							<tr>
+								<th class="px-4 py-3 font-medium">Service Tier</th>
+								<th class="px-4 py-3 font-medium">Rate / Fee</th>
+							</tr>
+						</thead>
+						<tbody class="divide-y divide-white/10">
+							<tr>
+								<td class="px-4 py-3">In-Shop PC Labor</td>
+								<td class="px-4 py-3">$50 per hour</td>
+							</tr>
+							<tr>
+								<td class="px-4 py-3">In-Shop Laptop Labor</td>
+								<td class="px-4 py-3">$65 per hour</td>
+							</tr>
+							<tr>
+								<td class="px-4 py-3">On-Site Labor</td>
+								<td class="px-4 py-3">$90 per hour</td>
+							</tr>
+							<tr>
+								<td class="px-4 py-3">After-Hours / Priority On-Site</td>
+								<td class="px-4 py-3">$135 per hour (6:00 p.m. – 12:00 a.m. Mon–Fri)</td>
+							</tr>
+							<tr>
+								<td class="px-4 py-3">Critical On-Site Response</td>
+								<td class="px-4 py-3">$180 per hour (6:00 p.m. – 12:00 a.m. Mon–Fri)</td>
+							</tr>
+							<tr>
+								<td class="px-4 py-3">Priority Queue Upgrade</td>
+								<td class="px-4 py-3">$65 (moves your device to "next to be serviced")</td>
+							</tr>
+							<tr>
+								<td class="px-4 py-3">Critical Queue Upgrade</td>
+								<td class="px-4 py-3">$125 (drops current job and starts yours immediately)</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<p class="text-sm italic text-white/60">
+					Need something special? We're happy to quote project-based or recurring maintenance plans.
+				</p>
+			</section>
+
+			<hr class="border-white/10" />
+
+			<section class="space-y-4" id="warranty">
+				<h2 class="text-3xl font-semibold tracking-tight">Extended Warranty Options</h2>
+				<p class="text-white/80">
+					Protect your purchase with coverage that starts the day you bring your device home.
+				</p>
+				<ul class="space-y-3 text-white/80">
+					<li><strong>Parts &amp; Labor:</strong> Full coverage to restore factory performance; if repair isn't possible, we'll replace with comparable hardware.</li>
+					<li><strong>Normal Wear &amp; Tear:</strong> Everyday use is covered. (Sharp blows, excessive abuse, and food/liquid spills on notebooks are not.)</li>
+					<li><strong>Power Surge Protection:</strong> Safeguards against outages, spikes, and surges.</li>
+					<li><strong>No Deductibles:</strong> Every qualifying claim is covered from the first dollar—no hidden fees.</li>
+					<li><strong>No Lemon Policy:</strong> Four qualifying repairs trigger a like-for-like replacement, even if the current price is lower.</li>
+					<li><strong>Transferable:</strong> Hand the receipt to a new owner and the warranty goes with the device.</li>
+				</ul>
+				<p class="text-white/80">
+					Pricing: <strong>10%/year</strong> of purchase price for new products (minimum $9.95). <strong>15%/year</strong> for used products (minimum $14.95).
+				</p>
+				<p class="text-sm italic text-white/60">
+					Notebook batteries remain under the original manufacturer's warranty.
+				</p>
+			</section>
+
+			<hr class="border-white/10" />
+
+			<section class="space-y-6" id="happy-customers">
+				<h2 class="text-3xl font-semibold tracking-tight">Happy Customers</h2>
+				<div class="space-y-6 text-white/80">
+					<blockquote class="rounded-2xl border border-white/10 bg-white/5 p-6">
+						<p class="text-lg text-white">"Had two of my business PCs crash—PC Tune-Ups had them running smoother than ever."</p>
+						<p class="mt-4 text-sm text-white/60">— <strong>Rory</strong>, business owner</p>
+					</blockquote>
+					<blockquote class="rounded-2xl border border-white/10 bg-white/5 p-6">
+						<p class="text-lg text-white">"Struggling with network reliability, they were able to help right away."</p>
+						<p class="mt-4 text-sm text-white/60">— <strong>Sue</strong>, Metairie</p>
+					</blockquote>
+					<blockquote class="rounded-2xl border border-white/10 bg-white/5 p-6">
+						<p class="text-lg text-white">"They knew exactly what was wrong with our router and fixed it fast."</p>
+						<p class="mt-4 text-sm text-white/60">— <strong>Ralph</strong>, nolabusinessdirectory.com</p>
+					</blockquote>
+					<blockquote class="rounded-2xl border border-white/10 bg-white/5 p-6">
+						<p class="text-lg text-white">"Very professional and honest—scheduled my repair for the next day."</p>
+						<p class="mt-4 text-sm text-white/60">— <strong>Mike</strong>, Kenner</p>
+					</blockquote>
+					<blockquote class="rounded-2xl border border-white/10 bg-white/5 p-6">
+						<p class="text-lg text-white">"Great group of people—my PC works flawlessly now."</p>
+						<p class="mt-4 text-sm text-white/60">— <strong>Damian</strong>, Metairie</p>
+					</blockquote>
+				</div>
+			</section>
+
+			<hr class="border-white/10" />
+
+			<section class="space-y-4" id="contact">
+				<h2 class="text-3xl font-semibold tracking-tight">Service Area &amp; Next Steps</h2>
+				<p class="text-white/80">
+					We proudly serve Metairie, Kenner, New Orleans, and surrounding communities.
+				</p>
+				<p class="text-white/80">
+					Stop by our shop, call 1-504-885-1635, or email <a class="underline hover:text-emerald-200" href="mailto:info@afcom-inc.com">info@afcom-inc.com</a> for a free estimate—let's get your tech tuned up today.
+				</p>
+			</section>
 		</main>
-		<FeatureCard />
+
+		<footer class="border-t border-white/10 bg-black/30">
+			<div class="mx-auto flex max-w-4xl flex-col gap-6 px-6 py-8 text-sm text-white/60 sm:flex-row sm:items-center sm:justify-between sm:px-8">
+				<p>© {currentYear} PC Tune-Ups. All rights reserved.</p>
+				<div class="flex flex-wrap gap-3 text-lg text-white/60">
+					<a class="hover:text-emerald-200" href="https://www.facebook.com/PCTuneUps365/" target="_blank" rel="noreferrer">Fb</a>
+					<a class="hover:text-emerald-200" href="https://twitter.com/pctuneups" target="_blank" rel="noreferrer">Tw</a>
+					<a class="hover:text-emerald-200" href="https://www.instagram.com/pc_tuneups/" target="_blank" rel="noreferrer">Ig</a>
+					<a class="hover:text-emerald-200" href="https://www.linkedin.com/company/pctuneups" target="_blank" rel="noreferrer">In</a>
+					<a class="hover:text-emerald-200" href="https://www.youtube.com/channel/UCLBMfHkUR9qu9WyNBGigPlg" target="_blank" rel="noreferrer">Yt</a>
+				</div>
+			</div>
+		</footer>
 	</div>
 </Layout>
