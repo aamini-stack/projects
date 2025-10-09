@@ -3,7 +3,8 @@
 	"compilerOptions": {
 		"baseUrl": ".",
 		"paths": {
-			"#/*": ["./src/*"]
+			"#/*": ["./src/*"],
+			"@aamini/ui/*": ["../../packages/ui"]
 		}
 	},
 	"include": [".astro/types.d.ts", "**/*"],

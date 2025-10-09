@@ -7,10 +7,22 @@
 	"editor.formatOnPaste": true,
 	"editor.formatOnSave": true,
 	"editor.rulers": [80],
+	"editor.wordWrapColumn": 80,
 	"editor.defaultFormatter": "esbenp.prettier-vscode",
-	"editor.codeActionsOnSave": {
-		"source.fixAll.biome": "explicit",
-		"source.action.useSortedKeys.biome": "explicit"
+	"[javascript][javascriptreact][typescript][typescriptreact][html][css][json][jsonc][astro][yaml]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+	"[markdown]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode",
+		"editor.unicodeHighlight.ambiguousCharacters": false,
+		"editor.unicodeHighlight.invisibleCharacters": false,
+		"diffEditor.ignoreTrimWhitespace": false,
+		"editor.wordWrap": "wordWrapColumn",
+		"editor.quickSuggestions": {
+			"comments": "off",
+			"strings": "off",
+			"other": "off"
+		}
 	},
 	"typescript.preferences.importModuleSpecifier": "non-relative",
 

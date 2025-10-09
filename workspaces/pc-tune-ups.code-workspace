@@ -1,0 +1,30 @@
+{
+	"folders": [
+		{
+			"path": "../apps/pc-tune-ups",
+		},
+		{
+			"name": "ui",
+			"path": "../packages/ui",
+		},
+		{
+			"name": "root",
+			"path": "..",
+		},
+	],
+	"settings": {
+		"files.exclude": {
+			"**/node_modules/": true,
+			"**/.next/": true,
+			"**/.swc/": true,
+			"**/.turbo": true,
+			"**/.astro": true,
+			"**/dist": true,
+			"**/.vercel": true,
+			"**/playwright-report": true,
+		},
+		"files.associations": {
+			"*.css": "tailwindcss",
+		},
+	},
+}

@@ -17,7 +17,7 @@ RUN  --mount=type=cache,id=pnpm,target=/pnpm/store pnpm fetch
 COPY --from=pruned /app/out/json ./
 RUN  --mount=type=cache,id=pnpm,target=/pnpm/store pnpm i
 COPY --from=pruned /app/out/full ./
-RUN pnpm build --filter=aamini-template 
+RUN pnpm build --filter=aamini-template
 
 FROM runtime
 WORKDIR /app

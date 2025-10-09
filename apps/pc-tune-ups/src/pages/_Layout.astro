@@ -1,0 +1,28 @@
+---
+import '#/styles/globals.css'
+import { Font } from 'astro:assets'
+---
+
+<!doctype html>
+<html lang="en" class="m-0 h-full w-full">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/vercel.svg" />
+		<meta name="generator" content={Astro.generator} />
+		<title>PC Tune-Ups | Same-Day Device Repair in Metro New Orleans</title>
+		<meta
+			name="description"
+			content="PC Tune-Ups delivers fast, professional phone, tablet, and computer repairs in Metairie with certified technicians and concierge-level service."
+		/>
+		<meta
+			name="keywords"
+			content="pc repair, iphone repair, tablet repair, laptop repair, metairie, new orleans"
+		/>
+		<Font cssVariable="--font-family-sans" preload />
+		<Font cssVariable="--font-family-mono" preload />
+	</head>
+	<body class="bg-background m-0 h-full w-full font-sans antialiased">
+		<slot />
+	</body>
+</html>

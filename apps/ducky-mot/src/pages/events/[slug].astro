@@ -1,6 +1,6 @@
 ---
 import { EventGallery } from '#/components/event-gallery'
-import { getAllGalleryIds, getGallery } from '#/data/galleries'
+import { getAllGalleryIds, getGallery } from '#/lib/galleries'
 import Layout from '#/pages/_Layout.astro'
 
 // Generate static paths for all galleries
@@ -25,11 +25,5 @@ if (!gallery) {
 ---
 
 <Layout>
-	<!-- Dark background consistent with main site -->
-	<div
-		class="fixed inset-0 -z-10 bg-gradient-to-br from-gray-900 via-black to-gray-800"
-	>
-	</div>
-
 	<EventGallery client:load gallery={gallery} />
 </Layout>
