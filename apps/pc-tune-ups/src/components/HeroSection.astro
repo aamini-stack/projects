@@ -1,0 +1,54 @@
+---
+import { StorePhotos } from '#/components/store-photos'
+import { Phone, Mail } from 'lucide-react'
+---
+
+<section
+	class="scroll-mt-8 space-y-8"
+	id="overview"
+	role="region"
+	aria-labelledby="hero-title"
+>
+	<div class="grid grid-cols-1 items-start gap-8 lg:grid-cols-2 lg:gap-12">
+		<!-- Hero Text Content -->
+		<div class="order-1 space-y-6">
+			<h1
+				id="hero-title"
+				class="bg-gradient-to-br from-white via-white to-emerald-200/60 bg-clip-text text-5xl font-bold tracking-tight text-transparent sm:text-6xl"
+			>
+				PC Tune-Ups
+			</h1>
+			<p
+				class="max-w-3xl text-xl leading-relaxed text-white/90 sm:text-2xl"
+			>
+				Your neighborhood team for fast, friendly computer and device repair
+				in the Greater New Orleans area—with <span
+					class="font-semibold text-emerald-200">10+ years</span
+				> of hands-on experience.
+			</p>
+
+			<div class="flex flex-wrap gap-4 pt-4">
+				<a
+					href="tel:15048851635"
+					class="inline-flex items-center gap-2 rounded-xl bg-emerald-200 px-6 py-3 font-semibold text-[#05030F] transition-all duration-200 hover:scale-105 hover:bg-emerald-300 hover:shadow-lg hover:shadow-emerald-200/50"
+				>
+					<Phone className="h-5 w-5" client:load />
+					<span>Call Now</span>
+				</a>
+				<a
+					href="mailto:info@afcom-inc.com"
+					class="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/10 px-6 py-3 font-semibold text-white backdrop-blur-sm transition-all duration-200 hover:scale-105 hover:bg-white/20"
+				>
+					<Mail className="h-5 w-5" client:load />
+					<span>Email Us</span>
+				</a>
+			</div>
+		</div>
+		<!-- Integrated Store Photos Carousel -->
+		<div
+			class="order-2 overflow-hidden rounded-2xl border border-white/10 shadow-lg"
+		>
+			<StorePhotos client:load />
+		</div>
+	</div>
+</section>

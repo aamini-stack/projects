@@ -1,0 +1,59 @@
+---
+import { Phone, MapPin, Clock } from 'lucide-react'
+---
+
+<header
+	class="sticky top-0 z-50 border-b border-white/10 bg-[#05030F]/95 backdrop-blur-xl supports-[backdrop-filter]:bg-[#05030F]/80"
+>
+	<div
+		class="mx-auto flex max-w-4xl flex-wrap justify-between gap-6 px-6 py-6 text-sm text-white/70 sm:px-8"
+	>
+		<div class="space-y-1.5">
+			<p
+				class="text-xs font-medium uppercase tracking-widest text-emerald-200/80"
+			>
+				Call
+			</p>
+			<a
+				class="group flex items-center gap-1.5 text-base font-semibold text-white transition-colors duration-200 hover:text-emerald-200"
+				href="tel:15048851635"
+			>
+				<Phone
+					className="inline-block h-5 w-5 transition-transform duration-200 group-hover:scale-110"
+					client:load
+				/>
+				<span>1-504-885-1635</span>
+			</a>
+		</div>
+		<div class="space-y-1.5">
+			<p
+				class="text-xs font-medium uppercase tracking-widest text-emerald-200/80"
+			>
+				Visit
+			</p>
+			<a
+				class="group flex items-center gap-1.5 transition-colors duration-200 hover:text-emerald-200"
+				href="https://maps.google.com/?q=5416+Veterans+Blvd,+Metairie,+LA+70003"
+				target="_blank"
+				rel="noreferrer"
+			>
+				<MapPin
+					className="inline-block h-5 w-5 transition-transform duration-200 group-hover:scale-110"
+					client:load
+				/>
+				<span>5416 Veterans Blvd, Metairie, LA</span>
+			</a>
+		</div>
+		<div class="space-y-1.5">
+			<p
+				class="text-xs font-medium uppercase tracking-widest text-emerald-200/80"
+			>
+				Hours
+			</p>
+			<p class="flex items-center gap-1.5">
+				<Clock className="h-5 w-5" client:load />
+				<span>Mon-Sat, 10AM-6PM</span>
+			</p>
+		</div>
+	</div>
+</header>

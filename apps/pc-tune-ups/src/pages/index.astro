@@ -1,10 +1,12 @@
 ---
 import Layout from '#/pages/_Layout.astro'
-import { StorePhotos } from '#/components/store-photos'
+import Header from '#/components/Header.astro'
+import HeroSection from '#/components/HeroSection.astro'
+import SectionDivider from '#/components/SectionDivider.astro'
+import ServiceCard from '#/components/ServiceCard.astro'
+import { TestimonialCard } from '#/components/TestimonialCard'
+import Footer from '#/components/Footer.astro'
 import {
-	Phone,
-	MapPin,
-	Clock,
 	Laptop2,
 	Apple,
 	Database,
@@ -13,132 +15,56 @@ import {
 	Settings,
 	Monitor,
 	Home,
-	Mail,
 } from 'lucide-react'
-import { Card } from '@aamini/ui/components'
 
-const currentYear = new Date().getFullYear()
+const testimonials = [
+	{
+		quote:
+			'Had two of my business PCs crash—PC Tune-Ups had them running smoother than ever.',
+		name: 'Rory',
+		role: 'Business Owner',
+		initial: 'R',
+	},
+	{
+		quote:
+			'Struggling with network reliability, they were able to help right away.',
+		name: 'Sue',
+		role: 'Metairie',
+		initial: 'S',
+	},
+	{
+		quote:
+			'They knew exactly what was wrong with our router and fixed it fast.',
+		name: 'Ralph',
+		role: 'nolabusinessdirectory.com',
+		initial: 'R',
+	},
+	{
+		quote:
+			'Very professional and honest—scheduled my repair for the next day.',
+		name: 'Mike',
+		role: 'Kenner',
+		initial: 'M',
+	},
+	{
+		quote: 'Great group of people—my PC works flawlessly now.',
+		name: 'Damian',
+		role: 'Metairie',
+		initial: 'D',
+	},
+]
 ---
 
 <Layout>
 	<div class="min-h-screen bg-[#05030F] text-white">
-		<header
-			class="sticky top-0 z-50 border-b border-white/10 bg-[#05030F]/95 backdrop-blur-xl supports-[backdrop-filter]:bg-[#05030F]/80"
-		>
-			<div
-				class="mx-auto flex max-w-4xl flex-wrap justify-between gap-6 px-6 py-6 text-sm text-white/70 sm:px-8"
-			>
-				<div class="space-y-1.5">
-					<p
-						class="text-xs font-medium uppercase tracking-widest text-emerald-200/80"
-					>
-						Call
-					</p>
-					<a
-						class="group flex items-center gap-1.5 text-base font-semibold text-white transition-colors duration-200 hover:text-emerald-200"
-						href="tel:15048851635"
-					>
-						<Phone
-							className="inline-block h-5 w-5 transition-transform duration-200 group-hover:scale-110"
-							client:load
-						/>
-						<span>1-504-885-1635</span>
-					</a>
-				</div>
-				<div class="space-y-1.5">
-					<p
-						class="text-xs font-medium uppercase tracking-widest text-emerald-200/80"
-					>
-						Visit
-					</p>
-					<a
-						class="group flex items-center gap-1.5 transition-colors duration-200 hover:text-emerald-200"
-						href="https://maps.google.com/?q=5416+Veterans+Blvd,+Metairie,+LA+70003"
-						target="_blank"
-						rel="noreferrer"
-					>
-						<MapPin
-							className="inline-block h-5 w-5 transition-transform duration-200 group-hover:scale-110"
-							client:load
-						/>
-						<span>5416 Veterans Blvd, Metairie, LA</span>
-					</a>
-				</div>
-				<div class="space-y-1.5">
-					<p
-						class="text-xs font-medium uppercase tracking-widest text-emerald-200/80"
-					>
-						Hours
-					</p>
-					<p class="flex items-center gap-1.5">
-						<Clock className="h-5 w-5" client:load />
-						<span>Mon-Sat, 10AM-6PM</span>
-					</p>
-				</div>
-			</div>
-		</header>
+		<Header />
 
 		<main
 			class="mx-auto flex max-w-4xl flex-col gap-20 px-6 py-16 sm:px-8 lg:py-24"
 		>
-			<section
-				class="scroll-mt-8 space-y-8"
-				id="overview"
-				role="region"
-				aria-labelledby="hero-title"
-			>
-				<div
-					class="grid grid-cols-1 items-start gap-8 lg:grid-cols-2 lg:gap-12"
-				>
-					<!-- Hero Text Content -->
-					<div class="order-1 space-y-6">
-					<h1
-							id="hero-title"
-						class="bg-gradient-to-br from-white via-white to-emerald-200/60 bg-clip-text text-5xl font-bold tracking-tight text-transparent sm:text-6xl"
-					>
-						PC Tune-Ups
-					</h1>
-					<p
-						class="max-w-3xl text-xl leading-relaxed text-white/90 sm:text-2xl"
-					>
-							Your neighborhood team for fast, friendly computer and device
-							repair in the Greater New Orleans area—with <span
-							class="font-semibold text-emerald-200">10+ years</span
-						> of hands-on experience.
-					</p>
+			<HeroSection />
 
-					<div class="flex flex-wrap gap-4 pt-4">
-						<a
-							href="tel:15048851635"
-							class="inline-flex items-center gap-2 rounded-xl bg-emerald-200 px-6 py-3 font-semibold text-[#05030F] transition-all duration-200 hover:scale-105 hover:bg-emerald-300 hover:shadow-lg hover:shadow-emerald-200/50"
-						>
-								<Phone className="h-5 w-5" client:load />
-							<span>Call Now</span>
-						</a>
-						<a
-							href="mailto:info@afcom-inc.com"
-							class="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/10 px-6 py-3 font-semibold text-white backdrop-blur-sm transition-all duration-200 hover:scale-105 hover:bg-white/20"
-						>
-								<Mail className="h-5 w-5" client:load />
-							<span>Email Us</span>
-						</a>
-						</div>
-					</div>
-					<!-- Integrated Store Photos Carousel -->
-							<div
-						class="order-2 overflow-hidden rounded-2xl border border-white/10 shadow-lg"
-					>
-						<StorePhotos client:load />
-					</div>
-				</div>
-			</section>
-
-			<div class="relative">
-				<div class="absolute inset-0 flex items-center" aria-hidden="true">
-					<div class="w-full border-t border-white/10"></div>
-				</div>
-				<div class="relative flex justify-center"></div>
-			</div>
+			<SectionDivider />
 
 			<section class="scroll-mt-8 space-y-8" id="services">
 				<div class="space-y-3 text-center">
@@ -148,222 +74,82 @@ const currentYear = new Date().getFullYear()
 					</p>
 				</div>
 				<div class="grid gap-6 sm:grid-cols-2">
-					<article
-						class="group relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-white/[0.07] to-white/[0.02] p-6 transition-all duration-300 hover:border-emerald-200/40 hover:shadow-2xl hover:shadow-emerald-200/10"
+					<ServiceCard
+						title="Computer & Laptop Repair"
+						description="Trusted diagnostic and repair work for any desktop or laptop brand—hardware replacement, OS reinstalls, cracked hinges or panels, LCD repairs, and complete tune-ups that keep machines running at peak performance."
 					>
-						<div
-							class="absolute right-0 top-0 h-32 w-32 rounded-full bg-emerald-200/5 blur-3xl transition-all duration-500 group-hover:bg-emerald-200/10"
-						>
-						</div>
-						<div class="relative space-y-3">
-							<div class="flex items-start justify-between gap-4">
-								<h3
-									class="text-2xl font-bold text-white transition-colors duration-300 group-hover:text-emerald-200"
-								>
-									Computer &amp; Laptop Repair
-								</h3>
-								<Laptop2
-									className="h-8 w-8 flex-shrink-0 transition-transform duration-300 group-hover:scale-110"
-									client:load
-								/>
-							</div>
-							<p class="leading-relaxed text-white/70">
-								Trusted diagnostic and repair work for any desktop or laptop
-								brand—hardware replacement, OS reinstalls, cracked hinges or
-								panels, LCD repairs, and complete tune-ups that keep machines
-								running at peak performance.
-							</p>
-						</div>
-					</article>
-					<article
-						class="group relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-white/[0.07] to-white/[0.02] p-6 transition-all duration-300 hover:border-emerald-200/40 hover:shadow-2xl hover:shadow-emerald-200/10"
+						<Laptop2
+							className="h-8 w-8 flex-shrink-0 transition-transform duration-300 group-hover:scale-110"
+							client:load
+						/>
+					</ServiceCard>
+					<ServiceCard
+						title="Apple Device Repair"
+						description="Certified support for Mac, iPhone, and iPad. We handle memory upgrades, water damage repair, battery swaps, logic-board diagnostics, and more—with 30-day workmanship assurance."
 					>
-						<div
-							class="absolute right-0 top-0 h-32 w-32 rounded-full bg-emerald-200/5 blur-3xl transition-all duration-500 group-hover:bg-emerald-200/10"
-						>
-						</div>
-						<div class="relative space-y-3">
-							<div class="flex items-start justify-between gap-4">
-								<h3
-									class="text-2xl font-bold text-white transition-colors duration-300 group-hover:text-emerald-200"
-								>
-									Apple Device Repair
-								</h3>
-								<Apple
-									className="h-8 w-8 flex-shrink-0 transition-transform duration-300 group-hover:scale-110"
-									client:load
-								/>
-							</div>
-							<p class="leading-relaxed text-white/70">
-								Certified support for Mac, iPhone, and iPad. We handle memory
-								upgrades, water damage repair, battery swaps, logic-board
-								diagnostics, and more—with 30-day workmanship assurance.
-							</p>
-						</div>
-					</article>
-					<article
-						class="group relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-white/[0.07] to-white/[0.02] p-6 transition-all duration-300 hover:border-emerald-200/40 hover:shadow-2xl hover:shadow-emerald-200/10"
+						<Apple
+							className="h-8 w-8 flex-shrink-0 transition-transform duration-300 group-hover:scale-110"
+							client:load
+						/>
+					</ServiceCard>
+					<ServiceCard
+						title="Data Backup & Recovery"
+						description="On-site and in-shop recovery for hard drives, flash storage, and memory cards, plus proactive backup planning so you never lose critical files again."
 					>
-						<div
-							class="absolute right-0 top-0 h-32 w-32 rounded-full bg-emerald-200/5 blur-3xl transition-all duration-500 group-hover:bg-emerald-200/10"
-						>
-						</div>
-						<div class="relative space-y-3">
-							<div class="flex items-start justify-between gap-4">
-								<h3
-									class="text-2xl font-bold text-white transition-colors duration-300 group-hover:text-emerald-200"
-								>
-									Data Backup &amp; Recovery
-								</h3>
-								<Database
-									className="h-8 w-8 flex-shrink-0 transition-transform duration-300 group-hover:scale-110"
-									client:load
-								/>
-							</div>
-							<p class="leading-relaxed text-white/70">
-								On-site and in-shop recovery for hard drives, flash storage, and
-								memory cards, plus proactive backup planning so you never lose
-								critical files again.
-							</p>
-						</div>
-					</article>
-					<article
-						class="group relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-white/[0.07] to-white/[0.02] p-6 transition-all duration-300 hover:border-emerald-200/40 hover:shadow-2xl hover:shadow-emerald-200/10"
+						<Database
+							className="h-8 w-8 flex-shrink-0 transition-transform duration-300 group-hover:scale-110"
+							client:load
+						/>
+					</ServiceCard>
+					<ServiceCard
+						title="Networking & On-Site Support"
+						description="Secure wireless setup, router troubleshooting, small-business networking, and scheduled maintenance visits—delivered at your office or home."
 					>
-						<div
-							class="absolute right-0 top-0 h-32 w-32 rounded-full bg-emerald-200/5 blur-3xl transition-all duration-500 group-hover:bg-emerald-200/10"
-						>
-						</div>
-						<div class="relative space-y-3">
-							<div class="flex items-start justify-between gap-4">
-								<h3
-									class="text-2xl font-bold text-white transition-colors duration-300 group-hover:text-emerald-200"
-								>
-									Networking &amp; On-Site Support
-								</h3>
-								<Globe
-									className="h-8 w-8 flex-shrink-0 transition-transform duration-300 group-hover:scale-110"
-									client:load
-								/>
-							</div>
-							<p class="leading-relaxed text-white/70">
-								Secure wireless setup, router troubleshooting, small-business
-								networking, and scheduled maintenance visits—delivered at your
-								office or home.
-							</p>
-						</div>
-					</article>
-					<article
-						class="group relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-white/[0.07] to-white/[0.02] p-6 transition-all duration-300 hover:border-emerald-200/40 hover:shadow-2xl hover:shadow-emerald-200/10"
+						<Globe
+							className="h-8 w-8 flex-shrink-0 transition-transform duration-300 group-hover:scale-110"
+							client:load
+						/>
+					</ServiceCard>
+					<ServiceCard
+						title="Virus & Spyware Removal"
+						description="Deep malware cleaning, registry repair, security audits, and prevention strategies that keep downtime to a minimum."
 					>
-						<div
-							class="absolute right-0 top-0 h-32 w-32 rounded-full bg-emerald-200/5 blur-3xl transition-all duration-500 group-hover:bg-emerald-200/10"
-						>
-						</div>
-						<div class="relative space-y-3">
-							<div class="flex items-start justify-between gap-4">
-								<h3
-									class="text-2xl font-bold text-white transition-colors duration-300 group-hover:text-emerald-200"
-								>
-									Virus &amp; Spyware Removal
-								</h3>
-								<Shield
-									className="h-8 w-8 flex-shrink-0 transition-transform duration-300 group-hover:scale-110"
-									client:load
-								/>
-							</div>
-							<p class="leading-relaxed text-white/70">
-								Deep malware cleaning, registry repair, security audits, and
-								prevention strategies that keep downtime to a minimum.
-							</p>
-						</div>
-					</article>
-					<article
-						class="group relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-white/[0.07] to-white/[0.02] p-6 transition-all duration-300 hover:border-emerald-200/40 hover:shadow-2xl hover:shadow-emerald-200/10"
+						<Shield
+							className="h-8 w-8 flex-shrink-0 transition-transform duration-300 group-hover:scale-110"
+							client:load
+						/>
+					</ServiceCard>
+					<ServiceCard
+						title="Hardware Upgrades"
+						description="Affordable RAM, SSD, GPU, and component upgrades that extend the life of existing systems without the cost of full replacement."
 					>
-						<div
-							class="absolute right-0 top-0 h-32 w-32 rounded-full bg-emerald-200/5 blur-3xl transition-all duration-500 group-hover:bg-emerald-200/10"
-						>
-						</div>
-						<div class="relative space-y-3">
-							<div class="flex items-start justify-between gap-4">
-								<h3
-									class="text-2xl font-bold text-white transition-colors duration-300 group-hover:text-emerald-200"
-								>
-									Hardware Upgrades
-								</h3>
-								<Settings
-									className="h-8 w-8 flex-shrink-0 transition-transform duration-300 group-hover:scale-110"
-									client:load
-								/>
-							</div>
-							<p class="leading-relaxed text-white/70">
-								Affordable RAM, SSD, GPU, and component upgrades that extend the
-								life of existing systems without the cost of full replacement.
-							</p>
-						</div>
-					</article>
-					<article
-						class="group relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-white/[0.07] to-white/[0.02] p-6 transition-all duration-300 hover:border-emerald-200/40 hover:shadow-2xl hover:shadow-emerald-200/10"
+						<Settings
+							className="h-8 w-8 flex-shrink-0 transition-transform duration-300 group-hover:scale-110"
+							client:load
+						/>
+					</ServiceCard>
+					<ServiceCard
+						title="Custom-Built Computers"
+						description="Consultation, sourcing, and assembly for purpose-built rigs—gaming systems, creative workstations, and business-ready desktops that fit your exact specs."
 					>
-						<div
-							class="absolute right-0 top-0 h-32 w-32 rounded-full bg-emerald-200/5 blur-3xl transition-all duration-500 group-hover:bg-emerald-200/10"
-						>
-						</div>
-						<div class="relative space-y-3">
-							<div class="flex items-start justify-between gap-4">
-								<h3
-									class="text-2xl font-bold text-white transition-colors duration-300 group-hover:text-emerald-200"
-								>
-									Custom-Built Computers
-								</h3>
-								<Monitor
-									className="h-8 w-8 flex-shrink-0 transition-transform duration-300 group-hover:scale-110"
-									client:load
-								/>
-							</div>
-							<p class="leading-relaxed text-white/70">
-								Consultation, sourcing, and assembly for purpose-built
-								rigs—gaming systems, creative workstations, and business-ready
-								desktops that fit your exact specs.
-							</p>
-						</div>
-					</article>
-					<article
-						class="group relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-white/[0.07] to-white/[0.02] p-6 transition-all duration-300 hover:border-emerald-200/40 hover:shadow-2xl hover:shadow-emerald-200/10"
+						<Monitor
+							className="h-8 w-8 flex-shrink-0 transition-transform duration-300 group-hover:scale-110"
+							client:load
+						/>
+					</ServiceCard>
+					<ServiceCard
+						title="Control4 Home Automation"
+						description="Installation, configuration, and ongoing support for Control4 smart-home systems across the New Orleans metro area. Let your home work for you."
 					>
-						<div
-							class="absolute right-0 top-0 h-32 w-32 rounded-full bg-emerald-200/5 blur-3xl transition-all duration-500 group-hover:bg-emerald-200/10"
-						>
-						</div>
-						<div class="relative space-y-3">
-							<div class="flex items-start justify-between gap-4">
-								<h3
-									class="text-2xl font-bold text-white transition-colors duration-300 group-hover:text-emerald-200"
-								>
-									Control4 Home Automation
-								</h3>
-								<Home
-									className="h-8 w-8 flex-shrink-0 transition-transform duration-300 group-hover:scale-110"
-									client:load
-								/>
-							</div>
-							<p class="leading-relaxed text-white/70">
-								Installation, configuration, and ongoing support for Control4
-								smart-home systems across the New Orleans metro area. Let your
-								home work for you.
-							</p>
-						</div>
-					</article>
+						<Home
+							className="h-8 w-8 flex-shrink-0 transition-transform duration-300 group-hover:scale-110"
+							client:load
+						/>
+					</ServiceCard>
 				</div>
 			</section>
 
-			<div class="relative">
-				<div class="absolute inset-0 flex items-center" aria-hidden="true">
-					<div class="w-full border-t border-white/10"></div>
-				</div>
-				<div class="relative flex justify-center"></div>
-			</div>
+			<SectionDivider />
 
 			<section class="scroll-mt-8 space-y-8" id="happy-customers">
 				<div class="space-y-3 text-center">
@@ -373,188 +159,27 @@ const currentYear = new Date().getFullYear()
 					</p>
 				</div>
 				<div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-					<blockquote
-						class="relative rounded-2xl border border-white/10 bg-gradient-to-br from-white/[0.07] to-white/[0.02] p-6 transition-all duration-300 hover:border-emerald-200/30 hover:shadow-lg hover:shadow-emerald-200/5"
-					>
-						<div class="absolute right-4 top-4 text-4xl text-emerald-200/20">
-							"
-						</div>
-						<div class="space-y-4">
-							<p class="relative z-10 text-base leading-relaxed text-white/90">
-								Had two of my business PCs crash—PC Tune-Ups had them running
-								smoother than ever.
-							</p>
+					{
+						testimonials.map((testimonial, index) => (
 							<div
-								class="flex items-center gap-3 border-t border-white/10 pt-2"
+								class:list={[
+									index === 4 && 'sm:col-span-2 lg:col-span-1',
+								]}
 							>
-								<div
-									class="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-200/10 font-semibold text-emerald-200"
-								>
-									R
-								</div>
-								<div>
-									<p class="text-sm font-semibold text-white">Rory</p>
-									<p class="text-xs text-white/60">Business Owner</p>
-								</div>
+								<TestimonialCard
+									quote={testimonial.quote}
+									name={testimonial.name}
+									role={testimonial.role}
+									initial={testimonial.initial}
+									client:load
+								/>
 							</div>
-						</div>
-					</blockquote>
-					<blockquote
-						class="relative rounded-2xl border border-white/10 bg-gradient-to-br from-white/[0.07] to-white/[0.02] p-6 transition-all duration-300 hover:border-emerald-200/30 hover:shadow-lg hover:shadow-emerald-200/5"
-					>
-						<div class="absolute right-4 top-4 text-4xl text-emerald-200/20">
-							"
-						</div>
-						<div class="space-y-4">
-							<p class="relative z-10 text-base leading-relaxed text-white/90">
-								Struggling with network reliability, they were able to help
-								right away.
-							</p>
-							<div
-								class="flex items-center gap-3 border-t border-white/10 pt-2"
-							>
-								<div
-									class="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-200/10 font-semibold text-emerald-200"
-								>
-									S
-								</div>
-								<div>
-									<p class="text-sm font-semibold text-white">Sue</p>
-									<p class="text-xs text-white/60">Metairie</p>
-								</div>
-							</div>
-						</div>
-					</blockquote>
-					<blockquote
-						class="relative rounded-2xl border border-white/10 bg-gradient-to-br from-white/[0.07] to-white/[0.02] p-6 transition-all duration-300 hover:border-emerald-200/30 hover:shadow-lg hover:shadow-emerald-200/5"
-					>
-						<div class="absolute right-4 top-4 text-4xl text-emerald-200/20">
-							"
-						</div>
-						<div class="space-y-4">
-							<p class="relative z-10 text-base leading-relaxed text-white/90">
-								They knew exactly what was wrong with our router and fixed it
-								fast.
-							</p>
-							<div
-								class="flex items-center gap-3 border-t border-white/10 pt-2"
-							>
-								<div
-									class="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-200/10 font-semibold text-emerald-200"
-								>
-									R
-								</div>
-								<div>
-									<p class="text-sm font-semibold text-white">Ralph</p>
-									<p class="text-xs text-white/60">nolabusinessdirectory.com</p>
-								</div>
-							</div>
-						</div>
-					</blockquote>
-					<blockquote
-						class="relative rounded-2xl border border-white/10 bg-gradient-to-br from-white/[0.07] to-white/[0.02] p-6 transition-all duration-300 hover:border-emerald-200/30 hover:shadow-lg hover:shadow-emerald-200/5"
-					>
-						<div class="absolute right-4 top-4 text-4xl text-emerald-200/20">
-							"
-						</div>
-						<div class="space-y-4">
-							<p class="relative z-10 text-base leading-relaxed text-white/90">
-								Very professional and honest—scheduled my repair for the next
-								day.
-							</p>
-							<div
-								class="flex items-center gap-3 border-t border-white/10 pt-2"
-							>
-								<div
-									class="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-200/10 font-semibold text-emerald-200"
-								>
-									M
-								</div>
-								<div>
-									<p class="text-sm font-semibold text-white">Mike</p>
-									<p class="text-xs text-white/60">Kenner</p>
-								</div>
-							</div>
-						</div>
-					</blockquote>
-					<blockquote
-						class="relative rounded-2xl border border-white/10 bg-gradient-to-br from-white/[0.07] to-white/[0.02] p-6 transition-all duration-300 hover:border-emerald-200/30 hover:shadow-lg hover:shadow-emerald-200/5 sm:col-span-2 lg:col-span-1"
-					>
-						<div class="absolute right-4 top-4 text-4xl text-emerald-200/20">
-							"
-						</div>
-						<div class="space-y-4">
-							<p class="relative z-10 text-base leading-relaxed text-white/90">
-								Great group of people—my PC works flawlessly now.
-							</p>
-							<div
-								class="flex items-center gap-3 border-t border-white/10 pt-2"
-							>
-								<div
-									class="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-200/10 font-semibold text-emerald-200"
-								>
-									D
-								</div>
-								<div>
-									<p class="text-sm font-semibold text-white">Damian</p>
-									<p class="text-xs text-white/60">Metairie</p>
-								</div>
-							</div>
-						</div>
-					</blockquote>
-					</Card>
+						))
+					}
 				</div>
 			</section>
 		</main>
 
-		<footer
-			class="border-t border-white/10 bg-gradient-to-b from-black/20 to-black/40 backdrop-blur-sm"
-		>
-			<div
-				class="mx-auto flex max-w-4xl flex-col gap-6 px-6 py-10 text-sm text-white/60 sm:flex-row sm:items-center sm:justify-between sm:px-8"
-			>
-				<div class="space-y-2">
-					<p class="text-base font-semibold text-white">PC Tune-Ups</p>
-					<p>© {currentYear} PC Tune-Ups. All rights reserved.</p>
-				</div>
-				<div class="flex flex-wrap items-center gap-4">
-					<a
-						class="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-white/10 bg-white/5 transition-all duration-200 hover:border-emerald-200/50 hover:bg-emerald-200/20 hover:text-emerald-200"
-						href="https://www.facebook.com/PCTuneUps365/"
-						target="_blank"
-						rel="noreferrer"
-						aria-label="Facebook">Fb</a
-					>
-					<a
-						class="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-white/10 bg-white/5 transition-all duration-200 hover:border-emerald-200/50 hover:bg-emerald-200/20 hover:text-emerald-200"
-						href="https://twitter.com/pctuneups"
-						target="_blank"
-						rel="noreferrer"
-						aria-label="Twitter">Tw</a
-					>
-					<a
-						class="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-white/10 bg-white/5 transition-all duration-200 hover:border-emerald-200/50 hover:bg-emerald-200/20 hover:text-emerald-200"
-						href="https://www.instagram.com/pc_tuneups/"
-						target="_blank"
-						rel="noreferrer"
-						aria-label="Instagram">Ig</a
-					>
-					<a
-						class="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-white/10 bg-white/5 transition-all duration-200 hover:border-emerald-200/50 hover:bg-emerald-200/20 hover:text-emerald-200"
-						href="https://www.linkedin.com/company/pctuneups"
-						target="_blank"
-						rel="noreferrer"
-						aria-label="LinkedIn">In</a
-					>
-					<a
-						class="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-white/10 bg-white/5 transition-all duration-200 hover:border-emerald-200/50 hover:bg-emerald-200/20 hover:text-emerald-200"
-						href="https://www.youtube.com/channel/UCLBMfHkUR9qu9WyNBGigPlg"
-						target="_blank"
-						rel="noreferrer"
-						aria-label="YouTube">Yt</a
-					>
-				</div>
-			</div>
-		</footer>
+		<Footer />
 	</div>
 </Layout>
