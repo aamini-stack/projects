@@ -3,9 +3,9 @@
 This file provides guidance to agentic LLMs when working with code in this
 repository.
 
-## ${{ APP_NAME }}
+## aamini-template
 
-\${{ APP_DESCRIPTION }}
+aamini-template description
 
 ## 🧞 Commands
 
