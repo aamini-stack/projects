@@ -47,8 +47,8 @@ export function StorePhotos() {
 						</CarouselItem>
 					))}
 				</CarouselContent>
-				<CarouselPrevious className="left-4 bg-black/50 text-white hover:bg-black/70 hover:text-emerald-200 border-white/20" />
-				<CarouselNext className="right-4 bg-black/50 text-white hover:bg-black/70 hover:text-emerald-200 border-white/20" />
+				<CarouselPrevious className="left-4 border-white/20 bg-black/50 text-white hover:bg-black/70 hover:text-emerald-200" />
+				<CarouselNext className="right-4 border-white/20 bg-black/50 text-white hover:bg-black/70 hover:text-emerald-200" />
 			</Carousel>
 		</div>
 	)
