@@ -13,6 +13,7 @@ const args = {
 		{ name: 'imdbgraph' },
 		{ name: 'dota-visualizer' },
 		{ name: 'fruit-gen' },
+		{ name: 'pc-tune-ups' },
 		{
 			name: 'ducky-mot',
 			overrides: {
