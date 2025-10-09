@@ -1,11 +1,1 @@
 @import '@aamini/ui/globals.css';
-
-:root {
-	--header-height: 10rem; /* Mobile: header wraps, needs more space */
-}
-
-@media (min-width: 640px) {
-	:root {
-		--header-height: 8rem; /* Desktop: header is more compact */
-	}
-}

@@ -1,6 +1,21 @@
 ---
 import Layout from '#/pages/_Layout.astro'
 import { StorePhotos } from '#/components/store-photos'
+import {
+	Phone,
+	MapPin,
+	Clock,
+	Laptop2,
+	Apple,
+	Database,
+	Globe,
+	Shield,
+	Settings,
+	Monitor,
+	Home,
+	Mail,
+} from 'lucide-react'
+import { Card } from '@aamini/ui/components'
 
 const currentYear = new Date().getFullYear()
 ---
@@ -9,7 +24,6 @@ const currentYear = new Date().getFullYear()
 	<div class="min-h-screen bg-[#05030F] text-white">
 		<header
 			class="sticky top-0 z-50 border-b border-white/10 bg-[#05030F]/95 backdrop-blur-xl supports-[backdrop-filter]:bg-[#05030F]/80"
-			style="min-height: var(--header-height);"
 		>
 			<div
 				class="mx-auto flex max-w-4xl flex-wrap justify-between gap-6 px-6 py-6 text-sm text-white/70 sm:px-8"
@@ -24,10 +38,10 @@ const currentYear = new Date().getFullYear()
 						class="group flex items-center gap-1.5 text-base font-semibold text-white transition-colors duration-200 hover:text-emerald-200"
 						href="tel:15048851635"
 					>
-						<span
-							class="inline-block transition-transform duration-200 group-hover:scale-110"
-							>📞</span
-						>
+						<Phone
+							className="inline-block h-5 w-5 transition-transform duration-200 group-hover:scale-110"
+							client:load
+						/>
 						<span>1-504-885-1635</span>
 					</a>
 				</div>
@@ -43,10 +57,10 @@ const currentYear = new Date().getFullYear()
 						target="_blank"
 						rel="noreferrer"
 					>
-						<span
-							class="inline-block transition-transform duration-200 group-hover:scale-110"
-							>📍</span
-						>
+						<MapPin
+							className="inline-block h-5 w-5 transition-transform duration-200 group-hover:scale-110"
+							client:load
+						/>
 						<span>5416 Veterans Blvd, Metairie, LA</span>
 					</a>
 				</div>
@@ -57,51 +71,29 @@ const currentYear = new Date().getFullYear()
 						Hours
 					</p>
 					<p class="flex items-center gap-1.5">
-						<span>⏰</span>
-						<span>Mon–Sat, 10AM–6PM</span>
+						<Clock className="h-5 w-5" client:load />
+						<span>Mon-Sat, 10AM-6PM</span>
 					</p>
 				</div>
-				<nav
-					class="flex flex-wrap items-center gap-4 text-xs uppercase tracking-widest text-white/60"
-				>
-					<a
-						class="inline-block transition-colors duration-200 hover:scale-105 hover:text-emerald-200"
-						href="#overview">Overview</a
-					>
-					<a
-						class="inline-block transition-colors duration-200 hover:scale-105 hover:text-emerald-200"
-						href="#why-us">Why Us</a
-					>
-					<a
-						class="inline-block transition-colors duration-200 hover:scale-105 hover:text-emerald-200"
-						href="#services">Services</a
-					>
-					<a
-						class="inline-block transition-colors duration-200 hover:scale-105 hover:text-emerald-200"
-						href="#pricing">Pricing</a
-					>
-					<a
-						class="inline-block transition-colors duration-200 hover:scale-105 hover:text-emerald-200"
-						href="#warranty">Warranty</a
-					>
-					<a
-						class="inline-block transition-colors duration-200 hover:scale-105 hover:text-emerald-200"
-						href="#happy-customers">Reviews</a
-					>
-					<a
-						class="inline-block transition-colors duration-200 hover:scale-105 hover:text-emerald-200"
-						href="#contact">Contact</a
-					>
-				</nav>
 			</div>
 		</header>
 
 		<main
 			class="mx-auto flex max-w-4xl flex-col gap-20 px-6 py-16 sm:px-8 lg:py-24"
 		>
-			<section class="scroll-mt-8 space-y-8" id="overview">
-				<div class="space-y-6">
+			<section
+				class="scroll-mt-8 space-y-8"
+				id="overview"
+				role="region"
+				aria-labelledby="hero-title"
+			>
+				<div
+					class="grid grid-cols-1 items-start gap-8 lg:grid-cols-2 lg:gap-12"
+				>
+					<!-- Hero Text Content -->
+					<div class="order-1 space-y-6">
 					<h1
+							id="hero-title"
 						class="bg-gradient-to-br from-white via-white to-emerald-200/60 bg-clip-text text-5xl font-bold tracking-tight text-transparent sm:text-6xl"
 					>
 						PC Tune-Ups
@@ -109,8 +101,8 @@ const currentYear = new Date().getFullYear()
 					<p
 						class="max-w-3xl text-xl leading-relaxed text-white/90 sm:text-2xl"
 					>
-						Your neighborhood team for fast, friendly computer and device repair
-						in the Greater New Orleans area—with <span
+							Your neighborhood team for fast, friendly computer and device
+							repair in the Greater New Orleans area—with <span
 							class="font-semibold text-emerald-200">10+ years</span
 						> of hands-on experience.
 					</p>
@@ -120,148 +112,23 @@ const currentYear = new Date().getFullYear()
 							href="tel:15048851635"
 							class="inline-flex items-center gap-2 rounded-xl bg-emerald-200 px-6 py-3 font-semibold text-[#05030F] transition-all duration-200 hover:scale-105 hover:bg-emerald-300 hover:shadow-lg hover:shadow-emerald-200/50"
 						>
-							<span>📞</span>
+								<Phone className="h-5 w-5" client:load />
 							<span>Call Now</span>
 						</a>
 						<a
 							href="mailto:info@afcom-inc.com"
 							class="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/10 px-6 py-3 font-semibold text-white backdrop-blur-sm transition-all duration-200 hover:scale-105 hover:bg-white/20"
 						>
-							<span>✉️</span>
+								<Mail className="h-5 w-5" client:load />
 							<span>Email Us</span>
 						</a>
-					</div>
-				</div>
-			</section>
-
-			<section class="scroll-mt-8 space-y-6">
-				<div class="space-y-3 text-center">
-					<h2 class="text-4xl font-bold tracking-tight">Visit Our Store</h2>
-					<p class="mx-auto max-w-2xl text-lg text-white/70">
-						Come see our friendly team and modern facility
-					</p>
-				</div>
-				<StorePhotos client:load />
-			</section>
-
-			<div class="relative">
-				<div class="absolute inset-0 flex items-center" aria-hidden="true">
-					<div class="w-full border-t border-white/10"></div>
-				</div>
-				<div class="relative flex justify-center">
-					<span class="bg-[#05030F] px-6 text-sm text-emerald-200/60">⭐</span>
-				</div>
-			</div>
-
-			<section class="scroll-mt-8 space-y-8" id="why-us">
-				<div class="space-y-3 text-center">
-					<h2 class="text-4xl font-bold tracking-tight">
-						Why Local Customers Choose Us
-					</h2>
-					<p class="mx-auto max-w-2xl text-lg text-white/70">
-						Over a decade of trusted service in the Greater New Orleans area
-					</p>
-				</div>
-				<div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-					<div
-						class="group rounded-2xl border border-white/10 bg-gradient-to-br from-white/5 to-white/[0.02] p-6 transition-all duration-300 hover:-translate-y-1 hover:border-emerald-200/50 hover:shadow-xl hover:shadow-emerald-200/10"
-					>
-						<div class="flex items-start gap-4">
-							<div
-								class="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-emerald-200/10 text-2xl transition-transform duration-300 group-hover:scale-110"
-							>
-								🎓
-							</div>
-							<div class="space-y-2">
-								<h3 class="text-lg font-semibold text-white">
-									Certified engineers with heart
-								</h3>
-								<p class="text-sm leading-relaxed text-white/70">
-									We pair technical excellence with a friendly, can-do
-									attitude—and we're passionate about every repair.
-								</p>
-							</div>
 						</div>
 					</div>
-					<div
-						class="group rounded-2xl border border-white/10 bg-gradient-to-br from-white/5 to-white/[0.02] p-6 transition-all duration-300 hover:-translate-y-1 hover:border-emerald-200/50 hover:shadow-xl hover:shadow-emerald-200/10"
-					>
-						<div class="flex items-start gap-4">
+					<!-- Integrated Store Photos Carousel -->
 							<div
-								class="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-emerald-200/10 text-2xl transition-transform duration-300 group-hover:scale-110"
-							>
-								✅
-							</div>
-							<div class="space-y-2">
-								<h3 class="text-lg font-semibold text-white">
-									Quality parts, guaranteed
-								</h3>
-								<p class="text-sm leading-relaxed text-white/70">
-									We stand behind each fix and never cut corners with unknown
-									components.
-								</p>
-							</div>
-						</div>
-					</div>
-					<div
-						class="group rounded-2xl border border-white/10 bg-gradient-to-br from-white/5 to-white/[0.02] p-6 transition-all duration-300 hover:-translate-y-1 hover:border-emerald-200/50 hover:shadow-xl hover:shadow-emerald-200/10"
+						class="order-2 overflow-hidden rounded-2xl border border-white/10 shadow-lg"
 					>
-						<div class="flex items-start gap-4">
-							<div
-								class="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-emerald-200/10 text-2xl transition-transform duration-300 group-hover:scale-110"
-							>
-								⚡
-							</div>
-							<div class="space-y-2">
-								<h3 class="text-lg font-semibold text-white">
-									Quick repair process
-								</h3>
-								<p class="text-sm leading-relaxed text-white/70">
-									Most work is completed in-house so you get your device back
-									fast.
-								</p>
-							</div>
-						</div>
-					</div>
-					<div
-						class="group rounded-2xl border border-white/10 bg-gradient-to-br from-white/5 to-white/[0.02] p-6 transition-all duration-300 hover:-translate-y-1 hover:border-emerald-200/50 hover:shadow-xl hover:shadow-emerald-200/10"
-					>
-						<div class="flex items-start gap-4">
-							<div
-								class="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-emerald-200/10 text-2xl transition-transform duration-300 group-hover:scale-110"
-							>
-								🚀
-							</div>
-							<div class="space-y-2">
-								<h3 class="text-lg font-semibold text-white">
-									Always improving
-								</h3>
-								<p class="text-sm leading-relaxed text-white/70">
-									Technology changes daily; we stay on the cutting edge so
-									you're never left behind.
-								</p>
-							</div>
-						</div>
-					</div>
-					<div
-						class="group rounded-2xl border border-white/10 bg-gradient-to-br from-white/5 to-white/[0.02] p-6 transition-all duration-300 hover:-translate-y-1 hover:border-emerald-200/50 hover:shadow-xl hover:shadow-emerald-200/10 sm:col-span-2 lg:col-span-1"
-					>
-						<div class="flex items-start gap-4">
-							<div
-								class="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-emerald-200/10 text-2xl transition-transform duration-300 group-hover:scale-110"
-							>
-								💰
-							</div>
-							<div class="space-y-2">
-								<h3 class="text-lg font-semibold text-white">
-									Free estimates & honest advice
-								</h3>
-								<p class="text-sm leading-relaxed text-white/70">
-									Walk in or schedule an appointment and get up-front guidance
-									before we begin.
-								</p>
-							</div>
-						</div>
+						<StorePhotos client:load />
 					</div>
 				</div>
 			</section>
@@ -270,9 +137,7 @@ const currentYear = new Date().getFullYear()
 				<div class="absolute inset-0 flex items-center" aria-hidden="true">
 					<div class="w-full border-t border-white/10"></div>
 				</div>
-				<div class="relative flex justify-center">
-					<span class="bg-[#05030F] px-6 text-sm text-emerald-200/60">🔧</span>
-				</div>
+				<div class="relative flex justify-center"></div>
 			</div>
 
 			<section class="scroll-mt-8 space-y-8" id="services">
@@ -297,10 +162,10 @@ const currentYear = new Date().getFullYear()
 								>
 									Computer &amp; Laptop Repair
 								</h3>
-								<span
-									class="flex-shrink-0 text-3xl transition-transform duration-300 group-hover:scale-110"
-									>💻</span
-								>
+								<Laptop2
+									className="h-8 w-8 flex-shrink-0 transition-transform duration-300 group-hover:scale-110"
+									client:load
+								/>
 							</div>
 							<p class="leading-relaxed text-white/70">
 								Trusted diagnostic and repair work for any desktop or laptop
@@ -324,10 +189,10 @@ const currentYear = new Date().getFullYear()
 								>
 									Apple Device Repair
 								</h3>
-								<span
-									class="flex-shrink-0 text-3xl transition-transform duration-300 group-hover:scale-110"
-									>🍎</span
-								>
+								<Apple
+									className="h-8 w-8 flex-shrink-0 transition-transform duration-300 group-hover:scale-110"
+									client:load
+								/>
 							</div>
 							<p class="leading-relaxed text-white/70">
 								Certified support for Mac, iPhone, and iPad. We handle memory
@@ -350,10 +215,10 @@ const currentYear = new Date().getFullYear()
 								>
 									Data Backup &amp; Recovery
 								</h3>
-								<span
-									class="flex-shrink-0 text-3xl transition-transform duration-300 group-hover:scale-110"
-									>💾</span
-								>
+								<Database
+									className="h-8 w-8 flex-shrink-0 transition-transform duration-300 group-hover:scale-110"
+									client:load
+								/>
 							</div>
 							<p class="leading-relaxed text-white/70">
 								On-site and in-shop recovery for hard drives, flash storage, and
@@ -376,10 +241,10 @@ const currentYear = new Date().getFullYear()
 								>
 									Networking &amp; On-Site Support
 								</h3>
-								<span
-									class="flex-shrink-0 text-3xl transition-transform duration-300 group-hover:scale-110"
-									>🌐</span
-								>
+								<Globe
+									className="h-8 w-8 flex-shrink-0 transition-transform duration-300 group-hover:scale-110"
+									client:load
+								/>
 							</div>
 							<p class="leading-relaxed text-white/70">
 								Secure wireless setup, router troubleshooting, small-business
@@ -402,10 +267,10 @@ const currentYear = new Date().getFullYear()
 								>
 									Virus &amp; Spyware Removal
 								</h3>
-								<span
-									class="flex-shrink-0 text-3xl transition-transform duration-300 group-hover:scale-110"
-									>🛡️</span
-								>
+								<Shield
+									className="h-8 w-8 flex-shrink-0 transition-transform duration-300 group-hover:scale-110"
+									client:load
+								/>
 							</div>
 							<p class="leading-relaxed text-white/70">
 								Deep malware cleaning, registry repair, security audits, and
@@ -427,10 +292,10 @@ const currentYear = new Date().getFullYear()
 								>
 									Hardware Upgrades
 								</h3>
-								<span
-									class="flex-shrink-0 text-3xl transition-transform duration-300 group-hover:scale-110"
-									>⚙️</span
-								>
+								<Settings
+									className="h-8 w-8 flex-shrink-0 transition-transform duration-300 group-hover:scale-110"
+									client:load
+								/>
 							</div>
 							<p class="leading-relaxed text-white/70">
 								Affordable RAM, SSD, GPU, and component upgrades that extend the
@@ -452,10 +317,10 @@ const currentYear = new Date().getFullYear()
 								>
 									Custom-Built Computers
 								</h3>
-								<span
-									class="flex-shrink-0 text-3xl transition-transform duration-300 group-hover:scale-110"
-									>🖥️</span
-								>
+								<Monitor
+									className="h-8 w-8 flex-shrink-0 transition-transform duration-300 group-hover:scale-110"
+									client:load
+								/>
 							</div>
 							<p class="leading-relaxed text-white/70">
 								Consultation, sourcing, and assembly for purpose-built
@@ -478,10 +343,10 @@ const currentYear = new Date().getFullYear()
 								>
 									Control4 Home Automation
 								</h3>
-								<span
-									class="flex-shrink-0 text-3xl transition-transform duration-300 group-hover:scale-110"
-									>🏠</span
-								>
+								<Home
+									className="h-8 w-8 flex-shrink-0 transition-transform duration-300 group-hover:scale-110"
+									client:load
+								/>
 							</div>
 							<p class="leading-relaxed text-white/70">
 								Installation, configuration, and ongoing support for Control4
@@ -497,254 +362,7 @@ const currentYear = new Date().getFullYear()
 				<div class="absolute inset-0 flex items-center" aria-hidden="true">
 					<div class="w-full border-t border-white/10"></div>
 				</div>
-				<div class="relative flex justify-center">
-					<span class="bg-[#05030F] px-6 text-sm text-emerald-200/60">💵</span>
-				</div>
-			</div>
-
-			<section class="scroll-mt-8 space-y-8" id="pricing">
-				<div class="space-y-3 text-center">
-					<h2 class="text-4xl font-bold tracking-tight">Pricing Snapshot</h2>
-					<p class="mx-auto max-w-2xl text-lg text-white/70">
-						Transparent, competitive rates with no hidden fees
-					</p>
-				</div>
-				<div class="space-y-4">
-					<div
-						class="overflow-x-auto rounded-2xl border border-white/10 bg-gradient-to-br from-white/[0.05] to-transparent backdrop-blur-sm"
-					>
-						<table
-							class="min-w-full divide-y divide-white/10 text-left text-sm"
-						>
-							<thead
-								class="bg-white/5 text-xs uppercase tracking-wider text-white/60"
-							>
-								<tr>
-									<th class="px-6 py-4 font-semibold">Service Tier</th>
-									<th class="px-6 py-4 font-semibold">Rate / Fee</th>
-								</tr>
-							</thead>
-							<tbody class="divide-y divide-white/10">
-								<tr class="transition-colors duration-200 hover:bg-white/5">
-									<td class="px-6 py-4 font-medium text-white"
-										>In-Shop PC Labor</td
-									>
-									<td class="px-6 py-4 font-semibold text-emerald-200"
-										>$50 per hour</td
-									>
-								</tr>
-								<tr
-									class="relative bg-emerald-200/5 transition-colors duration-200 hover:bg-emerald-200/10"
-								>
-									<td
-										class="flex items-center gap-2 px-6 py-4 font-medium text-white"
-									>
-										<span>In-Shop Laptop Labor</span>
-										<span
-											class="rounded-full border border-emerald-200/30 bg-emerald-200/20 px-2 py-0.5 text-xs text-emerald-200"
-											>Popular</span
-										>
-									</td>
-									<td class="px-6 py-4 font-semibold text-emerald-200"
-										>$65 per hour</td
-									>
-								</tr>
-								<tr class="transition-colors duration-200 hover:bg-white/5">
-									<td class="px-6 py-4 font-medium text-white">On-Site Labor</td
-									>
-									<td class="px-6 py-4 font-semibold text-emerald-200"
-										>$90 per hour</td
-									>
-								</tr>
-								<tr class="transition-colors duration-200 hover:bg-white/5">
-									<td class="px-6 py-4 text-white/80">
-										<div class="font-medium text-white">
-											After-Hours / Priority On-Site
-										</div>
-										<div class="mt-1 text-xs text-white/60">
-											6:00 p.m. – 12:00 a.m. Mon–Fri
-										</div>
-									</td>
-									<td class="px-6 py-4 font-semibold text-emerald-200"
-										>$135 per hour</td
-									>
-								</tr>
-								<tr class="transition-colors duration-200 hover:bg-white/5">
-									<td class="px-6 py-4 text-white/80">
-										<div class="font-medium text-white">
-											Critical On-Site Response
-										</div>
-										<div class="mt-1 text-xs text-white/60">
-											6:00 p.m. – 12:00 a.m. Mon–Fri
-										</div>
-									</td>
-									<td class="px-6 py-4 font-semibold text-emerald-200"
-										>$180 per hour</td
-									>
-								</tr>
-								<tr
-									class="border-t-2 border-white/20 transition-colors duration-200 hover:bg-white/5"
-								>
-									<td class="px-6 py-4 text-white/80">
-										<div class="font-medium text-white">
-											Priority Queue Upgrade
-										</div>
-										<div class="mt-1 text-xs text-white/60">
-											Moves your device to "next to be serviced"
-										</div>
-									</td>
-									<td class="px-6 py-4 font-semibold text-emerald-200"
-										>$65 flat fee</td
-									>
-								</tr>
-								<tr class="transition-colors duration-200 hover:bg-white/5">
-									<td class="px-6 py-4 text-white/80">
-										<div class="font-medium text-white">
-											Critical Queue Upgrade
-										</div>
-										<div class="mt-1 text-xs text-white/60">
-											Drops current job and starts yours immediately
-										</div>
-									</td>
-									<td class="px-6 py-4 font-semibold text-emerald-200"
-										>$125 flat fee</td
-									>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-					<div
-						class="flex items-center gap-3 rounded-xl border border-emerald-200/20 bg-emerald-200/5 p-4"
-					>
-						<span class="text-2xl">💡</span>
-						<p class="text-sm text-white/80">
-							<span class="font-semibold text-white"
-								>Need something special?</span
-							> We're happy to quote project-based or recurring maintenance plans.
-						</p>
-					</div>
-				</div>
-			</section>
-
-			<div class="relative">
-				<div class="absolute inset-0 flex items-center" aria-hidden="true">
-					<div class="w-full border-t border-white/10"></div>
-				</div>
-				<div class="relative flex justify-center">
-					<span class="bg-[#05030F] px-6 text-sm text-emerald-200/60">🛡️</span>
-				</div>
-			</div>
-
-			<section class="scroll-mt-8 space-y-6" id="warranty">
-				<div class="space-y-3">
-					<h2 class="text-4xl font-bold tracking-tight">
-						Extended Warranty Options
-					</h2>
-					<p class="text-lg text-white/70">
-						Protect your purchase with coverage that starts the day you bring
-						your device home.
-					</p>
-				</div>
-
-				<div
-					class="space-y-6 rounded-2xl border border-emerald-200/20 bg-gradient-to-br from-emerald-200/10 via-emerald-200/5 to-transparent p-8"
-				>
-					<div class="grid gap-4 sm:grid-cols-2">
-						<div class="flex items-start gap-3">
-							<span class="text-xl">🔧</span>
-							<div class="space-y-1">
-								<h3 class="font-semibold text-white">Parts & Labor</h3>
-								<p class="text-sm leading-relaxed text-white/70">
-									Full coverage to restore factory performance; if repair isn't
-									possible, we'll replace with comparable hardware.
-								</p>
-							</div>
-						</div>
-						<div class="flex items-start gap-3">
-							<span class="text-xl">⏳</span>
-							<div class="space-y-1">
-								<h3 class="font-semibold text-white">Normal Wear & Tear</h3>
-								<p class="text-sm leading-relaxed text-white/70">
-									Everyday use is covered. (Sharp blows, excessive abuse, and
-									food/liquid spills on notebooks are not.)
-								</p>
-							</div>
-						</div>
-						<div class="flex items-start gap-3">
-							<span class="text-xl">⚡</span>
-							<div class="space-y-1">
-								<h3 class="font-semibold text-white">Power Surge Protection</h3>
-								<p class="text-sm leading-relaxed text-white/70">
-									Safeguards against outages, spikes, and surges.
-								</p>
-							</div>
-						</div>
-						<div class="flex items-start gap-3">
-							<span class="text-xl">💰</span>
-							<div class="space-y-1">
-								<h3 class="font-semibold text-white">No Deductibles</h3>
-								<p class="text-sm leading-relaxed text-white/70">
-									Every qualifying claim is covered from the first dollar—no
-									hidden fees.
-								</p>
-							</div>
-						</div>
-						<div class="flex items-start gap-3">
-							<span class="text-xl">🔄</span>
-							<div class="space-y-1">
-								<h3 class="font-semibold text-white">No Lemon Policy</h3>
-								<p class="text-sm leading-relaxed text-white/70">
-									Four qualifying repairs trigger a like-for-like replacement,
-									even if the current price is lower.
-								</p>
-							</div>
-						</div>
-						<div class="flex items-start gap-3">
-							<span class="text-xl">📋</span>
-							<div class="space-y-1">
-								<h3 class="font-semibold text-white">Transferable</h3>
-								<p class="text-sm leading-relaxed text-white/70">
-									Hand the receipt to a new owner and the warranty goes with the
-									device.
-								</p>
-							</div>
-						</div>
-					</div>
-
-					<div class="space-y-3 border-t border-white/10 pt-4">
-						<div class="flex flex-wrap items-center gap-4">
-							<div
-								class="flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-4 py-2"
-							>
-								<span class="text-xl font-bold text-emerald-200">10%/year</span>
-								<span class="text-sm text-white/70"
-									>New products (min. $9.95)</span
-								>
-							</div>
-							<div
-								class="flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-4 py-2"
-							>
-								<span class="text-xl font-bold text-emerald-200">15%/year</span>
-								<span class="text-sm text-white/70"
-									>Used products (min. $14.95)</span
-								>
-							</div>
-						</div>
-						<p class="text-xs italic text-white/60">
-							Note: Notebook batteries remain under the original manufacturer's
-							warranty.
-						</p>
-					</div>
-				</div>
-			</section>
-
-			<div class="relative">
-				<div class="absolute inset-0 flex items-center" aria-hidden="true">
-					<div class="w-full border-t border-white/10"></div>
-				</div>
-				<div class="relative flex justify-center">
-					<span class="bg-[#05030F] px-6 text-sm text-emerald-200/60">⭐</span>
-				</div>
+				<div class="relative flex justify-center"></div>
 			</div>
 
 			<section class="scroll-mt-8 space-y-8" id="happy-customers">
@@ -884,62 +502,7 @@ const currentYear = new Date().getFullYear()
 							</div>
 						</div>
 					</blockquote>
-				</div>
-			</section>
-
-			<div class="relative">
-				<div class="absolute inset-0 flex items-center" aria-hidden="true">
-					<div class="w-full border-t border-white/10"></div>
-				</div>
-				<div class="relative flex justify-center">
-					<span class="bg-[#05030F] px-6 text-sm text-emerald-200/60">📍</span>
-				</div>
-			</div>
-
-			<section class="scroll-mt-8 space-y-8" id="contact">
-				<div class="space-y-3 text-center">
-					<h2 class="text-4xl font-bold tracking-tight">
-						Service Area &amp; Next Steps
-					</h2>
-					<p class="mx-auto max-w-2xl text-lg text-white/70">
-						We proudly serve Metairie, Kenner, New Orleans, and surrounding
-						communities
-					</p>
-				</div>
-
-				<div
-					class="rounded-2xl border border-emerald-200/20 bg-gradient-to-br from-emerald-200/10 via-emerald-200/5 to-transparent p-8"
-				>
-					<div class="space-y-6 text-center">
-						<p class="text-xl leading-relaxed text-white/90">
-							Ready to get your tech running smoothly again?
-						</p>
-						<div class="flex flex-wrap justify-center gap-4">
-							<a
-								href="tel:15048851635"
-								class="inline-flex items-center gap-2 rounded-xl bg-emerald-200 px-8 py-4 text-lg font-bold text-[#05030F] transition-all duration-200 hover:scale-105 hover:bg-emerald-300 hover:shadow-2xl hover:shadow-emerald-200/50"
-							>
-								<span>📞</span>
-								<span>Call 1-504-885-1635</span>
-							</a>
-							<a
-								href="mailto:info@afcom-inc.com"
-								class="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/10 px-8 py-4 text-lg font-bold text-white backdrop-blur-sm transition-all duration-200 hover:scale-105 hover:bg-white/20"
-							>
-								<span>✉️</span>
-								<span>Email Us</span>
-							</a>
-						</div>
-						<p class="text-base text-white/70">
-							Stop by our shop at <a
-								href="https://maps.google.com/?q=5416+Veterans+Blvd,+Metairie,+LA+70003"
-								target="_blank"
-								rel="noreferrer"
-								class="font-semibold text-emerald-200 transition-colors hover:text-emerald-300"
-								>5416 Veterans Blvd, Metairie, LA 70003</a
-							> for a free estimate—let's get your tech tuned up today.
-						</p>
-					</div>
+					</Card>
 				</div>
 			</section>
 		</main>

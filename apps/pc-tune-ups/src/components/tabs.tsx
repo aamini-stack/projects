@@ -156,7 +156,7 @@ export function Tabs() {
 								<CardContent className="flex items-center justify-between p-0 pt-4 text-sm text-white/70">
 									<span>{price}</span>
 									<a
-										className="text-emerald-200 hover:text-emerald-100"
+										className="text-blue-400 hover:text-blue-300"
 										href="#contact"
 									>
 										Book now →
