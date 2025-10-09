@@ -13,7 +13,12 @@ const args = {
 		{ name: 'imdbgraph' },
 		{ name: 'dota-visualizer' },
 		{ name: 'fruit-gen' },
-		{ name: 'pc-tune-ups' },
+		{
+			name: 'pc-tune-ups',
+			overrides: {
+				vercelAuthentication: { deploymentType: 'none' },
+			},
+		},
 		{
 			name: 'ducky-mot',
 			overrides: {
