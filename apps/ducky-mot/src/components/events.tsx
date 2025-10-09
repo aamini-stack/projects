@@ -109,8 +109,7 @@ export function Events() {
 							{/* Year Badge */}
 							<div className="mb-12 flex items-center justify-center">
 								<Badge
-									variant="day"
-									size="lg"
+									variant="default"
 									className="border-blue-400/30 bg-gradient-to-r from-blue-500/20 to-purple-500/20 px-8 py-3 text-xl font-bold text-white backdrop-blur-sm"
 								>
 									{group.year}
