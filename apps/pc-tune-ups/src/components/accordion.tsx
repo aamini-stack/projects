@@ -1,4 +1,9 @@
-import { Accordion as AccordionBase, AccordionContent, AccordionItem, AccordionTrigger } from "@aamini/ui/components/accordion";
+import {
+	Accordion as AccordionBase,
+	AccordionContent,
+	AccordionItem,
+	AccordionTrigger,
+} from '@aamini/ui/components/accordion'
 
 export function Accordion() {
 	return (
