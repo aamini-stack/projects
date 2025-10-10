@@ -9,6 +9,7 @@ services:
   e2e:
     environment:
       - BASE_URL
+      - VERCEL_AUTOMATION_BYPASS_SECRET
     image: imdbgraph-e2e
     build:
       context: ../..
