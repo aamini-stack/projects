@@ -16,7 +16,7 @@
 		"e2e:update": "turbo run --continue=dependencies-successful e2e:update",
 		"e2e:ci": "turbo run --continue=dependencies-successful e2e:ci",
 		"e2e:ci:update": "turbo run --continue=dependencies-successful e2e:ci:update",
-		"verify": "turbo run --continue=dependencies-successful build lint format test typecheck e2e:ci"
+		"verify": "turbo run --continue=dependencies-successful build lint format test typecheck e2e"
 	},
 	"devDependencies": {
 		"@playwright/test": "^1.56.0",
