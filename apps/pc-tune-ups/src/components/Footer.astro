@@ -1,4 +1,6 @@
 ---
+import { Facebook, Twitter, Instagram, Linkedin, Youtube } from 'lucide-react'
+
 const currentYear = new Date().getFullYear()
 ---
 
@@ -16,36 +18,46 @@ const currentYear = new Date().getFullYear()
 				href="https://www.facebook.com/PCTuneUps365/"
 				target="_blank"
 				rel="noreferrer"
-				aria-label="Facebook">Fb</a
+				aria-label="Facebook"
 			>
+				<Facebook className="h-5 w-5" client:load />
+			</a>
 			<a
 				class="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-[#E1D4B6] bg-white transition-all duration-200 hover:-translate-y-0.5 hover:border-[#C75C2F]/40 hover:bg-[#FDE4CC] hover:text-[#C75C2F]"
 				href="https://twitter.com/pctuneups"
 				target="_blank"
 				rel="noreferrer"
-				aria-label="Twitter">Tw</a
+				aria-label="Twitter"
 			>
+				<Twitter className="h-5 w-5" client:load />
+			</a>
 			<a
 				class="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-[#E1D4B6] bg-white transition-all duration-200 hover:-translate-y-0.5 hover:border-[#C75C2F]/40 hover:bg-[#FDE4CC] hover:text-[#C75C2F]"
 				href="https://www.instagram.com/pc_tuneups/"
 				target="_blank"
 				rel="noreferrer"
-				aria-label="Instagram">Ig</a
+				aria-label="Instagram"
 			>
+				<Instagram className="h-5 w-5" client:load />
+			</a>
 			<a
 				class="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-[#E1D4B6] bg-white transition-all duration-200 hover:-translate-y-0.5 hover:border-[#C75C2F]/40 hover:bg-[#FDE4CC] hover:text-[#C75C2F]"
 				href="https://www.linkedin.com/company/pctuneups"
 				target="_blank"
 				rel="noreferrer"
-				aria-label="LinkedIn">In</a
+				aria-label="LinkedIn"
 			>
+				<Linkedin className="h-5 w-5" client:load />
+			</a>
 			<a
 				class="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-[#E1D4B6] bg-white transition-all duration-200 hover:-translate-y-0.5 hover:border-[#C75C2F]/40 hover:bg-[#FDE4CC] hover:text-[#C75C2F]"
 				href="https://www.youtube.com/channel/UCLBMfHkUR9qu9WyNBGigPlg"
 				target="_blank"
 				rel="noreferrer"
-				aria-label="YouTube">Yt</a
+				aria-label="YouTube"
 			>
+				<Youtube className="h-5 w-5" client:load />
+			</a>
 		</div>
 	</div>
 </footer>

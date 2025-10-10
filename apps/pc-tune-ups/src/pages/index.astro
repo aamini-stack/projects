@@ -19,36 +19,32 @@ import {
 const testimonials = [
 	{
 		quote:
-			'Had two of my business PCs crash—PC Tune-Ups had them running smoother than ever.',
+			"I highly recommend. Had two of my business pc's crash on me at two different times and these guy got my computers back up and running smoother then it has ever been before.",
 		name: 'Rory',
 		role: 'Business Owner',
 		initial: 'R',
+		avatar: '/reviews/rory-150x150.jpg',
 	},
 	{
-		quote:
-			'Struggling with network reliability, they were able to help right away.',
-		name: 'Sue',
-		role: 'Metairie',
-		initial: 'S',
-	},
-	{
-		quote:
-			'They knew exactly what was wrong with our router and fixed it fast.',
-		name: 'Ralph',
-		role: 'nolabusinessdirectory.com',
-		initial: 'R',
-	},
-	{
-		quote: 'Very professional and honest—scheduled my repair for the next day.',
-		name: 'Mike',
-		role: 'Kenner',
-		initial: 'M',
-	},
-	{
-		quote: 'Great group of people—my PC works flawlessly now.',
+		quote: 'Great group of people just got my PC back and it works flawless',
 		name: 'Damian',
 		role: 'Metairie',
 		initial: 'D',
+		avatar: '/reviews/damian-150x150.jpg',
+	},
+	{
+		quote: 'Amazing service! Definitely going there again when I need parts !',
+		name: 'Dylan',
+		role: 'Customer',
+		initial: 'D',
+		avatar: '/reviews/dylan-150x150.jpg',
+	},
+	{
+		quote: 'We had problems with our router  and they knew exactly what was wrong and fixed it.',
+		name: "Eddie O'Brian",
+		role: 'Co-founder, Break-thru Productions',
+		initial: 'E',
+		avatar: '/reviews/break-150x83.jpg',
 	},
 ]
 ---
@@ -89,7 +85,7 @@ const testimonials = [
 					>
 						<img
 							src="/apple.svg"
-							class="object-contain h-8 w-8 flex-shrink-0 transition-transform duration-300 group-hover:scale-110"
+							class="h-8 w-8 flex-shrink-0 object-contain transition-transform duration-300 group-hover:scale-110"
 						/>
 					</ServiceCard>
 					<ServiceCard
@@ -169,6 +165,7 @@ const testimonials = [
 									name={testimonial.name}
 									role={testimonial.role}
 									initial={testimonial.initial}
+									avatar={testimonial.avatar}
 									client:load
 								/>
 							</div>
