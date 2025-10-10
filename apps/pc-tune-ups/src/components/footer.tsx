@@ -3,11 +3,27 @@ import { Facebook, Twitter, Instagram, Linkedin, Youtube } from 'lucide-react'
 const currentYear = new Date().getFullYear()
 
 const socialLinks = [
-	{ name: 'Facebook', href: 'https://www.facebook.com/PCTuneUps365/', Icon: Facebook },
+	{
+		name: 'Facebook',
+		href: 'https://www.facebook.com/PCTuneUps365/',
+		Icon: Facebook,
+	},
 	{ name: 'Twitter', href: 'https://twitter.com/pctuneups', Icon: Twitter },
-	{ name: 'Instagram', href: 'https://www.instagram.com/pc_tuneups/', Icon: Instagram },
-	{ name: 'LinkedIn', href: 'https://www.linkedin.com/company/pctuneups', Icon: Linkedin },
-	{ name: 'YouTube', href: 'https://www.youtube.com/channel/UCLBMfHkUR9qu9WyNBGigPlg', Icon: Youtube },
+	{
+		name: 'Instagram',
+		href: 'https://www.instagram.com/pc_tuneups/',
+		Icon: Instagram,
+	},
+	{
+		name: 'LinkedIn',
+		href: 'https://www.linkedin.com/company/pctuneups',
+		Icon: Linkedin,
+	},
+	{
+		name: 'YouTube',
+		href: 'https://www.youtube.com/channel/UCLBMfHkUR9qu9WyNBGigPlg',
+		Icon: Youtube,
+	},
 ]
 
 export default function Footer() {
