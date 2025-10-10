@@ -18,4 +18,4 @@ COPY --from=pruned /app/out/json ./
 RUN  --mount=type=cache,id=pnpm,target=/pnpm/store pnpm i
 COPY --from=pruned /app/out/full ./
 WORKDIR /app/apps/fruit-gen
-ENTRYPOINT ["pnpm", "e2e"]
+ENTRYPOINT ["pnpm", "playwright", "test"]
