@@ -72,9 +72,6 @@ jobs:
   e2e:
     needs: [find-apps]
     runs-on: ubuntu-latest
-    container:
-      image: mcr.microsoft.com/playwright:v1.56.0-noble
-      options: --user 1001
     strategy:
       matrix:
         app: ${{ fromJson(needs.find-apps.outputs.apps) }}
