@@ -1,4 +1,4 @@
-import { Button } from '@aamini/ui/components'
+import { Button } from '@aamini/ui/components/button'
 import { Badge } from '@aamini/ui/components/badge'
 import {
 	Card,
