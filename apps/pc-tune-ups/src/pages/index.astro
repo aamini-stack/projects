@@ -6,6 +6,7 @@ import SectionDivider from '#/components/SectionDivider.astro'
 import ServiceCard from '#/components/ServiceCard.astro'
 import { TestimonialCard } from '#/components/TestimonialCard'
 import Footer from '#/components/Footer.astro'
+import AppleIcon from 'public/apple.svg'
 import {
 	Laptop2,
 	Database,
@@ -15,6 +16,7 @@ import {
 	Monitor,
 	Home,
 } from 'lucide-react'
+import { Image } from 'astro:assets'
 
 const testimonials = [
 	{
@@ -84,9 +86,10 @@ const testimonials = [
 						title="Apple Device Repair"
 						description="Certified support for Mac, iPhone, and iPad. We handle memory upgrades, water damage repair, battery swaps, logic-board diagnostics, and more—with 30-day workmanship assurance."
 					>
-						<img
-							src="/apple.svg"
-							class="h-8 w-8 flex-shrink-0 rounded-full border border-amber-100 bg-amber-50 p-1 object-contain transition-transform duration-300 group-hover:scale-110"
+						<Image
+							src={AppleIcon}
+							alt="Apple Icon"
+							class="h-8 w-8 flex-shrink-0 rounded-full border border-amber-100 bg-amber-50 object-contain p-1 transition-transform duration-300 group-hover:scale-110"
 						/>
 					</ServiceCard>
 					<ServiceCard
