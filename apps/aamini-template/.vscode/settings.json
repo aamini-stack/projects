@@ -8,8 +8,5 @@
 		"**/dist": true,
 		"**/.vercel": true,
 		"**/playwright-report": true
-	},
-	"files.associations": {
-		"*.css": "tailwindcss"
 	}
 }
