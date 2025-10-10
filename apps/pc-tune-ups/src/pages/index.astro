@@ -1,170 +1,22 @@
 ---
 import Layout from '#/pages/_Layout.astro'
-import Header from '#/components/Header.astro'
-import HeroSection from '#/components/HeroSection.astro'
-import SectionDivider from '#/components/SectionDivider.astro'
-import ServiceCard from '#/components/ServiceCard.astro'
-import { TestimonialCard } from '#/components/testimonial-card'
-import Footer from '#/components/Footer.astro'
-import AppleIcon from 'public/apple.svg'
-import {
-	Laptop2,
-	Database,
-	Globe,
-	Shield,
-	Settings,
-	Monitor,
-	Home,
-} from 'lucide-react'
-import { Image } from 'astro:assets'
-
-const testimonials = [
-	{
-		quote:
-			"I highly recommend. Had two of my business pc's crash on me at two different times and these guy got my computers back up and running smoother then it has ever been before.",
-		name: 'Rory',
-		role: 'Business Owner',
-		avatar: '/reviews/rory-150x150.jpg',
-	},
-	{
-		quote: 'Great group of people just got my PC back and it works flawless',
-		name: 'Damian',
-		role: 'Customer',
-		avatar: '/reviews/damian-150x150.jpg',
-	},
-	{
-		quote: 'Amazing service! Definitely going there again when I need parts !',
-		name: 'Dylan',
-		role: 'Customer',
-		avatar: '/reviews/dylan-150x150.jpg',
-	},
-	{
-		quote:
-			'We had problems with our router  and they knew exactly what was wrong and fixed it.',
-		name: "Eddie O'Brian",
-		role: 'Co-founder, Break-thru Productions',
-		avatar: '/reviews/break-150x83.jpg',
-	},
-]
+import Hero from '#/components/hero.astro'
+import Divider from '#/components/divider.astro'
+import { Testimonials } from '#/components/testimonials'
+import Footer from '#/components/footer.astro'
+import { Services } from '#/components/services'
+import Header from '#/components/header.astro'
 ---
 
 <Layout>
 	<div class="min-h-screen bg-stone-50">
 		<Header />
-
 		<main class="mx-auto flex max-w-5xl flex-col gap-16 p-6 sm:p-10 lg:p-16">
-			<HeroSection />
-
-			<SectionDivider />
-
-			<section class="scroll-mt-8 space-y-8" id="services">
-				<div class="space-y-3 text-center">
-					<h2 class="text-4xl font-bold tracking-tight text-stone-900">
-						Services
-					</h2>
-				</div>
-				<div class="grid gap-6 sm:grid-cols-2">
-					<ServiceCard
-						title="Computer & Laptop Repair"
-						description="Trusted diagnostic and repair work for any desktop or laptop brand—hardware replacement, OS reinstalls, cracked hinges or panels, LCD repairs, and complete tune-ups that keep machines running at peak performance."
-					>
-						<Laptop2
-							className="h-8 w-8 flex-shrink-0 text-amber-600"
-							client:load
-						/>
-					</ServiceCard>
-					<ServiceCard
-						title="Apple Device Repair"
-						description="Certified support for Mac, iPhone, and iPad. We handle memory upgrades, water damage repair, battery swaps, logic-board diagnostics, and more—with 30-day workmanship assurance."
-					>
-						<Image
-							src={AppleIcon}
-							alt="Apple Icon"
-							class="h-8 w-8 flex-shrink-0 object-contain"
-						/>
-					</ServiceCard>
-					<ServiceCard
-						title="Data Backup & Recovery"
-						description="On-site and in-shop recovery for hard drives, flash storage, and memory cards, plus proactive backup planning so you never lose critical files again."
-					>
-						<Database
-							className="h-8 w-8 flex-shrink-0 text-amber-600"
-							client:load
-						/>
-					</ServiceCard>
-					<ServiceCard
-						title="Networking & On-Site Support"
-						description="Secure wireless setup, router troubleshooting, small-business networking, and scheduled maintenance visits—delivered at your office or home."
-					>
-						<Globe
-							className="h-8 w-8 flex-shrink-0 text-amber-600"
-							client:load
-						/>
-					</ServiceCard>
-					<ServiceCard
-						title="Virus & Spyware Removal"
-						description="Deep malware cleaning, registry repair, security audits, and prevention strategies that keep downtime to a minimum."
-					>
-						<Shield
-							className="h-8 w-8 flex-shrink-0 text-amber-600"
-							client:load
-						/>
-					</ServiceCard>
-					<ServiceCard
-						title="Hardware Upgrades"
-						description="Affordable RAM, SSD, GPU, and component upgrades that extend the life of existing systems without the cost of full replacement."
-					>
-						<Settings
-							className="h-8 w-8 flex-shrink-0 text-amber-600"
-							client:load
-						/>
-					</ServiceCard>
-					<ServiceCard
-						title="Custom-Built Computers"
-						description="Consultation, sourcing, and assembly for purpose-built rigs—gaming systems, creative workstations, and business-ready desktops that fit your exact specs."
-					>
-						<Monitor
-							className="h-8 w-8 flex-shrink-0 text-amber-600"
-							client:load
-						/>
-					</ServiceCard>
-					<ServiceCard
-						title="Control4 Home Automation"
-						description="Installation, configuration, and ongoing support for Control4 smart-home systems across the New Orleans metro area. Let your home work for you."
-					>
-						<Home
-							className="h-8 w-8 flex-shrink-0 text-amber-600"
-							client:load
-						/>
-					</ServiceCard>
-				</div>
-			</section>
-
-			<SectionDivider />
-
-			<section class="scroll-mt-8 space-y-8" id="happy-customers">
-				<div class="space-y-3 text-center">
-					<h2 class="text-4xl font-bold tracking-tight text-stone-900">
-						Happy Customers
-					</h2>
-				</div>
-				<div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-					{
-						testimonials.map((testimonial, index) => (
-							<div class:list={[index === 4 && 'sm:col-span-2 lg:col-span-1']}>
-								<TestimonialCard
-									quote={testimonial.quote}
-									name={testimonial.name}
-									role={testimonial.role}
-									initial={testimonial.initial}
-									avatar={testimonial.avatar}
-									client:load
-								/>
-							</div>
-						))
-					}
-				</div>
-			</section>
+			<Hero />
+			<Divider />
+			<Services />
+			<Divider />
+			<Testimonials />
 		</main>
 
 		<Footer />
