@@ -1,0 +1,63 @@
+---
+import { Facebook, Twitter, Instagram, Linkedin, Youtube } from 'lucide-react'
+
+const currentYear = new Date().getFullYear()
+---
+
+<footer class="border-t border-[#E1D4B6] bg-[#FFF4DA] backdrop-blur-sm">
+	<div
+		class="mx-auto flex max-w-4xl flex-col gap-6 px-6 py-10 text-sm text-[#5C5648] sm:flex-row sm:items-center sm:justify-between sm:px-8"
+	>
+		<div class="space-y-2">
+			<p class="text-base font-semibold text-[#2D2A26]">PC Tune-Ups</p>
+			<p>© {currentYear} PC Tune-Ups. All rights reserved.</p>
+		</div>
+		<div class="flex flex-wrap items-center gap-4">
+			<a
+				class="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-[#E1D4B6] bg-white transition-all duration-200 hover:-translate-y-0.5 hover:border-[#C75C2F]/40 hover:bg-[#FDE4CC] hover:text-[#C75C2F]"
+				href="https://www.facebook.com/PCTuneUps365/"
+				target="_blank"
+				rel="noreferrer"
+				aria-label="Facebook"
+			>
+				<Facebook className="h-5 w-5" client:load />
+			</a>
+			<a
+				class="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-[#E1D4B6] bg-white transition-all duration-200 hover:-translate-y-0.5 hover:border-[#C75C2F]/40 hover:bg-[#FDE4CC] hover:text-[#C75C2F]"
+				href="https://twitter.com/pctuneups"
+				target="_blank"
+				rel="noreferrer"
+				aria-label="Twitter"
+			>
+				<Twitter className="h-5 w-5" client:load />
+			</a>
+			<a
+				class="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-[#E1D4B6] bg-white transition-all duration-200 hover:-translate-y-0.5 hover:border-[#C75C2F]/40 hover:bg-[#FDE4CC] hover:text-[#C75C2F]"
+				href="https://www.instagram.com/pc_tuneups/"
+				target="_blank"
+				rel="noreferrer"
+				aria-label="Instagram"
+			>
+				<Instagram className="h-5 w-5" client:load />
+			</a>
+			<a
+				class="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-[#E1D4B6] bg-white transition-all duration-200 hover:-translate-y-0.5 hover:border-[#C75C2F]/40 hover:bg-[#FDE4CC] hover:text-[#C75C2F]"
+				href="https://www.linkedin.com/company/pctuneups"
+				target="_blank"
+				rel="noreferrer"
+				aria-label="LinkedIn"
+			>
+				<Linkedin className="h-5 w-5" client:load />
+			</a>
+			<a
+				class="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-[#E1D4B6] bg-white transition-all duration-200 hover:-translate-y-0.5 hover:border-[#C75C2F]/40 hover:bg-[#FDE4CC] hover:text-[#C75C2F]"
+				href="https://www.youtube.com/channel/UCLBMfHkUR9qu9WyNBGigPlg"
+				target="_blank"
+				rel="noreferrer"
+				aria-label="YouTube"
+			>
+				<Youtube className="h-5 w-5" client:load />
+			</a>
+		</div>
+	</div>
+</footer>

@@ -35,7 +35,7 @@ export function Accordion() {
 					value={title}
 					className="overflow-hidden rounded-3xl border border-white/10 bg-white/5 px-4"
 				>
-					<AccordionTrigger className="text-left text-lg font-medium text-white hover:text-emerald-200">
+					<AccordionTrigger className="text-left text-lg font-medium text-white hover:text-blue-400">
 						{title}
 					</AccordionTrigger>
 					<AccordionContent className="pb-4 text-sm text-white/70">

@@ -14,7 +14,7 @@ export function FeatureCard() {
 			<Card className="bg-card/80 group border-2 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
 				<CardHeader>
 					<div className="mb-2 flex items-center gap-3">
-						<div className="rounded-lg bg-gradient-to-br from-orange-400 to-red-500 p-2 text-white">
+						<div className="rounded-lg bg-gradient-to-br from-blue-400 to-blue-600 p-2 text-white">
 							<svg
 								width="24"
 								height="24"
@@ -33,7 +33,7 @@ export function FeatureCard() {
 							New
 						</Badge>
 					</div>
-					<CardTitle className="group-hover:text-primary text-xl font-semibold transition-colors">
+					<CardTitle className="text-xl font-semibold transition-colors group-hover:text-blue-400">
 						What's New in Astro 5.0?
 					</CardTitle>
 					<CardDescription className="text-sm leading-relaxed">
@@ -45,7 +45,7 @@ export function FeatureCard() {
 					<Button
 						asChild
 						variant="ghost"
-						className="text-muted-foreground hover:text-foreground h-auto w-full justify-start p-0 font-normal"
+						className="text-muted-foreground h-auto w-full justify-start p-0 font-normal hover:text-blue-400"
 					>
 						<a
 							href="https://astro.build/blog/astro-5/"

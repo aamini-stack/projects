@@ -10,15 +10,15 @@ import {
 
 const storePhotos = [
 	{
-		src: '/pc1.webp',
+		src: '/photos/pc1.webp',
 		alt: 'PC Tune-Ups store interior - workstation area',
 	},
 	{
-		src: '/pc2.webp',
+		src: '/photos/pc2.webp',
 		alt: 'PC Tune-Ups store interior - service counter',
 	},
 	{
-		src: '/pc3.webp',
+		src: '/photos/pc3.webp',
 		alt: 'PC Tune-Ups store interior - repair area',
 	},
 ]
