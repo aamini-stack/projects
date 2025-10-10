@@ -3,63 +3,46 @@ import { Phone, MapPin, Clock } from 'lucide-react'
 ---
 
 <header
-	class="sticky top-0 z-50 border-b border-stone-200 bg-white/95 shadow-sm backdrop-blur-xl supports-[backdrop-filter]:bg-white/90"
+	class="top-0 z-50 text-nowrap border-b border-stone-200 bg-white/95 text-md shadow-md backdrop-blur-xl supports-[backdrop-filter]:bg-white/90 md:sticky"
 >
 	<div
-		class="mx-auto flex max-w-5xl flex-wrap justify-between gap-4 px-4 py-4 text-sm text-stone-600 max-[480px]:flex-col max-[480px]:items-start sm:gap-6 sm:px-8 sm:py-6 sm:text-base"
+		class="mx-auto flex max-w-5xl flex-nowrap justify-between gap-4 p-4 text-stone-600 max-md:flex-col max-md:items-start md:gap-6 md:px-8 md:py-6"
 	>
 		<div
-			class="space-y-1.5 max-[480px]:w-full max-[480px]:border-t max-[480px]:border-stone-200 max-[480px]:pt-4 max-[480px]:first:border-t-0 max-[480px]:first:pt-0"
+			class="space-y-1.5 max-md:w-full max-md:border-t max-md:border-stone-200 max-md:pt-4 max-md:first:border-t-0 max-md:first:pt-0"
 		>
-			<p
-				class="text-xs font-semibold uppercase tracking-wide text-stone-500 sm:text-sm"
-			>
-				Call
-			</p>
 			<a
-				class="group flex items-center gap-1.5 text-base font-semibold text-stone-900 transition-colors duration-200 hover:text-lime-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lime-600 sm:text-lg"
+				class="group flex items-center gap-1.5 font-semibold text-stone-900 transition-colors duration-200 hover:text-lime-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lime-600"
 				href="tel:15048851635"
 			>
 				<Phone
-					className="inline-block h-5 w-5 text-lime-600 transition-transform duration-200 group-hover:scale-110 sm:h-6 sm:w-6"
+					className="inline-block h-5 w-5 text-lime-600 transition-transform duration-200 group-hover:scale-110 md:h-6 md:w-6"
 					client:load
 				/>
-				<span>1-504-885-1635</span>
+				<span>504-885-1635</span>
 			</a>
 		</div>
 		<div
-			class="space-y-1.5 max-[480px]:w-full max-[480px]:border-t max-[480px]:border-stone-200 max-[480px]:pt-4"
+			class="space-y-1.5 max-md:w-full max-md:border-t max-md:border-stone-200 max-md:pt-4"
 		>
-			<p
-				class="text-xs font-semibold uppercase tracking-wide text-stone-500 sm:text-sm"
-			>
-				Visit
-			</p>
 			<a
-				class="group flex items-center gap-1.5 text-base font-medium text-stone-700 transition-colors duration-200 hover:text-lime-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lime-600 sm:text-lg"
+				class="group flex items-center gap-1.5 font-medium text-stone-700 transition-colors duration-200 hover:text-lime-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lime-600"
 				href="https://maps.google.com/?q=5416+Veterans+Blvd,+Metairie,+LA+70003"
 				target="_blank"
 				rel="noreferrer"
 			>
 				<MapPin
-					className="inline-block h-5 w-5 text-lime-600 transition-transform duration-200 group-hover:scale-110 sm:h-6 sm:w-6"
+					className="inline-block h-5 w-5 text-lime-600 transition-transform duration-200 group-hover:scale-110 md:h-6 md:w-6"
 					client:load
 				/>
 				<span>5416 Veterans Blvd, Metairie, LA</span>
 			</a>
 		</div>
 		<div
-			class="space-y-1.5 max-[480px]:w-full max-[480px]:border-t max-[480px]:border-stone-200 max-[480px]:pt-4"
+			class="space-y-1.5 max-md:w-full max-md:border-t max-md:border-stone-200 max-md:pt-4"
 		>
-			<p
-				class="text-xs font-semibold uppercase tracking-wide text-stone-500 sm:text-sm"
-			>
-				Hours
-			</p>
-			<p
-				class="flex items-center gap-1.5 text-base font-medium text-stone-700 sm:text-lg"
-			>
-				<Clock className="h-5 w-5 text-lime-600 sm:h-6 sm:w-6" client:load />
+			<p class="flex items-center gap-1.5 font-medium text-stone-700">
+				<Clock className="h-5 w-5 text-lime-600 md:h-6 md:w-6" client:load />
 				<span>Mon-Sat, 10AM-6PM</span>
 			</p>
 		</div>
