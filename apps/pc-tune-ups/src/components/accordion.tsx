@@ -12,22 +12,22 @@ export function Accordion() {
 				{
 					title: 'How fast can you repair my phone?',
 					content:
-						'Most screen and battery repairs are completed in under two hours. Rush service is available—call ahead and we’ll prioritize your device.',
+						'Most screen and battery repairs are completed in under two hours. Rush service is available—call ahead and we\'ll prioritize your device.',
 				},
 				{
 					title: 'Do I need an appointment?',
 					content:
-						'Walk-ins are always welcome. To guarantee immediate service, book ahead and we’ll have a technician ready when you arrive.',
+						'Walk-ins are always welcome. To guarantee immediate service, book ahead and we\'ll have a technician ready when you arrive.',
 				},
 				{
 					title: 'Is my data safe?',
 					content:
-						'We follow strict data-handling protocols. If data access is required, we’ll request explicit permission and keep you updated throughout.',
+						'We follow strict data-handling protocols. If data access is required, we\'ll request explicit permission and keep you updated throughout.',
 				},
 				{
-					title: 'What if the repair doesn’t work?',
+					title: 'What if the repair doesn\'t work?',
 					content:
-						'Every repair includes a 90-day warranty. If issues persist, bring it back—we’ll make it right or credit the repair cost toward another solution.',
+						'Every repair includes a 90-day warranty. If issues persist, bring it back—we\'ll make it right or credit the repair cost toward another solution.',
 				},
 			].map(({ title, content }) => (
 				<AccordionItem
