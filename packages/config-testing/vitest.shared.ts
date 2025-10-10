@@ -14,8 +14,9 @@ export const createBaseConfig = (overrides: ProjectOverrides = {}) =>
 						test: {
 							name: 'unit',
 							include: ['src/**/*.test.ts'],
+							passWithNoTests: true,
 						},
-					},
+					} satisfies ViteUserConfig,
 					overrides.unit ?? {},
 				),
 				mergeConfig(
@@ -23,6 +24,7 @@ export const createBaseConfig = (overrides: ProjectOverrides = {}) =>
 						test: {
 							name: 'browser',
 							include: ['src/**/*.test.tsx'],
+							passWithNoTests: true,
 							environment: 'browser',
 							browser: {
 								instances: [

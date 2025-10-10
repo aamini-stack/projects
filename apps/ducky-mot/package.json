@@ -12,8 +12,12 @@
 		"docker": "docker compose run --rm --build server",
 		"typecheck": "tsc --noEmit",
 		"lint": "oxlint --type-aware --max-warnings=0",
-		"e2e:ci": "docker compose run --build --rm e2e",
-		"e2e:ci:update": "docker compose run --build --rm e2e --update-snapshots",
+		"test": "vitest run",
+		"test:unit": "vitest run --project unit",
+		"test:integration": "vitest run --project integration",
+		"test:watch": "vitest --watch",
+		"e2e": "docker compose run --rm --build e2e",
+		"e2e:update": "docker compose run --rm --build e2e --update-snapshots",
 		"verify": "turbo run build lint format test typecheck e2e"
 	},
 	"dependencies": {
