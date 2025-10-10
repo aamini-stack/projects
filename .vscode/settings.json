@@ -24,12 +24,16 @@
 			"other": "off"
 		}
 	},
+
+	"tailwi": [],
+
 	"typescript.preferences.importModuleSpecifier": "non-relative",
+	"typescript.preferences.autoImportSpecifierExcludeRegexes": ["^(node:)?os$"],
 
 	// Ark Types: https://arktype.io/docs/intro/setup#settings
 	"editor.quickSuggestions": {
 		"strings": "on"
 	},
-	"typescript.preferences.autoImportSpecifierExcludeRegexes": ["^(node:)?os$"],
+
 	"vitest.disableWorkspaceWarning": true
 }
