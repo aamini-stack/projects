@@ -8,13 +8,13 @@ interface ProjectOverrides {
 export const createBaseConfig = (overrides: ProjectOverrides = {}) =>
 	defineConfig({
 		test: {
+			passWithNoTests: true,
 			projects: [
 				mergeConfig(
 					{
 						test: {
 							name: 'unit',
 							include: ['src/**/*.test.ts'],
-							passWithNoTests: true,
 						},
 					} satisfies ViteUserConfig,
 					overrides.unit ?? {},
@@ -24,7 +24,6 @@ export const createBaseConfig = (overrides: ProjectOverrides = {}) =>
 						test: {
 							name: 'browser',
 							include: ['src/**/*.test.tsx'],
-							passWithNoTests: true,
 							environment: 'browser',
 							browser: {
 								instances: [
@@ -37,12 +36,11 @@ export const createBaseConfig = (overrides: ProjectOverrides = {}) =>
 								headless: true,
 							},
 						},
-					},
+					} satisfies ViteUserConfig,
 					overrides.browser ?? {},
 				),
 			],
 		},
 	})
 
-// Keep the old export for backward compatibility
 export const baseConfig = createBaseConfig()

@@ -58,12 +58,12 @@ jobs:
         id: calculate-apps
         run: |
           if [ "${{ github.event_name }}" = "push" ]; then
-            BASE=${{ github.event.before }}
+            BASE=HEAD~
           else
             BASE=$(git merge-base HEAD origin/main)
           fi
 
-          FILTER="{./apps/*}["$BASE"...HEAD]"
+          FILTER="{./apps/*}...[$BASE...HEAD]"
 
           APPS=$(npx turbo build --filter="$FILTER" --dry=json | jq -c .packages)
           echo $APPS
