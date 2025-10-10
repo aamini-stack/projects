@@ -8,7 +8,6 @@ import { TestimonialCard } from '#/components/TestimonialCard'
 import Footer from '#/components/Footer.astro'
 import {
 	Laptop2,
-	Apple,
 	Database,
 	Globe,
 	Shield,
@@ -88,9 +87,9 @@ const testimonials = [
 						title="Apple Device Repair"
 						description="Certified support for Mac, iPhone, and iPad. We handle memory upgrades, water damage repair, battery swaps, logic-board diagnostics, and more—with 30-day workmanship assurance."
 					>
-						<Apple
-							className="h-8 w-8 flex-shrink-0 transition-transform duration-300 group-hover:scale-110"
-							client:load
+						<img
+							src="/apple.svg"
+							class="object-contain h-8 w-8 flex-shrink-0 transition-transform duration-300 group-hover:scale-110"
 						/>
 					</ServiceCard>
 					<ServiceCard
