@@ -1,7 +1,7 @@
 import { Avatar, AvatarImage } from '@aamini/ui/components/avatar'
 import { cn } from '@aamini/ui/lib/utils'
 
-export default function Testimonials() {
+export function Testimonials() {
 	const testimonials = [
 		{
 			quote:
@@ -40,7 +40,10 @@ export default function Testimonials() {
 			</div>
 			<div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
 				{testimonials.map((testimonial, index) => (
-					<div className={cn({ 'sm:col-span-2 lg:col-span-1': index === 3 })}>
+					<div
+						key={testimonial.name}
+						className={cn({ 'sm:col-span-2 lg:col-span-1': index === 3 })}
+					>
 						<blockquote className="relative rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
 							<div className="absolute right-4 top-4 text-4xl text-lime-200">
 								"

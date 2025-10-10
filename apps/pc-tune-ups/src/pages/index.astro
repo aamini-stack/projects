@@ -2,7 +2,7 @@
 import Layout from '#/pages/_Layout.astro'
 import Hero from '#/components/hero.astro'
 import Divider from '#/components/divider.astro'
-import Testimonials from '#/components/testimonials.astro'
+import { Testimonials } from '#/components/testimonials'
 import Footer from '#/components/footer.astro'
 import Services from '#/components/services.astro'
 import Header from '#/components/header.astro'
@@ -16,7 +16,7 @@ import Header from '#/components/header.astro'
 			<Divider />
 			<Services />
 			<Divider />
-			<Testimonials />
+			<Testimonials client:load />
 		</main>
 		<Footer />
 	</div>
