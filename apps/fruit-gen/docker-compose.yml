@@ -7,6 +7,8 @@ services:
     ports:
       - 4321:4321
   e2e:
+    environment:
+      - BASE_URL
     image: fruit-gen-e2e
     build:
       context: ../..

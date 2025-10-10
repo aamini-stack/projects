@@ -8,3 +8,7 @@ imdbgraph/imdbgraph-e2e imdbgraph/imdbgraph-infra
 ## Dagger
 
 Convert common scripts/flows to dagger
+
+## GAPS
+
+1. Pulumi needs to set up secrets for vercel projects

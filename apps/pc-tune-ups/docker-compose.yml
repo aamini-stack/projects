@@ -7,6 +7,8 @@ services:
     ports:
       - 4321:4321
   e2e:
+    environment:
+      - BASE_URL
     image: pc-tune-ups-e2e
     build:
       context: ../..
