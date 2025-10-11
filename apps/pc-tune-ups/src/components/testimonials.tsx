@@ -32,7 +32,7 @@ export function Testimonials() {
 		},
 	]
 	return (
-		<section className="scroll-mt-8 space-y-8" id="happy-customers">
+		<section className="space-y-8">
 			<div className="space-y-3 text-center">
 				<h2 className="text-4xl font-bold tracking-tight text-stone-900">
 					Happy Customers

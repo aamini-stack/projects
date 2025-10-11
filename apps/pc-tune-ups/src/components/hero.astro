@@ -5,14 +5,11 @@ import { Phone, Mail } from 'lucide-react'
 ---
 
 <section
-	class="scroll-mt-8 space-y-8 rounded-3xl bg-gradient-to-br from-white via-lime-50 to-stone-50 p-8 shadow-xl shadow-stone-200/60 ring-1 ring-lime-100 sm:p-10"
-	id="overview"
-	role="region"
-	aria-labelledby="hero-title"
+	class="space-y-8 rounded-3xl bg-gradient-to-br from-white via-lime-50 to-stone-50 p-4 shadow-xl shadow-stone-200/60 ring-1 ring-lime-100 sm:p-6 md:p-8 lg:p-10"
 >
 	<div class="grid grid-cols-1 items-start gap-8 lg:grid-cols-2 lg:gap-12">
-		<!-- Hero Text Content -->
 		<div class="order-1 space-y-6">
+			<!-- LOGO -->
 			<div class="flex items-center gap-4">
 				<Image
 					src="/logo.png"
@@ -23,6 +20,7 @@ import { Phone, Mail } from 'lucide-react'
 					decoding="async"
 				/>
 			</div>
+			<!-- DESCRIPTION -->
 			<p class="max-w-3xl text-xl leading-relaxed text-stone-700 sm:text-2xl">
 				Your neighborhood team for fast, friendly computer and device repair in
 				the Greater New Orleans area—with <span
@@ -30,6 +28,7 @@ import { Phone, Mail } from 'lucide-react'
 				> of hands-on experience.
 			</p>
 
+			<!-- CALL/EMAIL BUTTONS -->
 			<div class="flex flex-wrap gap-4 pt-4">
 				<a
 					href="tel:15048851635"
@@ -47,7 +46,6 @@ import { Phone, Mail } from 'lucide-react'
 				</a>
 			</div>
 		</div>
-		<!-- Integrated Store Photos Carousel -->
 		<div
 			class="order-2 overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-lg shadow-stone-300/40"
 		>
