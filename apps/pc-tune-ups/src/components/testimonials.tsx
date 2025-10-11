@@ -31,19 +31,15 @@ export function Testimonials() {
 			avatar: '/reviews/break-150x83.jpg',
 		},
 	]
+
 	return (
 		<section className="space-y-8">
-			<div className="space-y-3 text-center">
-				<h2 className="text-4xl font-bold tracking-tight text-stone-900">
-					Happy Customers
-				</h2>
-			</div>
+			<h2 className="text-center text-4xl font-bold tracking-tight text-stone-900">
+				Happy Customers
+			</h2>
 			<div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
 				{testimonials.map((testimonial, index) => (
-					<div
-						key={testimonial.name}
-						className={cn({ 'sm:col-span-2 lg:col-span-1': index === 3 })}
-					>
+					<article key={testimonial.name} className="col-span-1">
 						<blockquote className="relative rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
 							<div className="absolute right-4 top-4 text-4xl text-lime-200">
 								"
@@ -68,7 +64,7 @@ export function Testimonials() {
 								</div>
 							</div>
 						</blockquote>
-					</div>
+					</article>
 				))}
 			</div>
 		</section>
