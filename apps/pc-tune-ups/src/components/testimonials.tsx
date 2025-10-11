@@ -1,5 +1,4 @@
 import { Avatar, AvatarImage } from '@aamini/ui/components/avatar'
-import { cn } from '@aamini/ui/lib/utils'
 
 export function Testimonials() {
 	const testimonials = [
@@ -35,35 +34,24 @@ export function Testimonials() {
 	return (
 		<section className="space-y-8">
 			<h2 className="text-center text-4xl font-bold tracking-tight text-stone-900">
-				Happy Customers
+				Testimonials
 			</h2>
-			<div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-				{testimonials.map((testimonial, index) => (
-					<article key={testimonial.name} className="col-span-1">
-						<blockquote className="relative rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
-							<div className="absolute right-4 top-4 text-4xl text-lime-200">
-								"
+			<div className="mx-auto max-w-4xl columns-1 gap-6 sm:columns-2">
+				{testimonials.map(({ name, quote, avatar, role }) => (
+					<article
+						key={name}
+						className="mb-6 inline-block w-full break-inside-avoid rounded-2xl border border-stone-200 bg-white p-6 shadow-sm"
+					>
+						<p className="mb-4 leading-relaxed text-stone-600">{quote}</p>
+						<div className="flex items-center gap-3 border-t border-stone-200 pt-4">
+							<Avatar>
+								<AvatarImage src={avatar} alt={`${name} avatar`} />
+							</Avatar>
+							<div>
+								<p className="text-sm font-semibold text-stone-900">{name}</p>
+								<p className="text-xs text-stone-500">{role}</p>
 							</div>
-							<div className="space-y-4">
-								<p className="relative z-10 text-base leading-relaxed text-stone-600 sm:text-lg">
-									{testimonial.quote}
-								</p>
-								<div className="flex items-center gap-3 border-t border-stone-200 pt-2">
-									<Avatar className="h-10 w-10">
-										<AvatarImage
-											src={testimonial.avatar}
-											alt={`${testimonial.name} avatar`}
-										/>
-									</Avatar>{' '}
-									<div>
-										<p className="text-sm font-semibold text-stone-900">
-											{testimonial.name}
-										</p>
-										<p className="text-xs text-stone-500">{testimonial.role}</p>
-									</div>
-								</div>
-							</div>
-						</blockquote>
+						</div>
 					</article>
 				))}
 			</div>

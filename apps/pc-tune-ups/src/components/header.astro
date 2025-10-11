@@ -1,9 +1,14 @@
 ---
 import { Phone, MapPin, Clock } from 'lucide-react'
+
+const phone = '504-885-1635'
+const href = `tel:1${phone.replace(/-/g, '')}`
+const mapLink = 'https://maps.app.goo.gl/HFwuccUoHaHKUXVG9'
+const location = '3943 Veterans Blvd, Metairie, LA'
 ---
 
 <header
-	class="text-md top-0 z-50 text-nowrap border-b border-stone-200 bg-white/95 shadow-md backdrop-blur-xl supports-[backdrop-filter]:bg-white/90 md:sticky"
+	class="text-md top-0 z-50 min-w-fit text-nowrap border-b border-stone-200 bg-white/95 shadow-md backdrop-blur-xl supports-[backdrop-filter]:bg-white/90 md:sticky"
 >
 	<div
 		class="mx-auto flex max-w-5xl flex-nowrap justify-between gap-4 p-4 text-stone-600 max-md:flex-col max-md:items-start md:gap-6 md:px-8 md:py-6"
@@ -13,13 +18,13 @@ import { Phone, MapPin, Clock } from 'lucide-react'
 		>
 			<a
 				class="group flex items-center gap-1.5 font-semibold text-stone-900 transition-colors duration-200 hover:text-lime-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lime-600"
-				href="tel:15048851635"
+				href={href}
 			>
 				<Phone
 					className="inline-block h-5 w-5 text-lime-600 transition-transform duration-200 group-hover:scale-110 md:h-6 md:w-6"
 					client:load
 				/>
-				<span>504-885-1635</span>
+				<span>{phone}</span>
 			</a>
 		</div>
 		<div
@@ -27,7 +32,7 @@ import { Phone, MapPin, Clock } from 'lucide-react'
 		>
 			<a
 				class="group flex items-center gap-1.5 font-medium text-stone-700 transition-colors duration-200 hover:text-lime-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lime-600"
-				href="https://maps.google.com/?q=5416+Veterans+Blvd,+Metairie,+LA+70003"
+				href={mapLink}
 				target="_blank"
 				rel="noreferrer"
 			>
@@ -35,7 +40,7 @@ import { Phone, MapPin, Clock } from 'lucide-react'
 					className="inline-block h-5 w-5 text-lime-600 transition-transform duration-200 group-hover:scale-110 md:h-6 md:w-6"
 					client:load
 				/>
-				<span>5416 Veterans Blvd, Metairie, LA</span>
+				<span>{location}</span>
 			</a>
 		</div>
 		<div
