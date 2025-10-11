@@ -34,15 +34,15 @@ export function Testimonials() {
 	return (
 		<section className="space-y-8">
 			<h2 className="text-center text-4xl font-bold tracking-tight text-stone-900">
-				Happy Customers
+				Testimonials
 			</h2>
-			<div className="grid gap-6 [columns:300px]">
+			<div className="mx-auto max-w-4xl columns-1 gap-6 sm:columns-2">
 				{testimonials.map(({ name, quote, avatar, role }) => (
 					<article
 						key={name}
-						className="min-w-sm flex h-fit max-w-sm flex-col space-y-4 rounded-2xl border border-stone-200 bg-white p-6 shadow-sm"
+						className="mb-6 inline-block w-full break-inside-avoid rounded-2xl border border-stone-200 bg-white p-6 shadow-sm"
 					>
-						<p className="leading-relaxed text-stone-600">{quote}</p>
+						<p className="mb-4 leading-relaxed text-stone-600">{quote}</p>
 						<div className="flex items-center gap-3 border-t border-stone-200 pt-4">
 							<Avatar>
 								<AvatarImage src={avatar} alt={`${name} avatar`} />
