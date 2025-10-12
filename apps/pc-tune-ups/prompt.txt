@@ -1,1 +1,0 @@
-I'm trying to redo a website for a friend. I have all the scraped content stored as markdown files in @docs/scraping/. There seems to be a lot of either boiler plate or redundant info. Can you help me consolidate all this info into 1 final markdown called final.md.

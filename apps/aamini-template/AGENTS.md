@@ -16,7 +16,8 @@ All commands are run from the root of the project, from a terminal:
 | `pnpm dev`              | Starts local dev server at `localhost:4321`     |
 | `pnpm build`            | Build your production site to `./dist/`         |
 | `pnpm typecheck`        | Run TypeScript type checking                    |
-| `pnpm check`            | Run biome to lint + format                      |
+| `pnpm format`           | Run Prettier to format                          |
+| `pnpm lint`             | Run Oxlint linting rules (Replaces ESLint)      |
 | `pnpm test:unit`        | Run unit tests with Vitest                      |
 | `pnpm test:integration` | Run integration tests                           |
 | `pnpm e2e`              | Run end-to-end tests with Playwright            |
