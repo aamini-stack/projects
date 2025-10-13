@@ -1,6 +1,6 @@
+import type { EventGallery } from '#/lib/galleries'
 import { ArrowLeft } from 'lucide-react'
 import { useState } from 'react'
-import type { EventGallery } from '#/lib/galleries'
 
 type EventGalleryProps = {
 	gallery: EventGallery
