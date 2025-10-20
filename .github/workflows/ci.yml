@@ -58,7 +58,7 @@ jobs:
 
           FILTER="{./apps/*}...[$BASE...HEAD]"
 
-          APPS=$(npx turbo build --filter="$FILTER" --dry=json | jq -c .packages)
+          APPS=$(npx turbo@2.5.8 build --filter="$FILTER" --dry=json | jq -c .packages)
           echo $APPS
           echo "apps=$APPS" >> $GITHUB_OUTPUT
 
