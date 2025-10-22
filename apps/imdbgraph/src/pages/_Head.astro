@@ -1,0 +1,61 @@
+---
+import Font from 'astro/components/Font.astro'
+---
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width" />
+	<link rel="icon" type="image/svg+xml" href="/favicon.ico" />
+	<title>IMDB Graph</title>
+	<meta
+		name="description"
+		content="Website to visualize IMDB TV show ratings as a graph."
+	/>
+	<meta
+		name="keywords"
+		content="imdbgraph.org, imdbgraph.com, IMDB, Graph, IMDB Graph, 
+      IMDB Chart, imdbgraph, Visualize, Episode ratings, chart, season, 
+      episode"
+	/>
+	<Font cssVariable="--font-family-sans" preload />
+	<script is:inline>
+		const getThemePreference = () => {
+			if (
+				typeof localStorage !== 'undefined' &&
+				localStorage.getItem('theme')
+			) {
+				return localStorage.getItem('theme')
+			}
+			return window.matchMedia('(prefers-color-scheme: dark)').matches
+				? 'dark'
+				: 'light'
+		}
+		const isDark = getThemePreference() === 'dark'
+		document.documentElement.classList[isDark ? 'add' : 'remove']('dark')
+		if (typeof localStorage !== 'undefined') {
+			const observer = new MutationObserver(() => {
+				const isDark = document.documentElement.classList.contains('dark')
+				localStorage.setItem('theme', isDark ? 'dark' : 'light')
+			})
+			observer.observe(document.documentElement, {
+				attributes: true,
+				attributeFilter: ['class'],
+			})
+		}
+	</script>
+	<script>
+		import { PUBLIC_POSTHOG_KEY } from 'astro:env/client'
+		import posthog from 'posthog-js'
+
+		if (import.meta.env.MODE !== 'development') {
+			posthog.init(PUBLIC_POSTHOG_KEY, {
+				api_host: '/api/analytics',
+				ui_host: 'https://us.posthog.com',
+				defaults: '2025-05-24',
+				person_profiles: 'always',
+			})
+		} else {
+			console.log('Posthog not initialized in dev mode.')
+		}
+	</script>
+</head>

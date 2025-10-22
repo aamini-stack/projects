@@ -1,13 +1,13 @@
+import { download } from '#/lib/imdb/file-downloader'
+import type { NodePgDatabase } from 'drizzle-orm/node-postgres'
 import { randomUUID } from 'node:crypto'
 import { createReadStream } from 'node:fs'
 import { mkdir } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
 import { pipeline } from 'node:stream/promises'
-import type { NodePgDatabase } from 'drizzle-orm/node-postgres'
 import type { Pool, PoolClient } from 'pg'
 import { from as copyFrom } from 'pg-copy-streams'
-import { download } from '#/lib/imdb/file-downloader'
 
 /**
  * Main method that downloads the latest files from IMDB and updates our
@@ -167,6 +167,12 @@ async function transfer(client: PoolClient) {
       episode_num > 0
   `)
 
+	// Drop foreign key constraint from thumbnail table before dropping show table
+	await client.query(`
+		ALTER TABLE IF EXISTS thumbnail
+		DROP CONSTRAINT IF EXISTS thumbnail_show_imdb_id_fk;
+	`)
+
 	await client.query('DROP TABLE IF EXISTS episode;')
 	await client.query('DROP TABLE IF EXISTS show;')
 
@@ -181,6 +187,14 @@ async function transfer(client: PoolClient) {
     ALTER TABLE show ADD PRIMARY KEY (imdb_id);
 	`)
 	console.log('Updated show table')
+
+	// Re-add foreign key constraint to thumbnail table
+	await client.query(`
+		ALTER TABLE IF EXISTS thumbnail
+		ADD CONSTRAINT thumbnail_show_imdb_id_fk
+		FOREIGN KEY (imdb_id) REFERENCES show(imdb_id);
+	`)
+	console.log('Re-added thumbnail foreign key constraint')
 
 	await client.query(`
     ALTER TABLE episode_new RENAME TO episode;

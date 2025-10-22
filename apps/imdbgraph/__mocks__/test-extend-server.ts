@@ -1,22 +1,37 @@
-import path from 'node:path'
+import * as schema from '#/db/tables'
 import { PostgreSqlContainer } from '@testcontainers/postgresql'
 import { drizzle, type NodePgDatabase } from 'drizzle-orm/node-postgres'
 import { migrate } from 'drizzle-orm/node-postgres/migrator'
 import { reset } from 'drizzle-seed'
+import { setupServer, type SetupServerApi } from 'msw/node'
+import path from 'node:path'
 import { Pool } from 'pg'
 import { test as baseTest } from 'vitest'
-import * as schema from '#/db/tables'
+import handlers from '#/mocks/handlers'
 
 type Database = NodePgDatabase & {
 	$client: Pool
 }
 
 interface DbFixture {
+	worker: SetupServerApi
 	db: Database
 	seedFunction: (db: Database) => Promise<void>
 }
 
+export const worker = setupServer(...handlers)
+
 export const test = baseTest.extend<DbFixture>({
+	worker: [
+		async ({}, use) => {
+			worker.listen({ onUnhandledRequest: 'bypass' })
+			await use(worker)
+			worker.resetHandlers()
+		},
+		{
+			auto: true,
+		},
+	],
 	seedFunction: [async ({}, use) => use(async (_) => {}), { scope: 'file' }],
 	db: [
 		async ({ seedFunction }, use) => {

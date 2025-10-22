@@ -22,9 +22,7 @@ test('Screenshot Searchbar', async ({ page }) => {
 })
 
 test('Title works', async ({ page }) => {
-	await expect(
-		page.getByRole('heading', { name: /Welcome to IMDB Graph/i }),
-	).toBeVisible()
+	await expect(page.getByRole('heading', { name: /IMDB Graph/i })).toBeVisible()
 })
 
 test('Search bar click navigation works', async ({ page }) => {

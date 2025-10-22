@@ -12,7 +12,8 @@
 			},
 			"presentation": {
 				"group": "test"
-			}
+			},
+			"problemMatcher": []
 		},
 		{
 			"label": "test:watch",
@@ -25,7 +26,8 @@
 			},
 			"presentation": {
 				"group": "test"
-			}
+			},
+			"problemMatcher": []
 		}
 	]
 }
