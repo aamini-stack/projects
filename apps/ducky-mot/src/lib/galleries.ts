@@ -1,8 +1,8 @@
 /**
  * Gallery data for Ducky Mot events
  *
- * This file contains the image galleries for events that have been
- * migrated from the legacy WordPress system to the modern in-app gallery.
+ * This file contains the image galleries for events that have been migrated
+ * from the legacy WordPress system to the modern in-app gallery.
  */
 
 import fs from 'node:fs'
@@ -15,9 +15,7 @@ export type GalleryImage = {
 	thumbnail?: string // Optional optimized thumbnail URL
 }
 
-/**
- * Dynamically load images from a public directory
- */
+/** Dynamically load images from a public directory */
 function loadImagesFromDirectory(dirPath: string): GalleryImage[] {
 	const publicDir = path.join(process.cwd(), 'public', dirPath)
 
@@ -54,8 +52,8 @@ export type EventGallery = {
 }
 
 /**
- * Map of gallery ID to gallery data
- * Add new galleries here as events are migrated
+ * Map of gallery ID to gallery data Add new galleries here as events are
+ * migrated
  */
 export const galleries: Record<string, EventGallery> = {
 	'ducky-endless-summer-2025-09-19': {
@@ -68,16 +66,12 @@ export const galleries: Record<string, EventGallery> = {
 	},
 }
 
-/**
- * Get gallery by ID
- */
+/** Get gallery by ID */
 export function getGallery(id: string): EventGallery | undefined {
 	return galleries[id]
 }
 
-/**
- * Get all gallery IDs
- */
+/** Get all gallery IDs */
 export function getAllGalleryIds(): string[] {
 	return Object.keys(galleries)
 }

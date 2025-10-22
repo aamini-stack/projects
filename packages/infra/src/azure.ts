@@ -1,6 +1,6 @@
 import * as azure from '@pulumi/azure-native'
-import * as flux from '@worawat/flux'
 import * as pulumi from '@pulumi/pulumi'
+import * as flux from '@worawat/flux'
 
 const config = new pulumi.Config('azure-native')
 const fluxConfig = new pulumi.Config('flux')

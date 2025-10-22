@@ -1,3 +1,4 @@
+import type { JobInfo } from '#/lib/jobs'
 import { Button } from '@aamini/ui/components/button'
 import { Card } from '@aamini/ui/components/card'
 import {
@@ -7,7 +8,6 @@ import {
 } from '@radix-ui/react-collapsible'
 import { ChevronsUpDown } from 'lucide-react'
 import { useState } from 'react'
-import type { JobInfo } from '#/lib/jobs'
 
 export function JobBubble({ job }: { job: JobInfo }) {
 	const header = job.bulletPoints[0]

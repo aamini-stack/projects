@@ -7,13 +7,6 @@ on:
   pull_request:
     branches:
       - main
-  workflow_dispatch:
-    inputs:
-      update_snapshots:
-        description: 'Whether to update the playwright reference screenshots'
-        required: false
-        type: boolean
-        default: false
 
 permissions:
   contents: write
@@ -65,7 +58,7 @@ jobs:
 
           FILTER="{./apps/*}...[$BASE...HEAD]"
 
-          APPS=$(npx turbo build --filter="$FILTER" --dry=json | jq -c .packages)
+          APPS=$(npx turbo@2.5.8 build --filter="$FILTER" --dry=json | jq -c .packages)
           echo $APPS
           echo "apps=$APPS" >> $GITHUB_OUTPUT
 
@@ -93,9 +86,9 @@ jobs:
             --scope=${{ vars.TURBO_TEAM }}
           BASE_URL=$(pnpm vercel \
             --yes \
-            ${{ github.ref_name == 'main' && '--prod' || '' }} \
             --token=${{ secrets.VERCEL_TOKEN }} \
-            --scope=${{ vars.TURBO_TEAM }} \
+            --scope=aamini \
+            ${{ github.ref_name == 'main' && '--prod' || '' }}
             -m githubDeployment='1' \
             -m githubCommitRef='feature/${{ github.head_ref || github.ref_name }}' \
             -m githubCommitSha='${{ github.sha }}' \
@@ -106,15 +99,7 @@ jobs:
         working-directory: './apps/${{ matrix.app }}'
         env:
           VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
-        run: pnpm e2e${{ inputs.update_snapshots && ':update' || '' }}
-      # Upload screenshots + report
-      - name: Upload Screenshots
-        if: success() && inputs.update_snapshots
-        uses: actions/upload-artifact@v4
-        with:
-          name: screenshots-${{ matrix.app }}
-          path: './*/**/e2e/**/*.png'
-          retention-days: 1
+        run: pnpm e2e
       - name: Publish Report
         uses: actions/upload-artifact@v4
         if: failure()
@@ -122,26 +107,3 @@ jobs:
           name: playwright-report-${{ matrix.app }}
           path: './apps/${{ matrix.app }}/playwright-report'
           retention-days: 30
-
-  commit-screenshots:
-    runs-on: ubuntu-latest
-    needs: [e2e]
-    if: inputs.update_snapshots
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ github.head_ref }}
-      - name: Download All Screenshot Artifacts
-        uses: actions/download-artifact@v4
-        with:
-          pattern: screenshots-*
-          merge-multiple: true
-      - name: Commit Screenshots
-        run: |
-          # https://github.com/actions/checkout?tab=readme-ov-file#push-a-commit-to-a-pr-using-the-built-in-token
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add *.png
-          git commit -m "Update Screenshots"
-          git push

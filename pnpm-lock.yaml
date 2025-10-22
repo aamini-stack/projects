@@ -11,9 +11,6 @@ importers:
       '@playwright/test':
         specifier: ^1.56.0
         version: 1.56.0
-      '@prettier/plugin-oxc':
-        specifier: ^0.0.4
-        version: 0.0.4
       oxlint:
         specifier: ^1.20.0
         version: 1.20.0(oxlint-tsgolint@0.2.0)
@@ -124,94 +121,6 @@ importers:
         specifier: ^1.0.1
         version: 1.0.1(@types/react-dom@19.2.1(@types/react@19.2.2))(@types/react@19.2.2)(@vitest/browser@3.2.4)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(vitest@3.2.4)
 
-  apps/dota-visualizer:
-    dependencies:
-      '@aamini/ui':
-        specifier: workspace:*
-        version: link:../../packages/ui
-      '@radix-ui/react-select':
-        specifier: ^2.2.6
-        version: 2.2.6(@types/react-dom@19.2.1(@types/react@19.2.2))(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
-      arktype:
-        specifier: ^2.1.22
-        version: 2.1.22
-      class-variance-authority:
-        specifier: ^0.7.1
-        version: 0.7.1
-      clsx:
-        specifier: ^2.1.1
-        version: 2.1.1
-      lucide-react:
-        specifier: ^0.545.0
-        version: 0.545.0(react@19.2.0)
-      react:
-        specifier: ^19.2.0
-        version: 19.2.0
-      react-dom:
-        specifier: ^19.2.0
-        version: 19.2.0(react@19.2.0)
-      tailwind-merge:
-        specifier: ^3.3.1
-        version: 3.3.1
-    devDependencies:
-      '@aamini/config-testing':
-        specifier: workspace:*
-        version: link:../../packages/config-testing
-      '@aamini/config-typescript':
-        specifier: workspace:*
-        version: link:../../packages/config-typescript
-      '@astrojs/react':
-        specifier: ^4.4.0
-        version: 4.4.0(@types/node@24.7.0)(@types/react-dom@19.2.1(@types/react@19.2.2))(@types/react@19.2.2)(jiti@2.6.1)(lightningcss@1.30.1)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(yaml@2.8.1)
-      '@astrojs/vercel':
-        specifier: ^8.2.8
-        version: 8.2.8(astro@5.14.1(@types/node@24.7.0)(@vercel/functions@3.1.2)(encoding@0.1.13)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(typescript@5.9.3)(yaml@2.8.1))(encoding@0.1.13)(react@19.2.0)(rollup@4.52.4)
-      '@playwright/test':
-        specifier: ^1.56.0
-        version: 1.56.0
-      '@tailwindcss/vite':
-        specifier: ^4.1.14
-        version: 4.1.14(vite@7.1.9(@types/node@24.7.0)(jiti@2.6.1)(lightningcss@1.30.1)(yaml@2.8.1))
-      '@types/node':
-        specifier: ^24.7.0
-        version: 24.7.0
-      '@types/react':
-        specifier: ^19.2.2
-        version: 19.2.2
-      '@types/react-dom':
-        specifier: ^19.2.1
-        version: 19.2.1(@types/react@19.2.2)
-      '@vitest/browser':
-        specifier: ^3.2.4
-        version: 3.2.4(msw@2.11.3(@types/node@24.7.0)(typescript@5.9.3))(playwright@1.56.0)(vite@7.1.9(@types/node@24.7.0)(jiti@2.6.1)(lightningcss@1.30.1)(yaml@2.8.1))(vitest@3.2.4)
-      astro:
-        specifier: ^5.14.1
-        version: 5.14.1(@types/node@24.7.0)(@vercel/functions@3.1.2)(encoding@0.1.13)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(typescript@5.9.3)(yaml@2.8.1)
-      msw:
-        specifier: ^2.11.3
-        version: 2.11.3(@types/node@24.7.0)(typescript@5.9.3)
-      tailwindcss:
-        specifier: ^4.1.14
-        version: 4.1.14
-      tw-animate-css:
-        specifier: ^1.4.0
-        version: 1.4.0
-      typescript:
-        specifier: 5.9.3
-        version: 5.9.3
-      vite:
-        specifier: ^7.1.9
-        version: 7.1.9(@types/node@24.7.0)(jiti@2.6.1)(lightningcss@1.30.1)(yaml@2.8.1)
-      vite-tsconfig-paths:
-        specifier: ^5.1.4
-        version: 5.1.4(typescript@5.9.3)(vite@7.1.9(@types/node@24.7.0)(jiti@2.6.1)(lightningcss@1.30.1)(yaml@2.8.1))
-      vitest:
-        specifier: ^3.2.4
-        version: 3.2.4(@types/debug@4.1.12)(@types/node@24.7.0)(@vitest/browser@3.2.4)(jiti@2.6.1)(lightningcss@1.30.1)(msw@2.11.3(@types/node@24.7.0)(typescript@5.9.3))(yaml@2.8.1)
-      vitest-browser-react:
-        specifier: ^1.0.1
-        version: 1.0.1(@types/react-dom@19.2.1(@types/react@19.2.2))(@types/react@19.2.2)(@vitest/browser@3.2.4)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(vitest@3.2.4)
-
   apps/ducky-mot:
     dependencies:
       '@aamini/ui':
@@ -278,88 +187,6 @@ importers:
       astro:
         specifier: ^5.14.1
         version: 5.14.1(@types/node@24.7.0)(@vercel/functions@3.1.2)(encoding@0.1.13)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(typescript@5.9.3)(yaml@2.8.1)
-      tailwindcss:
-        specifier: ^4.1.14
-        version: 4.1.14
-      tw-animate-css:
-        specifier: ^1.4.0
-        version: 1.4.0
-      typescript:
-        specifier: 5.9.3
-        version: 5.9.3
-      vite:
-        specifier: ^7.1.9
-        version: 7.1.9(@types/node@24.7.0)(jiti@2.6.1)(lightningcss@1.30.1)(yaml@2.8.1)
-      vite-tsconfig-paths:
-        specifier: ^5.1.4
-        version: 5.1.4(typescript@5.9.3)(vite@7.1.9(@types/node@24.7.0)(jiti@2.6.1)(lightningcss@1.30.1)(yaml@2.8.1))
-      vitest:
-        specifier: ^3.2.4
-        version: 3.2.4(@types/debug@4.1.12)(@types/node@24.7.0)(@vitest/browser@3.2.4)(jiti@2.6.1)(lightningcss@1.30.1)(msw@2.11.3(@types/node@24.7.0)(typescript@5.9.3))(yaml@2.8.1)
-      vitest-browser-react:
-        specifier: ^1.0.1
-        version: 1.0.1(@types/react-dom@19.2.1(@types/react@19.2.2))(@types/react@19.2.2)(@vitest/browser@3.2.4)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(vitest@3.2.4)
-
-  apps/fruit-gen:
-    dependencies:
-      '@aamini/ui':
-        specifier: workspace:@aamini/ui-neobrutalist@*
-        version: link:../../packages/ui-neobrutalist
-      '@aamini/utils':
-        specifier: workspace:*
-        version: link:../../packages/utils
-      class-variance-authority:
-        specifier: ^0.7.1
-        version: 0.7.1
-      lucide-react:
-        specifier: ^0.545.0
-        version: 0.545.0(react@19.2.0)
-      react:
-        specifier: ^19.2.0
-        version: 19.2.0
-      react-dom:
-        specifier: ^19.2.0
-        version: 19.2.0(react@19.2.0)
-    devDependencies:
-      '@aamini/config-testing':
-        specifier: workspace:*
-        version: link:../../packages/config-testing
-      '@aamini/config-typescript':
-        specifier: workspace:*
-        version: link:../../packages/config-typescript
-      '@astrojs/react':
-        specifier: ^4.4.0
-        version: 4.4.0(@types/node@24.7.0)(@types/react-dom@19.2.1(@types/react@19.2.2))(@types/react@19.2.2)(jiti@2.6.1)(lightningcss@1.30.1)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(yaml@2.8.1)
-      '@astrojs/vercel':
-        specifier: ^8.2.8
-        version: 8.2.8(astro@5.14.1(@types/node@24.7.0)(@vercel/functions@3.1.2)(encoding@0.1.13)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(typescript@5.9.3)(yaml@2.8.1))(encoding@0.1.13)(react@19.2.0)(rollup@4.52.4)
-      '@playwright/test':
-        specifier: ^1.56.0
-        version: 1.56.0
-      '@tailwindcss/vite':
-        specifier: ^4.1.14
-        version: 4.1.14(vite@7.1.9(@types/node@24.7.0)(jiti@2.6.1)(lightningcss@1.30.1)(yaml@2.8.1))
-      '@types/node':
-        specifier: ^24.7.0
-        version: 24.7.0
-      '@types/react':
-        specifier: ^19.2.2
-        version: 19.2.2
-      '@types/react-dom':
-        specifier: ^19.2.1
-        version: 19.2.1(@types/react@19.2.2)
-      '@vitest/browser':
-        specifier: ^3.2.4
-        version: 3.2.4(msw@2.11.3(@types/node@24.7.0)(typescript@5.9.3))(playwright@1.56.0)(vite@7.1.9(@types/node@24.7.0)(jiti@2.6.1)(lightningcss@1.30.1)(yaml@2.8.1))(vitest@3.2.4)
-      astro:
-        specifier: ^5.14.1
-        version: 5.14.1(@types/node@24.7.0)(@vercel/functions@3.1.2)(encoding@0.1.13)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(typescript@5.9.3)(yaml@2.8.1)
-      clsx:
-        specifier: ^2.1.1
-        version: 2.1.1
-      tailwind-merge:
-        specifier: ^3.3.1
-        version: 3.3.1
       tailwindcss:
         specifier: ^4.1.14
         version: 4.1.14
@@ -7005,7 +6832,8 @@ snapshots:
   '@oxc-parser/binding-win32-x64-msvc@0.74.0':
     optional: true
 
-  '@oxc-project/types@0.74.0': {}
+  '@oxc-project/types@0.74.0':
+    optional: true
 
   '@oxlint-tsgolint/darwin-arm64@0.2.0':
     optional: true
@@ -7063,6 +6891,7 @@ snapshots:
   '@prettier/plugin-oxc@0.0.4':
     dependencies:
       oxc-parser: 0.74.0
+    optional: true
 
   '@protobufjs/aspromise@1.1.2': {}
 
@@ -10179,6 +10008,7 @@ snapshots:
       '@oxc-parser/binding-wasm32-wasi': 0.74.0
       '@oxc-parser/binding-win32-arm64-msvc': 0.74.0
       '@oxc-parser/binding-win32-x64-msvc': 0.74.0
+    optional: true
 
   oxlint-tsgolint@0.2.0:
     optionalDependencies:

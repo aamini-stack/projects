@@ -3,7 +3,6 @@
 	"semi": false,
 	"useTabs": true,
 	"plugins": [
-		"@prettier/plugin-oxc",
 		"prettier-plugin-jsdoc",
 		"prettier-plugin-organize-imports",
 		"prettier-plugin-astro",

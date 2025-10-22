@@ -1,8 +1,8 @@
+import type { EventItem, YearGroup } from '#/types/events'
+import { isLegacyEvent } from '#/types/events'
 import { Badge } from '@aamini/ui/components/badge'
 import { Card, CardContent } from '@aamini/ui/components/card'
 import { ExternalLink, Images } from 'lucide-react'
-import type { EventItem, YearGroup } from '#/types/events'
-import { isLegacyEvent } from '#/types/events'
 
 const eventsByYear: YearGroup[] = [
 	{

@@ -1,14 +1,14 @@
-import type { ReactNode } from 'react'
 import {
-	Laptop2,
 	Database,
 	Globe,
-	Shield,
-	Settings,
-	Monitor,
 	Home,
+	Laptop2,
+	Monitor,
+	Settings,
+	Shield,
 } from 'lucide-react'
 import AppleIcon from 'public/apple.svg'
+import type { ReactNode } from 'react'
 
 interface ServiceCardProps {
 	title: string

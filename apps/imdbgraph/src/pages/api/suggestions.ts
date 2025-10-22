@@ -1,6 +1,6 @@
-import type { APIRoute } from 'astro'
 import { db } from '#/db/connection'
 import { fetchSuggestions } from '#/lib/imdb/search'
+import type { APIRoute } from 'astro'
 
 export const GET: APIRoute = async ({ request }) => {
 	const url = new URL(request.url)

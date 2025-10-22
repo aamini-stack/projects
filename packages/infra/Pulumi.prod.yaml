@@ -1,18 +1,19 @@
 config:
+  # Azure
   azure-native:location: West US
   azure-native:subscriptionId: 331269d5-143f-4246-b389-9c1f41bb5882
   azure-native:resourceGroupName: rg-aamini-prod
-
+  # Vercel
   vercel:team: team_BMB11Zck0xVJiYVTGXOUqLiz
   vercel:apiToken:
-    secure: AAABAPN67fvVYLtzcjoqXuL/NhT2yFXkYPCqxFUSguZvowLcDaV/50LHp50IA1AIfJboyd5IycY=
+    secure: AAABALN4FQfBYS9ou4Ei/f9y5JU28hID3iv+APwxw70AdRa6K1SGi3JqiHSFn5usnfCDaYc+71I=
   vercel:automationBypassSecret:
     secure: AAABAAriP1ME6Q9O7uOPIrm4q957yi4gyDW/t4Mu/2NliA7sWKwTdwGE8Fz/NodzeKLjFdRjlPDEG24dFykcvQ==
   vercel:turboToken:
-    secure: AAABACXci+eDnoRD7RwZmOPKGvakSBh5ufGNcX1zO0mvV5Jjj4aBpKE+X3qR9QckxVYwzwG9q44=
-
+    secure: AAABACOICv6ppURq2g+PClWjWDzs2aNskUDBdiR0wRenZXoIlQNuFsQ+a9KzmWqhm2vBwVknBw==
+  # GitHub
   github:owner: aamini-stack
   github:token:
     secure: AAABAM2+e0I8Kjzw7/T0QZnc6e7zuHTOl8b8YK/KrsG8IhV/ywOhmi11AcS2b/eTvSW0Npy8BYlRJKmFE+cmgbwbBeHHHonU7OAio2rF2f1tLXkEBey3WKF60B4JlHkcxG/v8rnWbzqV8srCCgWkGp3eXg+M6oeUawTOf2Y=
-
+  # Git-Ops
   flux:targetPath: manifests/gitops/prod
