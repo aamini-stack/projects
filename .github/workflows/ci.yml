@@ -87,7 +87,7 @@ jobs:
           BASE_URL=$(pnpm vercel \
             --yes \
             --token=${{ secrets.VERCEL_TOKEN }} \
-            --scope=aamini \
+            --scope=aamini11 \
             -m githubDeployment='1' \
             -m githubCommitRef='feature/${{ github.head_ref || github.ref_name }}' \
             -m githubCommitSha='${{ github.sha }}' \
