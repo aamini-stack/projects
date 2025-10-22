@@ -20,59 +20,47 @@ const defaultBranch = new github.BranchDefault('defaultBranch', {
 })
 
 const vercelConfig = new pulumi.Config('vercel')
-const actionVariables = {
-	secrets: [
-		{
-			name: 'vercelAutomationBypass',
-			secretName: 'VERCEL_AUTOMATION_BYPASS_SECRET',
-			value: vercelConfig.requireSecret('automationBypassSecret'),
-		},
-		{
-			name: 'vercelToken',
-			secretName: 'VERCEL_TOKEN',
-			value: vercelConfig.requireSecret('apiToken'),
-		},
-		{
-			name: 'vercelTurboToken',
-			secretName: 'TURBO_TOKEN',
-			value: vercelConfig.requireSecret('turboToken'),
-		},
-	],
-	variables: [
-		{
-			name: 'vercelTeam',
-			variableName: 'TURBO_TEAM',
-			value: vercelConfig.require('team'),
-		},
-	],
-}
 
-const secrets = Object.fromEntries(
-	actionVariables.secrets.map((secret) => [
-		secret.name,
-		new github.ActionsSecret(secret.name, {
+const actionSecrets = [
+	{
+		secretName: 'VERCEL_AUTOMATION_BYPASS_SECRET',
+		value: vercelConfig.requireSecret('automationBypassSecret'),
+	},
+	{
+		secretName: 'VERCEL_TOKEN',
+		value: vercelConfig.requireSecret('apiToken'),
+	},
+	{
+		secretName: 'TURBO_TOKEN',
+		value: vercelConfig.requireSecret('turboToken'),
+	},
+].map(
+	({ secretName, value }) =>
+		new github.ActionsSecret(secretName, {
 			repository: repository,
-			encryptedValue: secret.value,
-			secretName: secret.secretName,
+			secretName,
+			plaintextValue: value,
 		}),
-	]),
 )
 
-const variables = Object.fromEntries(
-	actionVariables.variables.map((variable) => [
-		variable.name,
-		new github.ActionsVariable(variable.name, {
+const actionVariables = [
+	{
+		variableName: 'TURBO_TEAM',
+		value: vercelConfig.require('team'),
+	},
+].map(
+	({ variableName, value }) =>
+		new github.ActionsVariable(variableName, {
 			repository: repository,
-			value: variable.value,
-			variableName: variable.variableName,
+			variableName,
+			value,
 		}),
-	]),
 )
 
-export const variableNames = Object.values(variables).map(
+export const variableNames = Object.values(actionVariables).map(
 	(variable) => variable.variableName,
 )
-export const secretNames = Object.values(secrets).map(
+export const secretNames = Object.values(actionSecrets).map(
 	(secret) => secret.secretName,
 )
 export const defaultBranchName = defaultBranch.branch
