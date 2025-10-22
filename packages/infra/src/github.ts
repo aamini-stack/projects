@@ -3,6 +3,22 @@ import * as pulumi from '@pulumi/pulumi'
 
 const repository = 'projects'
 
+const repo = new github.Repository(
+	'repo',
+	{
+		name: repository,
+		visibility: 'public',
+		allowMergeCommit: false,
+		allowRebaseMerge: false,
+	},
+	{ protect: true },
+)
+
+const defaultBranch = new github.BranchDefault('defaultBranch', {
+	branch: 'main',
+	repository: repository,
+})
+
 const vercelConfig = new pulumi.Config('vercel')
 const actionVariables = {
 	secrets: [
@@ -31,28 +47,12 @@ const actionVariables = {
 	],
 }
 
-const repo = new github.Repository(
-	'repo',
-	{
-		name: repository,
-		visibility: 'public',
-		allowMergeCommit: false,
-		allowRebaseMerge: false,
-	},
-	{ protect: true },
-)
-
-const defaultBranch = new github.BranchDefault('defaultBranch', {
-	branch: 'main',
-	repository: repository,
-})
-
 const secrets = Object.fromEntries(
 	actionVariables.secrets.map((secret) => [
 		secret.name,
 		new github.ActionsSecret(secret.name, {
 			repository: repository,
-			plaintextValue: secret.value,
+			encryptedValue: secret.value,
 			secretName: secret.secretName,
 		}),
 	]),
