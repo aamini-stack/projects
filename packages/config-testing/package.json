@@ -9,7 +9,7 @@
 	},
 	"devDependencies": {
 		"@aamini/config-typescript": "workspace:*",
-		"@playwright/test": "^1.56.0",
+		"@playwright/test": "^1.56.1",
 		"@types/node": "^24.7.0",
 		"typescript": "^5.8.3",
 		"vite-tsconfig-paths": "^5.1.4",

@@ -10,7 +10,7 @@ config:
   vercel:automationBypassSecret:
     secure: AAABAAriP1ME6Q9O7uOPIrm4q957yi4gyDW/t4Mu/2NliA7sWKwTdwGE8Fz/NodzeKLjFdRjlPDEG24dFykcvQ==
   vercel:turboToken:
-    secure: AAABACOICv6ppURq2g+PClWjWDzs2aNskUDBdiR0wRenZXoIlQNuFsQ+a9KzmWqhm2vBwVknBw==
+    secure: AAABAHlFS7KEzM1dzS93an77xGmgiZYOJb4+40yhiQuSpBnnwgqTR1DdlraB/f6frFdyfHXcvrw=
   # GitHub
   github:owner: aamini-stack
   github:token:

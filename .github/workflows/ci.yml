@@ -90,7 +90,7 @@ jobs:
             --scope=${{ vars.TURBO_TEAM }} \
             -m githubDeployment='1' \
             -m githubCommitRef='feature/${{ github.head_ref || github.ref_name }}' \
-            -m githubCommitSha='${{ github.sha }}'
+            -m githubCommitSha='${{ github.sha }}' \
           | tail -1)
           echo BASE_URL=$BASE_URL >> $GITHUB_ENV
       # Test
