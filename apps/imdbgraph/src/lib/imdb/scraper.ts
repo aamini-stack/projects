@@ -28,12 +28,11 @@ export async function update(
 
 		const duration = ((Date.now() - startTime) / 1000).toFixed(2)
 		console.log(
-			`✅ Database population completed successfully in ${duration} seconds!`,
+			`Database population completed successfully in ${duration} seconds!`,
 		)
 	} catch (error) {
-		console.error('❌ Database population failed:')
+		console.error('Database population failed:')
 		console.error(error)
-		throw error
 	} finally {
 		client.release()
 	}
