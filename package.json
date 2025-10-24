@@ -17,7 +17,7 @@
 		"verify": "turbo run --continue=dependencies-successful build lint format test typecheck e2e"
 	},
 	"devDependencies": {
-		"@playwright/test": "^1.56.0",
+		"@playwright/test": "^1.56.1",
 		"oxlint": "^1.20.0",
 		"oxlint-tsgolint": "^0.2.0",
 		"prettier": "^3.6.2",

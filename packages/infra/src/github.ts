@@ -46,7 +46,7 @@ const actionSecrets = [
 const actionVariables = [
 	{
 		variableName: 'TURBO_TEAM',
-		value: vercelConfig.require('team'),
+		value: 'aamini',
 	},
 ].map(
 	({ variableName, value }) =>

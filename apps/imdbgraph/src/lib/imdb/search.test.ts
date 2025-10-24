@@ -1,16 +1,13 @@
-import { initDb, test } from '__mocks__/setup-db'
-import type { NodePgDatabase } from 'drizzle-orm/node-postgres'
-import { describe, expect } from 'vitest'
 import { show } from '#/db/tables'
 import { fetchSuggestions } from '#/lib/imdb/search'
+import { initDb, test } from '__mocks__/test-extend-server'
+import { describe, expect } from 'vitest'
 import { shows } from './__fixtures__/shows'
 
-async function seed(db: NodePgDatabase) {
-	await db.insert(show).values(shows)
-}
-
 describe('search tests', () => {
-	initDb(seed)
+	initDb(async (db) => {
+		await db.insert(show).values(shows)
+	})
 
 	test('exact title', async ({ db }) => {
 		const results = await fetchSuggestions(db, 'Game of Thrones')

@@ -3,6 +3,7 @@
 	"compilerOptions": {
 		"baseUrl": ".",
 		"paths": {
+			"#/mocks/*": ["./__mocks__/*"],
 			"#/*": ["./src/*"],
 			"@aamini/ui/*": ["../../packages/ui"]
 		}

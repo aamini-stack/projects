@@ -1,11 +1,11 @@
-import fs from 'node:fs/promises'
-import path from 'node:path'
-import { test } from '__mocks__/setup-db'
-import { describe, expect, vi } from 'vitest'
-import { gameOfThronesRatings } from './__fixtures__/game-of-thrones.ts'
 import { download, type ImdbFile } from '#/lib/imdb/file-downloader'
 import { getRatings } from '#/lib/imdb/ratings'
 import { update } from '#/lib/imdb/scraper'
+import { test } from '__mocks__/test-extend-server.ts'
+import fs from 'node:fs/promises'
+import path from 'node:path'
+import { describe, expect, vi } from 'vitest'
+import { gameOfThronesRatings } from './__fixtures__/game-of-thrones.ts'
 
 vi.mock(import('#/lib/imdb/file-downloader'))
 

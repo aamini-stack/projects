@@ -1,0 +1,45 @@
+---
+import '#/styles/globals.css'
+import Head from '#/pages/_Head.astro'
+import { ThemeButton } from '#/components/theme-button'
+
+export const prerender = true
+---
+
+<html lang="en">
+	<Head />
+	<body class="bg-background min-h-dvh min-w-80 antialiased">
+		<div class="flex min-h-dvh flex-col">
+			{/* Header with theme button in top right corner */}
+			<div class="ml-auto p-3">
+				<ThemeButton client:load />
+			</div>
+			{/* Main content */}
+			<slot />
+			{/* Footer */}
+			<footer class="w-full p-2 text-center text-xs">
+				<span class="text-muted-foreground text-balance leading-loose">
+					Built by{' '}
+					<a
+						href="https://www.linkedin.com/in/aria-amini/"
+						target="_blank"
+						rel="noreferrer"
+						class="font-medium underline underline-offset-4"
+					>
+						Aria
+					</a>
+					. The source code is available on{' '}
+					<a
+						href="https://github.com/aamini11/imdbgraph"
+						target="_blank"
+						rel="noreferrer"
+						class="font-medium underline underline-offset-4"
+					>
+						GitHub
+					</a>
+					.
+				</span>
+			</footer>
+		</div>
+	</body>
+</html>

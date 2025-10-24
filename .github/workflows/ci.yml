@@ -87,8 +87,7 @@ jobs:
           BASE_URL=$(pnpm vercel \
             --yes \
             --token=${{ secrets.VERCEL_TOKEN }} \
-            --scope=aamini \
-            ${{ github.ref_name == 'main' && '--prod' || '' }}
+            --scope=${{ vars.TURBO_TEAM }} \
             -m githubDeployment='1' \
             -m githubCommitRef='feature/${{ github.head_ref || github.ref_name }}' \
             -m githubCommitSha='${{ github.sha }}' \
