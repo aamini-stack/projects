@@ -1,7 +1,6 @@
 ---
 import '#/styles/globals.css'
 import Head from '#/pages/_Head.astro'
-import { ThemeButton } from '#/components/theme-button'
 
 export const prerender = true
 ---
@@ -10,10 +9,6 @@ export const prerender = true
 	<Head />
 	<body class="bg-background min-h-dvh min-w-80 antialiased">
 		<div class="flex min-h-dvh flex-col">
-			{/* Header with theme button in top right corner */}
-			<div class="ml-auto p-3">
-				<ThemeButton client:load />
-			</div>
 			{/* Main content */}
 			<slot />
 			{/* Footer */}
