@@ -7,7 +7,12 @@ test.beforeEach(async ({ page }) => {
 test('Title works', async ({ page }) => {
 	await expect(
 		page.getByRole('heading', {
-			name: 'Avatar: The Last Airbender (2005 - 2008)',
+			name: 'Avatar: The Last Airbender',
 		}),
 	).toBeVisible()
+	await expect(page.getByText('(2005 - 2008)')).toBeVisible()
+})
+
+test('Screenshot', async ({ page }) => {
+	await expect(page).toHaveScreenshot()
 })

@@ -35,7 +35,9 @@
 		"posthog-js": "^1.272.0",
 		"react": "^19.2.0",
 		"react-dom": "^19.2.0",
-		"tailwind-merge": "^3.3.1"
+		"recharts": "2.15.4",
+		"tailwind-merge": "^3.3.1",
+		"zod": "4.0.17"
 	},
 	"devDependencies": {
 		"@aamini/config-testing": "workspace:*",

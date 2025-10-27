@@ -4,18 +4,31 @@ ENV PATH="$PNPM_HOME:$PATH"
 ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0
 RUN corepack enable pnpm
 
-FROM base AS pruned
+# Prune stage
+FROM base AS pruner
 WORKDIR /app
-COPY . .
 RUN pnpm i -g turbo@^2
+COPY . .
 RUN turbo prune imdbgraph --docker
 
+# Build stage
 FROM base AS build
 WORKDIR /app
-COPY --from=pruned /app/out/json/pnpm-lock.yaml .
-RUN  --mount=type=cache,id=pnpm,target=/pnpm/store pnpm fetch
-COPY --from=pruned /app/out/json ./
-RUN  --mount=type=cache,id=pnpm,target=/pnpm/store pnpm i
-COPY --from=pruned /app/out/full ./
+
+# Copy lockfile and workspace config for better caching
+COPY --from=pruner /app/out/json/ ./
+COPY --from=pruner /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
+
+# Install dependencies with cache mount
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
+
+# Copy source code
+COPY --from=pruner /app/out/full/ ./
+
+# Build the application
+RUN pnpm --filter=imdbgraph build
+
+# Test stage
+FROM build AS test
 WORKDIR /app/apps/imdbgraph
 ENTRYPOINT ["pnpm", "playwright", "test"]

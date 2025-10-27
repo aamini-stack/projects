@@ -1,7 +1,7 @@
 import { Button } from '@aamini/ui/components/button'
 import { Home } from 'lucide-react'
 
-export function HomeButton({ className }: { className: string }) {
+export function HomeButton({ className }: { className?: string }) {
 	return (
 		<Button
 			className={className}

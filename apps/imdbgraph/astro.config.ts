@@ -37,7 +37,7 @@ export default defineConfig({
 		fonts: [
 			{
 				provider: fontProviders.google(),
-				name: 'Inter',
+				name: 'Oxanium',
 				cssVariable: '--font-family-sans',
 				subsets: ['latin'],
 			},

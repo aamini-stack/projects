@@ -150,28 +150,38 @@ export function SearchBar({ className }: { className?: string }) {
 						<li
 							key={show.imdbId}
 							className={cn(
-								'text-foreground/60 w-full cursor-pointer select-none rounded-md px-2 py-1.5 text-sm outline-none disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0',
+								'w-full cursor-pointer select-none rounded-md px-2 py-1.5 text-sm outline-none disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0',
 								{
 									'opacity-50': isFetching,
 									'bg-accent text-accent-foreground':
 										highlightedIndex === index,
-									'hover:bg-foreground/5': highlightedIndex !== index,
 								},
 							)}
 							{...getItemProps({ item: show, index })}
 						>
-							<a className="flex gap-4" href={`/ratings/${show.imdbId}`}>
+							<a
+								className="flex items-center gap-3"
+								href={`/ratings/${show.imdbId}`}
+							>
 								{/* Show Title + Years */}
 								<div className="flex flex-1 flex-col">
 									<span className="break-words">{show.title}&nbsp;</span>
-									<span className="text-foreground/40 text-xs">
+									<span
+										className={cn('text-xs', {
+											'text-accent-foreground': highlightedIndex === index,
+										})}
+									>
 										{formatYears(show)}
 									</span>
 								</div>
 								{/* 1-10 Rating + Blue Star Icon */}
 								<div className="flex items-center space-x-1 text-sm">
 									<span>{`${show.rating.toFixed(1)} / 10.0`}</span>
-									<Star className="text-sky-500" />
+									<Star
+										className={cn('text-secondary text-xs', {
+											'text-accent-foreground': highlightedIndex === index,
+										})}
+									/>
 								</div>
 							</a>
 						</li>
