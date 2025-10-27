@@ -1,14 +1,20 @@
+import type { Show } from '#/lib/imdb/types'
+import { formatYears } from '#/lib/imdb/types'
+import { queryClient } from '#/lib/react-query'
+import {
+	InputGroup,
+	InputGroupAddon,
+	InputGroupInput,
+} from '@aamini/ui/components/input-group'
+import { Spinner } from '@aamini/ui/components/spinner'
 import { cn } from '@aamini/ui/lib/utils'
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { useCombobox } from 'downshift'
 import { Search as SearchIcon, Star } from 'lucide-react'
 import { useDeferredValue, useEffect, useState } from 'react'
-import type { Show } from '#/lib/imdb/types'
-import { formatYears } from '#/lib/imdb/types'
-import { queryClient } from '#/lib/react-query'
 
 /** https://www.w3.org/WAI/ARIA/apg/patterns/combobox/examples/combobox-autocomplete-list/ */
-export function SearchBar() {
+export function SearchBar({ className }: { className?: string }) {
 	const [inputValue, setInputValue] = useState('')
 	const deferredValue = useDeferredValue(inputValue)
 	const [isRedirecting, setIsRedirecting] = useState(true)
@@ -45,7 +51,7 @@ export function SearchBar() {
 		setIsRedirecting(false)
 	}, [])
 
-	// Setup listener to detect is a link has been clicked to disable input while
+	// Setup listener to detect if a link has been clicked to disable input while
 	// the page is redirecting.
 	useEffect(() => {
 		const listener = () => {
@@ -80,7 +86,12 @@ export function SearchBar() {
 	})
 
 	return (
-		<div className="bg-background text-popover-foreground relative flex h-full w-full flex-col text-sm">
+		<div
+			className={cn(
+				'bg-background text-popover-foreground relative flex h-full w-full flex-col text-sm',
+				className,
+			)}
+		>
 			{/* Hidden label for accessibility */}
 			<label
 				htmlFor="search-bar-input"
@@ -90,10 +101,8 @@ export function SearchBar() {
 				Search for TV shows
 			</label>
 
-			{/* Search Bar */}
-			<div className="border-input shadow-xs selection:bg-primary selection:text-primary-foreground placeholder:text-muted-foreground dark:bg-input/30 has-focus-visible:border-ring has-focus-visible:ring-[3px] has-focus-visible:ring-ring/50 has-disabled:pointer-events-none has-disabled:cursor-not-allowed has-disabled:opacity-50 has-aria-invalid:border-destructive has-aria-invalid:ring-destructive/20 dark:has-aria-invalid:ring-destructive/40 file:text-foreground flex h-10 w-full min-w-0 items-center rounded-xl border bg-transparent px-3 py-1 text-base outline-none transition-[color,box-shadow] file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium md:text-sm">
-				<SearchIcon className="mr-2 h-4 w-4 shrink-0 opacity-50" />
-				<input
+			<InputGroup>
+				<InputGroupInput
 					aria-invalid={Boolean(error)}
 					className="flex-1 outline-none"
 					placeholder="Search for any TV show..."
@@ -102,24 +111,13 @@ export function SearchBar() {
 					id="search-bar-input"
 					{...getInputProps()}
 				/>
-				{/* Loading Icon (Only shows when loading) */}
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					width="24"
-					height="24"
-					viewBox="0 0 24 24"
-					fill="none"
-					stroke="currentColor"
-					strokeWidth="2"
-					strokeLinecap="round"
-					strokeLinejoin="round"
-					className={cn('animate-spin px-[2px]', { invisible: !isFetching })}
-					data-testid="loading-spinner"
-				>
-					<title>Loading Icon</title>
-					<path d="M21 12a9 9 0 1 1-6.219-8.56" />
-				</svg>
-			</div>
+				<InputGroupAddon>
+					<SearchIcon />
+				</InputGroupAddon>
+				<InputGroupAddon align="inline-end">
+					{isFetching && <Spinner />}
+				</InputGroupAddon>
+			</InputGroup>
 
 			{error && (
 				<div
