@@ -58,7 +58,7 @@ export function Graph({ ratings }: { ratings: Ratings }) {
 					{show.numVotes.toLocaleString()} votes)
 				</div>
 			</CardHeader>
-			<CardContent className="px-0">
+			<CardContent className="px-0 sm:px-6">
 				<ChartContainer config={chartConfig}>
 					<LineChart
 						accessibilityLayer
