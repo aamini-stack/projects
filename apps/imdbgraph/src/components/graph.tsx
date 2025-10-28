@@ -47,7 +47,7 @@ export function Graph({ ratings }: { ratings: Ratings }) {
 	})
 
 	return (
-		<Card>
+		<Card className="m-auto max-w-2xl">
 			<CardHeader className="text-center">
 				<h1 className="text-balance text-4xl font-extrabold leading-none tracking-tight">
 					{show.title}
@@ -58,7 +58,7 @@ export function Graph({ ratings }: { ratings: Ratings }) {
 					{show.numVotes.toLocaleString()} votes)
 				</div>
 			</CardHeader>
-			<CardContent>
+			<CardContent className="px-0">
 				<ChartContainer config={chartConfig}>
 					<LineChart
 						accessibilityLayer
@@ -79,7 +79,7 @@ export function Graph({ ratings }: { ratings: Ratings }) {
 							axisLine={true}
 							tick={true}
 							allowDecimals={false}
-							width={30} // Fixes bug where there's too much margin on left.
+							width={20} // Fixes bug where there's too much margin on left.
 							domain={[(dataMin: number) => Math.floor(dataMin), 10.0]}
 						/>
 						<ChartTooltip content={<CustomTooltip />} />

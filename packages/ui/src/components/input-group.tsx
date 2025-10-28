@@ -63,6 +63,7 @@ function InputGroupAddon({
 	...props
 }: React.ComponentProps<'div'> & VariantProps<typeof inputGroupAddonVariants>) {
 	return (
+		// oxlint-disable-next-line click-events-have-key-events
 		<div
 			role="group"
 			data-slot="input-group-addon"

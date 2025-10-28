@@ -35,24 +35,19 @@ function hasRatings(ratings: Ratings): boolean {
 		<SearchBar className="max-w-md" client:load />
 	</header>
 
-	<div class="flex flex-1 flex-col">
-		<div class="min-h-[250px] flex-1 p-5">
-			{
-				!hasRatings(ratings) ? (
-					<h1 class="pt-8 text-center text-6xl leading-tight">
-						No Ratings Found
-					</h1>
-				) : (
-					<Graph client:only="react" ratings={ratings}>
-						<div
-							slot="fallback"
-							class="flex flex-1 items-center justify-center"
-						>
-							<h1 class="animate-pulse rounded-md text-xl">LOADING...</h1>
-						</div>
-					</Graph>
-				)
-			}
-		</div>
+	<div class="xs:px-2 min-h-[250px] px-1 py-4 sm:px-5">
+		{
+			!hasRatings(ratings) ? (
+				<h1 class="pt-8 text-center text-6xl leading-tight">
+					No Ratings Found
+				</h1>
+			) : (
+				<Graph client:only="react" ratings={ratings}>
+					<div slot="fallback" class="flex flex-1 items-center justify-center">
+						<h1 class="animate-pulse rounded-md text-xl">LOADING...</h1>
+					</div>
+				</Graph>
+			)
+		}
 	</div>
 </Layout>
