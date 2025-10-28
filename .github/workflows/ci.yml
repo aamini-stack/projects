@@ -11,98 +11,29 @@ on:
 permissions:
   contents: write
 
-env:
-  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-  TURBO_TEAM: ${{ vars.TURBO_TEAM }}
-
 jobs:
-  quality-checks:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-      - name: Setup Node
-        uses: ./.github/actions/setup
-      - name: Run Checks
-        run: pnpm turbo run format typecheck lint test:unit
-
-  integration-tests:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-      - name: Setup Node
-        uses: ./.github/actions/setup
-      - name: Install Playwright Browsers
-        run: pnpm dlx playwright install --with-deps
-      - name: Test
-        run: pnpm test:integration
-
-  find-apps:
-    runs-on: ubuntu-latest
-    outputs:
-      apps: ${{ steps.calculate-apps.outputs.apps }}
+  ci:
+    runs-on: depot-ubuntu-24.04,dagger=0.19.0
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
-      - name: Get Changed Apps
-        id: calculate-apps
-        run: |
-          if [ "${{ github.event_name }}" = "push" ]; then
-            BASE=HEAD~
-          else
-            BASE=$(git merge-base HEAD origin/main)
-          fi
-
-          FILTER="{./apps/*}...[$BASE...HEAD]"
-
-          APPS=$(npx turbo@2.5.8 build --filter="$FILTER" --dry=json | jq -c .packages)
-          echo $APPS
-          echo "apps=$APPS" >> $GITHUB_OUTPUT
-
-  e2e:
-    needs: [find-apps]
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        app: ${{ fromJson(needs.find-apps.outputs.apps) }}
-      fail-fast: false
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-      - name: Setup Node
-        uses: ./.github/actions/setup
-      # Deploy
-      - name: Deploy to Vercel
-        working-directory: ./apps/${{ matrix.app }}
-        run: |
-          pnpm i -g vercel
-          pnpm vercel link \
-            --yes \
-            --repo \
-            --token=${{ secrets.VERCEL_TOKEN }} \
-            --scope=${{ vars.TURBO_TEAM }}
-          BASE_URL=$(pnpm vercel \
-            --yes \
-            --token=${{ secrets.VERCEL_TOKEN }} \
-            --scope=${{ vars.TURBO_TEAM }} \
-            -m githubDeployment='1' \
-            -m githubCommitRef='feature/${{ github.head_ref || github.ref_name }}' \
-            -m githubCommitSha='${{ github.sha }}' \
-          | tail -1)
-          echo BASE_URL=$BASE_URL >> $GITHUB_ENV
-      # Test
-      - name: Run Playwright tests
-        working-directory: './apps/${{ matrix.app }}'
+          fetch-depth: 0 # Need full history for changed apps detection
+      - name: Run Pipeline
         env:
+          TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+          TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
           VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
-        run: pnpm e2e
-      - name: Publish Report
-        uses: actions/upload-artifact@v4
-        if: failure()
-        with:
-          name: playwright-report-${{ matrix.app }}
-          path: './apps/${{ matrix.app }}/playwright-report'
-          retention-days: 30
+        run: |
+          dagger call ci \
+          --source=. \
+          --turbo-token=env:TURBO_TOKEN \
+          --turbo-team="${{ vars.TURBO_TEAM }}" \
+          --vercel-token=env:VERCEL_TOKEN \
+          --bypass-secret=env:VERCEL_AUTOMATION_BYPASS_SECRET \
+          --base="${{ github.event.before }}" \
+          --update-snapshots=${{ inputs.update_snapshots || false }} \
+          --is-prod=${{ github.ref_name == 'main' }} \
+          --branch-name="${{ github.head_ref || github.ref_name }}" \
+          --commit-sha="${{ github.sha }}"
