@@ -1,5 +1,5 @@
 ---
-import '@fontsource/poppins'
+import { Font } from 'astro:assets'
 ---
 
 <head>
@@ -17,6 +17,7 @@ import '@fontsource/poppins'
       IMDB Chart, imdbgraph, Visualize, Episode ratings, chart, season, 
       episode"
 	/>
+	<Font preload={true} cssVariable="--font-family-sans" />
 	<script>
 		import { PUBLIC_POSTHOG_KEY } from 'astro:env/client'
 		import posthog from 'posthog-js'
