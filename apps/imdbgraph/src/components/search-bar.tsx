@@ -101,10 +101,10 @@ export function SearchBar({ className }: { className?: string }) {
 				Search for TV shows
 			</label>
 
-			<InputGroup>
+			<InputGroup className="border-border">
 				<InputGroupInput
 					aria-invalid={Boolean(error)}
-					className="flex-1 outline-none"
+					className="flex-1 outline-none placeholder:text-xs"
 					placeholder="Search for any TV show..."
 					tabIndex={0}
 					disabled={isRedirecting}

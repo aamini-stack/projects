@@ -220,6 +220,9 @@ importers:
       '@fontsource/oxanium':
         specifier: ^5.2.8
         version: 5.2.8
+      '@fontsource/poppins':
+        specifier: ^5.2.7
+        version: 5.2.7
       '@radix-ui/react-dropdown-menu':
         specifier: ^2.1.16
         version: 2.1.16(@types/react-dom@19.2.1(@types/react@19.2.2))(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
@@ -1257,6 +1260,9 @@ packages:
 
   '@fontsource/oxanium@5.2.8':
     resolution: {integrity: sha512-69zbaespIFhjwCWgs2axD6wiwUhtEDK/R9512mv5h/U2/iv7zJowneRFt2y1aYet6RDLDWyK23F+ltbOhFIngg==}
+
+  '@fontsource/poppins@5.2.7':
+    resolution: {integrity: sha512-6uQyPmseo4FgI97WIhA4yWRlNaoLk4vSDK/PyRwdqqZb5zAEuc+Kunt8JTMcsHYUEGYBtN15SNkMajMdqUSUmg==}
 
   '@grpc/grpc-js@1.14.0':
     resolution: {integrity: sha512-N8Jx6PaYzcTRNzirReJCtADVoq4z7+1KQ4E70jTg/koQiMoUSN1kbNjPOqpPbhMFhfU1/l7ixspPl8dNY+FoUg==}
@@ -6446,6 +6452,8 @@ snapshots:
   '@floating-ui/utils@0.2.10': {}
 
   '@fontsource/oxanium@5.2.8': {}
+
+  '@fontsource/poppins@5.2.7': {}
 
   '@grpc/grpc-js@1.14.0':
     dependencies:
