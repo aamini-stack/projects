@@ -47,7 +47,7 @@ export function Graph({ ratings }: { ratings: Ratings }) {
 	})
 
 	return (
-		<Card className="m-auto max-w-2xl">
+		<Card className="m-4 min-h-[400px] flex-1">
 			<CardHeader className="text-center">
 				<h1 className="text-balance text-xl font-extrabold leading-none tracking-tight">
 					{show.title}
@@ -57,7 +57,7 @@ export function Graph({ ratings }: { ratings: Ratings }) {
 					{show.numVotes.toLocaleString()} votes)
 				</span>
 			</CardHeader>
-			<CardContent className="px-0 sm:px-6">
+			<CardContent className="px-0">
 				<ChartContainer config={chartConfig}>
 					<LineChart
 						accessibilityLayer
