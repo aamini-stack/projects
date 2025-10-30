@@ -1,6 +1,6 @@
 'use client'
 
-import { formatYears, type Episode, type Ratings } from '#/lib/imdb/types'
+import { type Episode, type Ratings } from '#/lib/imdb/types'
 import {
 	Card,
 	CardContent,
@@ -49,14 +49,13 @@ export function Graph({ ratings }: { ratings: Ratings }) {
 	return (
 		<Card className="m-auto max-w-2xl">
 			<CardHeader className="text-center">
-				<h1 className="text-balance text-4xl font-extrabold leading-none tracking-tight">
+				<h1 className="text-balance text-xl font-extrabold leading-none tracking-tight">
 					{show.title}
 				</h1>
-				<div className="text-xl">({formatYears(show)})</div>
-				<div>
+				<span className="text-muted-foreground text-sm">
 					Rating: {show.rating.toFixed(1)} / 10.0 (
 					{show.numVotes.toLocaleString()} votes)
-				</div>
+				</span>
 			</CardHeader>
 			<CardContent className="px-0 sm:px-6">
 				<ChartContainer config={chartConfig}>
