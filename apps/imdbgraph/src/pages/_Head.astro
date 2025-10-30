@@ -1,5 +1,5 @@
 ---
-import Font from 'astro/components/Font.astro'
+import '@fontsource/oxanium'
 ---
 
 <head>
@@ -17,7 +17,6 @@ import Font from 'astro/components/Font.astro'
       IMDB Chart, imdbgraph, Visualize, Episode ratings, chart, season, 
       episode"
 	/>
-	<Font cssVariable="--font-family-sans" preload />
 	<script>
 		import { PUBLIC_POSTHOG_KEY } from 'astro:env/client'
 		import posthog from 'posthog-js'

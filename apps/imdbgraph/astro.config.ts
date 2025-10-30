@@ -1,7 +1,7 @@
 import react from '@astrojs/react'
 import vercel from '@astrojs/vercel'
 import tailwindcss from '@tailwindcss/vite'
-import { defineConfig, envField, fontProviders } from 'astro/config'
+import { defineConfig, envField } from 'astro/config'
 
 // https://astro.build/config
 export default defineConfig({
@@ -33,14 +33,4 @@ export default defineConfig({
 	},
 	output: 'server',
 	adapter: vercel(),
-	experimental: {
-		fonts: [
-			{
-				provider: fontProviders.google(),
-				name: 'Oxanium',
-				cssVariable: '--font-family-sans',
-				subsets: ['latin'],
-			},
-		],
-	},
 })
