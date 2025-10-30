@@ -46,8 +46,9 @@ export function Graph({ ratings }: { ratings: Ratings }) {
 		}
 	})
 
+	// min()
 	return (
-		<Card className="m-[min(4%,16rem)] min-h-[300px] flex-1 py-6">
+		<Card className="m-[clamp(0px,calc((100vw-340px)*0.044),30px)] min-h-[300px] flex-1 px-[clamp(0px,calc((100vw-340px)*0.044),30px)] py-6">
 			<CardHeader className="text-center">
 				<h1 className="text-balance text-xl font-extrabold leading-none tracking-tight">
 					{show.title}
