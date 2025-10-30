@@ -10,7 +10,9 @@ export const prerender = true
 	<body class="bg-background h-dvh min-w-80 antialiased">
 		<div class="flex min-h-dvh flex-col">
 			{/* Main content */}
-			<slot />
+			<div class="flex-1">
+				<slot />
+			</div>
 			{/* Footer */}
 			<footer class="w-full p-2 text-center text-xs">
 				<span class="text-muted-foreground text-balance leading-loose">

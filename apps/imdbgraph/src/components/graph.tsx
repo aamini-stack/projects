@@ -47,7 +47,7 @@ export function Graph({ ratings }: { ratings: Ratings }) {
 	})
 
 	return (
-		<Card className="m-4 min-h-[400px] flex-1">
+		<Card className="m-[min(4%,16rem)] min-h-[300px] flex-1 py-6">
 			<CardHeader className="text-center">
 				<h1 className="text-balance text-xl font-extrabold leading-none tracking-tight">
 					{show.title}
