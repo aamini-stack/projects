@@ -4,7 +4,7 @@ config:
   azure-native:subscriptionId: 331269d5-143f-4246-b389-9c1f41bb5882
   azure-native:resourceGroupName: rg-aamini-prod
   # Vercel
-  vercel:team: team_BMB11Zck0xVJiYVTGXOUqLiz
+  vercel:team: aamini
   vercel:apiToken:
     secure: AAABALN4FQfBYS9ou4Ei/f9y5JU28hID3iv+APwxw70AdRa6K1SGi3JqiHSFn5usnfCDaYc+71I=
   vercel:automationBypassSecret:
