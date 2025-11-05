@@ -10,7 +10,12 @@ const args = {
 	apps: [
 		{ name: 'aamini-template' },
 		{ name: 'portfolio' },
-		{ name: 'imdbgraph' },
+		{
+			name: 'imdbgraph',
+			overrides: {
+				vercelAuthentication: { deploymentType: 'none' },
+			},
+		},
 		{ name: 'dota-visualizer' },
 		{ name: 'fruit-gen' },
 		{
@@ -53,7 +58,6 @@ const vercelProjects = Object.fromEntries(
 				name: app.name,
 				nodeVersion: '22.x',
 				rootDirectory: `apps/${app.name}`,
-				teamId: args.team,
 				enableAffectedProjectsDeployments: true,
 				...app.overrides,
 			},

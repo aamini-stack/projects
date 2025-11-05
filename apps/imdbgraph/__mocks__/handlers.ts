@@ -1,4 +1,4 @@
-import suggestions from '#/mocks/data/suggestions.json'
+import suggestions from '#/mocks/data/suggestions.json' with { type: 'json' }
 import { http, HttpResponse } from 'msw'
 
 export default [

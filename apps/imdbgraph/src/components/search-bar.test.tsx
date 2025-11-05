@@ -16,9 +16,10 @@ vi.mock(import('#/lib/react-query'), () => ({
 	}),
 }))
 
-describe('search bar', () => {
+describe('searchbar tests', () => {
 	test('basic search', async () => {
 		const screen = render(<SearchBar />)
+
 		const searchBar = screen.getByRole('combobox')
 		await userEvent.fill(searchBar, 'avatar')
 		await expect
@@ -31,10 +32,11 @@ describe('search bar', () => {
 	})
 
 	test('no results', async ({ worker }) => {
-		worker.use(http.get('/api/suggestions', () => new HttpResponse('[]')))
-
-		const x = await fetch(`/api/suggestions/?q=blah`)
-		console.log(x)
+		worker.use(
+			http.get('/api/suggestions', () => {
+				return HttpResponse.json([])
+			}),
+		)
 
 		const screen = render(<SearchBar />)
 		const searchBar = screen.getByRole('combobox')
@@ -44,7 +46,9 @@ describe('search bar', () => {
 
 	test('error message', async ({ worker }) => {
 		worker.use(
-			http.get('/api/suggestions', () => new HttpResponse({}, { status: 500 })),
+			http.get('/api/suggestions', () => {
+				return HttpResponse.error()
+			}),
 		)
 
 		const screen = render(<SearchBar />)

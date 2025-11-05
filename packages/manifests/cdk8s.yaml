@@ -1,0 +1,9 @@
+language: typescript
+app: pnpm tsx src/main.ts
+imports:
+  - k8s
+  - https://github.com/cert-manager/cert-manager/releases/download/v1.14.0/cert-manager.crds.yaml
+  - https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.0.0/config/crd/standard/gateway.networking.k8s.io_gatewayclasses.yaml
+  - https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.0.0/config/crd/standard/gateway.networking.k8s.io_gateways.yaml
+  - https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.0.0/config/crd/standard/gateway.networking.k8s.io_httproutes.yaml
+  - https://github.com/fluxcd/flux2/releases/download/v2.2.0/install.yaml

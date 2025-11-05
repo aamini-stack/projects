@@ -1,0 +1,26 @@
+{
+	"name": "@aamini/manifests",
+	"version": "1.0.0",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"import": "cdk8s import",
+		"synth": "cdk8s synth --output generated",
+		"synth:staging": "cdk8s synth staging --output generated",
+		"synth:prod": "cdk8s synth prod --output generated",
+		"build": "pnpm run synth:staging && pnpm run synth:prod"
+	},
+	"dependencies": {
+		"cdk8s": "^2.70.26",
+		"cdk8s-plus-28": "^2.5.6",
+		"constructs": "^10.4.2"
+	},
+	"devDependencies": {
+		"@aamini/config-testing": "workspace:*",
+		"@aamini/config-typescript": "workspace:*",
+		"@types/node": "^22",
+		"cdk8s-cli": "^2.202.13",
+		"tsx": "^4.20.6",
+		"typescript": "^5.9.3"
+	}
+}

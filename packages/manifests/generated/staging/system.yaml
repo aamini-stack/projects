@@ -1,0 +1,69 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: GatewayClass
+metadata:
+  name: traefik
+  namespace: networking
+spec:
+  controllerName: traefik.io/gateway-controller
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: traefik-gateway
+  namespace: networking
+spec:
+  gatewayClassName: traefik
+  listeners:
+    - allowedRoutes:
+        namespaces:
+          from: All
+      name: web
+      port: 8000
+      protocol: HTTP
+    - allowedRoutes:
+        namespaces:
+          from: All
+      hostname: staging.imdbgraph.org
+      name: websecure
+      port: 8443
+      protocol: HTTPS
+      tls:
+        certificateRefs:
+          - kind: Secret
+            name: imdbgraph-org-tls
+            namespace: networking
+        mode: Terminate
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: letsencrypt
+  namespace: networking
+spec:
+  acme:
+    privateKeySecretRef:
+      name: acme-issuer-account-key
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
+    solvers:
+      - http01:
+          gatewayHTTPRoute:
+            parentRefs:
+              - kind: Gateway
+                name: traefik-gateway
+                namespace: networking
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: imdbgraph-org
+  namespace: networking
+spec:
+  dnsNames:
+    - staging.imdbgraph.org
+  issuerRef:
+    group: cert-manager.io
+    kind: Issuer
+    name: letsencrypt
+  privateKey:
+    rotationPolicy: Always
+  secretName: imdbgraph-org-tls

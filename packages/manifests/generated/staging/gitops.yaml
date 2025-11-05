@@ -1,0 +1,48 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: helm
+  namespace: flux-system
+spec:
+  interval: 1h0m0s
+  path: ./packages/infra/manifests/packages
+  prune: true
+  retryInterval: 1m0s
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  timeout: 5m0s
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: system
+  namespace: flux-system
+spec:
+  dependsOn:
+    - name: helm
+  interval: 1h0m0s
+  path: ./packages/infra/manifests/system/staging
+  prune: true
+  retryInterval: 1m0s
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  timeout: 5m0s
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: imdbgraph
+  namespace: flux-system
+spec:
+  dependsOn:
+    - name: system
+  interval: 10m0s
+  path: ./apps/imdbgraph/manifests/prod
+  prune: true
+  retryInterval: 1m0s
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  timeout: 5m0s

@@ -1,0 +1,10 @@
+{
+	"extends": "@aamini/config-typescript/lib",
+	"compilerOptions": {
+		"baseUrl": ".",
+		"paths": {
+			"@/*": ["./src/*.ts"],
+			"@/imports/*": ["./imports/*.ts"]
+		}
+	}
+}
