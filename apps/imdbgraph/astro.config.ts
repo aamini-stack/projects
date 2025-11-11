@@ -36,8 +36,8 @@ export default defineConfig({
 	experimental: {
 		fonts: [
 			{
-				provider: fontProviders.google(),
-				name: 'Inter',
+				provider: fontProviders.fontsource(),
+				name: 'Metropolis',
 				cssVariable: '--font-family-sans',
 				subsets: ['latin'],
 			},
