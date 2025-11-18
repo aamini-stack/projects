@@ -1,0 +1,31 @@
+{
+	"compilerOptions": {
+		"strict": true,
+		"noFallthroughCasesInSwitch": true,
+		"noImplicitOverride": true,
+		"noImplicitReturns": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"noUncheckedIndexedAccess": true,
+		"exactOptionalPropertyTypes": true,
+		"allowUnreachableCode": false,
+		"allowUnusedLabels": false,
+		"declaration": true,
+		"declarationMap": true,
+		"esModuleInterop": true,
+		"incremental": false,
+		"isolatedModules": true,
+		"lib": ["es2022"],
+		"module": "NodeNext",
+		"moduleDetection": "force",
+		"moduleResolution": "NodeNext",
+		"resolveJsonModule": true,
+		"skipLibCheck": true,
+		"target": "ES2022",
+
+		"paths": {
+			"@dagger.io/dagger": ["./sdk/index.ts"],
+			"@dagger.io/dagger/telemetry": ["./sdk/telemetry.ts"]
+		}
+	}
+}
