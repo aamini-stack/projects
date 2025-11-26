@@ -6,7 +6,7 @@ metadata:
   name: imdbgraph
   namespace: flux-system
 spec:
-  path: ./packages/infra/manifests/apps/imdbgraph/staging
+  path: ./apps/imdbgraph/manifests
   dependsOn:
     - name: system
   sourceRef:
@@ -25,7 +25,7 @@ metadata:
   name: system
   namespace: flux-system
 spec:
-  path: ./packages/infra/manifests/system/staging
+  path: ./packages/infra/manifests/system
   dependsOn:
     - name: helm
   sourceRef:

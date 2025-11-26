@@ -1,12 +1,10 @@
 import * as github from '@pulumi/github'
 import * as pulumi from '@pulumi/pulumi'
 
-const repository = 'projects'
-
 const repo = new github.Repository(
 	'repo',
 	{
-		name: repository,
+		name: 'projects',
 		visibility: 'public',
 		allowMergeCommit: false,
 		allowRebaseMerge: false,
@@ -16,7 +14,7 @@ const repo = new github.Repository(
 
 const defaultBranch = new github.BranchDefault('defaultBranch', {
 	branch: 'main',
-	repository: repository,
+	repository: repo.name,
 })
 
 const vercelConfig = new pulumi.Config('vercel')
@@ -37,7 +35,7 @@ const actionSecrets = [
 ].map(
 	({ secretName, value }) =>
 		new github.ActionsSecret(secretName, {
-			repository: repository,
+			repository: repo.name,
 			secretName,
 			plaintextValue: value,
 		}),
@@ -51,7 +49,7 @@ const actionVariables = [
 ].map(
 	({ variableName, value }) =>
 		new github.ActionsVariable(variableName, {
-			repository: repository,
+			repository: repo.name,
 			variableName,
 			value,
 		}),

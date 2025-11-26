@@ -1,21 +1,15 @@
-FROM mcr.microsoft.com/playwright:v1.56.1-noble AS base
+FROM mcr.microsoft.com/playwright:v1.56.1-noble
+
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0
 RUN corepack enable pnpm
 
-FROM base AS pruned
 WORKDIR /app
-COPY . .
-RUN pnpm i -g turbo@^2
-RUN turbo prune pc-tune-ups --docker
-
-FROM base AS build
-WORKDIR /app
-COPY --from=pruned /app/out/json/pnpm-lock.yaml .
-RUN  --mount=type=cache,id=pnpm,target=/pnpm/store pnpm fetch
-COPY --from=pruned /app/out/json ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY ./packages/ ./packages/
+COPY ./apps/pc-tune-ups/package.json package.json
 RUN  --mount=type=cache,id=pnpm,target=/pnpm/store pnpm i
-COPY --from=pruned /app/out/full ./
 WORKDIR /app/apps/pc-tune-ups
+COPY ./apps/pc-tune-ups/ .
 ENTRYPOINT ["pnpm", "playwright", "test"]
