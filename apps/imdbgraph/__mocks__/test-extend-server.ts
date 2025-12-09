@@ -1,4 +1,5 @@
 import * as schema from '#/db/tables'
+import handlers from '#/mocks/handlers'
 import { PostgreSqlContainer } from '@testcontainers/postgresql'
 import { drizzle, type NodePgDatabase } from 'drizzle-orm/node-postgres'
 import { migrate } from 'drizzle-orm/node-postgres/migrator'
@@ -7,7 +8,6 @@ import { setupServer, type SetupServerApi } from 'msw/node'
 import path from 'node:path'
 import { Pool } from 'pg'
 import { test as baseTest } from 'vitest'
-import handlers from '#/mocks/handlers'
 
 type Database = NodePgDatabase & {
 	$client: Pool

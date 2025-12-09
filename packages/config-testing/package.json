@@ -9,12 +9,13 @@
 	},
 	"devDependencies": {
 		"@aamini/config-typescript": "workspace:*",
-		"@types/node": "^24.7.0"
+		"@types/node": "^24.10.2"
 	},
-	"peerDependencies": {
-		"@playwright/test": "^1.56.1",
-		"typescript": "^5.8.3",
-		"vitest": "^3.2.4",
-		"vite-tsconfig-paths": "^5.1.4"
+	"dependencies": {
+		"@playwright/test": "^1.57.0",
+		"@vitest/browser-playwright": "^4.0.15",
+		"typescript": "^5.9.3",
+		"vite-tsconfig-paths": "^5.1.4",
+		"vitest": "^4.0.15"
 	}
 }

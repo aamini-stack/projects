@@ -15,7 +15,7 @@ export function JobBubble({ job }: { job: JobInfo }) {
 	const [isOpen, setIsOpen] = useState(false)
 
 	return (
-		<Card className="min-w-sm max-w-lg px-8 pt-6">
+		<Card className="max-w-lg min-w-sm px-8 pt-6">
 			{/* Header */}
 			<header className="flex">
 				<div className="flex h-10 w-10 items-center justify-center">
@@ -26,7 +26,7 @@ export function JobBubble({ job }: { job: JobInfo }) {
 						width={40}
 					/>
 				</div>
-				<hgroup className="ml-2 mr-12 flex flex-1 flex-col">
+				<hgroup className="mr-12 ml-2 flex flex-1 flex-col">
 					<h2>{job.company}</h2>
 					<p className="text-sm">{job.role}</p>
 				</hgroup>

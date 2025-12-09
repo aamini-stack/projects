@@ -126,12 +126,12 @@ export function ImageGallery() {
 							<img
 								src={image.src}
 								alt={image.alt}
-								className="group-hover:contrast-110 h-full w-full object-cover transition-all duration-500 group-hover:brightness-125"
+								className="h-full w-full object-cover transition-all duration-500 group-hover:brightness-125 group-hover:contrast-110"
 								loading="lazy"
 							/>
 							<div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 transition-all duration-500 group-hover:opacity-100">
-								<div className="absolute bottom-6 left-6 right-6">
-									<p className="mb-2 text-lg font-bold leading-tight text-white">
+								<div className="absolute right-6 bottom-6 left-6">
+									<p className="mb-2 text-lg leading-tight font-bold text-white">
 										{image.alt}
 									</p>
 									<span className="inline-block rounded-full bg-yellow-400 px-4 py-2 text-sm font-black text-black">
@@ -167,7 +167,7 @@ export function ImageGallery() {
 							/>
 							<button
 								type="button"
-								className="absolute right-4 top-4 text-white transition-colors hover:text-gray-300"
+								className="absolute top-4 right-4 text-white transition-colors hover:text-gray-300"
 								onClick={() => setSelectedImage(null)}
 								aria-label="Close image preview"
 							>
@@ -187,7 +187,7 @@ export function ImageGallery() {
 									/>
 								</svg>
 							</button>
-							<div className="absolute bottom-4 left-4 right-4 rounded-lg bg-black/60 p-4 backdrop-blur-sm">
+							<div className="absolute right-4 bottom-4 left-4 rounded-lg bg-black/60 p-4 backdrop-blur-sm">
 								<p className="font-medium text-white">{selectedImage.alt}</p>
 								<span className="mt-2 inline-block rounded bg-yellow-400 px-3 py-1 text-sm font-medium text-black">
 									{selectedImage.category}

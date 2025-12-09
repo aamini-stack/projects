@@ -18,7 +18,7 @@ import {
 } from '@aamini/ui/components/form'
 import { Input } from '@aamini/ui/components/input'
 import { Textarea } from '@aamini/ui/components/textarea'
-import { zodResolver } from '@hookform/resolvers/zod'
+import { standardSchemaResolver } from '@hookform/resolvers/standard-schema'
 import { actions } from 'astro:actions'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
@@ -33,7 +33,7 @@ type FormValues = z.infer<typeof formSchema>
 
 export function ContactCard() {
 	const form = useForm<FormValues>({
-		resolver: zodResolver(formSchema),
+		resolver: standardSchemaResolver(formSchema),
 		defaultValues: {
 			email: '',
 			message: '',

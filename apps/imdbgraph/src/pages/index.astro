@@ -8,11 +8,11 @@ export const prerender = true
 <Layout>
 	<div class="flex flex-1 flex-col items-center gap-6 pt-8 md:gap-9 md:pt-20">
 		<h1
-			class="inline text-balance px-8 text-center text-4xl font-semibold tracking-tight md:text-5xl lg:text-6xl"
+			class="inline px-8 text-center text-4xl font-semibold tracking-tight text-balance md:text-5xl lg:text-6xl"
 		>
 			IMDB Graph
 		</h1>
-		<div class="min-w-sm flex w-full max-w-lg justify-center px-8">
+		<div class="flex w-full max-w-lg min-w-sm justify-center px-8">
 			<SearchBar client:load />
 		</div>
 	</div>

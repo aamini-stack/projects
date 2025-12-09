@@ -7,8 +7,8 @@ import {
 	Settings,
 	Shield,
 } from 'lucide-react'
-import AppleIcon from 'public/apple.svg'
 import type { ReactNode } from 'react'
+import AppleIcon from '/public/apple.svg'
 
 interface ServiceCardProps {
 	title: string
@@ -19,7 +19,7 @@ interface ServiceCardProps {
 function ServiceCard({ title, description, children }: ServiceCardProps) {
 	return (
 		<article className="relative overflow-hidden rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
-			<div className="absolute right-0 top-0 h-32 w-32 rounded-full bg-lime-200/40 blur-3xl" />
+			<div className="absolute top-0 right-0 h-32 w-32 rounded-full bg-lime-200/40 blur-3xl" />
 			<div className="relative space-y-3">
 				<div className="flex items-start justify-between gap-4">
 					<h3 className="text-2xl font-semibold text-stone-900">{title}</h3>

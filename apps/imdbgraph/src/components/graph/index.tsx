@@ -1,6 +1,6 @@
+import '#/components/graph/highcharts.css'
 import type { Episode, Ratings } from '#/lib/imdb/types'
 import { theme } from '#/lib/store'
-import '#/components/graph/highcharts.css'
 import { cn } from '@aamini/ui/lib/utils'
 import { useStore } from '@nanostores/react'
 import Highcharts from 'highcharts'

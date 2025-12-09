@@ -172,7 +172,7 @@ function EventCard({ event }: { event: EventItem }) {
 						<div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover/card:opacity-100" />
 
 						{/* Link icon */}
-						<div className="absolute right-4 top-4 rounded-full bg-white/10 p-2 opacity-0 backdrop-blur-sm transition-all duration-300 group-hover/card:bg-white/20 group-hover/card:opacity-100">
+						<div className="absolute top-4 right-4 rounded-full bg-white/10 p-2 opacity-0 backdrop-blur-sm transition-all duration-300 group-hover/card:bg-white/20 group-hover/card:opacity-100">
 							<LinkIcon className="h-4 w-4 text-white" />
 						</div>
 					</a>
@@ -199,7 +199,7 @@ function EventCard({ event }: { event: EventItem }) {
 						className="group/link inline-flex items-center gap-2 text-sm text-blue-400 transition-colors duration-200 hover:text-blue-300"
 					>
 						<span>View Photos</span>
-						<LinkIcon className="h-3 w-3 transition-transform duration-200 group-hover/link:-translate-y-0.5 group-hover/link:translate-x-0.5" />
+						<LinkIcon className="h-3 w-3 transition-transform duration-200 group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5" />
 					</a>
 				</div>
 			</CardContent>

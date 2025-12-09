@@ -1,3 +1,5 @@
+import { playwright } from '@vitest/browser-playwright'
+import tsconfigPaths from 'vite-tsconfig-paths'
 import {
 	defineConfig,
 	mergeConfig,
@@ -5,7 +7,6 @@ import {
 	type TestProjectInlineConfiguration,
 	type ViteUserConfig,
 } from 'vitest/config'
-import tsconfigPaths from 'vite-tsconfig-paths'
 
 interface ProjectOverrides {
 	server?: Partial<ViteUserConfig>
@@ -46,14 +47,13 @@ export const createBaseConfig = (
 							test: {
 								name: 'browser',
 								include: ['src/**/*.test.tsx'],
-								environment: 'browser',
 								browser: {
 									instances: [
 										{
 											browser: 'chromium',
 										},
 									],
-									provider: 'playwright',
+									provider: playwright(),
 									enabled: true,
 									headless: true,
 								},

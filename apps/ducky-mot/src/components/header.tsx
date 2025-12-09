@@ -20,7 +20,7 @@ export function Header() {
 	return (
 		<header
 			className={cn(
-				'supports-backdrop:bg-black/60 sticky top-0 z-50 w-full border-b border-gray-700/30 backdrop-blur-xl',
+				'sticky top-0 z-50 w-full border-b border-gray-700/30 backdrop-blur-xl supports-backdrop:bg-black/60',
 				isMenuOpen ? 'bg-black/95' : 'bg-black/80',
 			)}
 		>
@@ -82,14 +82,14 @@ export function Header() {
 			{/* Mobile menu */}
 			<nav
 				className={cn(
-					`absolute left-0 top-full w-full bg-black/95 backdrop-blur-xl transition-all duration-300 ease-in-out md:hidden`,
+					`absolute top-full left-0 w-full bg-black/95 backdrop-blur-xl transition-all duration-300 ease-in-out md:hidden`,
 					{
 						block: isMenuOpen,
 						hidden: !isMenuOpen,
 					},
 				)}
 			>
-				<div className="space-y-1 px-2 pb-3 pt-2 sm:px-3">
+				<div className="space-y-1 px-2 pt-2 pb-3 sm:px-3">
 					{navItems.map((item) => (
 						<MobileNavButton
 							key={item.href}
