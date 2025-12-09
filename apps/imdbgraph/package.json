@@ -37,6 +37,7 @@
 		"posthog-js": "^1.302.2",
 		"react": "^19.2.1",
 		"react-dom": "^19.2.1",
+		"recharts": "2.15.4",
 		"tailwind-merge": "^3.4.0"
 	},
 	"devDependencies": {
