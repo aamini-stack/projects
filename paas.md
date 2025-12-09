@@ -5,5 +5,4 @@
 - Kubero (4)
 - Canine (2.6)
 
-https://github.com/kubero-dev/kubero
-https://github.com/CanineHQ/canine
+https://github.com/kubero-dev/kubero https://github.com/CanineHQ/canine
