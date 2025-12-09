@@ -22,7 +22,7 @@ metadata:
   namespace: networking
 spec:
   acme:
-    server: https://acme-staging-v02.api.letsencrypt.org/directory
+    server: https://acme-v02.api.letsencrypt.org/directory
     privateKeySecretRef:
       name: acme-issuer-account-key
     solvers:

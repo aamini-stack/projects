@@ -1,10 +1,10 @@
+import { test } from '#/mocks/test-extend-browser'
 import { QueryClient } from '@tanstack/react-query'
 import { userEvent } from '@vitest/browser/context'
+import { http, HttpResponse } from 'msw'
 import { describe, expect, vi } from 'vitest'
 import { render } from 'vitest-browser-react'
 import { SearchBar } from './search-bar'
-import { test } from '#/mocks/test-extend-browser'
-import { http, HttpResponse } from 'msw'
 
 vi.mock(import('#/lib/react-query'), () => ({
 	queryClient: new QueryClient({
@@ -16,9 +16,10 @@ vi.mock(import('#/lib/react-query'), () => ({
 	}),
 }))
 
-describe('search bar', () => {
+describe('searchbar tests', () => {
 	test('basic search', async () => {
-		const screen = render(<SearchBar />)
+		const screen = await render(<SearchBar />)
+
 		const searchBar = screen.getByRole('combobox')
 		await userEvent.fill(searchBar, 'avatar')
 		await expect
@@ -31,12 +32,13 @@ describe('search bar', () => {
 	})
 
 	test('no results', async ({ worker }) => {
-		worker.use(http.get('/api/suggestions', () => new HttpResponse('[]')))
+		worker.use(
+			http.get('/api/suggestions', () => {
+				return HttpResponse.json([])
+			}),
+		)
 
-		const x = await fetch(`/api/suggestions/?q=blah`)
-		console.log(x)
-
-		const screen = render(<SearchBar />)
+		const screen = await render(<SearchBar />)
 		const searchBar = screen.getByRole('combobox')
 		await userEvent.fill(searchBar, 'blah')
 		await expect.element(screen.getByText(/No TV Shows Found./i)).toBeVisible()
@@ -44,10 +46,12 @@ describe('search bar', () => {
 
 	test('error message', async ({ worker }) => {
 		worker.use(
-			http.get('/api/suggestions', () => new HttpResponse({}, { status: 500 })),
+			http.get('/api/suggestions', () => {
+				return HttpResponse.error()
+			}),
 		)
 
-		const screen = render(<SearchBar />)
+		const screen = await render(<SearchBar />)
 		const searchBar = screen.getByRole('combobox')
 		await userEvent.fill(searchBar, 'error')
 		await expect

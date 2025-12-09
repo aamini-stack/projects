@@ -97,7 +97,7 @@ export function EventGallery({ gallery }: EventGalleryProps) {
 						{/* Close button */}
 						<button
 							type="button"
-							className="absolute right-4 top-4 rounded-full bg-white/10 p-3 text-white backdrop-blur-sm transition-colors hover:bg-white/20"
+							className="absolute top-4 right-4 rounded-full bg-white/10 p-3 text-white backdrop-blur-sm transition-colors hover:bg-white/20"
 							onClick={(e) => {
 								e.stopPropagation()
 								setSelectedImage(null)
@@ -122,7 +122,7 @@ export function EventGallery({ gallery }: EventGalleryProps) {
 						</button>
 						{/* Image caption */}
 						{selectedImage.alt && (
-							<div className="absolute bottom-4 left-4 right-4 rounded-lg bg-black/60 p-4 backdrop-blur-sm">
+							<div className="absolute right-4 bottom-4 left-4 rounded-lg bg-black/60 p-4 backdrop-blur-sm">
 								<p className="text-lg font-medium text-white">
 									{selectedImage.alt}
 								</p>

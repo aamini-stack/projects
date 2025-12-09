@@ -3,7 +3,7 @@ import { render } from 'vitest-browser-react'
 import { FeatureCard } from './feature-card'
 
 test('render card', async () => {
-	const screen = render(<FeatureCard />)
+	const screen = await render(<FeatureCard />)
 	expect(screen.getByText("What's New in Astro 5.0?")).toBeVisible()
 	expect(screen.getByText('New', { exact: true })).toBeVisible()
 	expect(
@@ -13,7 +13,7 @@ test('render card', async () => {
 })
 
 test('link', async () => {
-	const screen = render(<FeatureCard />)
+	const screen = await render(<FeatureCard />)
 	expect(screen.getByRole('link', { name: /Learn more/ })).toHaveAttribute(
 		'href',
 		'https://astro.build/blog/astro-5/',

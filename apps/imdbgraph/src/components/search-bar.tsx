@@ -1,11 +1,11 @@
+import type { Show } from '#/lib/imdb/types'
+import { formatYears } from '#/lib/imdb/types'
+import { queryClient } from '#/lib/react-query'
 import { cn } from '@aamini/ui/lib/utils'
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { useCombobox } from 'downshift'
 import { Search as SearchIcon, Star } from 'lucide-react'
 import { useDeferredValue, useEffect, useState } from 'react'
-import type { Show } from '#/lib/imdb/types'
-import { formatYears } from '#/lib/imdb/types'
-import { queryClient } from '#/lib/react-query'
 
 /** https://www.w3.org/WAI/ARIA/apg/patterns/combobox/examples/combobox-autocomplete-list/ */
 export function SearchBar() {
@@ -91,7 +91,7 @@ export function SearchBar() {
 			</label>
 
 			{/* Search Bar */}
-			<div className="border-input shadow-xs selection:bg-primary selection:text-primary-foreground placeholder:text-muted-foreground dark:bg-input/30 has-focus-visible:border-ring has-focus-visible:ring-[3px] has-focus-visible:ring-ring/50 has-disabled:pointer-events-none has-disabled:cursor-not-allowed has-disabled:opacity-50 has-aria-invalid:border-destructive has-aria-invalid:ring-destructive/20 dark:has-aria-invalid:ring-destructive/40 file:text-foreground flex h-10 w-full min-w-0 items-center rounded-xl border bg-transparent px-3 py-1 text-base outline-none transition-[color,box-shadow] file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium md:text-sm">
+			<div className="border-input selection:bg-primary selection:text-primary-foreground placeholder:text-muted-foreground dark:bg-input/30 has-focus-visible:border-ring has-focus-visible:ring-ring/50 has-aria-invalid:border-destructive has-aria-invalid:ring-destructive/20 dark:has-aria-invalid:ring-destructive/40 file:text-foreground flex h-10 w-full min-w-0 items-center rounded-xl border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium has-focus-visible:ring-[3px] has-disabled:pointer-events-none has-disabled:cursor-not-allowed has-disabled:opacity-50 md:text-sm">
 				<SearchIcon className="mr-2 h-4 w-4 shrink-0 opacity-50" />
 				<input
 					aria-invalid={Boolean(error)}
@@ -134,7 +134,7 @@ export function SearchBar() {
 			{!error && (
 				<ul
 					className={cn(
-						'bg-popover absolute left-0 right-0 top-full z-50 mt-3 w-full rounded-xl border p-2 shadow-lg',
+						'bg-popover absolute top-full right-0 left-0 z-50 mt-3 w-full rounded-xl border p-2 shadow-lg',
 						{
 							hidden:
 								!(isOpen && deferredValue) ||
@@ -152,7 +152,7 @@ export function SearchBar() {
 						<li
 							key={show.imdbId}
 							className={cn(
-								'text-foreground/60 w-full cursor-pointer select-none rounded-md px-2 py-1.5 text-sm outline-none disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0',
+								'text-foreground/60 w-full cursor-pointer rounded-md px-2 py-1.5 text-sm outline-none select-none disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0',
 								{
 									'opacity-50': isFetching,
 									'bg-accent text-accent-foreground':

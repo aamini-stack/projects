@@ -86,7 +86,7 @@ function NavigationMenuContent({
 		<NavigationMenuPrimitive.Content
 			data-slot="navigation-menu-content"
 			className={cn(
-				'data-[motion^=from-]:e-in-from-right-52 data-[motion=from-start]:slide-in-from-left-52 data-[motion=to-end]:slide-out-to-right-52 data-[motion=to-start]:slide-out-to-left-52 ata-[motio ata-[motio ata-[motion^=from-] top-[mleft top-[mleft top-[mlefton^=to-]: top-[mlefton^=to-]: data-[motion^=to-]:animate-out left-0 top-0 w-full md:absolute md:w-auto',
+				'data-[motion^=from-]:e-in-from-right-52 data-[motion=from-start]:slide-in-from-left-52 data-[motion=to-end]:slide-out-to-right-52 data-[motion=to-start]:slide-out-to-left-52 ata-[motio ata-[motio ata-[motion^=from-] top-[mleft top-[mleft top-[mlefton^=to-]: top-[mlefton^=to-]: data-[motion^=to-]:animate-out top-0 left-0 w-full md:absolute md:w-auto',
 				'group-data-[viewport=false]/navigation-ta-[viewport=false]/navig]:focus:outline-none group-up-datviewportifalsef/navigafocus:outlinebnoneemainnone-main group-data-[viewpornavfocus:ringt0mainaforegroundmain-foreground group-data-[viewport=falmenu:datai[statemenu:bg-mainion-menu:data-[statemenu:bg-main group-d=open]:animate=in/**:tion-=slotinavigation-menu-linki:focus:ringn0u-link]:focus:ring-0 group-ta-[viewport=false]/naemenu:overflowuhiddenata-[viewport=false]/navigation-menu:texmenu:text-data-foreground-[viewport=false]/navigation-menu:duratomenu:durationa200rt=false]/navigation-menu:data-[state=clmenu:data-[stateoclosed:animate-oout group-danavigation-menu:top/full-menu:top-full group-danavigation-menu:top/full-menu:top-full group-data-[viewport=false]/navigation-menu:data-[state=closed]:animate-out group-data-[viewport=false]/navigation-menu:data-[state=open]:animate-in',
 				className,
 			)}
@@ -103,7 +103,7 @@ function NavigationMenuLink({
 		<NavigationMenuPrimitive.Link
 			data-slot="navigation-menu-link"
 			className={cn(
-				"none rounded-base space-y-1 p-2 leading-none no-underline outline-none transition-colors focus-visible:outline-1 focus-visible:ring-4 [&_svg:not([class*='size-'])]:size-4",
+				"none rounded-base space-y-1 p-2 leading-none no-underline transition-colors outline-none focus-visible:ring-4 focus-visible:outline-1 [&_svg:not([class*='size-'])]:size-4",
 				className,
 			)}
 			{...props}

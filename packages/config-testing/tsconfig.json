@@ -1,7 +1,6 @@
 {
 	"extends": "@aamini/config-typescript/astro",
 	"compilerOptions": {
-		"baseUrl": ".",
 		"paths": {
 			"#/*": ["./src/*"]
 		}

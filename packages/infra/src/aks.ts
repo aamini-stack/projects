@@ -1,28 +1,23 @@
 import * as azure from '@pulumi/azure-native'
+import * as command from '@pulumi/command'
 import * as pulumi from '@pulumi/pulumi'
 import * as flux from '@worawat/flux'
 
 const config = new pulumi.Config('azure-native')
-const fluxConfig = new pulumi.Config('flux')
 const githubConfig = new pulumi.Config('github')
 
-const branch = 'main'
-const targetPath = fluxConfig.require('targetPath')
-const token = githubConfig.requireSecret('token')
-
+const location = config.require('location')
 const subscriptionId = config.require('subscriptionId')
-const azureResourceGroupName = config.require('resourceGroupName')
+const githubToken = githubConfig.requireSecret('token')
 
-// Resource Group
-const resourceGroup = new azure.resources.ResourceGroup('resourceGroup', {
-	resourceGroupName: azureResourceGroupName,
+const resourceGroup = new azure.resources.ResourceGroup('rg-aamini-stack', {
+	location: location,
 })
 
 // AKS Cluster
-const aksCluster = new azure.containerservice.ManagedCluster('aksCluster', {
-	resourceName: 'aks-imdbgraph',
+const aksCluster = new azure.containerservice.ManagedCluster('aks', {
+	dnsPrefix: 'aamini-stack',
 	resourceGroupName: resourceGroup.name,
-	dnsPrefix: 'imdbgraph-api',
 	agentPoolProfiles: [
 		{
 			name: 'agentpool',
@@ -53,19 +48,11 @@ const aksCluster = new azure.containerservice.ManagedCluster('aksCluster', {
 	},
 })
 
-// DNS Zone
-new azure.network.Zone('dnsZone', {
-	zoneName: 'staging.imdbgraph.org',
-	location: 'global',
-	resourceGroupName: resourceGroup.name,
-})
-
 // Creds
 const workloadIdentity = new azure.managedidentity.UserAssignedIdentity(
-	'workloadId',
+	'azure-alb-identity',
 	{
-		resourceName: 'azure-alb-identity',
-		location: resourceGroup.location,
+		location: location,
 		resourceGroupName: resourceGroup.name,
 	},
 )
@@ -74,14 +61,14 @@ const nodeResourceGroupId = aksCluster.nodeResourceGroup.apply(
 	(nrg) => `subscriptions/${subscriptionId}/resourceGroups/${nrg}`,
 )
 
-new azure.authorization.RoleAssignment('readerRole', {
+new azure.authorization.RoleAssignment('reader-role', {
 	roleDefinitionId: `/subscriptions/${subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7`,
 	principalId: workloadIdentity.principalId,
 	scope: nodeResourceGroupId,
 	principalType: 'ServicePrincipal',
 })
 
-new azure.managedidentity.FederatedIdentityCredential('federatedId', {
+new azure.managedidentity.FederatedIdentityCredential('managed-identity', {
 	federatedIdentityCredentialResourceName: workloadIdentity.name,
 	resourceGroupName: resourceGroup.name,
 	resourceName: workloadIdentity.name,
@@ -90,36 +77,43 @@ new azure.managedidentity.FederatedIdentityCredential('federatedId', {
 	subject: 'system:serviceaccount:azure-alb-system:alb-controller-sa',
 })
 
-// Gitops
-const provider = new flux.Provider('fluxProvider', {
-	kubernetes: {
-		configPath: '~/.kube/config',
-	},
-	git: {
-		url: `https://github.com/aamini-stack/projects.git`,
-		branch: branch,
-		http: {
-			username: 'git',
-			password: token,
+// Get AKS credentials and update kubeconfig before running Flux
+const getCredentials = new command.local.Command('get-aks-credentials', {
+	create: pulumi.interpolate`az aks get-credentials --name ${aksCluster.name} --resource-group ${resourceGroup.name} --overwrite-existing`,
+})
+
+const provider = new flux.Provider(
+	'flux',
+	{
+		kubernetes: {
+			configPath: '~/.kube/config',
+		},
+		git: {
+			url: `https://github.com/aamini-stack/projects.git`,
+			branch: 'main',
+			http: {
+				username: 'git',
+				password: githubToken,
+			},
 		},
 	},
-})
+	{
+		dependsOn: [getCredentials],
+	},
+)
 
 const resource = new flux.FluxBootstrapGit(
 	'flux',
 	{
-		path: targetPath,
-		version: '2.7.0',
+		path: './packages/infra/manifests/gitops',
 	},
 	{
 		provider: provider,
-		dependsOn: [aksCluster],
 	},
 )
 
 // Outputs
 export const bootstrapId = resource.id
-
 const creds = azure.containerservice.listManagedClusterUserCredentialsOutput({
 	resourceGroupName: resourceGroup.name,
 	resourceName: aksCluster.name,
@@ -128,3 +122,4 @@ const encoded = creds.kubeconfigs[0]?.value
 export const kubeconfig = pulumi.secret(
 	encoded?.apply((enc) => Buffer.from(enc, 'base64').toString()) ?? '',
 )
+export const aksClusterId = aksCluster.id

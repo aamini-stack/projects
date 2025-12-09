@@ -1,8 +1,8 @@
-import { download, type ImdbFile } from '#/lib/imdb/file-downloader'
+import { getGunzipStream, type ImdbFile } from '#/lib/imdb/file-downloader'
 import { getRatings } from '#/lib/imdb/ratings'
 import { update } from '#/lib/imdb/scraper'
-import { test } from '__mocks__/test-extend-server.ts'
-import fs from 'node:fs/promises'
+import { test } from '#/mocks/test-extend-server.ts'
+import { createReadStream } from 'node:fs'
 import path from 'node:path'
 import { describe, expect, vi } from 'vitest'
 import { gameOfThronesRatings } from './__fixtures__/game-of-thrones.ts'
@@ -47,8 +47,8 @@ describe('scraper tests', () => {
 // Helpers
 // =============================================================================
 function mockDownloads(mockedFiles: Record<ImdbFile, string>) {
-	vi.mocked(download).mockImplementation(async (imdbFile, out) => {
+	vi.mocked(getGunzipStream).mockImplementation(async (imdbFile) => {
 		const input = path.join(import.meta.dirname, mockedFiles[imdbFile])
-		await fs.copyFile(input, out)
+		return createReadStream(input)
 	})
 }
