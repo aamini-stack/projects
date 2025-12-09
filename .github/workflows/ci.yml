@@ -84,8 +84,17 @@ jobs:
             --repo \
             --token=${{ secrets.VERCEL_TOKEN }} \
             --scope=${{ vars.TURBO_TEAM }}
+
+          # Add --prod flag if pushing to main branch (not a PR)
+          if [ "${{ github.event_name }}" = "push" ] && [ "${{ github.ref }}" = "refs/heads/main" ]; then
+            PROD_FLAG="--prod"
+          else
+            PROD_FLAG=""
+          fi
+
           BASE_URL=$(pnpm vercel \
             --yes \
+            $PROD_FLAG \
             --token=${{ secrets.VERCEL_TOKEN }} \
             --scope=${{ vars.TURBO_TEAM }} \
             -m githubDeployment='1' \

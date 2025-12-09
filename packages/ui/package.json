@@ -28,7 +28,8 @@
 		"lucide-react": "^0.556.0",
 		"react": "^19.2.1",
 		"react-dom": "^19.2.1",
-		"react-hook-form": "^7.68.0"
+		"react-hook-form": "^7.68.0",
+		"recharts": "2.15.4"
 	},
 	"devDependencies": {
 		"@aamini/config-typescript": "workspace:*",

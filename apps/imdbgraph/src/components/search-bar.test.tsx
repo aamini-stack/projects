@@ -1,9 +1,9 @@
 import { test } from '#/mocks/test-extend-browser'
 import { QueryClient } from '@tanstack/react-query'
-import { userEvent } from '@vitest/browser/context'
 import { http, HttpResponse } from 'msw'
 import { describe, expect, vi } from 'vitest'
 import { render } from 'vitest-browser-react'
+import { userEvent } from 'vitest/browser'
 import { SearchBar } from './search-bar'
 
 vi.mock(import('#/lib/react-query'), () => ({
