@@ -1,6 +1,6 @@
 services:
   server:
-    image: imdbgraph
+    image: aamini/imdbgraph:main
     build:
       context: ../..
       dockerfile: apps/imdbgraph/Dockerfile

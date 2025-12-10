@@ -27,14 +27,14 @@ jobs:
         run: pnpm turbo run format typecheck lint test:unit
 
   integration-tests:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
+    container:
+      image: mcr.microsoft.com/playwright:v1.57.0-noble
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
       - name: Setup Node
         uses: ./.github/actions/setup
-      - name: Install Playwright Browsers
-        run: pnpm dlx playwright install --with-deps
       - name: Test
         run: pnpm test:integration
 
