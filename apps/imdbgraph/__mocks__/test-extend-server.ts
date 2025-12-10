@@ -1,3 +1,4 @@
+// oxlint-disable no-empty-pattern
 import * as schema from '#/db/tables'
 import handlers from '#/mocks/handlers'
 import { PostgreSqlContainer } from '@testcontainers/postgresql'

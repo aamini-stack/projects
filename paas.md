@@ -2,7 +2,7 @@
 - CapRover (14.6)
 - Dokku (31.5)
 - Dokploy (26.6)
-- Kubero (4)
-- Canine (2.6)
-
-https://github.com/kubero-dev/kubero https://github.com/CanineHQ/canine
+- Kubero (4): https://github.com/kubero-dev/kubero
+- Canine (2.6): https://github.com/CanineHQ/canine
+- Tsuru (5.2): https://github.com/tsuru/tsuru
+- Kamal (13.6): https://github.com/basecamp/kamal
