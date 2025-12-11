@@ -1,15 +1,17 @@
 services:
   server:
-    image: imdbgraph
+    image: aamini/imdbgraph:main
     build:
       context: ../..
       dockerfile: apps/imdbgraph/Dockerfile
+      platforms:
+        - linux/amd64
+        - linux/arm64
     ports:
       - 4321:4321
   e2e:
     environment:
       - BASE_URL
-      - VERCEL_AUTOMATION_BYPASS_SECRET
     image: imdbgraph-e2e
     build:
       context: ../..

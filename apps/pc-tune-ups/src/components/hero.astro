@@ -5,7 +5,7 @@ import { Phone, Mail } from 'lucide-react'
 ---
 
 <section
-	class="space-y-8 rounded-3xl bg-gradient-to-br from-white via-lime-50 to-stone-50 p-4 shadow-xl ring-1 shadow-stone-200/60 ring-lime-100 sm:p-6 md:p-8 lg:p-10"
+	class="space-y-8 rounded-3xl bg-linear-to-br from-white via-lime-50 to-stone-50 p-4 shadow-xl ring-1 shadow-stone-200/60 ring-lime-100 sm:p-6 md:p-8 lg:p-10"
 >
 	<div class="grid grid-cols-1 items-start gap-8 lg:grid-cols-2 lg:gap-12">
 		<div class="order-1 space-y-6">
@@ -33,14 +33,14 @@ import { Phone, Mail } from 'lucide-react'
 			<div class="flex flex-wrap gap-4 pt-4">
 				<a
 					href="tel:15048851635"
-					class="inline-flex items-center gap-2 rounded-full bg-lime-500 px-7 py-3 text-lg font-semibold text-white transition-all duration-200 hover:translate-y-[-1px] hover:bg-lime-600 hover:shadow-lg hover:shadow-lime-200/60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lime-600"
+					class="inline-flex items-center gap-2 rounded-full bg-lime-500 px-7 py-3 text-lg font-semibold text-white transition-all duration-200 hover:-translate-y-px hover:bg-lime-600 hover:shadow-lg hover:shadow-lime-200/60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lime-600"
 				>
 					<Phone className="h-6 w-6" client:load />
 					<span>Call Now</span>
 				</a>
 				<a
 					href="mailto:info@afcom-inc.com"
-					class="inline-flex items-center gap-2 rounded-full border border-stone-300 bg-white px-7 py-3 text-lg font-semibold text-stone-900 transition-all duration-200 hover:translate-y-[-1px] hover:bg-lime-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lime-600"
+					class="inline-flex items-center gap-2 rounded-full border border-stone-300 bg-white px-7 py-3 text-lg font-semibold text-stone-900 transition-all duration-200 hover:-translate-y-px hover:bg-lime-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lime-600"
 				>
 					<Mail className="h-6 w-6 text-lime-600" client:load />
 					<span>Email Us</span>

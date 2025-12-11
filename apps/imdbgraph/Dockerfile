@@ -1,4 +1,4 @@
-FROM node:lts AS runtime
+FROM node:22-alpine AS runtime
 
 FROM runtime AS pruned
 ENV PNPM_HOME="/pnpm"
@@ -22,8 +22,6 @@ RUN pnpm build --filter=imdbgraph
 FROM runtime
 WORKDIR /app
 COPY --from=build /app/node_modules ./node_modules
-COPY --from=build /app/apps/imdbgraph/dist ./dist
-ENV HOST=0.0.0.0
-ENV PORT=4321
-EXPOSE 4321
-CMD [ "node", "./dist/server/entry.mjs" ]
+COPY --from=build /app/apps/imdbgraph/.output ./.output
+EXPOSE 3000
+CMD ["node", ".output/server/index.mjs"]

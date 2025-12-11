@@ -9,7 +9,6 @@ services:
   e2e:
     environment:
       - BASE_URL
-      - VERCEL_AUTOMATION_BYPASS_SECRET
     image: pc-tune-ups-e2e
     build:
       context: ../..

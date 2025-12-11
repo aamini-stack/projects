@@ -1,4 +1,4 @@
-import type { Ratings } from '#/lib/imdb/types'
+import type { Ratings } from '@/lib/imdb/types'
 
 export const gameOfThronesRatings: Ratings = {
 	allEpisodeRatings: {

@@ -1,12 +1,18 @@
-import { test } from '#/mocks/test-extend-browser'
+import { test } from '@/mocks/test-extend-browser'
 import { QueryClient } from '@tanstack/react-query'
+import {
+	createRootRoute,
+	createRoute,
+	createRouter,
+	RouterContextProvider,
+} from '@tanstack/react-router'
 import { http, HttpResponse } from 'msw'
 import { describe, expect, vi } from 'vitest'
 import { render } from 'vitest-browser-react'
 import { userEvent } from 'vitest/browser'
 import { SearchBar } from './search-bar'
 
-vi.mock(import('#/lib/react-query'), () => ({
+vi.mock(import('@/lib/react-query'), () => ({
 	queryClient: new QueryClient({
 		defaultOptions: {
 			queries: {
@@ -16,9 +22,25 @@ vi.mock(import('#/lib/react-query'), () => ({
 	}),
 }))
 
+function mockRouter() {
+	const rootRoute = createRootRoute()
+	const indexRoute = createRoute({
+		getParentRoute: () => rootRoute,
+		path: '/',
+	})
+	const routeTree = rootRoute.addChildren([indexRoute])
+	return createRouter({ routeTree })
+}
+
 describe('searchbar tests', () => {
 	test('basic search', async () => {
-		const screen = await render(<SearchBar />)
+		const screen = await render(<SearchBar />, {
+			wrapper: (props) => (
+				<RouterContextProvider router={mockRouter()}>
+					{props.children}
+				</RouterContextProvider>
+			),
+		})
 
 		const searchBar = screen.getByRole('combobox')
 		await userEvent.fill(searchBar, 'avatar')

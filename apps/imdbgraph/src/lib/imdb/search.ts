@@ -1,4 +1,4 @@
-import { show } from '#/db/tables'
+import { show } from '@/db/tables'
 import { desc, sql } from 'drizzle-orm'
 import type { NodePgDatabase } from 'drizzle-orm/node-postgres'
 
