@@ -6,3 +6,4 @@
 - Canine (2.6): https://github.com/CanineHQ/canine
 - Tsuru (5.2): https://github.com/tsuru/tsuru
 - Kamal (13.6): https://github.com/basecamp/kamal
+- apl-core (2.3k): https://github.com/linode/apl-core
