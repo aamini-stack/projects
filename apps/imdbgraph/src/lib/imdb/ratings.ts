@@ -1,5 +1,5 @@
-import { episode, show } from '#/db/tables'
-import type { Episode, Ratings } from '#/lib/imdb/types'
+import { episode, show } from '@/db/tables'
+import type { Episode, Ratings } from '@/lib/imdb/types'
 import { asc, eq } from 'drizzle-orm'
 import type { NodePgDatabase } from 'drizzle-orm/node-postgres'
 

@@ -1,4 +1,4 @@
-import { getGunzipStream, type ImdbFile } from '#/lib/imdb/file-downloader'
+import { getGunzipStream, type ImdbFile } from '@/lib/imdb/file-downloader'
 import type { NodePgDatabase } from 'drizzle-orm/node-postgres'
 import { pipeline } from 'node:stream/promises'
 import type { Pool, PoolClient } from 'pg'

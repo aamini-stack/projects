@@ -13,4 +13,4 @@ config:
   # GitHub
   github:owner: aamini-stack
   github:token:
-    secure: AAABAKDBLDaqFYHJzY3K9Tr+QvrjKB6qR0BRkkVeefn/h1SGwgFg6zvpSZzSTSSM6+ENDgVPG7b4i3x9K3+d7UcqziL5ssTUFgoFMviZYAZ2UfNiAxcDWt68c08z32ZqWE9lfyCmo9ZljxQN/3+sVIdczBbuQRVGRhOG//s=
+    secure: AAABAKs21VZkDae/jjlWVZ3VKAkARjrprCosE6Uqqfzu+MweNKHsjq+tWRG3yRgjOX7zT6xRjvMiK7JR9eM+CAfUS53mAkAXB5hU9e5dWjbcVukE3VdzDPngixNnIXYBzaWUZs4lra7hmoCFQQuuBO+66NcJkllOamhtzOQ=

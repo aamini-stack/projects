@@ -20,7 +20,7 @@
 			"name": "Run Vitest Browser",
 			"program": "${workspaceRoot}/node_modules/vitest/vitest.mjs",
 			"console": "integratedTerminal",
-			"args": ["--inspect-brk", "--browser", "--no-file-parallelism"]
+			"args": ["--inspect", "--browser", "--no-file-parallelism"]
 		},
 		{
 			"type": "chrome",

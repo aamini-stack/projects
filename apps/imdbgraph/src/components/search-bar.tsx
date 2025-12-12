@@ -1,6 +1,6 @@
-import type { Show } from '#/lib/imdb/types'
-import { formatYears } from '#/lib/imdb/types'
-import { queryClient } from '#/lib/react-query'
+import type { Show } from '@/lib/imdb/types'
+import { formatYears } from '@/lib/imdb/types'
+import { queryClient } from '@/lib/react-query'
 import {
 	InputGroup,
 	InputGroupAddon,
@@ -9,6 +9,7 @@ import {
 import { Spinner } from '@aamini/ui/components/spinner'
 import { cn } from '@aamini/ui/lib/utils'
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
+import { Link } from '@tanstack/react-router'
 import { useCombobox } from 'downshift'
 import { Search as SearchIcon, Star } from 'lucide-react'
 import { useDeferredValue, useEffect, useState } from 'react'
@@ -159,7 +160,13 @@ export function SearchBar({ className }: { className?: string }) {
 							)}
 							{...getItemProps({ item: show, index })}
 						>
-							<a className="flex gap-4" href={`/ratings/${show.imdbId}`}>
+							<Link
+								className="flex gap-4"
+								to="/ratings/$id"
+								params={{
+									id: show.imdbId,
+								}}
+							>
 								{/* Show Title + Years */}
 								<div className="flex flex-1 flex-col">
 									<span className="wrap-break-word">{show.title}&nbsp;</span>
@@ -172,7 +179,7 @@ export function SearchBar({ className }: { className?: string }) {
 									<span>{`${show.rating.toFixed(1)} / 10.0`}</span>
 									<Star className="text-sky-500" />
 								</div>
-							</a>
+							</Link>
 						</li>
 					))}
 				</ul>

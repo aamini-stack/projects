@@ -21,10 +21,6 @@ const vercelConfig = new pulumi.Config('vercel')
 
 const actionSecrets = [
 	{
-		secretName: 'VERCEL_AUTOMATION_BYPASS_SECRET',
-		value: vercelConfig.requireSecret('automationBypassSecret'),
-	},
-	{
 		secretName: 'VERCEL_TOKEN',
 		value: vercelConfig.requireSecret('apiToken'),
 	},

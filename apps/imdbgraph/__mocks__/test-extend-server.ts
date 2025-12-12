@@ -1,5 +1,6 @@
-import * as schema from '#/db/tables'
-import handlers from '#/mocks/handlers'
+// oxlint-disable no-empty-pattern
+import * as schema from '@/db/tables'
+import handlers from '@/mocks/handlers'
 import { PostgreSqlContainer } from '@testcontainers/postgresql'
 import { drizzle, type NodePgDatabase } from 'drizzle-orm/node-postgres'
 import { migrate } from 'drizzle-orm/node-postgres/migrator'
@@ -30,6 +31,7 @@ export const test = baseTest.extend<DbFixture>({
 		},
 		{
 			auto: true,
+			scope: 'worker',
 		},
 	],
 	seedFunction: [async ({}, use) => use(async (_) => {}), { scope: 'file' }],
