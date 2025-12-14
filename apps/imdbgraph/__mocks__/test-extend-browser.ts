@@ -8,7 +8,7 @@ export const test = testBase.extend<{ worker: SetupWorker }>({
 	worker: [
 		// oxlint-disable-next-line no-empty-pattern
 		async ({}, use) => {
-			await client.start({ onUnhandledRequest: 'bypass' })
+			await client.start({ quiet: true, onUnhandledRequest: 'bypass' })
 			await use(client)
 			client.resetHandlers()
 		},
