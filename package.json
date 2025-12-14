@@ -5,6 +5,7 @@
 	"type": "module",
 	"scripts": {
 		"build": "turbo build",
+		"docker:build": "node scripts/docker-build.js",
 		"format": "prettier --check **/*.{js,ts,tsx,json,html,css,md,yml,yaml,astro}",
 		"format:fix": "prettier --write **/*.{js,ts,tsx,json,html,css,md,yml,yaml,astro}",
 		"typecheck": "turbo run typecheck",
