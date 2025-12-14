@@ -1,4 +1,4 @@
-import { Readable } from 'node:stream'
+import { pipeline, Readable } from 'node:stream'
 import type { ReadableStream } from 'node:stream/web'
 import { createGunzip } from 'node:zlib'
 
@@ -24,6 +24,22 @@ export async function getGunzipStream(file: ImdbFile): Promise<Readable> {
 		throw new Error('Response body is null')
 	}
 	const gunzip = createGunzip()
-	Readable.fromWeb(body as ReadableStream).pipe(gunzip)
+	const webStream = Readable.fromWeb(body as ReadableStream)
+
+	// Pipe web stream to gunzip
+	webStream.pipe(gunzip)
+
+	// Ensure cleanup propagates: when gunzip is destroyed, also destroy the source
+	gunzip.on('close', () => {
+		if (!webStream.destroyed) {
+			webStream.destroy()
+		}
+	})
+	gunzip.on('error', (err) => {
+		if (!webStream.destroyed) {
+			webStream.destroy(err)
+		}
+	})
+
 	return gunzip
 }
