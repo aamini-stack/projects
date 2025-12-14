@@ -26,6 +26,7 @@ export async function update(
 			`✅ Database population completed successfully in ${duration} seconds!`,
 		)
 	} catch (error) {
+		await client.query('ROLLBACK')
 		console.error('❌ Database population failed:')
 		console.error(error)
 		throw error
