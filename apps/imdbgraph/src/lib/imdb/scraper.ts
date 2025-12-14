@@ -80,8 +80,15 @@ async function transfer(client: PoolClient) {
 		console.log(`Streaming ${file} to database...`)
 		const sourceStream = await getGunzipStream(file)
 		const ingestStream = client.query(copyFrom(cmd))
-		await pipeline(sourceStream, ingestStream)
-		console.log(`Successfully transferred ${file} to temp table`)
+		try {
+			await pipeline(sourceStream, ingestStream)
+			console.log(`Successfully transferred ${file} to temp table`)
+		} catch (error) {
+			// Ensure streams are destroyed on error to prevent hanging connections
+			sourceStream.destroy()
+			ingestStream.destroy()
+			throw error
+		}
 	}
 
 	console.log('Starting streaming transfers...')
