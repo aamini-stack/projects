@@ -28,8 +28,6 @@ jobs:
 
   integration-tests:
     runs-on: blacksmith-4vcpu-ubuntu-2404
-    container: 
-      image: mcr.microsoft.com/playwright:v1.57.0-noble
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -67,8 +65,6 @@ jobs:
   e2e:
     needs: [find-apps]
     runs-on: blacksmith-4vcpu-ubuntu-2404
-    container:
-      image: mcr.microsoft.com/playwright:v1.57.0-noble
     strategy:
       matrix:
         app: ${{ fromJson(needs.find-apps.outputs.apps) }}
