@@ -1,0 +1,26 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: pc-tune-ups
+
+resources:
+  - ../base
+
+nameSuffix: ""
+namePrefix: pc-tune-ups-
+
+commonLabels:
+  app: pc-tune-ups
+
+images:
+  - name: ghcr.io/aamini-stack/app
+    newName: ghcr.io/aamini-stack/pc-tune-ups
+    newTag: main
+
+patches:
+  - target:
+      kind: HTTPRoute
+    patch: |-
+      - op: replace
+        path: /spec/hostnames/0
+        value: "pctuneupsnola.com"

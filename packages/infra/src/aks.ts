@@ -1,7 +1,6 @@
 import * as azure from '@pulumi/azure-native'
 import * as command from '@pulumi/command'
 import * as pulumi from '@pulumi/pulumi'
-import * as flux from '@worawat/flux'
 
 const config = new pulumi.Config('azure-native')
 const githubConfig = new pulumi.Config('github')
@@ -78,42 +77,26 @@ new azure.managedidentity.FederatedIdentityCredential('managed-identity', {
 })
 
 // Get AKS credentials and update kubeconfig before running Flux
-const getCredentials = new command.local.Command('get-aks-credentials', {
-	create: pulumi.interpolate`az aks get-credentials --name ${aksCluster.name} --resource-group ${resourceGroup.name} --overwrite-existing`,
-})
-
-const provider = new flux.Provider(
-	'flux',
+const getAksCredentials = new command.local.Command(
+	'get-aks-credentials',
 	{
-		kubernetes: {
-			configPath: '~/.kube/config',
-		},
-		git: {
-			url: `https://github.com/aamini-stack/projects.git`,
-			branch: 'main',
-			http: {
-				username: 'git',
-				password: githubToken,
-			},
-		},
+		create: pulumi.interpolate`az aks get-credentials --name ${aksCluster.name} --resource-group ${resourceGroup.name} --overwrite-existing`,
 	},
-	{
-		dependsOn: [getCredentials],
-	},
+	{ dependsOn: [aksCluster] },
 )
 
-const resource = new flux.FluxBootstrapGit(
-	'flux',
+new command.local.Command(
+	'flux-boostrap',
 	{
-		path: './packages/infra/manifests/gitops',
+		create: pulumi.interpolate`flux bootstrap github --owner=aamini-stack --repository=projects --branch=main --path=./packages/infra/manifests/gitops --personal --token-auth`,
+		environment: {
+			GITHUB_TOKEN: githubToken,
+		},
 	},
-	{
-		provider: provider,
-	},
+	{ dependsOn: [aksCluster, getAksCredentials] },
 )
 
 // Outputs
-export const bootstrapId = resource.id
 const creds = azure.containerservice.listManagedClusterUserCredentialsOutput({
 	resourceGroupName: resourceGroup.name,
 	resourceName: aksCluster.name,

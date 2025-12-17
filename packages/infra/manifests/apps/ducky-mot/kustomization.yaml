@@ -1,0 +1,26 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: ducky-mot
+
+resources:
+  - ../base
+
+nameSuffix: ""
+namePrefix: ducky-mot-
+
+commonLabels:
+  app: ducky-mot
+
+images:
+  - name: ghcr.io/aamini-stack/app
+    newName: ghcr.io/aamini-stack/ducky-mot
+    newTag: main
+
+patches:
+  - target:
+      kind: HTTPRoute
+    patch: |-
+      - op: replace
+        path: /spec/hostnames/0
+        value: "https://ducky-mot.vercel.app/"
