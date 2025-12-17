@@ -16,8 +16,8 @@
 		"test:unit": "vitest run --project unit",
 		"test:integration": "vitest run --project browser --project server",
 		"test:watch": "vitest --watch",
-		"e2e": "docker compose run --rm --build e2e",
-		"e2e:update": "docker compose run --rm --build e2e --update-snapshots",
+		"e2e": "bash ../../scripts/e2e.sh aamini-template",
+		"e2e:update": "bash ../../scripts/e2e.sh aamini-template --update-snapshots",
 		"verify": "turbo run build lint format test typecheck e2e"
 	},
 	"dependencies": {

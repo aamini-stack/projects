@@ -1,6 +1,6 @@
 'use client'
 
-import { type Episode, type Ratings } from '#/lib/imdb/types'
+import { type Episode, type Ratings } from '@/lib/imdb/types'
 import {
 	Card,
 	CardContent,
