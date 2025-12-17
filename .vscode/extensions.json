@@ -11,7 +11,7 @@
 		// Format + Lint
 		"editorconfig.editorconfig",
 		"oxc.oxc-vscode",
-		"esbenp.prettier-vscode",
+		"prettier.prettier-vscode",
 		// Infra
 		"github.vscode-github-actions",
 		"mikestead.dotenv"

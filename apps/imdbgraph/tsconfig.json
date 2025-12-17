@@ -1,12 +1,28 @@
 {
-	"extends": "@aamini/config-typescript/astro",
 	"compilerOptions": {
+		"target": "ES2022",
+		"jsx": "react-jsx",
+		"module": "ESNext",
+		"lib": ["ES2022", "DOM", "DOM.Iterable"],
+		"types": ["vite/client"],
+
+		/* Bundler mode */
+		"moduleResolution": "bundler",
+		"allowImportingTsExtensions": true,
+		"verbatimModuleSyntax": false,
+		"noEmit": true,
+
+		/* Linting */
+		"skipLibCheck": true,
+		"strict": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"noFallthroughCasesInSwitch": true,
+		"noUncheckedSideEffectImports": true,
 		"paths": {
-			"#/mocks/*": ["./__mocks__/*"],
-			"#/*": ["./src/*"],
-			"@aamini/ui/*": ["../../packages/ui"]
+			"@/*": ["./src/*"],
+			"@/mocks/*": ["./__mocks__/*"],
+			"@aamini/ui/*": ["../../packages/ui/src"]
 		}
-	},
-	"include": [".astro/types.d.ts", "**/*"],
-	"exclude": ["dist"]
+	}
 }

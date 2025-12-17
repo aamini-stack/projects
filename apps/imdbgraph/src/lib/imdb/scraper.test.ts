@@ -1,13 +1,13 @@
-import { getGunzipStream, type ImdbFile } from '#/lib/imdb/file-downloader'
-import { getRatings } from '#/lib/imdb/ratings'
-import { update } from '#/lib/imdb/scraper'
-import { test } from '#/mocks/test-extend-server.ts'
+import { getGunzipStream, type ImdbFile } from '@/lib/imdb/file-downloader'
+import { getRatings } from '@/lib/imdb/ratings'
+import { update } from '@/lib/imdb/scraper'
+import { test } from '@/mocks/test-extend-server.ts'
 import { createReadStream } from 'node:fs'
 import path from 'node:path'
 import { describe, expect, vi } from 'vitest'
 import { gameOfThronesRatings } from './__fixtures__/game-of-thrones.ts'
 
-vi.mock(import('#/lib/imdb/file-downloader'))
+vi.mock(import('@/lib/imdb/file-downloader'))
 
 const GAME_OF_THRONES_ID = 'tt0944947'
 const SIMPSONS_ID = 'tt0096697'

@@ -3,17 +3,18 @@
 	"git.autofetch": true,
 	"files.autoSave": "afterDelay",
 
-	// Formatting
-	"editor.formatOnPaste": true,
-	"editor.formatOnSave": true,
-	"editor.rulers": [80],
-	"editor.wordWrapColumn": 80,
-	"editor.defaultFormatter": "esbenp.prettier-vscode",
-	"[javascript][javascriptreact][typescript][typescriptreact][html][css][json][jsonc][astro][yaml]": {
-		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	"files.watcherExclude": {
+		"**/routeTree.gen.ts": true
 	},
+	"search.exclude": {
+		"**/routeTree.gen.ts": true
+	},
+	"files.readonlyInclude": {
+		"**/routeTree.gen.ts": true
+	},
+
 	"[markdown]": {
-		"editor.defaultFormatter": "esbenp.prettier-vscode",
+		"editor.defaultFormatter": "prettier.prettier-vscode",
 		"editor.unicodeHighlight.ambiguousCharacters": false,
 		"editor.unicodeHighlight.invisibleCharacters": false,
 		"diffEditor.ignoreTrimWhitespace": false,
@@ -23,6 +24,33 @@
 			"strings": "off",
 			"other": "off"
 		}
+	},
+
+	"files.exclude": {
+		"**/.git": true,
+		"**/.svn": true,
+		"**/.hg": true,
+		"**/.DS_Store": true,
+		"**/Thumbs.db": true,
+		"**/node_modules": true,
+		"**/.output": true,
+		"**/.nitro": true,
+		"**/routeTree.gen.ts": true,
+		"**/.tanstack": true,
+		"**/.turbo": true,
+		"**/.astro": true,
+		"**/.vercel": true,
+		"**/dist": true,
+		"**/playwright-report": true
+	},
+
+	// Formatting
+	"editor.formatOnPaste": true,
+	"editor.formatOnSave": true,
+	"editor.rulers": [80],
+	"editor.wordWrapColumn": 80,
+	"[javascript][javascriptreact][typescript][typescriptreact][html][css][json][jsonc][astro][yaml]": {
+		"editor.defaultFormatter": "prettier.prettier-vscode"
 	},
 
 	"typescript.preferences.importModuleSpecifier": "non-relative",
