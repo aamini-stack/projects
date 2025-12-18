@@ -30,4 +30,4 @@ patches:
     patch: |-
       - op: replace
         path: /spec/hostnames/0
-        value: "https://ducky-mot.vercel.app/"
+        value: "ducky-mot.vercel.app"
