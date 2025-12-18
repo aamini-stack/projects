@@ -19,7 +19,8 @@ export const Route = createFileRoute('/api/suggestions')({
 				return new Response(JSON.stringify(shows), {
 					headers: {
 						'CDN-Cache-Control':
-							'public, max-age=60, s-maxage=86400, stale-while-revalidate=3600',
+							'public, s-maxage=86400, stale-while-revalidate=3600',
+						'Cache-Control': 'public, max-age=0, must-revalidate',
 					},
 				})
 			},
