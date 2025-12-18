@@ -20,17 +20,17 @@ export function Hero() {
 						className="mx-auto h-24 w-auto sm:h-32 md:h-36"
 					/>
 					{/* Glow */}
-					<div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-blue-500/10 blur-xl transition-opacity duration-500" />
+					<div className="absolute inset-0 bg-linear-to-r from-blue-500/10 via-purple-500/10 to-blue-500/10 blur-xl transition-opacity duration-500" />
 				</div>
 
 				{/* Sub-Header */}
 				<div className="space-y-4">
 					<h1 className="font-hero-title text-3xl leading-tight font-bold text-white sm:text-4xl md:text-5xl">
-						<span className="bg-gradient-to-r from-white via-blue-100 to-white bg-clip-text text-transparent">
+						<span className="bg-linear-to-r from-white via-blue-100 to-white bg-clip-text text-transparent">
 							An international community,
 						</span>
 						<br />
-						<span className="bg-gradient-to-r from-blue-400 via-purple-400 to-blue-400 bg-clip-text text-transparent">
+						<span className="bg-linear-to-r from-blue-400 via-purple-400 to-blue-400 bg-clip-text text-transparent">
 							Your best international festivals
 						</span>
 					</h1>
@@ -43,7 +43,7 @@ export function Hero() {
 
 				{/* Placeholder Button for Next Event */}
 				<div className="pt-4">
-					<div className="inline-flex cursor-default items-center gap-2 rounded-full border border-gray-700/50 bg-gradient-to-r from-gray-800/50 to-gray-900/50 px-6 py-3 text-base font-semibold text-gray-400 shadow-lg shadow-gray-900/20 backdrop-blur-sm sm:gap-3 sm:px-8 sm:py-4 sm:text-lg">
+					<div className="inline-flex cursor-default items-center gap-2 rounded-full border border-gray-700/50 bg-linear-to-r from-gray-800/50 to-gray-900/50 px-6 py-3 text-base font-semibold text-gray-400 shadow-lg shadow-gray-900/20 backdrop-blur-sm sm:gap-3 sm:px-8 sm:py-4 sm:text-lg">
 						<Calendar className="h-5 w-5" />
 						<span className="whitespace-nowrap">Next event coming soon</span>
 					</div>

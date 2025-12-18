@@ -7,7 +7,7 @@ const location = '3943 Veterans Blvd, Metairie, LA'
 
 export function Header() {
 	return (
-		<header className="text-md top-0 z-50 min-w-fit border-b border-stone-200 bg-white/95 text-nowrap shadow-md backdrop-blur-xl supports-[backdrop-filter]:bg-white/90 md:sticky">
+		<header className="text-md top-0 z-50 min-w-fit border-b border-stone-200 bg-white/95 text-nowrap shadow-md backdrop-blur-xl supports-backdrop-filter:bg-white/90 md:sticky">
 			<div className="mx-auto flex max-w-5xl flex-nowrap justify-between gap-4 p-4 text-stone-600 max-md:flex-col max-md:items-start md:gap-6 md:px-8 md:py-6">
 				<div className="space-y-1.5 max-md:w-full max-md:border-t max-md:border-stone-200 max-md:pt-4 max-md:first:border-t-0 max-md:first:pt-0">
 					<a
