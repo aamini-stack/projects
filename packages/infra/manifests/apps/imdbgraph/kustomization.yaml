@@ -24,6 +24,13 @@ replicas:
 
 patches:
   - target:
+      kind: Namespace
+      name: app
+    patch: |-
+      - op: replace
+        path: /metadata/name
+        value: imdbgraph
+  - target:
       kind: Deployment
       name: app-deployment
     patch: |-

@@ -19,6 +19,13 @@ images:
 
 patches:
   - target:
+      kind: Namespace
+      name: app
+    patch: |-
+      - op: replace
+        path: /metadata/name
+        value: pc-tune-ups
+  - target:
       kind: HTTPRoute
     patch: |-
       - op: replace
