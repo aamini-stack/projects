@@ -68,6 +68,7 @@ spec:
   timeout: 5m0s
   prune: true
 
+
 # System components
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1

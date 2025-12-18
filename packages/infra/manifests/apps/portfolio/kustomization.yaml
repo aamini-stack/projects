@@ -6,7 +6,7 @@ namespace: portfolio
 resources:
   - ../base
 
-nameSuffix: ""
+nameSuffix: ''
 namePrefix: portfolio-
 
 commonLabels:
