@@ -38,6 +38,7 @@ export const createBaseConfig = (
 								name: 'server',
 								include: ['src/**/*.test.ts'],
 								testTimeout: 30_000,
+								fileParallelism: false,
 							},
 						} satisfies TestProjectConfiguration,
 						projectOverrides.server ?? {},
