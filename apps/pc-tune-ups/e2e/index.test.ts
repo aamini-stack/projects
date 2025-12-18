@@ -5,12 +5,10 @@ test.beforeEach(async ({ page }) => {
 })
 
 test('Screenshot Homepage', async ({ page }) => {
-	await page.waitForLoadState('networkidle')
 	await expect(page).toHaveScreenshot()
 })
 
 test('Screenshot Homepage (Full)', async ({ page }) => {
-	await page.waitForLoadState('networkidle')
 	await expect(page).toHaveScreenshot({
 		fullPage: true,
 	})

@@ -51,27 +51,34 @@ export type EventGallery = {
 	images: GalleryImage[]
 }
 
-/**
- * Map of gallery ID to gallery data Add new galleries here as events are
- * migrated
- */
-export const galleries: Record<string, EventGallery> = {
+/** Gallery metadata without images (images are loaded on-demand) */
+const galleryMetadata: Record<
+	string,
+	Omit<EventGallery, 'images'> & { imageDir: string }
+> = {
 	'ducky-endless-summer-2025-09-19': {
 		id: 'ducky-endless-summer-2025-09-19',
 		slug: 'ducky-endless-summer-2025-09-19',
 		eventTitle: 'ducky.endless summer',
 		eventDate: '19th September 2025',
 		coverImage: '/ducky-sept-2025/20200101-DSC00025_01.jpg',
-		images: loadImagesFromDirectory('ducky-sept-2025'),
+		imageDir: 'ducky-sept-2025',
 	},
 }
 
-/** Get gallery by ID */
+/** Get gallery by ID with images loaded dynamically */
 export function getGallery(id: string): EventGallery | undefined {
-	return galleries[id]
+	const metadata = galleryMetadata[id]
+	if (!metadata) return undefined
+
+	const { imageDir, ...rest } = metadata
+	return {
+		...rest,
+		images: loadImagesFromDirectory(imageDir),
+	}
 }
 
 /** Get all gallery IDs */
 export function getAllGalleryIds(): string[] {
-	return Object.keys(galleries)
+	return Object.keys(galleryMetadata)
 }

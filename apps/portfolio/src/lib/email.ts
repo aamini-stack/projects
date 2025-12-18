@@ -1,11 +1,12 @@
 import { RateLimiter } from '#/lib/rate-limiter'
-import { ActionError } from 'astro:actions'
-import { MAILGUN_API_KEY, MAILGUN_DOMAIN } from 'astro:env/server'
 import FormData from 'form-data'
 import Mailgun from 'mailgun.js'
 
 const rateLimiter = new RateLimiter()
 const mailgun = new Mailgun(FormData)
+
+const MAILGUN_API_KEY = process.env.MAILGUN_API_KEY
+const MAILGUN_DOMAIN = process.env.MAILGUN_DOMAIN
 
 export async function sendEmail({
 	message,
@@ -17,15 +18,15 @@ export async function sendEmail({
 	email: string
 }) {
 	if (!ipAddress) {
-		throw new ActionError({ code: 'BAD_REQUEST' })
+		throw new Error('BAD_REQUEST: No IP address provided')
 	}
 	if (!(MAILGUN_DOMAIN && MAILGUN_API_KEY)) {
-		throw new ActionError({ code: 'INTERNAL_SERVER_ERROR' })
+		throw new Error('INTERNAL_SERVER_ERROR: Missing Mailgun credentials')
 	}
 
 	const result = rateLimiter.consume(ipAddress)
 	if (!result.success) {
-		throw new ActionError({ code: 'TOO_MANY_REQUESTS' })
+		throw new Error('TOO_MANY_REQUESTS: Rate limit exceeded')
 	}
 
 	try {
@@ -41,10 +42,8 @@ export async function sendEmail({
 			'h:Reply-To': email,
 		})
 	} catch (error) {
-		throw new ActionError({
-			code: 'INTERNAL_SERVER_ERROR',
-			message: error instanceof Error ? error?.message : '',
-			stack: error instanceof Error ? (error?.stack ?? '') : '',
-		})
+		throw new Error(
+			`INTERNAL_SERVER_ERROR: ${error instanceof Error ? error.message : 'Unknown error'}`,
+		)
 	}
 }
