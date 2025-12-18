@@ -47,6 +47,7 @@ export const createBaseConfig = (
 							test: {
 								name: 'browser',
 								include: ['src/**/*.test.tsx'],
+								setupFiles: 'vitest.setup.ts',
 								browser: {
 									instances: [
 										{
