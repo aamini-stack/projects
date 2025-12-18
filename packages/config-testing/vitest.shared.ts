@@ -22,6 +22,7 @@ export const createBaseConfig = (
 			plugins: [tsconfigPaths()],
 			test: {
 				passWithNoTests: true,
+				reporters: process.env.CI ? ['verbose', 'github-actions'] : ['default'],
 				projects: [
 					{
 						extends: true,
