@@ -1,10 +1,5 @@
 import { createBaseConfig } from '@aamini/config-testing/vitest'
+import { mergeConfig } from 'vite'
+import viteConfig from './vite.config'
 
-export default createBaseConfig({
-	resolve: {
-		alias: {
-			'astro:actions': new URL('./__mocks__/actions.ts', import.meta.url)
-				.pathname,
-		},
-	},
-})
+export default mergeConfig(viteConfig, createBaseConfig({}))

@@ -30,7 +30,7 @@ if (!existsSync(appPath)) {
 }
 
 // Validate Dockerfile exists
-const dockerfile = `${rootDir}/docker/Dockerfile`
+const dockerfile = `${rootDir}/Dockerfile`
 if (!existsSync(dockerfile)) {
 	console.error(`ERROR: Dockerfile not found at ${dockerfile}`)
 	process.exit(1)
@@ -43,7 +43,7 @@ const buildArgs = [
 	`--build-arg NODE_VERSION=${nodeVersion}`,
 ].join(' ')
 
-const cmd = `docker build ${buildArgs} -f docker/Dockerfile -t ${appName}:latest .`
+const cmd = `docker build ${buildArgs} -f Dockerfile -t ${appName}:latest .`
 
 console.log(`\n🐳 Building Docker image for ${appName}...\n`)
 console.log(`Command: ${cmd}\n`)

@@ -22,6 +22,7 @@
 	"dependencies": {
 		"@aamini/ui": "workspace:*",
 		"@aamini/utils": "workspace:*",
+		"@fontsource-variable/dm-sans": "^5.2.8",
 		"@radix-ui/react-dropdown-menu": "^2.1.16",
 		"@radix-ui/react-slot": "^1.2.4",
 		"@tanstack/react-devtools": "^0.7.0",
