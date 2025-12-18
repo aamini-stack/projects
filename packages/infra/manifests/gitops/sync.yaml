@@ -6,7 +6,7 @@ metadata:
   name: imdbgraph
   namespace: flux-system
 spec:
-  path: ./apps/imdbgraph/manifests
+  path: ./packages/infra/manifests/apps/imdbgraph
   dependsOn:
     - name: system
   sourceRef:
@@ -23,7 +23,7 @@ metadata:
   name: ducky-mot
   namespace: flux-system
 spec:
-  path: ./apps/ducky-mot/manifests
+  path: ./packages/infra/manifests/apps/ducky-mot
   dependsOn:
     - name: system
   sourceRef:
@@ -40,7 +40,7 @@ metadata:
   name: pc-tune-ups
   namespace: flux-system
 spec:
-  path: ./apps/pc-tune-ups/manifests
+  path: ./packages/infra/manifests/apps/pc-tune-ups
   dependsOn:
     - name: system
   sourceRef:
@@ -57,7 +57,7 @@ metadata:
   name: portfolio
   namespace: flux-system
 spec:
-  path: ./apps/portfolio/manifests
+  path: ./packages/infra/manifests/apps/portfolio
   dependsOn:
     - name: system
   sourceRef:
