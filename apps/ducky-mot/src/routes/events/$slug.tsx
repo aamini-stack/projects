@@ -11,11 +11,11 @@ export const Route = createFileRoute('/events/$slug')({
 		}
 
 		const allImageModules = import.meta.glob(
-			'/public/**/*.{jpg,jpeg,png,webp,gif}',
+			'/src/assets/**/*.{jpg,jpeg,png,webp,gif}',
 			{ eager: true },
 		)
 
-		const eventPrefix = `/public/${event.id}/`
+		const eventPrefix = `/src/assets/${event.id}/`
 		const imagePaths = Object.keys(allImageModules)
 			.filter((path) => path.startsWith(eventPrefix))
 			.sort((a, b) => {

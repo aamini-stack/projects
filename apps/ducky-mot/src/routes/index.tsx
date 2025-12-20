@@ -112,7 +112,7 @@ function Index() {
 
 										{/* Divider line for all but last group */}
 										<div className="mt-16 flex justify-center">
-											<div className="h-px w-32 bg-gradient-to-r from-transparent via-gray-600 to-transparent" />
+											<div className="h-px w-32 bg-linear-to-r from-transparent via-gray-600 to-transparent" />
 										</div>
 									</div>
 								))}
