@@ -6,7 +6,7 @@ namespace: pc-tune-ups
 resources:
   - ../base
 
-nameSuffix: ""
+nameSuffix: ''
 namePrefix: pc-tune-ups-
 
 commonLabels:

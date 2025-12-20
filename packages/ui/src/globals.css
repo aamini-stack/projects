@@ -129,11 +129,23 @@
 }
 
 @layer base {
-	* {
-		@apply border-border outline-ring/50;
+	*,
+	::before,
+	::after {
+		@apply border-border outline-ring/50 box-border;
 	}
+
 	body {
-		@apply bg-background text-foreground;
+		@apply bg-background text-foreground min-h-screen min-w-xs font-sans;
+	}
+
+	h1,
+	h2,
+	h3,
+	h4,
+	h5,
+	h6 {
+		@apply font-bold;
 	}
 }
 

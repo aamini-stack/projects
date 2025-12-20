@@ -8,9 +8,6 @@ const args = {
 	team: vercelConfig.require('team'),
 	apps: [
 		{
-			name: 'aamini-template',
-		},
-		{
 			name: 'portfolio',
 		},
 		{

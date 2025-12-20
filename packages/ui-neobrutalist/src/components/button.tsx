@@ -1,17 +1,19 @@
 import { cn } from '@aamini/ui-neobrutalist/lib/utils'
+import { Slot } from '@radix-ui/react-slot'
 import { cva, type VariantProps } from 'class-variance-authority'
-import type * as React from 'react'
 
 const buttonVariants = cva(
-	cn(
-		'box-shadow inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-base border-2 border-border bg-main font-base text-main-foreground text-sm hover-effect [&_svg]:pointer-events-none [&_svg]:size-5 [&_svg]:shrink-0',
-	),
+	'inline-flex items-center justify-center whitespace-nowrap rounded-base text-sm font-base ring-offset-white transition-all gap-2 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
 	{
 		variants: {
 			variant: {
-				default: 'hover-effect',
-				noShadow: 'shadow-none',
-				neutral: 'bg-secondary-background text-foreground hover-effect',
+				default:
+					'text-main-foreground bg-main border-2 border-border shadow-shadow hover:translate-x-boxShadowX hover:translate-y-boxShadowY hover:shadow-none',
+				noShadow: 'text-main-foreground bg-main border-2 border-border',
+				neutral:
+					'bg-secondary-background text-foreground border-2 border-border shadow-shadow hover:translate-x-boxShadowX hover:translate-y-boxShadowY hover:shadow-none',
+				reverse:
+					'text-main-foreground bg-main border-2 border-border hover:translate-x-reverseBoxShadowX hover:translate-y-reverseBoxShadowY hover:shadow-shadow',
 			},
 			size: {
 				default: 'h-10 px-4 py-2',
@@ -31,51 +33,16 @@ function Button({
 	className,
 	variant,
 	size,
-	...props
-}: React.ComponentProps<'button'> & VariantProps<typeof buttonVariants>) {
-	return (
-		<button
-			data-slot="button"
-			className={cn(buttonVariants({ variant, size, className }))}
-			{...props}
-		/>
-	)
-}
-
-// https://github.com/shadcn-ui/ui/issues/1979
-function LinkButton({
-	className,
-	variant,
-	size,
-	...props
-}: React.ComponentProps<'a'> &
-	VariantProps<typeof buttonVariants> & {
-		href: string
-		download?: boolean
-	}) {
-	return (
-		<a
-			title="Link Button"
-			data-slot="button"
-			className={cn(buttonVariants({ variant, size, className }))}
-			{...props}
-		/>
-	)
-}
-
-function ScrollButton({
-	className,
-	variant,
-	size,
-	scrollToId,
+	asChild = false,
 	...props
 }: React.ComponentProps<'button'> &
 	VariantProps<typeof buttonVariants> & {
-		scrollToId: string
+		asChild?: boolean
 	}) {
+	const Comp = asChild ? Slot : 'button'
+
 	return (
-		<button
-			onClick={() => document.getElementById(scrollToId)?.scrollIntoView()}
+		<Comp
 			data-slot="button"
 			className={cn(buttonVariants({ variant, size, className }))}
 			{...props}
@@ -83,4 +50,4 @@ function ScrollButton({
 	)
 }
 
-export { Button, LinkButton, ScrollButton }
+export { Button, buttonVariants }

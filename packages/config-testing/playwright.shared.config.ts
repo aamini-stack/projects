@@ -36,7 +36,7 @@ export const baseConfig = (
 				/* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
 				trace: 'retain-on-first-failure',
 				screenshot: 'on',
-				video: 'on-first-retry',
+				video: 'retain-on-failure',
 			},
 
 			/* Run your local dev server when running tests locally */

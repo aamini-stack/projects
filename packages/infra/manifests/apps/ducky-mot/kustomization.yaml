@@ -6,7 +6,7 @@ namespace: ducky-mot
 resources:
   - ../base
 
-nameSuffix: ""
+nameSuffix: ''
 namePrefix: ducky-mot-
 
 commonLabels:

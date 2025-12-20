@@ -22,6 +22,7 @@ export const createBaseConfig = (
 			plugins: [tsconfigPaths()],
 			test: {
 				passWithNoTests: true,
+				reporters: process.env.CI ? ['verbose', 'github-actions'] : ['default'],
 				projects: [
 					{
 						extends: true,
@@ -37,6 +38,7 @@ export const createBaseConfig = (
 								name: 'server',
 								include: ['src/**/*.test.ts'],
 								testTimeout: 30_000,
+								fileParallelism: !process.env.CI,
 							},
 						} satisfies TestProjectConfiguration,
 						projectOverrides.server ?? {},
@@ -47,6 +49,7 @@ export const createBaseConfig = (
 							test: {
 								name: 'browser',
 								include: ['src/**/*.test.tsx'],
+								setupFiles: 'vitest.setup.ts',
 								browser: {
 									instances: [
 										{

@@ -38,7 +38,9 @@ export const test = baseTest.extend<DbFixture>({
 	db: [
 		async ({ seedFunction }, use) => {
 			// Connect
-			const container = await new PostgreSqlContainer('postgres:17').start()
+			const container = await new PostgreSqlContainer('postgres:17')
+				.withStartupTimeout(120_000)
+				.start()
 			const db = drizzle({
 				client: new Pool({ connectionString: container.getConnectionUri() }),
 			})
