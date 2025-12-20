@@ -23,7 +23,7 @@ export const events: Event[] = [
 		id: 'ducky-endless-summer-2025-09-19',
 		title: 'ducky.endless summer',
 		date: '19th September 2025',
-		icon: '/ducky-endless-summer-2025-09-19/gallery-item-001.jpg',
+		icon: '/src/assets/ducky-endless-summer-2025-09-19/gallery-item-001.jpg',
 	},
 	{
 		id: 'ducky.fest-2025-05-17',

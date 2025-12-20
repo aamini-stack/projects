@@ -76,7 +76,7 @@ function Index() {
 					{/* Ducky Events */}
 					<section
 						id="duckyevents"
-						className="border-t px-4 py-20 sm:px-6 lg:px-8"
+						className="border-t border-gray-800 px-4 py-20 sm:px-6 lg:px-8"
 					>
 						<div className="mx-auto max-w-7xl">
 							{/* Section Header */}
@@ -123,7 +123,7 @@ function Index() {
 					{/* Aftermovie */}
 					<section
 						id="duckyfest2023-aftermovie"
-						className="px-4 py-16 sm:px-6 lg:px-8"
+						className="border-t border-gray-800 px-4 py-16 sm:px-6 lg:px-8"
 					>
 						<div className="mx-auto max-w-6xl">
 							<h2 className="mb-6 text-3xl font-bold text-white md:text-4xl">
@@ -157,7 +157,7 @@ function Index() {
 					</section>
 
 					{/* Our Mission */}
-					<section id="about-us" className="px-4 py-16 sm:px-6 lg:px-8">
+					<section id="about-us" className="border-t border-gray-800 px-4 py-16 sm:px-6 lg:px-8">
 						<div className="mx-auto max-w-4xl">
 							<h2 className="mb-6 text-3xl font-bold text-white md:text-4xl">
 								our mission
