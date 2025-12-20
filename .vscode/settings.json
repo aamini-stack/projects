@@ -41,7 +41,8 @@
 		"**/.astro": true,
 		"**/.vercel": true,
 		"**/dist": true,
-		"**/playwright-report": true
+		"**/playwright-report": true,
+		"**/test-results": true
 	},
 
 	// Formatting
