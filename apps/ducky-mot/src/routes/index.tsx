@@ -92,7 +92,7 @@ function Index() {
 							{/* Events by Year */}
 							<div className="space-y-16">
 								{groupByYear(events).map(([year, yearEvents]) => (
-									<div key={year} className="relative">
+									<div key={year} className="relative last:*:last:hidden">
 										{/* Year Badge */}
 										<div className="mb-12 flex items-center justify-center">
 											<Badge
@@ -111,11 +111,9 @@ function Index() {
 										</div>
 
 										{/* Divider line for all but last group */}
-										{groupIndex < eventsByYear.length - 1 && (
-											<div className="mt-16 flex justify-center">
-												<div className="h-px w-32 bg-gradient-to-r from-transparent via-gray-600 to-transparent" />
-											</div>
-										)}
+										<div className="mt-16 flex justify-center">
+											<div className="h-px w-32 bg-gradient-to-r from-transparent via-gray-600 to-transparent" />
+										</div>
 									</div>
 								))}
 							</div>
