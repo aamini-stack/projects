@@ -28,9 +28,9 @@ All commands are run from the root of the project, from a terminal:
 
 ## 🏗️ Architecture
 
-This is an Astro 5 project with React integration. Key architectural decisions:
+This is an Tanstack project with React integration. Key architectural decisions:
 
-- **Framework**: Astro with React
+- **Framework**: Tanstack with React
 - **Styling**: TailwindCSS 4.x
 - **Package Manager**: pnpm (IMPORTANT: DO NOT USE npm or yarn)
 - **Path Mapping**: `#/*` maps to `./src/*` for clean imports

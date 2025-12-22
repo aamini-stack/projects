@@ -16,7 +16,7 @@ All commands are run from the root of the project, from a terminal:
 | Command                 | Action                                          |
 | :---------------------- | :---------------------------------------------- |
 | `pnpm dev`              | Starts local dev server at `localhost:4321`     |
-| `pnpm build`            | Build your production site to `./dist/`         |
+| `pnpm build`            | Build your production site to `./.output/`      |
 | `pnpm typecheck`        | Run TypeScript type checking                    |
 | `pnpm format`           | Run Prettier to format                          |
 | `pnpm lint`             | Run Oxlint linting rules (Replaces ESLint)      |
@@ -29,9 +29,9 @@ All commands are run from the root of the project, from a terminal:
 
 ## 🏗️ Architecture
 
-This is an Astro 5 project with React integration. Key architectural decisions:
+This is an Tanstack project with React integration. Key architectural decisions:
 
-- **Framework**: Astro with React
+- **Framework**: Tanstack with React
 - **Styling**: TailwindCSS 4.x
 - **Package Manager**: pnpm (IMPORTANT: DO NOT USE npm or yarn)
 - **Path Mapping**: `#/*` maps to `./src/*` for clean imports

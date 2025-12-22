@@ -37,8 +37,8 @@ practices.
 ### `config-typescript`
 
 This package probably provides standardized TypeScript configurations for
-different types of projects (e.g., Astro, React, libraries) within the monorepo,
-ensuring consistent type-checking and compilation settings.
+different types of projects (e.g., Tanstack, React, libraries) within the
+monorepo, ensuring consistent type-checking and compilation settings.
 
 ### `infra`
 

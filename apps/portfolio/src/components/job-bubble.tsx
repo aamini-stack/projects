@@ -1,4 +1,4 @@
-import type { JobInfo } from '#/lib/jobs'
+import type { JobInfo } from '@/lib/jobs'
 import { Button } from '@aamini/ui/components/button'
 import { Card } from '@aamini/ui/components/card'
 import {

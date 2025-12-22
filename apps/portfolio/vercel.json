@@ -1,0 +1,13 @@
+{
+	"$schema": "https://openapi.vercel.sh/vercel.json",
+	"rewrites": [
+		{
+			"source": "/api/ingest/static/:path(.*)",
+			"destination": "https://us-assets.i.posthog.com/static/:path"
+		},
+		{
+			"source": "/api/ingest/:path(.*)",
+			"destination": "https://us.i.posthog.com/:path"
+		}
+	]
+}

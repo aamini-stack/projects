@@ -25,7 +25,6 @@
 	},
 	"devDependencies": {
 		"@aamini/config-typescript": "workspace:*",
-		"@aamini/utils": "workspace:*",
 		"@radix-ui/react-select": "^2.2.6",
 		"@tailwindcss/postcss": "^4.1.17",
 		"@types/node": "^24.10.2",

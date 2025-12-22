@@ -5,9 +5,9 @@
 
 # Build
 .turbo
-.astro
 .vercel
-dist
+.output
+.nitro
 node_modules
 
 # System Files
@@ -17,5 +17,3 @@ Thumbs.db
 # Playwright
 test-results/
 playwright-report/
-
-.vercel
