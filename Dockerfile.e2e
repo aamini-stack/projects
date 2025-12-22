@@ -1,0 +1,27 @@
+FROM mcr.microsoft.com/playwright:v1.57.0-noble
+
+ARG APP_NAME
+
+# Validate APP_NAME is provided
+RUN if [ -z "$APP_NAME" ]; then \
+      printf "\n========================================\n"; \
+      printf "ERROR: APP_NAME build argument is required\n"; \
+      printf "========================================\n\n"; \
+      printf "Usage: docker build --build-arg APP_NAME=<name> -f Dockerfile.e2e -t <tag> .\n\n"; \
+      printf "Example: docker build --build-arg APP_NAME=imdbgraph -f Dockerfile.e2e -t imdbgraph-e2e:latest .\n\n"; \
+      exit 1; \
+    fi
+
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0
+RUN corepack enable pnpm
+
+WORKDIR /app
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY ./packages/ ./packages/
+COPY ./apps/${APP_NAME}/package.json ./apps/${APP_NAME}/package.json
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install
+WORKDIR /app/apps/${APP_NAME}
+COPY ./apps/${APP_NAME}/ .
+ENTRYPOINT ["pnpm", "playwright", "test"]

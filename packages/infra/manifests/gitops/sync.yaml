@@ -6,7 +6,58 @@ metadata:
   name: imdbgraph
   namespace: flux-system
 spec:
-  path: ./apps/imdbgraph/manifests
+  path: ./packages/infra/manifests/apps/imdbgraph
+  dependsOn:
+    - name: system
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  interval: 10m0s
+  retryInterval: 1m0s
+  timeout: 5m0s
+  prune: true
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: ducky-mot
+  namespace: flux-system
+spec:
+  path: ./packages/infra/manifests/apps/ducky-mot
+  dependsOn:
+    - name: system
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  interval: 10m0s
+  retryInterval: 1m0s
+  timeout: 5m0s
+  prune: true
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: pc-tune-ups
+  namespace: flux-system
+spec:
+  path: ./packages/infra/manifests/apps/pc-tune-ups
+  dependsOn:
+    - name: system
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  interval: 10m0s
+  retryInterval: 1m0s
+  timeout: 5m0s
+  prune: true
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: portfolio
+  namespace: flux-system
+spec:
+  path: ./packages/infra/manifests/apps/portfolio
   dependsOn:
     - name: system
   sourceRef:

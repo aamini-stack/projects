@@ -11,17 +11,5 @@
 			"name": "root",
 			"path": "..",
 		},
-	],
-	"settings": {
-		"files.exclude": {
-			"**/node_modules/": true,
-			"**/.next/": true,
-			"**/.swc/": true,
-			"**/.turbo": true,
-			"**/.astro": true,
-			"**/dist": true,
-			"**/.vercel": true,
-			"**/playwright-report": true,
-		},
-	},
+	]
 }

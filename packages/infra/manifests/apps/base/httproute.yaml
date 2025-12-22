@@ -1,0 +1,37 @@
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: app-http
+spec:
+  parentRefs:
+    - name: traefik-gateway
+      namespace: networking
+      sectionName: web
+  hostnames:
+    - app.example.com
+  rules:
+    - filters:
+        - type: RequestRedirect
+          requestRedirect:
+            scheme: https
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: app-https
+spec:
+  parentRefs:
+    - name: traefik-gateway
+      namespace: networking
+      sectionName: websecure
+  hostnames:
+    - app.example.com
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: app-service
+          port: 80

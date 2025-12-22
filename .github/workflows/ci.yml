@@ -17,34 +17,38 @@ env:
 
 jobs:
   quality-checks:
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-2vcpu-ubuntu-2404-arm
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-      - name: Setup Node
-        uses: ./.github/actions/setup
-      - name: Run Checks
-        run: pnpm turbo run format typecheck lint test:unit
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: 'pnpm'
+      - run: pnpm i
+      - run: pnpm turbo run format typecheck lint test:unit
 
   integration-tests:
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-2vcpu-ubuntu-2404-arm
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-      - name: Setup Node
-        uses: ./.github/actions/setup
-      - name: Install Playwright Browsers
-        run: pnpm dlx playwright install --with-deps
-      - name: Test
-        run: pnpm test:integration
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: 'pnpm'
+      - run: pnpm i
+      - run: pnpm dlx playwright install --with-deps chromium
+      - run: pnpm test:integration
 
   find-apps:
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-2vcpu-ubuntu-2404-arm
     outputs:
       apps: ${{ steps.calculate-apps.outputs.apps }}
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Get Changed Apps
@@ -64,18 +68,21 @@ jobs:
 
   e2e:
     needs: [find-apps]
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-2vcpu-ubuntu-2404-arm
     strategy:
       matrix:
         app: ${{ fromJson(needs.find-apps.outputs.apps) }}
       fail-fast: false
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-      - name: Setup Node
-        uses: ./.github/actions/setup
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: 'pnpm'
+      - run: pnpm i
       # Deploy
-      - name: Deploy to Vercel
+      - name: Deploy
         working-directory: ./apps/${{ matrix.app }}
         run: |
           pnpm i -g vercel
@@ -98,16 +105,12 @@ jobs:
             --token=${{ secrets.VERCEL_TOKEN }} \
             --scope=${{ vars.TURBO_TEAM }} \
             -m githubDeployment='1' \
-            -m githubCommitRef='feature/${{ github.head_ref || github.ref_name }}' \
+            -m githubCommitRef='${{ github.head_ref || github.ref_name }}' \
             -m githubCommitSha='${{ github.sha }}' \
           | tail -1)
           echo BASE_URL=$BASE_URL >> $GITHUB_ENV
       # Test
-      - name: Run Playwright tests
-        working-directory: './apps/${{ matrix.app }}'
-        env:
-          VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
-        run: pnpm e2e
+      - run: pnpm e2e
       - name: Publish Report
         uses: actions/upload-artifact@v4
         if: failure()
