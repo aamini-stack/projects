@@ -33,7 +33,8 @@ fi
 docker build \
   --build-arg APP_NAME="$APP_NAME" \
   $CI_ARG \
-  -f Dockerfile.e2e \
+  --target e2e-test \
+  -f Dockerfile \
   -t "$APP_NAME-e2e:latest" \
   .
 

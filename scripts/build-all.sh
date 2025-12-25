@@ -13,7 +13,7 @@ for app_config in "${APPS[@]}"; do
   IFS=':' read -r app image tag <<< "$app_config"
 
   echo "Building $app..."
-  docker build --build-arg APP_NAME="$app" -f Dockerfile -t "$image:$tag" .
+  docker build --build-arg APP_NAME="$app" --target production -f Dockerfile -t "$image:$tag" .
 
   echo "Pushing $image:$tag..."
   docker push "$image:$tag"
