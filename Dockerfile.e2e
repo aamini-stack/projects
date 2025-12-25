@@ -1,6 +1,7 @@
-FROM mcr.microsoft.com/playwright:v1.57.0-noble
+FROM mcr.microsoft.com/playwright:v1.57.0-noble AS base
 
 ARG APP_NAME
+ARG CI=false
 
 # Validate APP_NAME is provided
 RUN if [ -z "$APP_NAME" ]; then \
@@ -22,6 +23,25 @@ COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY ./packages/ ./packages/
 COPY ./apps/${APP_NAME}/package.json ./apps/${APP_NAME}/package.json
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install
+
+# Build stage - builds the application (only when not in CI)
+FROM base AS builder
+ARG APP_NAME
+ARG CI=false
 WORKDIR /app/apps/${APP_NAME}
 COPY ./apps/${APP_NAME}/ .
+RUN if [ "$CI" != "true" ]; then pnpm build; fi
+
+# Test stage - runs playwright tests
+FROM base AS test
+ARG APP_NAME
+ARG CI=false
+WORKDIR /app/apps/${APP_NAME}
+COPY ./apps/${APP_NAME}/ .
+# Only copy build artifacts if not in CI (when CI=true, tests will use BASE_URL)
+RUN --mount=type=bind,from=builder,source=/app/apps/${APP_NAME},target=/build \
+    if [ "$CI" != "true" ]; then \
+      cp -r /build/.output .output 2>/dev/null || true; \
+      cp -r /build/dist dist 2>/dev/null || true; \
+    fi
 ENTRYPOINT ["pnpm", "playwright", "test"]

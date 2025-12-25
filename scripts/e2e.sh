@@ -20,8 +20,19 @@ REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 cd "$REPO_ROOT"
 
 echo "Building e2e Docker image for $APP_NAME..."
+
+# Determine if we should skip build (when BASE_URL is set or CI=true)
+if [ -n "$BASE_URL" ] || [ "$CI" = "true" ]; then
+  CI_ARG="--build-arg CI=true"
+  echo "Using BASE_URL - skipping build in container"
+else
+  CI_ARG=""
+  echo "No BASE_URL set - will build and serve locally"
+fi
+
 docker build \
   --build-arg APP_NAME="$APP_NAME" \
+  $CI_ARG \
   -f Dockerfile.e2e \
   -t "$APP_NAME-e2e:latest" \
   .
