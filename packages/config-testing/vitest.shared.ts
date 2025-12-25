@@ -1,4 +1,6 @@
+import viteReact from '@vitejs/plugin-react'
 import { playwright } from '@vitest/browser-playwright'
+import svgr from 'vite-plugin-svgr'
 import tsconfigPaths from 'vite-tsconfig-paths'
 import {
 	defineConfig,
@@ -19,9 +21,21 @@ export const createBaseConfig = (
 ) =>
 	mergeConfig(
 		defineConfig({
-			plugins: [tsconfigPaths()],
+			plugins: [
+				tsconfigPaths(),
+				viteReact({
+					babel: {
+						plugins: ['babel-plugin-react-compiler'],
+					},
+				}),
+				svgr({
+					include: '**/*.svg',
+					svgrOptions: { exportType: 'default' },
+				}),
+			],
 			test: {
 				passWithNoTests: true,
+				setupFiles: 'vitest.setup.ts',
 				projects: [
 					{
 						extends: true,

@@ -17,7 +17,7 @@ env:
 
 jobs:
   quality-checks:
-    runs-on: blacksmith-2vcpu-ubuntu-2404-arm
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -30,7 +30,7 @@ jobs:
       - run: pnpm turbo run format typecheck lint test:unit
 
   integration-tests:
-    runs-on: blacksmith-2vcpu-ubuntu-2404-arm
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -44,7 +44,7 @@ jobs:
       - run: pnpm test:integration
 
   find-apps:
-    runs-on: blacksmith-2vcpu-ubuntu-2404-arm
+    runs-on: ubuntu-latest
     outputs:
       apps: ${{ steps.calculate-apps.outputs.apps }}
     steps:
@@ -68,7 +68,9 @@ jobs:
 
   e2e:
     needs: [find-apps]
-    runs-on: blacksmith-2vcpu-ubuntu-2404-arm
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.57.0-noble
     strategy:
       matrix:
         app: ${{ fromJson(needs.find-apps.outputs.apps) }}

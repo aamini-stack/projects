@@ -3,11 +3,6 @@ import {
 	devices,
 	type PlaywrightTestConfig,
 } from '@playwright/test'
-import { config } from 'dotenv'
-import { resolve } from 'node:path'
-
-// Load .env.local file from the current working directory (app directory)
-config({ path: resolve(process.cwd(), '.env.local') })
 
 /** See https://playwright.dev/docs/test-configuration. */
 export const baseConfig = (
@@ -29,7 +24,7 @@ export const baseConfig = (
 			forbidOnly: !!process.env.CI,
 			retries: process.env.CI ? 3 : 0,
 			/* Reporter to use. See https://playwright.dev/docs/test-reporters */
-			reporter: [['html', { open: 'never' }]],
+			reporter: process.env.CI ? 'github' : 'html',
 
 			/* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
 			use: {
@@ -55,10 +50,11 @@ export const baseConfig = (
 					}
 				: {}),
 
+			timeout: 60_000,
 			expect: {
+				timeout: 15_000,
 				toHaveScreenshot: {
 					stylePath: `${testDir}/screenshot.css`,
-					maxDiffPixelRatio: 0.001,
 				},
 			},
 

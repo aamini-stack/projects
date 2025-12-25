@@ -44,6 +44,7 @@
 	"devDependencies": {
 		"@aamini/config-testing": "workspace:*",
 		"@aamini/config-typescript": "workspace:*",
+		"@aamini/config-vite": "workspace:*",
 		"@playwright/test": "^1.57.0",
 		"@tailwindcss/vite": "^4.1.17",
 		"@tanstack/devtools-vite": "^0.3.11",
