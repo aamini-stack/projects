@@ -111,6 +111,7 @@ jobs:
           echo BASE_URL=$BASE_URL >> $GITHUB_ENV
       # Test
       - run: pnpm e2e
+        working-directory: ./apps/${{ matrix.app }}
       - name: Publish Report
         uses: actions/upload-artifact@v4
         if: failure()
