@@ -4,6 +4,9 @@
 .env*.local
 
 # Build
+#TODO: remove astro + dist
+.astro 
+dist
 .turbo
 .vercel
 .output
