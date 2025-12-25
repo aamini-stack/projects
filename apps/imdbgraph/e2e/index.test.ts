@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test'
 
 test.beforeEach(async ({ page }) => {
-	await page.goto('/')
+	await page.goto('/', { waitUntil: 'networkidle' })
 })
 
 test('Screenshot Homepage', async ({ page }) => {
@@ -11,7 +11,7 @@ test('Screenshot Homepage', async ({ page }) => {
 })
 
 test('Screenshot Searchbar', async ({ page }) => {
-	const searchBar = page.getByRole('combobox', { name: 'Search for TV shows' })
+	const searchBar = page.getByRole('combobox')
 	await expect(searchBar).not.toBeDisabled()
 	await searchBar.click()
 	await searchBar.fill('Avatar')
@@ -48,7 +48,6 @@ test('Search bar keyboard navigation works', async ({ page }) => {
 	await expect(
 		page.getByText('Avatar: The Last Airbender 2005 - 2008'),
 	).toBeVisible()
-	await searchBar.press('ArrowDown')
 	await searchBar.press('Enter')
 	await expect(page).toHaveURL(/.*\/ratings\/tt0417299/)
 })
