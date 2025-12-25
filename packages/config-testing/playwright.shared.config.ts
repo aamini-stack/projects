@@ -45,7 +45,10 @@ export const baseConfig = (
 						webServer: {
 							command: `pnpm dev --port ${port}`,
 							url: devUrl,
-							reuseExistingServer: true,
+							reuseExistingServer: !process.env.CI,
+							timeout: 180_000, // 3 minutes for Nitro/Vite to fully initialize
+							stdout: 'pipe',
+							stderr: 'pipe',
 						},
 					}
 				: {}),
