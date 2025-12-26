@@ -1,12 +1,11 @@
 {
-	"extends": "@aamini/config-typescript/astro",
+	"extends": "@aamini/config-typescript/tanstack",
+	"include": ["**/*.ts", "**/*.tsx"],
+	"exclude": [".output"],
 	"compilerOptions": {
 		"paths": {
-			"#/mocks/*": ["./__mocks__/*"],
-			"#/*": ["./src/*"],
-			"@aamini/ui/*": ["../../packages/ui"]
+			"@/*": ["./src/*"],
+			"@/mocks/*": ["./__mocks__/*"]
 		}
-	},
-	"include": [".astro/types.d.ts", "**/*"],
-	"exclude": ["dist"]
+	}
 }

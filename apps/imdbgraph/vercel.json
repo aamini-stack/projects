@@ -3,7 +3,17 @@
 	"crons": [
 		{
 			"path": "/api/populate",
-			"schedule": "0 2 * * *"
+			"schedule": "10 8 * * *"
+		}
+	],
+	"rewrites": [
+		{
+			"source": "/api/ingest/static/:path(.*)",
+			"destination": "https://us-assets.i.posthog.com/static/:path"
+		},
+		{
+			"source": "/api/ingest/:path(.*)",
+			"destination": "https://us.i.posthog.com/:path"
 		}
 	]
 }

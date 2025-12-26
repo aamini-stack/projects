@@ -5,16 +5,9 @@
 	"plugins": [
 		"prettier-plugin-jsdoc",
 		"prettier-plugin-organize-imports",
-		"prettier-plugin-astro",
 		"prettier-plugin-tailwindcss"
 	],
 	"overrides": [
-		{
-			"files": "*.astro",
-			"options": {
-				"parser": "astro"
-			}
-		},
 		{
 			"files": "*.md",
 			"options": {

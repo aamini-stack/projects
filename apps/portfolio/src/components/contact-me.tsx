@@ -1,4 +1,4 @@
-import Email from '#/components/icons/email.svg'
+import Email from '@/components/icons/email.svg'
 import { Button } from '@aamini/ui/components/button'
 import {
 	Card,
@@ -19,7 +19,6 @@ import {
 import { Input } from '@aamini/ui/components/input'
 import { Textarea } from '@aamini/ui/components/textarea'
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema'
-import { actions } from 'astro:actions'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
@@ -41,15 +40,19 @@ export function ContactCard() {
 	})
 
 	async function onSubmit(values: z.infer<typeof formSchema>) {
-		const { error } = await actions.sendEmail({
-			message: values.message,
-			email: values.email,
-		})
-		if (error) {
-			toast.error('An unexpected error occurred')
-		} else {
+		try {
+			const response = await fetch('/api/sendEmail', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify(values),
+			})
+
+			if (!response.ok) throw new Error('Failed to send')
+
 			toast.success('Message sent successfully!')
 			form.reset()
+		} catch {
+			toast.error('An unexpected error occurred')
 		}
 	}
 
@@ -115,13 +118,7 @@ export function ContactCard() {
 							disabled={form.formState.isSubmitting}
 						>
 							{form.formState.isSubmitting ? 'Sending...' : 'Send Message'}
-							<img
-								src={Email.src}
-								alt="Email Icon"
-								width={16}
-								height={16}
-								className="ml-2"
-							/>
+							<Email />
 						</Button>
 					</CardFooter>
 				</Card>

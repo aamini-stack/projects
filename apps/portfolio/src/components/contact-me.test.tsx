@@ -1,4 +1,4 @@
-import { ContactCard } from '#/components/contact-me'
+import { ContactCard } from '@/components/contact-me'
 import { expect, test } from 'vitest'
 import { render } from 'vitest-browser-react'
 import { userEvent } from 'vitest/browser'

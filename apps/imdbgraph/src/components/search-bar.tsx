@@ -1,6 +1,4 @@
-import type { Show } from '#/lib/imdb/types'
-import { formatYears } from '#/lib/imdb/types'
-import { queryClient } from '#/lib/react-query'
+import { formatYears, type Show } from '@/lib/imdb/types'
 import {
 	InputGroup,
 	InputGroupAddon,
@@ -9,113 +7,57 @@ import {
 import { Spinner } from '@aamini/ui/components/spinner'
 import { cn } from '@aamini/ui/lib/utils'
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
-import { useCombobox } from 'downshift'
+import { Link, useRouter } from '@tanstack/react-router'
+import { Command } from 'cmdk'
 import { Search as SearchIcon, Star } from 'lucide-react'
-import { useDeferredValue, useEffect, useState } from 'react'
+import { useState } from 'react'
 
 /** https://www.w3.org/WAI/ARIA/apg/patterns/combobox/examples/combobox-autocomplete-list/ */
 export function SearchBar({ className }: { className?: string }) {
-	const [inputValue, setInputValue] = useState('')
-	const deferredValue = useDeferredValue(inputValue)
-	const [isRedirecting, setIsRedirecting] = useState(true)
+	const [search, setSearch] = useState('')
+	const router = useRouter()
 
 	const {
 		isFetching,
 		data: searchResults,
 		error,
-	} = useQuery<Show[] | null>(
-		{
-			queryKey: ['suggestions', deferredValue],
-			queryFn: async ({ signal }) => {
-				if (!deferredValue) {
-					return null
-				}
-				const response = await fetch(
-					'/api/suggestions?' +
-						new URLSearchParams({
-							q: deferredValue,
-						}).toString(),
-					{
-						signal,
-					},
-				)
-				return await response.json()
-			},
-			placeholderData: keepPreviousData,
-			enabled: Boolean(inputValue),
+	} = useQuery({
+		queryKey: ['suggestions', search],
+		queryFn: async () => {
+			if (!search) return []
+			const response = await fetch(
+				`/api/suggestions?q=${encodeURIComponent(search)}`,
+			)
+			return response.json() as Promise<Show[]>
 		},
-		queryClient,
-	)
-
-	useEffect(() => {
-		setIsRedirecting(false)
-	}, [])
-
-	// Setup listener to detect if a link has been clicked to disable input while
-	// the page is redirecting.
-	useEffect(() => {
-		const listener = () => {
-			setIsRedirecting(true)
-		}
-		addEventListener('beforeunload', listener)
-		return () => {
-			removeEventListener('beforeunload', listener)
-		}
-	})
-
-	const {
-		isOpen,
-		getLabelProps,
-		getMenuProps,
-		getInputProps,
-		highlightedIndex,
-		getItemProps,
-	} = useCombobox({
-		items: searchResults ?? [],
-		inputValue,
-		onInputValueChange: ({ inputValue }) => {
-			setInputValue(inputValue)
-		},
-		itemToString: (item) => item?.title ?? '',
-		onSelectedItemChange(event) {
-			const { selectedItem } = event
-			if (selectedItem && searchResults) {
-				window.location.href = `/ratings/${selectedItem.imdbId}`
-			}
-		},
+		enabled: Boolean(search),
+		placeholderData: keepPreviousData,
 	})
 
 	return (
-		<div
+		<Command
 			className={cn(
 				'bg-background text-popover-foreground relative flex h-full w-full flex-col text-sm',
 				className,
 			)}
+			shouldFilter={false}
 		>
-			{/* Hidden label for accessibility */}
-			<label
-				htmlFor="search-bar-input"
-				{...getLabelProps()}
-				className="sr-only"
-			>
-				Search for TV shows
-			</label>
-
 			<InputGroup className="border-border">
-				<InputGroupInput
-					aria-invalid={Boolean(error)}
-					className="flex-1 outline-none placeholder:text-xs"
+				<Command.Input
+					value={search}
+					onValueChange={setSearch}
 					placeholder="Search for any TV show..."
-					tabIndex={0}
-					disabled={isRedirecting}
-					id="search-bar-input"
-					{...getInputProps()}
-				/>
+					className="flex-1 outline-none placeholder:text-xs"
+					asChild={true}
+				>
+					<InputGroupInput />
+				</Command.Input>
+
 				<InputGroupAddon>
 					<SearchIcon />
 				</InputGroupAddon>
 				<InputGroupAddon align="inline-end">
-					{isFetching && <Spinner />}
+					{isFetching && <Spinner className="ml-2" />}
 				</InputGroupAddon>
 			</InputGroup>
 
@@ -128,38 +70,36 @@ export function SearchBar({ className }: { className?: string }) {
 				</div>
 			)}
 
-			{/* Dropdown Menu */}
-			{!error && (
-				<ul
-					className={cn(
-						'bg-popover absolute top-full right-0 left-0 z-50 mt-3 w-full rounded-xl border p-2 shadow-lg',
-						{
-							hidden:
-								!(isOpen && deferredValue) ||
-								(isFetching && !searchResults?.length),
-						},
-					)}
-					{...getMenuProps()}
-				>
-					{inputValue && searchResults?.length === 0 && (
-						<div className="text-muted-foreground px-2 py-1.5 text-center">
+			{search && !error && searchResults && (
+				<Command.List className="bg-popover absolute top-full right-0 left-0 z-50 mt-3 w-full rounded-xl border p-2 shadow-lg">
+					{searchResults.length === 0 && !isFetching && (
+						<Command.Empty className="text-muted-foreground px-2 py-1.5 text-center">
 							No TV Shows Found.
-						</div>
+						</Command.Empty>
 					)}
-					{searchResults?.map((show, index) => (
-						<li
+					{searchResults.map((show: Show) => (
+						<Command.Item
 							key={show.imdbId}
+							value={show.imdbId}
+							asChild
+							onSelect={() => {
+								void router.navigate({
+									to: '/ratings/$id',
+									params: { id: show.imdbId },
+								})
+							}}
 							className={cn(
 								'text-foreground w-full cursor-pointer rounded-md px-2 py-1.5 text-sm outline-none select-none disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0',
 								{
 									'opacity-50': isFetching,
-									'bg-accent text-accent-foreground':
-										highlightedIndex === index,
 								},
 							)}
-							{...getItemProps({ item: show, index })}
 						>
-							<a className="flex gap-4" href={`/ratings/${show.imdbId}`}>
+							<Link
+								to="/ratings/$id"
+								params={{ id: show.imdbId }}
+								className="aria-selected:bg-accent aria-selected:text-accent-foreground text-foreground flex cursor-pointer gap-4 rounded-md px-2 py-1.5 text-sm outline-none select-none"
+							>
 								{/* Show Title + Years */}
 								<div className="flex flex-1 flex-col">
 									<span className="wrap-break-word">{show.title}&nbsp;</span>
@@ -170,13 +110,13 @@ export function SearchBar({ className }: { className?: string }) {
 								{/* 1-10 Rating + Blue Star Icon */}
 								<div className="text-muted-foreground flex items-center space-x-1 text-sm">
 									<span>{`${show.rating.toFixed(1)} / 10.0`}</span>
-									<Star className="text-sky-500" />
+									<Star className="size-4 text-sky-500" />
 								</div>
-							</a>
-						</li>
+							</Link>
+						</Command.Item>
 					))}
-				</ul>
+				</Command.List>
 			)}
-		</div>
+		</Command>
 	)
 }

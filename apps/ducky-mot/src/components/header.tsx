@@ -55,7 +55,7 @@ export function Header() {
 								className="group relative rounded-lg px-3 py-2 font-medium text-gray-300 transition-all duration-300 hover:bg-gray-800/30 hover:text-white"
 							>
 								{item.label}
-								<span className="absolute -bottom-1 left-1/2 h-0.5 w-0 -translate-x-1/2 rounded-full bg-gradient-to-r from-blue-400 to-purple-400 transition-all duration-300 group-hover:w-3/4"></span>
+								<span className="absolute -bottom-1 left-1/2 h-0.5 w-0 -translate-x-1/2 rounded-full bg-linear-to-r from-blue-400 to-purple-400 transition-all duration-300 group-hover:w-3/4"></span>
 							</a>
 						))}
 					</nav>
@@ -91,41 +91,20 @@ export function Header() {
 			>
 				<div className="space-y-1 px-2 pt-2 pb-3 sm:px-3">
 					{navItems.map((item) => (
-						<MobileNavButton
+						<Button
 							key={item.href}
-							href={item.href}
-							onClick={toggleMenu}
+							variant="ghost"
+							className="block w-full justify-start rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-800/50 hover:text-white"
+							onClick={() => {
+								toggleMenu()
+								window.location.href = item.href
+							}}
 						>
 							{item.label}
-						</MobileNavButton>
+						</Button>
 					))}
 				</div>
 			</nav>
 		</header>
-	)
-}
-
-interface MobileNavButtonProps {
-	href: string
-	onClick: () => void
-	children: React.ReactNode
-}
-
-export function MobileNavButton({
-	href,
-	onClick,
-	children,
-}: MobileNavButtonProps) {
-	return (
-		<Button
-			variant="ghost"
-			className="block w-full justify-start rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-800/50 hover:text-white"
-			onClick={() => {
-				onClick()
-				window.location.href = href
-			}}
-		>
-			{children}
-		</Button>
 	)
 }

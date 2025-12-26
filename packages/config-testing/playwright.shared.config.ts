@@ -34,32 +34,30 @@ export const baseConfig = (
 				baseURL: baseUrl,
 
 				/* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-				trace: 'on-first-retry',
+				trace: 'retain-on-first-failure',
 				screenshot: 'on',
 				video: 'retain-on-failure',
-
-				// https://vercel.com/docs/deployment-protection/methods-to-bypass-deployment-protection/protection-bypass-automation#examples
-				extraHTTPHeaders: {
-					'x-vercel-protection-bypass':
-						process.env.VERCEL_AUTOMATION_BYPASS_SECRET ?? '',
-				},
 			},
 
 			/* Run your local dev server when running tests locally */
 			...(useDevServer
 				? {
 						webServer: {
-							command: `pnpm dev --port ${port}`,
+							command: `pnpm serve --port ${port}`,
 							url: devUrl,
-							reuseExistingServer: true,
+							reuseExistingServer: !process.env.CI,
+							timeout: 180_000, // 3 minutes for Nitro/Vite to fully initialize
+							stdout: 'pipe',
+							stderr: 'pipe',
 						},
 					}
 				: {}),
 
+			timeout: 60_000,
 			expect: {
+				timeout: 15_000,
 				toHaveScreenshot: {
 					stylePath: `${testDir}/screenshot.css`,
-					maxDiffPixelRatio: 0.001,
 				},
 			},
 

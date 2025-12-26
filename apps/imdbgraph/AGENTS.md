@@ -14,13 +14,13 @@ All commands are run from the root of the project, from a terminal:
 
 | Command                 | Action                                          |
 | :---------------------- | :---------------------------------------------- |
-| `pnpm dev`              | Starts local dev server at `localhost:4321`     |
-| `pnpm build`            | Build your production site to `./dist/`         |
+| `pnpm dev`              | Starts local dev server at `localhost:3000`     |
+| `pnpm build`            | Build your production site                      |
 | `pnpm typecheck`        | Run TypeScript type checking                    |
 | `pnpm format`           | Run Prettier to format                          |
-| `pnpm lint`             | Run Oxlint linting rules (Replaces ESLint)      |
+| `pnpm lint`             | Run Oxlint linting rules                        |
 | `pnpm test:unit`        | Run unit tests with Vitest                      |
-| `pnpm test:integration` | Run integration tests                           |
+| `pnpm test:integration` | Run integration tests with Vitest               |
 | `pnpm e2e`              | Run end-to-end tests with Playwright            |
 | `pnpm e2e:update`       | Update Playwright test screenshots              |
 | `pnpm verify`           | Run all checks (build, lint, format, typecheck, |
@@ -28,12 +28,13 @@ All commands are run from the root of the project, from a terminal:
 
 ## 🏗️ Architecture
 
-This is an Astro 5 project with React integration. Key architectural decisions:
+This is an TanStack Start project with React integration. Key architectural
+decisions:
 
-- **Framework**: Astro with React
+- **Framework**: TanStack Start with React
 - **Styling**: TailwindCSS 4.x
 - **Package Manager**: pnpm (IMPORTANT: DO NOT USE npm or yarn)
-- **Path Mapping**: `#/*` maps to `./src/*` for clean imports
+- **Path Mapping**: `@/*` maps to `./src/*` for clean imports
 
 ## 🧪 Unit Tests
 
@@ -41,8 +42,3 @@ This is an Astro 5 project with React integration. Key architectural decisions:
 - `integration`:
   - Database tests with testcontainers.
   - UI component tests with vitest browser mode.
-
-## Shadcn
-
-New Shadcn components can be installed with this command:
-`pnpm dlx shadcn@latest add $COMPONENT_NAME`

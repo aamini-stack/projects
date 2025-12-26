@@ -1,4 +1,4 @@
-**/.astro
 **/.vercel
-**/dist
+**/.output
 pnpm-lock.yaml
+routeTree.gen.ts

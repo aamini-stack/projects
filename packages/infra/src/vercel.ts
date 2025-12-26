@@ -6,29 +6,18 @@ const vercelConfig = new pulumi.Config('vercel')
 const args = {
 	apiToken: vercelConfig.require('apiToken'),
 	team: vercelConfig.require('team'),
-	automationBypassSecret: vercelConfig.require('automationBypassSecret'),
 	apps: [
-		{ name: 'aamini-template' },
-		{ name: 'portfolio' },
+		{
+			name: 'portfolio',
+		},
 		{
 			name: 'imdbgraph',
-			overrides: {
-				vercelAuthentication: { deploymentType: 'none' },
-			},
 		},
-		{ name: 'dota-visualizer' },
-		{ name: 'fruit-gen' },
 		{
 			name: 'pc-tune-ups',
-			overrides: {
-				vercelAuthentication: { deploymentType: 'none' },
-			},
 		},
 		{
 			name: 'ducky-mot',
-			overrides: {
-				vercelAuthentication: { deploymentType: 'none' },
-			},
 		},
 	],
 }
@@ -44,32 +33,23 @@ const vercelProjects = Object.fromEntries(
 		new vercel.Project(
 			app.name,
 			{
-				framework: 'astro',
+				framework: 'tanstack-start',
 				gitComments: { onCommit: false, onPullRequest: true },
 				gitRepository: {
 					productionBranch: 'main',
 					repo: 'aamini-stack/projects',
 					type: 'github',
 				},
-				vercelAuthentication: { deploymentType: 'standard_protection_new' },
-				protectionBypassForAutomation: true,
-				protectionBypassForAutomationSecret: args.automationBypassSecret,
+				vercelAuthentication: { deploymentType: 'none' },
 				ignoreCommand: 'exit 0',
 				name: app.name,
 				nodeVersion: '22.x',
 				rootDirectory: `apps/${app.name}`,
 				enableAffectedProjectsDeployments: true,
-				...app.overrides,
 			},
 			{ provider },
 		),
 	]),
 )
 
-export const projectIds = pulumi
-	.output(vercelProjects)
-	.apply((projects) =>
-		Object.fromEntries(
-			Object.entries(projects).map(([name, project]) => [name, project.id]),
-		),
-	)
+export const projects = vercelProjects

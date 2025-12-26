@@ -1,9 +1,18 @@
-import { episode, show } from '#/db/tables'
-import type { Episode, Ratings } from '#/lib/imdb/types'
+import { createDb } from '@/db/connection'
+import { episode, show } from '@/db/tables'
+import type { Episode, Ratings } from '@/lib/imdb/types'
+import { createServerFn } from '@tanstack/react-start'
 import { asc, eq } from 'drizzle-orm'
 import type { NodePgDatabase } from 'drizzle-orm/node-postgres'
 
-export async function getRatings(
+export const getRatings = createServerFn()
+	.inputValidator((data: { showId: string }) => data)
+	.handler(async ({ data }) => {
+		const db = createDb()
+		return getRatingsDb(db, data.showId)
+	})
+
+export async function getRatingsDb(
 	db: NodePgDatabase,
 	showId: string,
 ): Promise<Ratings | undefined> {
