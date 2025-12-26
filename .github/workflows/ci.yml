@@ -7,9 +7,12 @@ on:
   pull_request:
     branches:
       - main
+  repository_dispatch:
+    types: [vercel.deployment.success]
 
 permissions:
   contents: write
+  statuses: write
 
 env:
   TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
@@ -20,6 +23,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.client_payload.git.sha || github.sha }}
       - uses: pnpm/action-setup@v4
       - name: Setup Node.js environment
         uses: actions/setup-node@v6
@@ -33,6 +38,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.client_payload.git.sha || github.sha }}
       - uses: pnpm/action-setup@v4
       - name: Setup Node.js environment
         uses: actions/setup-node@v6
@@ -51,23 +58,17 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          ref: ${{ github.event.client_payload.git.sha || github.sha }}
       - name: Get Changed Apps
         id: calculate-apps
         run: |
-          if [ "${{ github.event_name }}" = "push" ]; then
-            BASE=HEAD~
-          else
-            BASE=$(git merge-base HEAD origin/main)
-          fi
-
-          FILTER="{./apps/*}...[$BASE...HEAD]"
-
+          FILTER="{./apps/*}...[HEAD~...HEAD]"
           APPS=$(npx turbo@2.5.8 build --filter="$FILTER" --dry=json | jq -c .packages)
-          echo $APPS
           echo "apps=$APPS" >> $GITHUB_OUTPUT
 
   e2e:
     needs: [find-apps]
+    if: github.event_name == 'repository_dispatch'
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -75,43 +76,20 @@ jobs:
       fail-fast: false
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.client_payload.git.sha }}
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v6
         with:
           node-version: 22
           cache: 'pnpm'
       - run: pnpm i
-      # Deploy
-      - name: Deploy
-        working-directory: ./apps/${{ matrix.app }}
-        run: |
-          pnpm i -g vercel
-          pnpm vercel link \
-            --yes \
-            --repo \
-            --token=${{ secrets.VERCEL_TOKEN }} \
-            --scope=${{ vars.TURBO_TEAM }}
 
-          # Add --prod flag if pushing to main branch (not a PR)
-          if [ "${{ github.event_name }}" = "push" ] && [ "${{ github.ref }}" = "refs/heads/main" ]; then
-            PROD_FLAG="--prod"
-          else
-            PROD_FLAG=""
-          fi
-
-          BASE_URL=$(pnpm vercel \
-            --yes \
-            $PROD_FLAG \
-            --token=${{ secrets.VERCEL_TOKEN }} \
-            --scope=${{ vars.TURBO_TEAM }} \
-            -m githubDeployment='1' \
-            -m githubCommitRef='${{ github.head_ref || github.ref_name }}' \
-            -m githubCommitSha='${{ github.sha }}' \
-          | tail -1)
-          echo BASE_URL=$BASE_URL >> $GITHUB_ENV
-      # Test
-      - run: pnpm e2e
+      - env:
+          BASE_URL: ${{ github.event.client_payload.url }}
         working-directory: ./apps/${{ matrix.app }}
+        run: pnpm e2e
+
       - name: Publish Report
         uses: actions/upload-artifact@v4
         if: failure()

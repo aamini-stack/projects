@@ -33,7 +33,7 @@ const vercelProjects = Object.fromEntries(
 		new vercel.Project(
 			app.name,
 			{
-				framework: 'tanstack',
+				framework: 'tanstack-start',
 				gitComments: { onCommit: false, onPullRequest: true },
 				gitRepository: {
 					productionBranch: 'main',
