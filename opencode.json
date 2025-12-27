@@ -4,6 +4,7 @@
 		"session_child_cycle": "<leader>right",
 		"session_child_cycle_reverse": "<leader>left"
 	},
+	"instructions": ["*/AGENTS.md"],
 	"agent": {
 		"general": {
 			"model": "openrouter/x-ai/grok-4-fast"

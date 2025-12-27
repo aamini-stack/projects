@@ -5,8 +5,6 @@
 
 # Build
 #TODO: remove astro + dist
-.astro 
-dist
 .turbo
 .vercel
 .output
@@ -21,4 +19,3 @@ Thumbs.db
 test-results/
 playwright-report/
 
-.claude
