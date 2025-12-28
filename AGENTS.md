@@ -1,66 +1,73 @@
-# AGENTS.md
+# @aamini-stack Monorepo
 
-This file provides guidance to agentic LLMs when working with code in this
-repository.
+This is a monorepo for tanstack webapps. The project uses pnpm workspaces for
+package management and turborepo for efficient building/task management. Each
+app is located in /apps and has its own accompanying documentation.
 
-# @aamini Monorepo
+Shared packages are located in /packages and include:
 
-This document outlines the structure of the @aamini monorepo and provides a
-brief overview of the common packages used across various applications. The
-monorepo is organized into `apps/` for individual applications and `packages/`
-for shared libraries and configurations. This structure promotes code reuse,
-simplifies dependency management, and ensures consistency across projects.
+- Common configs for vite, vitest, playwright, and typescript.
+- Different themes of shadcn components (ex: @aamini/ui and
+  @aamini/ui-neobrutalist).
+- Pulumi code for provisioning any required infra (datbases, vms, clusters, etc)
 
-## Build Tools & Package Management
+## Commands
 
-This monorepo uses **pnpm** as the package manager and **Turbo** as the build
-system. When working with this codebase:
+cd into the right /apps directory and run these commands. Running commands
+from root will use turbo to run that command for each subproject. (Ex: Running 'pnpm build' from root will launch 5 concurrent build tasks for all 5 apps. But running 'pnpm build' in apps/imdbgraph will only run build for imdbgraph)
 
-- **Always use `pnpm`** for installing dependencies and running scripts (e.g.,
-  `pnpm install`, `pnpm add <package>`), never `npm` or `yarn`.
-- **Use Turbo for builds and tasks** via `pnpm` scripts (e.g., `pnpm build`,
-  `pnpm dev`, `pnpm test`). Turbo handles caching and parallelization across the
-  monorepo workspace.
-- The workspace is configured with pnpm workspaces, allowing packages to depend
-  on each other efficiently.
+| Command                 | Action                                          |
+| :---------------------- | :---------------------------------------------- |
+| `pnpm build`            | Build your production site                      |
+| `pnpm typecheck`        | Run TypeScript type checking                    |
+| `pnpm format`           | Run Prettier to format                          |
+| `pnpm lint`             | Run Oxlint linting rules                        |
+| `pnpm test:unit`        | Run unit tests with Vitest                      |
+| `pnpm test:integration` | Run integration tests with Vitest               |
+| `pnpm e2e`              | Run end-to-end tests with Playwright            |
+| `pnpm e2e:update`       | Update Playwright test screenshots              |
+| `pnpm verify`           | Run all checks (build, lint, format, typecheck, |
+|                         | test, e2e)                                      |
 
-## Packages
+## Issue Tracking
 
-Here's a summary of the common packages located in the `packages/` directory:
+This project uses **bd (beads)** for issue tracking. Run `bd prime` for workflow
+context, or install hooks (`bd hooks install`) for auto-injection.
 
-### `config-testing`
+**Quick reference:**
 
-This package likely contains shared testing configurations and utilities for
-applications within the monorepo. It helps standardize testing environments and
-practices.
+- `bd ready` - Find unblocked work
+- `bd create "Title" --type task --priority 2` - Create issue
+- `bd close <id>` - Complete work
+- `bd sync` - Sync with git (run at session end)
 
-### `config-typescript`
+For full workflow details: `bd prime`
 
-This package probably provides standardized TypeScript configurations for
-different types of projects (e.g., Tanstack, React, libraries) within the
-monorepo, ensuring consistent type-checking and compilation settings.
+## Landing the Plane (Session Completion)
 
-### `infra`
+**When ending a work session**, you MUST complete ALL steps below. Work is NOT
+complete until `git push` succeeds.
 
-This package is expected to contain infrastructure-as-code definitions or
-deployment scripts, possibly using tools like Pulumi (given `Pulumi.prod.yaml`
-and `Pulumi.yaml` files are present in `packages/infra`). It centralizes
-infrastructure management for the monorepo's applications.
+**MANDATORY WORKFLOW:**
 
-### `ui`
+1. **File issues for remaining work** - Create issues for anything that needs
+   follow-up
+2. **Run quality gates** (if code changed) - Tests, linters, builds
+3. **Update issue status** - Close finished work, update in-progress items
+4. **PUSH TO REMOTE** - This is MANDATORY:
+   ```bash
+   git pull --rebase
+   bd sync
+   git push
+   git status  # MUST show "up to date with origin"
+   ```
+5. **Clean up** - Clear stashes, prune remote branches
+6. **Verify** - All changes committed AND pushed
+7. **Hand off** - Provide context for next session
 
-This package likely houses a shared UI component library, providing reusable UI
-elements and styles that can be consumed by various applications in the
-monorepo.
+**CRITICAL RULES:**
 
-### `ui-neobrutalist`
-
-This package appears to be another UI component library, possibly with a
-specific "neobrutalist" design aesthetic, offering a distinct set of UI
-components or themes.
-
-### `utils`
-
-This package is a general-purpose utility library, containing common helper
-functions, types, or small modules that are frequently used across different
-applications and packages within the monorepo.
+- Work is NOT complete until `git push` succeeds
+- NEVER stop before pushing - that leaves work stranded locally
+- NEVER say "ready to push when you are" - YOU must push
+- If push fails, resolve and retry until it succeeds

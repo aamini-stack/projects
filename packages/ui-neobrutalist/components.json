@@ -12,7 +12,7 @@
 	"iconLibrary": "lucide",
 	"aliases": {
 		"components": "@aamini/ui-neobrutalist/components",
-		"utils": "@aamini/utils/ui",
+		"utils": "@aamini/ui-neobrutalist/lib/utils",
 		"hooks": "@aamini/ui-neobrutalist/hooks",
 		"lib": "@aamini/ui-neobrutalist/lib",
 		"ui": "@aamini/ui-neobrutalist/components"
