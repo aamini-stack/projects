@@ -6,13 +6,5 @@
 		"prettier-plugin-jsdoc",
 		"prettier-plugin-organize-imports",
 		"prettier-plugin-tailwindcss"
-	],
-	"overrides": [
-		{
-			"files": "*.md",
-			"options": {
-				"proseWrap": "always"
-			}
-		}
 	]
 }

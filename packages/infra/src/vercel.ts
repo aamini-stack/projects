@@ -27,9 +27,8 @@ const provider = new vercel.Provider('vercel-provider', {
 	team: args.team,
 })
 
-const vercelProjects = Object.fromEntries(
-	args.apps.map((app) => [
-		app.name,
+const vercelProjects = args.apps.map(
+	(app) =>
 		new vercel.Project(
 			app.name,
 			{
@@ -47,9 +46,15 @@ const vercelProjects = Object.fromEntries(
 				rootDirectory: `apps/${app.name}`,
 				enableAffectedProjectsDeployments: true,
 			},
-			{ provider },
+			{ provider, protect: true },
 		),
-	]),
 )
 
-export const projects = vercelProjects
+export const projectIds = vercelProjects.map((project) => ({
+	name: project.name,
+	id: project.id,
+	framework: project.framework,
+	nodeVersion: project.nodeVersion,
+	rootDirectory: project.rootDirectory,
+	ignoreCommand: project.ignoreCommand,
+}))

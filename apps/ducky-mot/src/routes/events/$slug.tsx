@@ -24,11 +24,15 @@ export const Route = createFileRoute('/events/$slug')({
 				return aName.localeCompare(bName)
 			})
 
-		const images = imagePaths.map((path, index) => ({
-			id: index.toString(),
-			src: path.replace('/public', ''),
-			alt: `Gallery image ${index + 1}`,
-		}))
+		const images = imagePaths.map((path, index) => {
+			const module = allImageModules[path] as { default: string }
+			const src = module.default
+			return {
+				id: index.toString(),
+				src,
+				alt: `Gallery image ${index + 1}`,
+			}
+		})
 
 		return {
 			eventTitle: event.title,
