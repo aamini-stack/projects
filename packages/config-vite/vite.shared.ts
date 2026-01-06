@@ -24,4 +24,10 @@ export const baseConfig = defineConfig({
 			svgrOptions: { exportType: 'default' },
 		}),
 	],
+
+	// Required to work with devcontainers in vscode
+	// https://github.com/vitejs/vite/issues/16522
+	server: {
+    host: '127.0.0.1'
+	}
 })

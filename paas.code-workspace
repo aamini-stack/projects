@@ -1,15 +1,15 @@
 {
 	"folders": [
 		{
-			"path": "../apps/paas",
+			"path": "apps/paas",
 		},
 		{
 			"name": "packages",
-			"path": "../packages",
+			"path": "packages",
 		},
 		{
 			"name": "root",
-			"path": "..",
+			"path": ".",
 		},
 	],
 }

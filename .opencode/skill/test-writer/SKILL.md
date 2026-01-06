@@ -18,19 +18,6 @@ metadata:
 Use this skill when you are doing TDD or feature work and need assistance
 writing high quality tests.
 
-## Test Writing Guidelines
-
-- **Arrange-Act-Assert pattern**: Set up data, execute action, verify result
-- **One assertion per test** when possible, keep tests focused
-- **Mock external dependencies** (APIs, databases) for fast, reliable tests
-- **Test edge cases**: empty results, errors, invalid inputs
-- **Keep tests isolated**: each test should be independent
-- **Use descriptive test names** that explain what is being tested
-- **Group related tests** with `describe()` blocks
-- **Use `test.skip()`** for tests under development
-- **Clean up after tests** (test extensions handle this automatically)
-- **Use `beforeEach()`** for setup that repeats for each test
-
 ## Test Commands
 
 Run tests from the app directory (e.g., `cd apps/paas`):
@@ -42,9 +29,7 @@ Run tests from the app directory (e.g., `cd apps/paas`):
 | `pnpm e2e`              | Run E2E tests                           |
 | `pnpm e2e:update`       | Update E2E screenshots                  |
 
-## Test Projects (Vitest)
-
-### Unit Tests (`*.test.unit.ts`)
+## Unit Tests (`*.test.unit.ts`)
 
 - Plain node environment for pure functions
 - No external dependencies (network, database, browser)
@@ -101,17 +86,13 @@ describe('RateLimiter', () => {
 })
 ```
 
-### Server Tests (`*.test.ts`)
+## Database Tests (`*.test.ts`)
 
-- Node.js environment with network/database mocking
-- Use MSW for HTTP request mocking
-- Database tests use in-memory SQLite with Drizzle
-- Import test extension: `import { test } from '@/mocks/test-extend-server'`
-
-**Database Tests**
+1. Use db test fixture: `import { test } from '@/mocks/test-extend-db'`
+2. Optional: Use `initDb()` to seed test data:
 
 ```ts
-import { test, initDb } from '@/mocks/test-extend-server'
+import { test, initDb } from '@/mocks/test-extend-db'
 import { describe, expect } from 'vitest'
 import { shows } from './__fixtures__/shows'
 import { show } from '@/db/tables'
@@ -133,13 +114,116 @@ describe('search tests', () => {
 })
 ```
 
-Example with MSW (mock external HTTP requests):
+## Browser Tests (`*.test.tsx`)
 
-**MSW Mocking Setup**:
-For global
+- vitest-browser with real Playwright browser
+- Test React components in isolation
+- Import test extension: `import { test } from '@/mocks/test-extend-browser'`
+- Use `vitest-browser-react` for component rendering
+- Use `userEvent` from `vitest/browser` for interactions
+- Use `expect.element()` for async assertions
+
+Example:
+
+```ts
+import { test } from '@/mocks/test-extend-browser'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import {
+	createRootRoute,
+	createRoute,
+	createRouter,
+	RouterContextProvider,
+} from '@tanstack/react-router'
+import { http, HttpResponse } from 'msw'
+import { beforeEach, describe, expect, vi } from 'vitest'
+import { render } from 'vitest-browser-react'
+import { page, userEvent } from 'vitest/browser'
+import { SearchBar } from './search-bar'
+
+const testQueryClient = new QueryClient({
+	defaultOptions: {
+		queries: {
+			retry: false,
+		},
+	},
+})
+
+vi.mock(import('@/lib/react-query'), () => ({
+	queryClient: testQueryClient,
+}))
+
+beforeEach(() => {
+	testQueryClient.clear()
+})
+
+function MockRouter(props: { children: React.ReactNode }) {
+	const rootRoute = createRootRoute()
+	const indexRoute = createRoute({
+		getParentRoute: () => rootRoute,
+		path: '/',
+	})
+	const routeTree = rootRoute.addChildren([indexRoute])
+	const router = createRouter({ routeTree })
+
+	return (
+		<QueryClientProvider client={testQueryClient}>
+			<RouterContextProvider router={router}>
+				{props.children}
+			</RouterContextProvider>
+		</QueryClientProvider>
+	)
+}
+
+test('basic search', async () => {
+	const screen = await render(<SearchBar />, {
+		wrapper: MockRouter,
+	})
+
+	const searchBar = screen.getByRole('combobox')
+	await userEvent.fill(searchBar, 'avatar')
+	await expect
+		.element(page.getByText(/Avatar: The Last Airbender/).first())
+		.toBeVisible()
+})
+
+test('no results', async ({ worker }) => {
+	worker.use(
+		http.get('/api/suggestions', () => {
+			return HttpResponse.json([])
+		}),
+	)
+
+	const screen = await render(<SearchBar />, {
+		wrapper: MockRouter,
+	})
+	const searchBar = screen.getByRole('combobox')
+	await userEvent.fill(searchBar, 'blah')
+	await expect.element(screen.getByText(/No TV Shows Found./i)).toBeVisible()
+})
+
+test('error message', async ({ worker }) => {
+	worker.use(
+		http.get('/api/suggestions', () => {
+			return HttpResponse.error()
+		}),
+	)
+
+	const screen = await render(<SearchBar />, {
+		wrapper: MockRouter,
+	})
+	const searchBar = screen.getByRole('combobox')
+	await userEvent.fill(searchBar, 'error')
+	await expect
+		.element(screen.getByText(/Something went wrong. Please try again./i))
+		.toBeVisible()
+})
+```
+
+## Mocking APIs with MSW
+
+1\. Set up mock JSON responses in `__mocks__/data/suggestions.json`:
 
 ```json
-// __mocks__/data/suggestions.json
 [
 	{
 		"imdbId": "tt0417299",
@@ -184,8 +268,9 @@ For global
 ]
 ```
 
+2\. Set up handlers `__mocks__/handlers.ts`:
+
 ```ts
-// __mocks__/handlers.ts
 import suggestions from '@/mocks/data/suggestions.json' with { type: 'json' }
 import { http, HttpResponse } from 'msw'
 
@@ -195,6 +280,9 @@ export default [
 	}),
 ]
 ```
+
+3\. Import `@/mocks/test-extend-server` if a server test (.ts) or
+`@/mocks/test-extend-browser` if a browser test (.tsx):
 
 ```ts
 import { test } from '@/mocks/test-extend-server'
@@ -210,71 +298,27 @@ describe('GitHub Repositories', () => {
 })
 ```
 
-**Fixture Data**: Create reusable test data in `__fixtures__/` directories:
-
-```ts
-// __fixtures__/seed-data.ts
-import type { NewUser } from '@/db/schema'
-
-export const testUsers: NewUser[] = [
-	{ id: 'user-1', email: 'alice@example.com', name: 'Alice' },
-	{ id: 'user-2', email: 'bob@example.com', name: 'Bob' },
-]
-```
-
-### Browser Tests (`*.test.tsx`)
-
-- vitest-browser with real Playwright browser
-- Test React components in isolation
-- Import test extension: `import { test } from '@/mocks/test-extend-browser'`
-- Use `vitest-browser-react` for component rendering
-- Use `userEvent` from `vitest/browser` for interactions
-- Use `expect.element()` for async assertions
-
-Example:
+4\. (Optional): Setup inline mocks (For error scenarios or one-off requests):
 
 ```ts
 import { test } from '@/mocks/test-extend-browser'
-import { render } from 'vitest-browser-react'
-import { userEvent } from 'vitest/browser'
 import { describe, expect } from 'vitest'
-import { ContactCard } from '@/components/contact-me'
+import { fetchGitHubRepos } from './github-repos'
 
-describe('ContactCard', () => {
-	test('render card', async () => {
-		const screen = await render(<ContactCard />)
-		expect(screen.getByText('Reach out!')).toBeInTheDocument()
+test('no results', async ({ worker }) => {
+	// One-off mock for error scenario
+	worker.use(
+		http.get('/api/suggestions', () => {
+			return HttpResponse.json([])
+		}),
+	)
+
+	const screen = await render(<SearchBar />, {
+		wrapper: MockRouter,
 	})
-
-	test('shows error on invalid email', async () => {
-		const screen = await render(<ContactCard />)
-		const submitButton = screen.getByRole('button', { name: /send message/i })
-		await userEvent.click(submitButton)
-		expect(screen.getByText(/Invalid email address/i)).toBeInTheDocument()
-	})
-
-	test('mocks API responses', async ({ worker }) => {
-		worker.use(
-			http.get('/api/contact', () => {
-				return HttpResponse.json({ success: true })
-			}),
-		)
-		const screen = await render(<ContactCard />)
-		// Test interaction...
-	})
-})
-```
-
-**Component Interaction Pattern**:
-
-```ts
-test('user can submit form', async () => {
-	const screen = await render(<ContactCard />)
-	const emailInput = screen.getByLabelText('Email')
-	await userEvent.fill(emailInput, 'test@example.com')
-	const submitButton = screen.getByRole('button', { name: /send message/i })
-	await userEvent.click(submitButton)
-	await expect.element(screen.getByText(/message sent/i)).toBeVisible()
+	const searchBar = screen.getByRole('combobox')
+	await userEvent.fill(searchBar, 'blah')
+	await expect.element(screen.getByText(/No TV Shows Found./i)).toBeVisible()
 })
 ```
 
@@ -307,89 +351,5 @@ test('search bar click navigation works', async ({ page }) => {
 
 test('Screenshot Homepage', async ({ page }) => {
 	await expect(page).toHaveScreenshot()
-})
-```
-
-## Additional Patterns
-
-### Inline Snapshots
-
-Use `toMatchInlineSnapshot()` for complex data structures:
-
-```ts
-test('returns correct data structure', () => {
-	const results = fetchAllData()
-	expect(results).toMatchInlineSnapshot(`
-		[
-		  {
-		    "id": "1",
-		    "name": "Alice",
-		  },
-		  {
-		    "id": "2",
-		    "name": "Bob",
-		  },
-		]
-	`)
-})
-```
-
-### Error Testing
-
-```ts
-test('throws error with invalid input', async () => {
-	await expect(validateEmail('invalid')).rejects.toThrow('Invalid email format')
-})
-```
-
-### Async Testing
-
-```ts
-test('async function returns correct result', async () => {
-	const result = await fetchData()
-	expect(result).toBeDefined()
-})
-```
-
-### MSW Mocking
-
-Create JSON files in `__mocks__/data/` for mock responses, then define HTTP
-handlers in `__mocks__/handlers.ts`:
-
-```ts
-import githubAccessToken from '@/mocks/data/github-access-token.json' with { type: 'json' }
-import suggestions from '@/mocks/data/suggestions.json' with { type: 'json' }
-import { http, HttpResponse } from 'msw'
-
-export default [
-	http.get('/api/suggestions', () => {
-		return HttpResponse.json(suggestions)
-	}),
-
-	http.post('https://github.com/login/oauth/access_token', async () => {
-		return HttpResponse.json(githubAccessToken)
-	}),
-]
-```
-
-**Note**: Use the `with { type: 'json' }` import syntax for JSON mock files.
-
-### Database Testing
-
-Use `initDb()` to seed test data:
-
-```ts
-describe('users table', () => {
-	initDb(async (db) => {
-		await db.insert(users).values(testUsers)
-		await db.insert(teams).values(testTeams)
-	})
-
-	test('can query users by email', async ({ db }) => {
-		const result = await db.query.users.findFirst({
-			where: eq(users.email, 'alice@example.com'),
-		})
-		expect(result?.name).toBe('Alice Developer')
-	})
 })
 ```

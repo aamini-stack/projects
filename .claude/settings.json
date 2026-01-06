@@ -1,10 +1,11 @@
 {
 	"permissions": {
-		"allow": ["Bash(pnpm test:*)", "Bash(pnpm install:*)", "Bash(pnpm lint:*)"]
+		"allow": ["Bash(pnpm test:*)", "Bash(pnpm install:*)", "Bash(pnpm lint:*)"],
+		"deny": ["Bash(git push:*)", "Bash(git:*push:*)"]
 	},
 	"enabledPlugins": {
 		"frontend-design@claude-plugins-official": true,
 		"superpowers@superpowers-marketplace": true,
-		"beads@beads-marketplace": true
+		"ralph-wiggum@claude-plugins-official": true
 	}
 }

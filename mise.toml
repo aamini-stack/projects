@@ -9,4 +9,4 @@ pulumi = "3.197.0"
 "npm:opencode-ai" = "latest"
 
 [env]
-_.path = ['{{config_root}}/node_modules/.bin']
+_.path = ["./scripts"]
