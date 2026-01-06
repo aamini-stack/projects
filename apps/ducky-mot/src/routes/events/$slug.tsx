@@ -98,7 +98,7 @@ export function EventGallery() {
 									}
 								}}
 								tabIndex={0}
-								aria-label={`View ${image.alt} in full size`}
+								aria-label="View in full size"
 								style={{ animationDelay: `${index * 50}ms` }}
 							>
 								<img

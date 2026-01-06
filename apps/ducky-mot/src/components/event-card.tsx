@@ -19,7 +19,7 @@ export function EventCard({ event }: { event: Event }) {
 						target={linkTarget}
 						rel={linkRel}
 						className="block"
-						aria-label={`View photos from ${event.title} - ${event.date}`}
+						aria-label="Expand photo"
 					>
 						<div className="aspect-4/3 overflow-hidden bg-gray-800">
 							<img
