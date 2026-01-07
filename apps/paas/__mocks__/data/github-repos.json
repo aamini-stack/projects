@@ -1,0 +1,38 @@
+[
+	{
+		"id": 123456,
+		"name": "test-repo",
+		"full_name": "owner/test-repo",
+		"owner": {
+			"login": "owner"
+		},
+		"default_branch": "main",
+		"description": "Test repository",
+		"html_url": "https://github.com/owner/test-repo",
+		"private": false
+	},
+	{
+		"id": 234567,
+		"name": "frontend",
+		"full_name": "owner/frontend",
+		"owner": {
+			"login": "owner"
+		},
+		"default_branch": "main",
+		"description": "Frontend app",
+		"html_url": "https://github.com/owner/frontend",
+		"private": false
+	},
+	{
+		"id": 345678,
+		"name": "backend",
+		"full_name": "owner/backend",
+		"owner": {
+			"login": "owner"
+		},
+		"default_branch": "main",
+		"description": "Backend API",
+		"html_url": "https://github.com/owner/backend",
+		"private": true
+	}
+]

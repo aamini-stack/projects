@@ -1,0 +1,16 @@
+@import '@fontsource-variable/dm-sans';
+@import '@aamini/ui/globals.css';
+
+@theme {
+	--breakpoint-xs: 320px;
+}
+
+@layer base {
+	body {
+		min-width: 320px;
+	}
+}
+
+:root {
+	--font-family-sans: 'DM Sans Variable';
+}

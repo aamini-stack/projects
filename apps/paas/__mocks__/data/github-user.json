@@ -1,0 +1,7 @@
+{
+	"id": 123456,
+	"login": "testuser",
+	"name": "Test User",
+	"email": "test@example.com",
+	"avatar_url": "https://avatars.githubusercontent.com/u/123456?v=4"
+}
