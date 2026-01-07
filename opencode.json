@@ -4,6 +4,10 @@
 		"session_child_cycle": "<leader>right",
 		"session_child_cycle_reverse": "<leader>left"
 	},
+	"permission": {
+		"*": "allow",
+		"bash": "ask",
+	},
 	"instructions": ["*/AGENTS.md"],
 	"agent": {
 		"general": {
