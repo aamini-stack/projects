@@ -90,7 +90,7 @@ function StatGroup({
 	heroName: HeroName
 }) {
 	return (
-		<div className="min-w-[200px] flex-shrink-0 rounded border p-4">
+		<div className="min-w-50 shrink-0 rounded border p-4">
 			<h3 className="mb-3 text-xl font-semibold">{title}</h3>
 			<div className="flex flex-col gap-1">
 				{attributes.map((attr) => (
@@ -132,7 +132,7 @@ export function HeroStats({
 	}) {
 		return (
 			<Select value={value} onValueChange={onChange}>
-				<SelectTrigger className="w-[280px]">
+				<SelectTrigger className="w-70">
 					<SelectValue placeholder="Select a hero" />
 				</SelectTrigger>
 				<SelectContent>
