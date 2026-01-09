@@ -19,6 +19,9 @@ const args = {
 		{
 			name: 'ducky-mot',
 		},
+		{
+			name: 'dota-visualizer',
+		},
 	],
 }
 
