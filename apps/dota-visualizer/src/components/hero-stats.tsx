@@ -53,17 +53,35 @@ function StatCard({
 	hero,
 	heroStats,
 	heroName,
+	onClick,
+	isSelected,
 }: {
 	attribute: Attribute
 	hero: Hero
 	heroStats: HeroStatsAnalyzer
 	heroName: HeroName
+	onClick: () => void
+	isSelected: boolean
 }) {
 	const percentile = Math.round(
 		Number(heroStats.computePercentile(heroName, attribute) * 100),
 	)
 	return (
-		<div key={attribute} className="w-full p-2">
+		<div
+			key={attribute}
+			className={`w-full p-2 cursor-pointer rounded transition-colors ${
+				isSelected ? 'bg-blue-100 border border-blue-400' : 'hover:bg-gray-100'
+			}`}
+			onClick={onClick}
+			onKeyDown={(e) => {
+				if (e.key === 'Enter' || e.key === ' ') {
+					e.preventDefault()
+					onClick()
+				}
+			}}
+			role="button"
+			tabIndex={0}
+		>
 			<div className="truncate overflow-hidden text-sm font-bold whitespace-nowrap">
 				{displayNames[attribute]}: {hero[attribute]}
 			</div>
@@ -82,12 +100,16 @@ function StatGroup({
 	hero,
 	heroStats,
 	heroName,
+	onStatClick,
+	selectedStat,
 }: {
 	title: string
 	attributes: Attribute[]
 	hero: Hero
 	heroStats: HeroStatsAnalyzer
 	heroName: HeroName
+	onStatClick: (attr: Attribute) => void
+	selectedStat: Attribute | null
 }) {
 	return (
 		<div className="min-w-50 shrink-0 rounded border p-4">
@@ -100,8 +122,120 @@ function StatGroup({
 						hero={hero}
 						heroStats={heroStats}
 						heroName={heroName}
+						onClick={() => onStatClick(attr)}
+						isSelected={selectedStat === attr}
 					/>
 				))}
+			</div>
+		</div>
+	)
+}
+
+function PercentileVisualization({
+	attribute,
+	heroDictionary,
+	heroStats,
+	currentHeroName,
+}: {
+	attribute: Attribute
+	heroDictionary: HeroDictionary
+	heroStats: HeroStatsAnalyzer
+	currentHeroName: HeroName
+}) {
+	// Get all hero values for this attribute and sort them
+	const heroValues = useMemo(() => {
+		const values = Array.from(heroDictionary.entries())
+			.map(([heroName, hero]) => ({
+				name: heroName,
+				value: hero[attribute],
+				percentile: Math.round(
+					heroStats.computePercentile(heroName, attribute) * 100,
+				),
+			}))
+			.sort((a, b) => a.value - b.value)
+		return values
+	}, [heroDictionary, attribute, heroStats])
+
+	const currentHeroValue = heroValues.find((h) => h.name === currentHeroName)
+
+	// Create percentile buckets (0-10, 10-20, ..., 90-100)
+	const buckets = Array.from({ length: 10 }, (_, i) => {
+		const min = i * 10
+		const max = (i + 1) * 10
+		const count = heroValues.filter(
+			(h) => h.percentile >= min && h.percentile < max,
+		).length
+		return { min, max, count }
+	})
+
+	const maxCount = Math.max(...buckets.map((b) => b.count))
+
+	return (
+		<div className="mt-6 w-full rounded border p-4 bg-gray-50">
+			<h3 className="mb-4 text-xl font-semibold">
+				{displayNames[attribute]} Distribution
+			</h3>
+			<div className="mb-4 text-sm text-gray-600">
+				Your hero ({currentHeroName}) has {currentHeroValue?.value}{' '}
+				{displayNames[attribute]} (
+				<span style={{ color: getPercentileColor(currentHeroValue?.percentile ?? 0) }}>
+					{currentHeroValue?.percentile}th percentile
+				</span>
+				)
+			</div>
+
+			{/* Bar Chart */}
+			<div className="flex items-end gap-1 h-48 mb-2">
+				{buckets.map((bucket, i) => {
+					const heightPercent = (bucket.count / maxCount) * 100
+					const isCurrentHeroBucket =
+						currentHeroValue &&
+						currentHeroValue.percentile >= bucket.min &&
+						currentHeroValue.percentile < bucket.max
+
+					return (
+						<div key={i} className="flex-1 flex flex-col items-center">
+							<div
+								className={`w-full rounded-t transition-all ${
+									isCurrentHeroBucket
+										? 'bg-blue-500'
+										: 'bg-gray-300 hover:bg-gray-400'
+								}`}
+								style={{ height: `${heightPercent}%` }}
+								title={`${bucket.min}-${bucket.max}th percentile: ${bucket.count} heroes`}
+							/>
+						</div>
+					)
+				})}
+			</div>
+
+			{/* X-axis labels */}
+			<div className="flex gap-1">
+				{buckets.map((bucket, i) => (
+					<div key={i} className="flex-1 text-center text-xs text-gray-600">
+						{bucket.min}
+					</div>
+				))}
+				<div className="text-xs text-gray-600">100</div>
+			</div>
+			<div className="mt-1 text-center text-xs text-gray-500">Percentile</div>
+
+			{/* Stats summary */}
+			<div className="mt-4 grid grid-cols-3 gap-4 text-sm">
+				<div>
+					<div className="font-semibold">Min</div>
+					<div>{heroValues[0]?.value}</div>
+				</div>
+				<div>
+					<div className="font-semibold">Median</div>
+					<div>
+						{heroValues[Math.floor(heroValues.length / 2)]?.value}
+					</div>
+				</div>
+				<div>
+					<div className="font-semibold">Max</div>
+					<div>{heroValues[heroValues.length - 1]?.value}</div>
+				</div>
 			</div>
 		</div>
 	)
@@ -113,6 +247,7 @@ export function HeroStats({
 	heroDictionary: HeroDictionary
 }) {
 	const [name, setName] = useState<HeroName>('Anti-Mage')
+	const [selectedStat, setSelectedStat] = useState<Attribute | null>('baseArmor')
 	const heroStats = useMemo(
 		() => new HeroStatsAnalyzer(heroDictionary),
 		[heroDictionary],
@@ -169,9 +304,19 @@ export function HeroStats({
 							hero={hero}
 							heroStats={heroStats}
 							heroName={name}
+							onStatClick={setSelectedStat}
+							selectedStat={selectedStat}
 						/>
 					))}
 				</div>
+				{selectedStat && (
+					<PercentileVisualization
+						attribute={selectedStat}
+						heroDictionary={heroDictionary}
+						heroStats={heroStats}
+						currentHeroName={name}
+					/>
+				)}
 			</div>
 		</div>
 	)
