@@ -1,0 +1,20 @@
+services:
+  server:
+    image: dota-visualizer
+    build:
+      context: ../..
+      dockerfile: apps/dota-visualizer/Dockerfile
+    ports:
+      - 4321:4321
+  e2e:
+    environment:
+      - BASE_URL
+      - VERCEL_AUTOMATION_BYPASS_SECRET
+    image: dota-visualizer-e2e
+    build:
+      context: ../..
+      dockerfile: apps/dota-visualizer/Dockerfile.e2e
+    volumes:
+      - ./e2e:/app/apps/dota-visualizer/e2e
+      - ./test-results:/app/apps/dota-visualizer/test-results
+      - ./playwright-report:/app/apps/dota-visualizer/playwright-report
