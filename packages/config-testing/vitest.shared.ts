@@ -1,3 +1,4 @@
+import tailwindcss from '@tailwindcss/vite'
 import viteReact from '@vitejs/plugin-react'
 import { playwright } from '@vitest/browser-playwright'
 import svgr from 'vite-plugin-svgr'
@@ -23,6 +24,7 @@ export const createBaseConfig = (
 		defineConfig({
 			plugins: [
 				tsconfigPaths(),
+				tailwindcss(),
 				viteReact({
 					babel: {
 						plugins: ['babel-plugin-react-compiler'],

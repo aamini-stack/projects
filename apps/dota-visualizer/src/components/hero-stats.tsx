@@ -151,6 +151,7 @@ function PercentileVisualization({
 				percentile: Math.round(
 					heroStats.computePercentile(heroName, attribute) * 100,
 				),
+				iconImage: hero.iconImage,
 			}))
 			.sort((a, b) => a.value - b.value)
 		return values
@@ -162,10 +163,10 @@ function PercentileVisualization({
 	const buckets = Array.from({ length: 10 }, (_, i) => {
 		const min = i * 10
 		const max = (i + 1) * 10
-		const count = heroValues.filter(
+		const heroesInBucket = heroValues.filter(
 			(h) => h.percentile >= min && h.percentile < max,
-		).length
-		return { min, max, count }
+		)
+		return { min, max, count: heroesInBucket.length, heroes: heroesInBucket }
 	})
 
 	const maxCount = Math.max(...buckets.map((b) => b.count))
@@ -178,14 +179,18 @@ function PercentileVisualization({
 			<div className="mb-4 text-sm text-gray-600">
 				Your hero ({currentHeroName}) has {currentHeroValue?.value}{' '}
 				{displayNames[attribute]} (
-				<span style={{ color: getPercentileColor(currentHeroValue?.percentile ?? 0) }}>
+				<span
+					style={{
+						color: getPercentileColor(currentHeroValue?.percentile ?? 0),
+					}}
+				>
 					{currentHeroValue?.percentile}th percentile
 				</span>
 				)
 			</div>
 
-			{/* Bar Chart */}
-			<div className="flex items-end gap-1 h-48 mb-2">
+			{/* Bar Chart with Hero Icons */}
+			<div className="flex items-end gap-1 h-64 mb-2 relative">
 				{buckets.map((bucket, i) => {
 					const heightPercent = (bucket.count / maxCount) * 100
 					const isCurrentHeroBucket =
@@ -194,7 +199,7 @@ function PercentileVisualization({
 						currentHeroValue.percentile < bucket.max
 
 					return (
-						<div key={i} className="flex-1 flex flex-col items-center">
+						<div key={i} className="flex-1 flex flex-col items-center relative">
 							<div
 								className={`w-full rounded-t transition-all ${
 									isCurrentHeroBucket
@@ -203,7 +208,29 @@ function PercentileVisualization({
 								}`}
 								style={{ height: `${heightPercent}%` }}
 								title={`${bucket.min}-${bucket.max}th percentile: ${bucket.count} heroes`}
-							/>
+							>
+								{/* Show hero icons stacked in the bar */}
+								<div className="flex flex-col-reverse items-center justify-end h-full gap-0.5 p-1 overflow-hidden">
+									{bucket.heroes.slice(0, 10).map((hero) => (
+										<img
+											key={hero.name}
+											src={hero.iconImage}
+											alt={hero.name}
+											title={`${hero.name} (${hero.value})`}
+											className={`w-6 h-6 rounded-sm ${
+												hero.name === currentHeroName
+													? 'ring-2 ring-yellow-400'
+													: ''
+											}`}
+										/>
+									))}
+									{bucket.heroes.length > 10 && (
+										<div className="text-xs text-white font-bold">
+											+{bucket.heroes.length - 10}
+										</div>
+									)}
+								</div>
+							</div>
 						</div>
 					)
 				})}
