@@ -1,3 +1,17 @@
-import { baseConfig } from '@aamini/config-testing/vitest'
+import { createBaseConfig } from '@aamini/config-testing/vitest'
 
-export default baseConfig
+export default createBaseConfig(
+	{},
+	{
+		browser: {
+			test: {
+				browser: {
+					viewport: {
+						width: 1280,
+						height: 720,
+					},
+				},
+			},
+		},
+	},
+)

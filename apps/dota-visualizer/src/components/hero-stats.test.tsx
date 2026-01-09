@@ -33,6 +33,10 @@ describe('HeroStats Component', () => {
 
 	test('renders percentile view when stat is clicked', async () => {
 		const screen = await render(<HeroStats heroDictionary={heroDictionary} />)
-		expect(screen.baseElement).toMatchScreenshot()
+		await expect(screen.baseElement).toMatchScreenshot({
+			screenshotOptions: {
+				fullPage: true,
+			},
+		})
 	})
 })
