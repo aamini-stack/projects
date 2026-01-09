@@ -1,3 +1,5 @@
+import type { Hero, HeroDictionary, HeroName } from '@/lib/dota/hero'
+import { type Attribute, HeroStatsAnalyzer } from '@/lib/dota/hero-percentiles'
 import {
 	Select,
 	SelectContent,
@@ -6,8 +8,6 @@ import {
 	SelectValue,
 } from '@aamini/ui/components/select'
 import { useMemo, useState } from 'react'
-import type { Hero, HeroDictionary, HeroName } from '#/lib/dota/hero'
-import { type Attribute, HeroStatsAnalyzer } from '#/lib/dota/hero-percentiles'
 
 const displayNames: Record<Attribute, string> = {
 	baseMagicResistance: 'Base Magic Res',
@@ -64,7 +64,7 @@ function StatCard({
 	)
 	return (
 		<div key={attribute} className="w-full p-2">
-			<div className="overflow-hidden truncate whitespace-nowrap text-sm font-bold">
+			<div className="truncate overflow-hidden text-sm font-bold whitespace-nowrap">
 				{displayNames[attribute]}: {hero[attribute]}
 			</div>
 			<div className="text-sm text-gray-500">

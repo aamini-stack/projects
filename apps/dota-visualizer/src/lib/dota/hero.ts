@@ -171,4 +171,5 @@ export const heroNames = [
 	'Primal Beast',
 	'Muerta',
 	'Kez',
+	'Largo',
 ] as const

@@ -6,7 +6,7 @@
 	},
 	"permission": {
 		"*": "allow",
-		"bash": "ask",
+		"bash": "ask"
 	},
 	"instructions": ["*/AGENTS.md"],
 	"agent": {
