@@ -117,7 +117,7 @@ export function EventGallery() {
 
 			{/* Lightbox Modal */}
 			{selectedImage && (
-				<div
+				<button
 					className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 p-4"
 					onClick={() => setSelectedImage(undefined)}
 					onKeyDown={(e) => {
@@ -162,7 +162,7 @@ export function EventGallery() {
 							</svg>
 						</button>
 					</div>
-				</div>
+				</button>
 			)}
 		</div>
 	)

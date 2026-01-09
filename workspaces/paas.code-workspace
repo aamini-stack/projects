@@ -1,7 +1,7 @@
 {
 	"folders": [
 		{
-			"path": "../apps/portfolio",
+			"path": "../apps/paas",
 		},
 		{
 			"name": "packages",
@@ -11,5 +11,5 @@
 			"name": "root",
 			"path": "..",
 		},
-	]
+	],
 }
