@@ -1,6 +1,6 @@
 {
 	"extends": "@aamini/config-typescript/tanstack",
-	"include": ["**/*.ts", "**/*.tsx"],
+	"include": ["**/*.ts", "**/*.tsx", "../../packages/config-testing/setup-styles.ts"],
 	"exclude": [".output"],
 	"compilerOptions": {
 		"paths": {

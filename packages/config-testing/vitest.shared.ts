@@ -64,7 +64,7 @@ export const createBaseConfig = (
 							test: {
 								name: 'browser',
 								include: ['src/**/*.test.tsx'],
-								setupFiles: 'vitest.setup.ts',
+								setupFiles: '__mocks__/setup-styles.ts',
 								browser: {
 									instances: [
 										{
@@ -74,6 +74,7 @@ export const createBaseConfig = (
 									provider: playwright(),
 									enabled: true,
 									headless: true,
+									ui: false,
 								},
 							},
 						} satisfies TestProjectConfiguration,

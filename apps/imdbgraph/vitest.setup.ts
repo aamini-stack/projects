@@ -1,4 +1,3 @@
-import '@/styles.css'
 import { vi } from 'vitest'
 
 vi.mock(import('@/env'), () => ({

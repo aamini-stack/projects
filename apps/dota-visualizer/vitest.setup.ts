@@ -1,5 +1,3 @@
-import '@/styles.css'
-
 import heroStats from '@/mocks/heroStats.json'
 import { HttpResponse, http } from 'msw'
 import { setupServer } from 'msw/node'
