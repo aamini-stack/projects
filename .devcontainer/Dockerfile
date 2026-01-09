@@ -1,5 +1,10 @@
 FROM node:22
 
+ARG TZ
+ENV TZ="$TZ"
+
+ARG CLAUDE_CODE_VERSION=latest
+
 # Install basic development tools and iptables/ipset
 RUN apt-get update && apt-get install -y --no-install-recommends \
 	less \
@@ -22,37 +27,65 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 	vim \
 	&& apt-get clean && rm -rf /var/lib/apt/lists/*
 
-RUN corepack enable
-ENV PNPM_HOME="/pnpm"
-ENV PATH="$PNPM_HOME:$PATH"
-RUN pnpm config set store-dir /pnpm/store --global
+# Ensure default node user has access to /usr/local/share
+RUN mkdir -p /usr/local/share/npm-global && \
+	chown -R node:node /usr/local/share
+
+ARG USERNAME=node
+
+# Persist bash history.
+RUN SNIPPET="export PROMPT_COMMAND='history -a' && export HISTFILE=/commandhistory/.bash_history" \
+	&& mkdir /commandhistory \
+	&& touch /commandhistory/.bash_history \
+	&& chown -R $USERNAME /commandhistory
+
+# Set `DEVCONTAINER` environment variable to help with orientation
+ENV DEVCONTAINER=true
+
+# Create workspace and config directories and set permissions
+RUN mkdir -p /workspace /home/node/.claude && \
+	chown -R node:node /workspace /home/node/.claude
+
 WORKDIR /workspace
-COPY pnpm-lock.yaml ./
-RUN --mount=type=cache,target=/pnpm/store \
-    pnpm fetch
-COPY package.json ./
-RUN --mount=type=cache,target=/pnpm/store \
-    pnpm install --frozen-lockfile --offline
 
-RUN apt-get update  \
-    && apt-get -y --no-install-recommends install  \
-        # install any other dependencies you might need
-        sudo curl git ca-certificates build-essential \
-    && rm -rf /var/lib/apt/lists/*
+ARG GIT_DELTA_VERSION=0.18.2
+RUN ARCH=$(dpkg --print-architecture) && \
+	wget "https://github.com/dandavison/delta/releases/download/${GIT_DELTA_VERSION}/git-delta_${GIT_DELTA_VERSION}_${ARCH}.deb" && \
+	sudo dpkg -i "git-delta_${GIT_DELTA_VERSION}_${ARCH}.deb" && \
+	rm "git-delta_${GIT_DELTA_VERSION}_${ARCH}.deb"
 
-ENV MISE_DATA_DIR="/mise"
-ENV MISE_CONFIG_DIR="/mise"
-ENV MISE_CACHE_DIR="/mise/cache"
-ENV MISE_INSTALL_PATH="/usr/local/bin/mise"
-ENV PATH="/mise/shims:$PATH"
-# ENV MISE_VERSION="..."
+# Set up non-root user
+USER node
 
-RUN curl https://mise.run | sh
+# Install global packages
+ENV NPM_CONFIG_PREFIX=/usr/local/share/npm-global
+ENV PATH=$PATH:/usr/local/share/npm-global/bin
 
-RUN mkdir -p /mise && chown -R node:node /mise
-RUN mise trust
-RUN mise install
+# Set the default shell to zsh rather than sh
+ENV SHELL=/bin/zsh
 
-RUN mkdir -p /mise/cache && chown -R node:node /mise
+# Set the default editor and visual
+ENV EDITOR=nano
+ENV VISUAL=nano
 
+# Default powerline10k theme
+ARG ZSH_IN_DOCKER_VERSION=1.2.0
+RUN sh -c "$(wget -O- https://github.com/deluan/zsh-in-docker/releases/download/v${ZSH_IN_DOCKER_VERSION}/zsh-in-docker.sh)" -- \
+	-p git \
+	-p fzf \
+	-a "source /usr/share/doc/fzf/examples/key-bindings.zsh" \
+	-a "source /usr/share/doc/fzf/examples/completion.zsh" \
+	-a "export PROMPT_COMMAND='history -a' && export HISTFILE=/commandhistory/.bash_history" \
+	-x
+
+# Install Claude
+RUN npm install -g @anthropic-ai/claude-code@${CLAUDE_CODE_VERSION}
+
+
+# Copy and set up firewall script
+COPY .devcontainer/init-firewall.sh /usr/local/bin/
+USER root
+RUN chmod +x /usr/local/bin/init-firewall.sh && \
+	echo "node ALL=(root) NOPASSWD: /usr/local/bin/init-firewall.sh" > /etc/sudoers.d/node-firewall && \
+	chmod 0440 /etc/sudoers.d/node-firewall
 USER node
