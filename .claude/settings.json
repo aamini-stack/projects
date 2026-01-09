@@ -1,12 +1,20 @@
 {
-	"permissions": {
-		"allow": ["Bash(pnpm test:*)", "Bash(pnpm install:*)", "Bash(pnpm lint:*)"],
-		"deny": ["Bash(git push:*)", "Bash(git:*push:*)"]
-	},
-	"enabledPlugins": {
-		"frontend-design@claude-plugins-official": true,
-		"superpowers@superpowers-marketplace": true,
-		"safety-net@cc-marketplace": true,
-		"ralph-loop@claude-plugins-official": true
-	}
+  "permissions": {
+    "allow": [
+      "Bash(pnpm test:*)",
+      "Bash(pnpm install:*)",
+      "Bash(pnpm lint:*)"
+    ],
+    "deny": [
+      "Bash(git push:*)",
+      "Bash(git:*push:*)"
+    ]
+  },
+  "enabledPlugins": {
+    "frontend-design@claude-plugins-official": true,
+    "superpowers@superpowers-marketplace": true,
+    "safety-net@cc-marketplace": true,
+    "ralph-loop@claude-plugins-official": true,
+    "typescript-lsp@claude-plugins-official": true
+  }
 }
