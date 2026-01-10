@@ -27,6 +27,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 	vim \
 	&& apt-get clean && rm -rf /var/lib/apt/lists/*
 
+RUN corepack enable
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+COPY . .
+RUN pnpm i
+
+RUN pnpm add -g @anthropic-ai/claude-code@${CLAUDE_CODE_VERSION}
+
 # Ensure default node user has access to /usr/local/share
 RUN mkdir -p /usr/local/share/npm-global && \
 	chown -R node:node /usr/local/share
@@ -77,10 +85,6 @@ RUN sh -c "$(wget -O- https://github.com/deluan/zsh-in-docker/releases/download/
 	-a "source /usr/share/doc/fzf/examples/completion.zsh" \
 	-a "export PROMPT_COMMAND='history -a' && export HISTFILE=/commandhistory/.bash_history" \
 	-x
-
-# Install Claude
-RUN npm install -g @anthropic-ai/claude-code@${CLAUDE_CODE_VERSION}
-
 
 # Copy and set up firewall script
 COPY .devcontainer/init-firewall.sh /usr/local/bin/
