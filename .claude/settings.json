@@ -6,8 +6,7 @@
       "Bash(pnpm lint:*)"
     ],
     "deny": [
-      "Bash(git push:*)",
-      "Bash(git:*push:*)",
+      "Bash(git:*)",
       "Write(.git/**)"
     ]
   },
