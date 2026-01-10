@@ -27,12 +27,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 	vim \
 	&& apt-get clean && rm -rf /var/lib/apt/lists/*
 
-RUN corepack enable
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
-COPY . .
-RUN pnpm i
-
+RUN corepack enable pnpm
 RUN pnpm add -g @anthropic-ai/claude-code@${CLAUDE_CODE_VERSION}
 
 # Ensure default node user has access to /usr/local/share
