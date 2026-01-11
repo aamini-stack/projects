@@ -15,7 +15,7 @@
     "superpowers@superpowers-marketplace": true,
     "code-review@claude-plugins-official": true,
     "playwright@claude-plugins-official": true,
-    "ralph-loop@claude-plugins-official": true,
-		"typescript-lsp@claude-plugins-official": true
+    "ralph-loop@claude-plugins-official": false,
+    "typescript-lsp@claude-plugins-official": true
   }
 }

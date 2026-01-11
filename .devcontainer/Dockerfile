@@ -27,11 +27,19 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 	vim \
 	&& apt-get clean && rm -rf /var/lib/apt/lists/*
 
+WORKDIR /workspace
+
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0
 RUN corepack enable pnpm
+RUN pnpm dlx turbo prune --docker
+COPY /workspace/out/json/ .
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
+COPY /workspace/out/full/ .
+RUN pnpm turbo build
 RUN pnpm add -g @anthropic-ai/claude-code@${CLAUDE_CODE_VERSION}
+RUN pnpm exec playwright install chromium
 
 # Ensure default node user has access to /usr/local/share
 RUN mkdir -p /usr/local/share/npm-global && \
@@ -51,8 +59,6 @@ ENV DEVCONTAINER=true
 # Create workspace and config directories and set permissions
 RUN mkdir -p /workspace /home/node/.claude && \
 	chown -R node:node /workspace /home/node/.claude
-
-WORKDIR /workspace
 
 ARG GIT_DELTA_VERSION=0.18.2
 RUN ARCH=$(dpkg --print-architecture) && \
