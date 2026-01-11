@@ -7,3 +7,24 @@ flux2 = "2.7.5"
 
 [env]
 _.path = ["./scripts"]
+
+[tasks.e2e]
+run = "scripts/e2e.sh"
+
+# TODO: fix
+# 
+[tasks.deploy]
+description = "Deploy application"
+usage = '''
+arg "<environment>" help="Target environment" {
+  choices "dev" "staging" "prod"
+}
+flag "-v --verbose" help="Enable verbose output"
+flag "--region <region>" help="AWS region" default="us-east-1" env="AWS_REGION"
+'''
+
+run = '''
+echo "Deploying to ${usage_environment?} in ${usage_region?}"
+[[ "${usage_verbose?}" == "true" ]] && set -x
+./deploy.sh "${usage_environment?}" "${usage_region?}"
+'''

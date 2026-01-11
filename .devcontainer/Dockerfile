@@ -1,9 +1,24 @@
-FROM node:22
+# syntax=docker/dockerfile-upstream:master-labs
+
+FROM node:22 AS base
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0
+RUN corepack enable pnpm
+
+FROM base
+WORKDIR /workspace
+COPY --parents ./**/package.json /workspace
+COPY pnpm-lock.yaml .
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 
 ARG TZ
 ENV TZ="$TZ"
-
 ARG CLAUDE_CODE_VERSION=latest
+
+# RUN pnpm dlx turbo build
+RUN pnpm add -g @anthropic-ai/claude-code@${CLAUDE_CODE_VERSION}
+RUN pnpm exec playwright install chromium --with-deps
 
 # Install basic development tools and iptables/ipset
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -26,20 +41,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 	nano \
 	vim \
 	&& apt-get clean && rm -rf /var/lib/apt/lists/*
-
-WORKDIR /workspace
-
-ENV PNPM_HOME="/pnpm"
-ENV PATH="$PNPM_HOME:$PATH"
-ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0
-RUN corepack enable pnpm
-RUN pnpm dlx turbo prune --docker
-COPY /workspace/out/json/ .
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
-COPY /workspace/out/full/ .
-RUN pnpm turbo build
-RUN pnpm add -g @anthropic-ai/claude-code@${CLAUDE_CODE_VERSION}
-RUN pnpm exec playwright install chromium
 
 # Ensure default node user has access to /usr/local/share
 RUN mkdir -p /usr/local/share/npm-global && \
