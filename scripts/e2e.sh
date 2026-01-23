@@ -40,18 +40,9 @@ docker build \
 
 echo "Running e2e tests for $APP_NAME..."
 
-# Determine env-file arg (prefer .env.local over .env)
-ENV_FILE_ARG=""
-if [ -f "apps/$APP_NAME/.env.local" ]; then
-  ENV_FILE_ARG="--env-file apps/$APP_NAME/.env.local"
-elif [ -f "apps/$APP_NAME/.env" ]; then
-  ENV_FILE_ARG="--env-file apps/$APP_NAME/.env"
-fi
-
 # Run tests
 docker run --rm \
   -e BASE_URL \
-  $ENV_FILE_ARG \
   -v "$(pwd)/apps/$APP_NAME/test-results:/app/apps/$APP_NAME/test-results" \
   -v "$(pwd)/apps/$APP_NAME/playwright-report:/app/apps/$APP_NAME/playwright-report" \
   -v "$(pwd)/apps/$APP_NAME/e2e:/app/apps/$APP_NAME/e2e" \
