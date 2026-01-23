@@ -38,12 +38,12 @@
 			"persistent": true
 		},
 		"e2e": {
-			"dependsOn": ["^build"],
+			"dependsOn": ["^build", "build"],
 			"env": ["BASE_URL", "CI"],
 			"passThroughEnv": ["PLAYWRIGHT_*"]
 		},
 		"e2e:update": {
-			"dependsOn": ["^build"],
+			"dependsOn": ["^build", "build"],
 			"cache": false
 		}
 	}

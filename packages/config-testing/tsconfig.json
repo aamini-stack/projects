@@ -1,4 +1,4 @@
 {
-	"extends": "@aamini/config-typescript/strict",
+	"extends": "@aamini/config-typescript/lib",
 	"include": ["**/*"]
 }
