@@ -5,11 +5,36 @@
 	"private": true,
 	"exports": {
 		"./playwright": "./playwright.shared.config.ts",
-		"./vitest": "./vitest.shared.ts"
+		"./vitest": "./vitest.shared.ts",
+		"./fixtures": "./fixtures/index.ts",
+		"./fixtures/msw": "./fixtures/msw.ts",
+		"./fixtures/database": "./fixtures/database.ts",
+		"./setup/msw-server": "./setup/msw-server.ts",
+		"./setup/msw-browser": "./setup/msw-browser.ts",
+		"./setup/styles": "./setup/styles.ts"
+	},
+	"peerDependencies": {
+		"msw": "^2.0.0",
+		"drizzle-orm": "^0.45.0",
+		"vitest": "^4.0.0"
+	},
+	"peerDependenciesMeta": {
+		"msw": {
+			"optional": true
+		},
+		"drizzle-orm": {
+			"optional": true
+		}
 	},
 	"devDependencies": {
 		"@aamini/config-typescript": "workspace:*",
-		"@types/node": "^24.10.2"
+		"@testcontainers/postgresql": "^11.10.0",
+		"@types/node": "^24.10.2",
+		"@types/pg": "^8.15.4",
+		"drizzle-orm": "^0.45.1",
+		"drizzle-seed": "^0.3.1",
+		"msw": "^2.12.4",
+		"pg": "^8.16.2"
 	},
 	"dependencies": {
 		"@playwright/test": "^1.57.0",
@@ -21,6 +46,6 @@
 		"vite": "^7.3.0",
 		"vite-plugin-svgr": "^4.5.0",
 		"vite-tsconfig-paths": "^6.0.3",
-		"vitest": "^4.0.16"
+		"vitest": "^4.0.0"
 	}
 }

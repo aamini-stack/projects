@@ -1,5 +1,7 @@
+import tailwindcss from '@tailwindcss/vite'
 import viteReact from '@vitejs/plugin-react'
 import { playwright } from '@vitest/browser-playwright'
+import { loadEnv } from 'vite'
 import svgr from 'vite-plugin-svgr'
 import tsconfigPaths from 'vite-tsconfig-paths'
 import {
@@ -9,6 +11,13 @@ import {
 	type TestProjectInlineConfiguration,
 	type ViteUserConfig,
 } from 'vitest/config'
+
+const env = loadEnv('test', process.cwd(), '')
+
+const mswServerSetup = new URL('setup/msw-server.ts', import.meta.url).pathname
+const mswBrowserSetup = new URL('setup/msw-browser.ts', import.meta.url)
+	.pathname
+const stylesSetup = new URL('setup/styles.ts', import.meta.url).pathname
 
 interface ProjectOverrides {
 	server?: Partial<ViteUserConfig>
@@ -23,6 +32,7 @@ export const createBaseConfig = (
 		defineConfig({
 			plugins: [
 				tsconfigPaths(),
+				tailwindcss(),
 				viteReact({
 					babel: {
 						plugins: ['babel-plugin-react-compiler'],
@@ -35,7 +45,7 @@ export const createBaseConfig = (
 			],
 			test: {
 				passWithNoTests: true,
-				setupFiles: 'vitest.setup.ts',
+				env: env,
 				projects: [
 					{
 						extends: true,
@@ -52,6 +62,7 @@ export const createBaseConfig = (
 								include: ['src/**/*.test.ts'],
 								testTimeout: 30_000,
 								fileParallelism: !process.env.CI,
+								setupFiles: [mswServerSetup],
 							},
 						} satisfies TestProjectConfiguration,
 						projectOverrides.server ?? {},
@@ -62,7 +73,7 @@ export const createBaseConfig = (
 							test: {
 								name: 'browser',
 								include: ['src/**/*.test.tsx'],
-								setupFiles: 'vitest.setup.ts',
+								setupFiles: [stylesSetup, mswBrowserSetup],
 								browser: {
 									instances: [
 										{
