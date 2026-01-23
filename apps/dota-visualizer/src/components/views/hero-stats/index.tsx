@@ -1,4 +1,4 @@
-import type { Hero, HeroDictionary, HeroName } from '@/lib/dota/hero'
+import type { Hero, HeroName } from '@/lib/dota/hero'
 import { type Attribute, HeroStatsAnalyzer } from '@/lib/dota/hero-percentiles'
 import {
 	Select,
@@ -8,6 +8,7 @@ import {
 	SelectValue,
 } from '@aamini/ui/components/select'
 import { useMemo, useState } from 'react'
+import type { ViewProps } from '../types'
 
 const displayNames: Record<Attribute, string> = {
 	baseMagicResistance: 'Base Magic Res',
@@ -107,11 +108,7 @@ function StatGroup({
 	)
 }
 
-export function HeroStats({
-	heroDictionary,
-}: {
-	heroDictionary: HeroDictionary
-}) {
+export default function HeroStatsView({ heroDictionary }: ViewProps) {
 	const [name, setName] = useState<HeroName>('Anti-Mage')
 	const heroStats = useMemo(
 		() => new HeroStatsAnalyzer(heroDictionary),

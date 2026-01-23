@@ -1,10 +1,6 @@
-import type { HeroDictionary } from '@/lib/dota/hero'
+import type { ViewProps } from '../types'
 
-export function HeroTable({
-	heroDictionary,
-}: {
-	heroDictionary: HeroDictionary
-}) {
+export default function ArmorTableView({ heroDictionary }: ViewProps) {
 	// Group heroes by armor value
 	interface ArmorStat {
 		name: string
