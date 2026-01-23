@@ -7,20 +7,26 @@
 		"./playwright": "./playwright.shared.config.ts",
 		"./vitest": "./vitest.shared.ts"
 	},
-	"devDependencies": {
+	"peerDependencies": {
 		"@aamini/config-typescript": "workspace:*",
-		"@types/node": "^24.10.2"
-	},
-	"dependencies": {
+		"@testcontainers/postgresql": "^11.10.0",
+		"@types/node": "^24.10.2",
+		"@types/pg": "^8.15.4",
+		"drizzle-orm": "^0.45.1",
+		"drizzle-seed": "^0.3.1",
+		"msw": "^2.12.4",
+		"pg": "^8.16.2",
+		"vite": "^7.3.0",
+		"vite-plugin-svgr": "^4.5.0",
+		"vite-tsconfig-paths": "^6.0.3",
+		"vitest": "^4.0.16",
 		"@playwright/test": "^1.57.0",
 		"@tailwindcss/vite": "^4.1.18",
 		"@vitejs/plugin-react": "^5.0.4",
 		"@vitest/browser-playwright": "^4.0.16",
-		"babel-plugin-react-compiler": "^1.0.0",
-		"typescript": "^5.9.3",
-		"vite": "^7.3.0",
-		"vite-plugin-svgr": "^4.5.0",
-		"vite-tsconfig-paths": "^6.0.3",
-		"vitest": "^4.0.16"
+		"babel-plugin-react-compiler": "^1.0.0"
+	},
+	"devDependencies": {
+		"typescript": "^5.9.3"
 	}
 }

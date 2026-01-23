@@ -38,5 +38,5 @@ from root will use turbo to run that command for each subproject. (Ex: Running '
 | UI             | Tailwind + Shadcn                                        |
 | Testing        | Vitest (Unit/Integration), Playwright (E2E)              |
 | Deployment     | Vercel                                                   |
-| Package Manger | pnpm (**CRITICAL**: DO NOT USE npm)                      |
+| Package Manger | pnpm (CRITICAL: DO NOT USE npm)                          |
 | Task Runner    | Turborepo for Monorepo support + task management/caching |

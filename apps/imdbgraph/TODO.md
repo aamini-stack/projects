@@ -1,3 +1,0 @@
-- Fix bug where searchbar is not cleared when selecting an option in the ratings page
-- Fix bug where populate is slow and not working on vercel
-- Add screenshot tests for ratings page
