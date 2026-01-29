@@ -39,7 +39,7 @@ jobs:
           node-version: 22
           cache: 'pnpm'
       - run: pnpm i
-      - run: pnpm dlx playwright install --with-deps chromium
+      - run: pnpm exec playwright install --with-deps chromium
       - run: pnpm test:integration
 
   find-apps:
@@ -74,6 +74,7 @@ jobs:
           node-version: 22
           cache: 'pnpm'
       - run: pnpm i
+      - run: pnpm exec playwright install --with-deps chromium
       # Deploy
       - name: Deploy to Vercel
         working-directory: ./apps/${{ matrix.app }}
