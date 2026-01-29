@@ -1,5 +1,6 @@
 import viteReact from '@vitejs/plugin-react'
 import { playwright } from '@vitest/browser-playwright'
+import { loadEnv } from 'vite'
 import svgr from 'vite-plugin-svgr'
 import tsconfigPaths from 'vite-tsconfig-paths'
 import {
@@ -9,6 +10,8 @@ import {
 	type TestProjectInlineConfiguration,
 	type ViteUserConfig,
 } from 'vitest/config'
+
+const env = loadEnv('test', process.cwd(), '')
 
 interface ProjectOverrides {
 	server?: Partial<ViteUserConfig>
@@ -36,6 +39,7 @@ export const createBaseConfig = (
 			test: {
 				passWithNoTests: true,
 				setupFiles: 'vitest.setup.ts',
+				env: env,
 				projects: [
 					{
 						extends: true,

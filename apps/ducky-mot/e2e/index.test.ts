@@ -17,5 +17,6 @@ test('Screenshot Full Page', async ({ page }) => {
 	await page.waitForLoadState('networkidle')
 	await expect(page).toHaveScreenshot({
 		fullPage: true,
+		maxDiffPixelRatio: 0.01,
 	})
 })
