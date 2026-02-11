@@ -4,7 +4,8 @@ import {
 	HeroStatsAnalyzer,
 	percentile,
 } from '@/lib/dota/hero-percentiles'
-import { describe, expect, test } from 'vitest'
+import { test } from '@aamini/config-testing/test/server'
+import { describe, expect } from 'vitest'
 
 describe('percentile', () => {
 	test('0 stddev', () => {

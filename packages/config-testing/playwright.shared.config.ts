@@ -3,6 +3,7 @@ import {
 	devices,
 	type PlaywrightTestConfig,
 } from '@playwright/test'
+import { loadEnv } from 'vite'
 
 /** See https://playwright.dev/docs/test-configuration. */
 export const baseConfig = (
@@ -49,6 +50,7 @@ export const baseConfig = (
 							timeout: 180_000, // 3 minutes for Nitro/Vite to fully initialize
 							stdout: 'pipe',
 							stderr: 'pipe',
+							env: loadEnv('test', process.cwd(), ''),
 						},
 					}
 				: {}),
