@@ -1,0 +1,494 @@
+{
+	"laneCreeps": {
+		"upgradeCycle": {
+			"intervalSeconds": 450,
+			"maxStacks": 30,
+			"description": "Every 7.5 minutes (450 seconds), lane creeps receive permanent upgrades. Maximum 30 stacks at 225 minutes."
+		},
+		"melee": {
+			"name": "Melee Creep",
+			"type": "melee",
+			"base": {
+				"health": 550,
+				"armor": 2,
+				"magicResist": 0,
+				"damageMin": 19,
+				"damageMax": 23,
+				"attackType": "Runty",
+				"attackRange": 100,
+				"attackSpeed": 1.0,
+				"moveSpeed": 325,
+				"goldMin": 34,
+				"goldMax": 39,
+				"xp": 57
+			},
+			"scaling": {
+				"healthPerInterval": 12,
+				"damagePerInterval": 1,
+				"goldPerInterval": 1
+			},
+			"abilities": [
+				{
+					"name": "Runty",
+					"type": "passive",
+					"description": "Deals 25% reduced damage to heroes and 30% reduced damage to reinforced units."
+				}
+			]
+		},
+		"ranged": {
+			"name": "Ranged Creep",
+			"type": "ranged",
+			"base": {
+				"health": 300,
+				"armor": 0,
+				"magicResist": 0,
+				"damageMin": 21,
+				"damageMax": 26,
+				"attackType": "Piercing",
+				"attackRange": 500,
+				"attackSpeed": 1.0,
+				"moveSpeed": 325,
+				"goldMin": 43,
+				"goldMax": 52,
+				"xp": 69
+			},
+			"scaling": {
+				"healthPerInterval": 12,
+				"damagePerInterval": 2,
+				"goldPerInterval": 6,
+				"xpPerInterval": 8
+			},
+			"abilities": [
+				{
+					"name": "Piercing",
+					"type": "passive",
+					"description": "Deals 50% bonus damage to non-hero units, 50% reduced damage to heroes, and 65% reduced damage to reinforced units."
+				}
+			]
+		},
+		"siege": {
+			"name": "Siege Creep",
+			"type": "ranged",
+			"base": {
+				"health": 935,
+				"armor": 0,
+				"magicResist": 80,
+				"damageMin": 35,
+				"damageMax": 46,
+				"attackType": "Reinforced",
+				"attackRange": 690,
+				"attackSpeed": 0.33,
+				"moveSpeed": 325,
+				"goldMin": 59,
+				"goldMax": 72,
+				"xp": 88
+			},
+			"scaling": null,
+			"abilities": [
+				{
+					"name": "Reinforced",
+					"type": "passive",
+					"description": "Deals 50% bonus damage to other reinforced units and buildings. Takes 50% reduced damage from hero attacks and 30% reduced from non-heroes."
+				}
+			],
+			"spawnInfo": "First spawns at 5:00, then every 5 minutes. +1 per wave at 35:00 (max 2)."
+		},
+		"flagbearer": {
+			"name": "Flagbearer Creep",
+			"type": "melee",
+			"base": {
+				"health": 550,
+				"armor": 2,
+				"magicResist": 40,
+				"damageMin": 19,
+				"damageMax": 23,
+				"attackType": "Runty",
+				"attackRange": 100,
+				"attackSpeed": 1.0,
+				"moveSpeed": 325,
+				"goldMin": 34,
+				"goldMax": 39,
+				"xp": 57
+			},
+			"scaling": null,
+			"abilities": [
+				{
+					"name": "Inspiration Aura",
+					"type": "aura",
+					"radius": 700,
+					"description": "Grants 3 HP regeneration to nearby allies. On death, grants 44-49 gold to enemies within 1200 radius."
+				},
+				{
+					"name": "Runty",
+					"type": "passive",
+					"description": "Deals 25% reduced damage to heroes and 30% reduced damage to reinforced units."
+				}
+			],
+			"spawnInfo": "First spawns at 2:00, then every 60 seconds, replacing one random melee creep. Does NOT scale with time."
+		},
+		"waveComposition": [
+			{ "gameTime": "0:00", "melee": 3, "ranged": 1, "siege": 0 },
+			{ "gameTime": "5:00", "melee": 3, "ranged": 1, "siege": 1 },
+			{ "gameTime": "15:00", "melee": 4, "ranged": 1, "siege": 1 },
+			{ "gameTime": "30:00", "melee": 5, "ranged": 1, "siege": 1 },
+			{ "gameTime": "35:00", "melee": 5, "ranged": 1, "siege": 2 },
+			{ "gameTime": "40:00", "melee": 5, "ranged": 2, "siege": 2 },
+			{ "gameTime": "45:00", "melee": 6, "ranged": 2, "siege": 2 }
+		]
+	},
+	"neutralCreeps": {
+		"upgradeCycle": {
+			"intervalSeconds": 450,
+			"maxStacks": 30,
+			"perInterval": {
+				"health": 30,
+				"armor": 0.5,
+				"damage": 3,
+				"attackSpeed": 5,
+				"gold": 1,
+				"xp": 5
+			},
+			"description": "Neutral creeps upgrade every 7.5 minutes (450 seconds), up to 30 stacks."
+		},
+		"camps": {
+			"small": {
+				"name": "Small Camps",
+				"creeps": [
+					{
+						"name": "Kobold",
+						"health": 240,
+						"armor": 0,
+						"magicResist": 0,
+						"damageMin": 13,
+						"damageMax": 14,
+						"goldMin": 5,
+						"goldMax": 7,
+						"xp": 14,
+						"abilities": [
+							{
+								"name": "Prospecting Aura",
+								"description": "Increases nearby allied heroes GPM by 20/25/30/40 within 1200 radius."
+							}
+						]
+					},
+					{
+						"name": "Hill Troll",
+						"health": 500,
+						"armor": 0,
+						"magicResist": 0,
+						"damageMin": 24,
+						"damageMax": 27,
+						"attackType": "Piercing",
+						"goldMin": 20,
+						"goldMax": 24,
+						"xp": 42,
+						"abilities": [
+							{
+								"name": "Ensnare",
+								"description": "Roots target for 1.75 seconds. 15s cooldown, 75 mana."
+							}
+						]
+					}
+				],
+				"totalGold": { "min": 50, "max": 65 },
+				"totalXp": 90
+			},
+			"medium": {
+				"name": "Medium Camps",
+				"creeps": [
+					{
+						"name": "Centaur Conqueror",
+						"health": 1100,
+						"armor": 4,
+						"magicResist": 0,
+						"damageMin": 49,
+						"damageMax": 55,
+						"goldMin": 56,
+						"goldMax": 62,
+						"xp": 90,
+						"abilities": [
+							{
+								"name": "War Stomp",
+								"description": "Deals 25/50/75/150 magical damage in 250 radius. Stuns heroes 1.6s, creeps 3s. 12s cooldown, 50 mana."
+							}
+						]
+					},
+					{
+						"name": "Centaur Courser",
+						"health": 350,
+						"armor": 1,
+						"magicResist": 0,
+						"damageMin": 18,
+						"damageMax": 20,
+						"goldMin": 18,
+						"goldMax": 20,
+						"xp": 32,
+						"abilities": [
+							{
+								"name": "Cloak Aura",
+								"description": "Grants 10/12/14/16% magic resistance to heroes and 20/24/28/32% to creeps within 800 radius."
+							}
+						]
+					},
+					{
+						"name": "Alpha Wolf",
+						"health": 600,
+						"armor": 3,
+						"magicResist": 0,
+						"damageMin": 30,
+						"damageMax": 33,
+						"goldMin": 34,
+						"goldMax": 36,
+						"xp": 60,
+						"abilities": [
+							{
+								"name": "Critical Strike",
+								"description": "20% chance to deal 200/225/250/300% critical damage."
+							},
+							{
+								"name": "Packleader's Aura",
+								"description": "Grants 30% attack damage bonus within 800 radius."
+							}
+						]
+					},
+					{
+						"name": "Giant Wolf",
+						"health": 500,
+						"armor": 1,
+						"magicResist": 0,
+						"damageMin": 15,
+						"damageMax": 17,
+						"goldMin": 20,
+						"goldMax": 24,
+						"xp": 40,
+						"abilities": [
+							{
+								"name": "Intimidate",
+								"description": "Reduces enemy attack damage by 50% for 4s in 300-500 radius. 16s cooldown."
+							}
+						]
+					},
+					{
+						"name": "Mud Golem",
+						"health": 750,
+						"armor": 0,
+						"magicResist": 30,
+						"damageMin": 24,
+						"damageMax": 26,
+						"goldMin": 21,
+						"goldMax": 23,
+						"xp": 32,
+						"abilities": [
+							{
+								"name": "Hurl Boulder",
+								"description": "75 damage to heroes, 150 to creeps, 0.5s stun. 800 range, 30s cooldown."
+							},
+							{
+								"name": "Shard Split",
+								"description": "On death, splits into 2-3 Shard Golems with 250-370 HP."
+							}
+						]
+					}
+				],
+				"totalGold": { "min": 74, "max": 90 },
+				"totalXp": 130
+			},
+			"large": {
+				"name": "Large Camps",
+				"creeps": [
+					{
+						"name": "Satyr Tormenter",
+						"health": 1100,
+						"armor": 2,
+						"magicResist": 0,
+						"damageMin": 49,
+						"damageMax": 55,
+						"goldMin": 62,
+						"goldMax": 68,
+						"xp": 90,
+						"abilities": [
+							{
+								"name": "Shockwave",
+								"description": "160 magical damage projectile traveling 1200 units. 700 range, 8s cooldown."
+							},
+							{
+								"name": "Unholy Aura",
+								"description": "Grants 3/5/7/11 HP regen per second within 800 radius."
+							}
+						]
+					},
+					{
+						"name": "Hellbear Smasher",
+						"health": 950,
+						"armor": 4,
+						"magicResist": 0,
+						"damageMin": 49,
+						"damageMax": 55,
+						"goldMin": 64,
+						"goldMax": 68,
+						"xp": 90,
+						"abilities": [
+							{
+								"name": "Thunder Clap",
+								"description": "150/200/250/350 magical damage in 300 radius with 25% slow for 3s. 12-9s cooldown."
+							},
+							{
+								"name": "Death Throe: Power",
+								"description": "On death, grants 50% attack damage bonus to nearby allies for 5s."
+							}
+						]
+					},
+					{
+						"name": "Hellbear",
+						"health": 700,
+						"armor": 3,
+						"magicResist": 0,
+						"damageMin": 39,
+						"damageMax": 44,
+						"goldMin": 32,
+						"goldMax": 40,
+						"xp": 66,
+						"abilities": [
+							{
+								"name": "Swiftness Aura",
+								"description": "Grants 15/18/21/27 attack speed bonus within 800 radius."
+							},
+							{
+								"name": "Death Throe: Rush",
+								"description": "On death, grants 100 attack speed bonus to nearby allies for 5s."
+							}
+						]
+					},
+					{
+						"name": "Wildwing Ripper",
+						"health": 950,
+						"armor": 4,
+						"magicResist": 0,
+						"damageMin": 50,
+						"damageMax": 56,
+						"goldMin": 60,
+						"goldMax": 66,
+						"xp": 90,
+						"abilities": [
+							{
+								"name": "Hurricane",
+								"description": "Pushes target unit 400 distance. 400-750 range, 30-22s cooldown, 100 mana."
+							},
+							{
+								"name": "Toughness Aura",
+								"description": "Grants +3 armor to nearby allies within 800 radius."
+							}
+						]
+					},
+					{
+						"name": "Dark Troll Summoner",
+						"health": 1100,
+						"armor": 4,
+						"magicResist": 0,
+						"damageMin": 40,
+						"damageMax": 45,
+						"goldMin": 42,
+						"goldMax": 48,
+						"xp": 90,
+						"abilities": [
+							{
+								"name": "Raise Dead",
+								"description": "Summons 3 Skeleton Warriors (250-375 HP, 11-22 damage) for 35s. 20s cooldown, triggers at <50% HP."
+							},
+							{
+								"name": "Ensnare",
+								"description": "Roots target for 1.75s. 15s cooldown, 75 mana."
+							}
+						]
+					}
+				],
+				"totalGold": { "min": 92, "max": 110 },
+				"totalXp": 160
+			},
+			"ancient": {
+				"name": "Ancient Camps",
+				"creeps": [
+					{
+						"name": "Ancient Black Dragon",
+						"health": 2000,
+						"armor": 4,
+						"magicResist": 30,
+						"damageMin": 62,
+						"damageMax": 68,
+						"goldMin": 78,
+						"goldMax": 82,
+						"xp": 124,
+						"abilities": [
+							{
+								"name": "Fireball",
+								"description": "85 DPS in 300 radius for 8-12s. 15s cooldown, 200 mana."
+							},
+							{
+								"name": "Splash Attack",
+								"description": "100% splash damage in 250 radius on each attack."
+							},
+							{
+								"name": "Dragonhide Aura",
+								"description": "Grants +3 armor to allies within 800 radius."
+							}
+						]
+					},
+					{
+						"name": "Ancient Thunderhide",
+						"health": 1700,
+						"armor": 3,
+						"magicResist": 30,
+						"damageMin": 60,
+						"damageMax": 65,
+						"goldMin": 78,
+						"goldMax": 82,
+						"xp": 124,
+						"abilities": [
+							{
+								"name": "Slam",
+								"description": "250 magical damage in 350 radius with 60% slow for 2-3s. 6s cooldown, 150 mana."
+							},
+							{
+								"name": "Frenzy",
+								"description": "Grants ally +75 attack speed for 8s. 8s cooldown, 75 mana."
+							}
+						]
+					},
+					{
+						"name": "Granite Golem",
+						"health": 1500,
+						"armor": 8,
+						"magicResist": 30,
+						"damageMin": 80,
+						"damageMax": 84,
+						"goldMin": 78,
+						"goldMax": 82,
+						"xp": 124,
+						"abilities": [
+							{
+								"name": "Granite Aura",
+								"description": "Increases max health of nearby units by 15/16/17/19% within 800 radius."
+							}
+						]
+					}
+				],
+				"totalGold": { "min": 131, "max": 145 },
+				"totalXp": 261
+			}
+		}
+	},
+	"formulas": {
+		"laneCreepStats": {
+			"description": "Calculate lane creep stats at a given game time",
+			"formula": "stat = baseStat + (scalingPerInterval * Math.min(Math.floor(gameTimeSeconds / 450), 30))"
+		},
+		"neutralCreepStats": {
+			"description": "Calculate neutral creep stats at a given game time",
+			"formula": "stat = baseStat + (neutralUpgrade.perInterval[stat] * Math.min(Math.floor(gameTimeSeconds / 450), 30))"
+		},
+		"waveGold": {
+			"description": "Total gold from clearing a lane wave at a given time",
+			"note": "Wave composition changes at 15:00, 30:00, 35:00, 40:00, 45:00"
+		}
+	}
+}
