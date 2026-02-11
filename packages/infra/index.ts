@@ -1,3 +1,10 @@
-// export * as aks from './src/aks'
-export * as github from './src/github'
-export * as vercel from './src/vercel'
+import * as postgres from './src/postgres'
+
+export const db = {
+	host: postgres.postgresHost,
+	adminUser: postgres.postgresAdminUser,
+	adminPassword: postgres.postgresAdminPassword,
+	port: postgres.postgresPort,
+}
+export const postgresResourceGroup = postgres.postgresResourceGroup
+export const postgresServerName = postgres.postgresServerName

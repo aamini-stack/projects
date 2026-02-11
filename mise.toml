@@ -2,8 +2,10 @@
 node = "22"
 pnpm = "10.25.0"
 kubeseal = "0.33.1"
+pulumi = "3.219.0"
 kubectl = "1.34.3"
 flux2 = "2.7.5"
 
 [env]
 _.path = ["./scripts"]
+_.file = '.env.local'
