@@ -43,6 +43,7 @@ echo "Running e2e tests for $APP_NAME..."
 # Run tests
 docker run --rm \
   -e BASE_URL \
+  -e DATABASE_URL \
   -v "$(pwd)/apps/$APP_NAME/test-results:/app/apps/$APP_NAME/test-results" \
   -v "$(pwd)/apps/$APP_NAME/playwright-report:/app/apps/$APP_NAME/playwright-report" \
   -v "$(pwd)/apps/$APP_NAME/e2e:/app/apps/$APP_NAME/e2e" \

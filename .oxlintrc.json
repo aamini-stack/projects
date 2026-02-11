@@ -42,5 +42,59 @@
 		"builtin": true
 	},
 	"globals": {},
-	"ignorePatterns": []
+	"ignorePatterns": [],
+	"overrides": [
+		{
+			"files": ["**/*.test.unit.ts"],
+			"rules": {
+				"eslint/no-restricted-imports": [
+					"error",
+					{
+						"patterns": [
+							{
+								"group": ["@aamini/config-testing/test/*"],
+								"message": "Unit tests should not import test fixtures. Use plain vitest imports instead."
+							}
+						]
+					}
+				]
+			}
+		},
+		{
+			"files": ["**/*.test.tsx"],
+			"rules": {
+				"eslint/no-restricted-imports": [
+					"error",
+					{
+						"paths": [
+							{
+								"name": "@aamini/config-testing/test/server",
+								"message": "Browser tests (*.test.tsx) should use test/browser, not test/server."
+							},
+							{
+								"name": "@aamini/config-testing/test/db",
+								"message": "Browser tests (*.test.tsx) should use test/browser, not test/db."
+							}
+						]
+					}
+				]
+			}
+		},
+		{
+			"files": ["**/*.test.ts"],
+			"rules": {
+				"eslint/no-restricted-imports": [
+					"error",
+					{
+						"paths": [
+							{
+								"name": "@aamini/config-testing/test/browser",
+								"message": "Server tests (*.test.ts) should use test/server or test/db, not test/browser."
+							}
+						]
+					}
+				]
+			}
+		}
+	]
 }

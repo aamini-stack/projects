@@ -1,7 +1,7 @@
 import { getGunzipStream, type ImdbFile } from '@/lib/imdb/file-downloader'
 import { getRatingsDb } from '@/lib/imdb/ratings'
 import { update } from '@/lib/imdb/scraper'
-import { test } from '@/mocks/test-extend-server'
+import { test } from '@aamini/config-testing/test/db'
 import { createReadStream } from 'node:fs'
 import path from 'node:path'
 import { describe, expect, vi } from 'vitest'

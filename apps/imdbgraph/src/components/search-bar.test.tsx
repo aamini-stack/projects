@@ -1,4 +1,4 @@
-import { test } from '@/mocks/test-extend-browser'
+import { test } from '@aamini/config-testing/test/browser'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import {
 	createRootRoute,
