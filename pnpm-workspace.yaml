@@ -1,3 +1,15 @@
 packages:
   - apps/*
+  - apps/*/infra
   - packages/*
+
+onlyBuiltDependencies:
+  - '@pulumi/command'
+  - '@worawat/flux'
+  - better-sqlite3
+  - core-js
+  - cpu-features
+  - esbuild
+  - msw
+  - protobufjs
+  - ssh2
