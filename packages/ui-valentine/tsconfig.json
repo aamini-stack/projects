@@ -1,0 +1,9 @@
+{
+	"extends": "@aamini/config-typescript/react",
+	"compilerOptions": {
+		"paths": {
+			"@aamini/ui-valentine/*": ["./src/*"]
+		}
+	},
+	"include": ["**/*"]
+}

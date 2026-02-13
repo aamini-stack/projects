@@ -1,0 +1,20 @@
+{
+	"$schema": "https://ui.shadcn.com/schema.json",
+	"style": "new-york",
+	"rsc": true,
+	"tsx": true,
+	"tailwind": {
+		"config": "",
+		"css": "src/globals.css",
+		"baseColor": "zinc",
+		"cssVariables": true
+	},
+	"iconLibrary": "lucide",
+	"aliases": {
+		"components": "@aamini/ui-valentine/components",
+		"utils": "@aamini/ui-valentine/lib/utils",
+		"hooks": "@aamini/ui-valentine/hooks",
+		"lib": "@aamini/ui-valentine/lib",
+		"ui": "@aamini/ui-valentine/components"
+	}
+}

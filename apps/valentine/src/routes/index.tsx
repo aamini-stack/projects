@@ -6,13 +6,24 @@ export const Route = createFileRoute('/')({
 })
 
 const HEART_EMOJIS = ['❤️', '💕', '💖', '💗', '💘', '💝', '💓', '💞', '🩷']
+const SIZES = ['text-xl', 'text-2xl', 'text-3xl', 'text-4xl', 'text-5xl', 'text-6xl']
+
+interface Particle {
+	id: number
+	x: number
+	y: number
+	emoji: string
+	delay: number
+	size: string
+	duration: number
+}
 
 function Index() {
 	const [clicks, setClicks] = useState(0)
 	const [exploded, setExploded] = useState(false)
-	const [particles, setParticles] = useState<
-		Array<{ id: number; x: number; y: number; emoji: string; delay: number }>
-	>([])
+	const [particles, setParticles] = useState<Particle[]>([])
+	const [shaking, setShaking] = useState(false)
+	const [flashing, setFlashing] = useState(false)
 
 	const scale = 1 + clicks * 0.2
 
@@ -21,16 +32,46 @@ function Index() {
 		setClicks(next)
 
 		if (next >= 5) {
-			// spawn heart particles then transition
-			const hearts = Array.from({ length: 20 }, (_, i) => ({
+			setShaking(true)
+			setFlashing(true)
+
+			// Wave 1: initial burst — fast, close
+			const wave1: Particle[] = Array.from({ length: 30 }, (_, i) => ({
 				id: i,
-				x: (Math.random() - 0.5) * 600,
-				y: (Math.random() - 0.5) * 600,
+				x: (Math.random() - 0.5) * 800,
+				y: (Math.random() - 0.5) * 800,
 				emoji: HEART_EMOJIS[Math.floor(Math.random() * HEART_EMOJIS.length)],
-				delay: Math.random() * 0.3,
+				delay: Math.random() * 0.15,
+				size: SIZES[Math.floor(Math.random() * SIZES.length)],
+				duration: 0.8 + Math.random() * 0.4,
 			}))
-			setParticles(hearts)
-			setTimeout(() => setExploded(true), 800)
+
+			// Wave 2: bigger spread, slightly delayed
+			const wave2: Particle[] = Array.from({ length: 30 }, (_, i) => ({
+				id: i + 30,
+				x: (Math.random() - 0.5) * 1600,
+				y: (Math.random() - 0.5) * 1600,
+				emoji: HEART_EMOJIS[Math.floor(Math.random() * HEART_EMOJIS.length)],
+				delay: 0.2 + Math.random() * 0.3,
+				size: SIZES[Math.floor(Math.random() * SIZES.length)],
+				duration: 1.0 + Math.random() * 0.6,
+			}))
+
+			// Wave 3: full-screen rain
+			const wave3: Particle[] = Array.from({ length: 30 }, (_, i) => ({
+				id: i + 60,
+				x: (Math.random() - 0.5) * 2400,
+				y: (Math.random() - 0.5) * 2400,
+				emoji: HEART_EMOJIS[Math.floor(Math.random() * HEART_EMOJIS.length)],
+				delay: 0.5 + Math.random() * 0.5,
+				size: SIZES[Math.floor(Math.random() * SIZES.length)],
+				duration: 1.2 + Math.random() * 0.8,
+			}))
+
+			setParticles([...wave1, ...wave2, ...wave3])
+			setTimeout(() => setFlashing(false), 400)
+			setTimeout(() => setShaking(false), 600)
+			setTimeout(() => setExploded(true), 2500)
 		}
 	}
 
@@ -52,7 +93,14 @@ function Index() {
 	}
 
 	return (
-		<div className="paper-texture flex min-h-screen flex-col items-center justify-center px-4">
+		<div
+			className={`paper-texture flex min-h-screen flex-col items-center justify-center px-4 ${shaking ? 'animate-shake' : ''}`}
+		>
+			{/* Flash overlay */}
+			{flashing && (
+				<div className="animate-flash pointer-events-none fixed inset-0 z-50 bg-pink-200" />
+			)}
+
 			<div className="animate-gentle-float mb-8 text-6xl">
 				<HeartIcon />
 			</div>
@@ -69,9 +117,9 @@ function Index() {
 				{particles.map((p) => (
 					<span
 						key={p.id}
-						className="pointer-events-none absolute left-1/2 top-1/2 text-2xl"
+						className={`pointer-events-none absolute left-1/2 top-1/2 ${p.size}`}
 						style={{
-							animation: `explode 0.8s ease-out ${p.delay}s forwards`,
+							animation: `explode ${p.duration}s cubic-bezier(0.25, 0.46, 0.45, 0.94) ${p.delay}s forwards`,
 							['--tx' as string]: `${p.x}px`,
 							['--ty' as string]: `${p.y}px`,
 						}}
@@ -82,7 +130,10 @@ function Index() {
 
 				<button
 					onClick={handleYes}
-					style={{ transform: `scale(${scale})` }}
+					style={{
+						transform: `scale(${scale})`,
+						animation: clicks > 0 ? `button-shake ${0.5 - clicks * 0.08}s ease-in-out infinite` : undefined,
+					}}
 					className="cursor-pointer rounded-lg bg-primary px-8 py-3 text-lg font-semibold text-primary-foreground shadow-warm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-warm-lg"
 				>
 					Yes
