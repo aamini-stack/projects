@@ -139,8 +139,8 @@ function Index() {
 					Yes
 				</button>
 				<button
-					disabled
-					className="cursor-not-allowed rounded-lg bg-primary/30 px-8 py-3 text-lg font-semibold text-primary-foreground/50 shadow-warm"
+					onClick={handleYes}
+					className="cursor-pointer rounded-lg bg-foreground px-8 py-3 text-lg font-semibold text-background shadow-warm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-warm-lg"
 				>
 					No
 				</button>
