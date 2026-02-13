@@ -47,9 +47,9 @@ function Index() {
 				id: i,
 				x: (Math.random() - 0.5) * 800,
 				y: (Math.random() - 0.5) * 800,
-				emoji: HEART_EMOJIS[Math.floor(Math.random() * HEART_EMOJIS.length)],
+				emoji: HEART_EMOJIS[Math.floor(Math.random() * HEART_EMOJIS.length)] ?? '❤️',
 				delay: Math.random() * 0.15,
-				size: SIZES[Math.floor(Math.random() * SIZES.length)],
+				size: SIZES[Math.floor(Math.random() * SIZES.length)] ?? 'text-2xl',
 				duration: 0.8 + Math.random() * 0.4,
 			}))
 
@@ -58,9 +58,9 @@ function Index() {
 				id: i + 30,
 				x: (Math.random() - 0.5) * 1600,
 				y: (Math.random() - 0.5) * 1600,
-				emoji: HEART_EMOJIS[Math.floor(Math.random() * HEART_EMOJIS.length)],
+				emoji: HEART_EMOJIS[Math.floor(Math.random() * HEART_EMOJIS.length)] ?? '❤️',
 				delay: 0.2 + Math.random() * 0.3,
-				size: SIZES[Math.floor(Math.random() * SIZES.length)],
+				size: SIZES[Math.floor(Math.random() * SIZES.length)] ?? 'text-2xl',
 				duration: 1.0 + Math.random() * 0.6,
 			}))
 
@@ -69,9 +69,9 @@ function Index() {
 				id: i + 60,
 				x: (Math.random() - 0.5) * 2400,
 				y: (Math.random() - 0.5) * 2400,
-				emoji: HEART_EMOJIS[Math.floor(Math.random() * HEART_EMOJIS.length)],
+				emoji: HEART_EMOJIS[Math.floor(Math.random() * HEART_EMOJIS.length)] ?? '❤️',
 				delay: 0.5 + Math.random() * 0.5,
-				size: SIZES[Math.floor(Math.random() * SIZES.length)],
+				size: SIZES[Math.floor(Math.random() * SIZES.length)] ?? 'text-2xl',
 				duration: 1.2 + Math.random() * 0.8,
 			}))
 
