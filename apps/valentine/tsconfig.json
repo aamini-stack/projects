@@ -1,0 +1,10 @@
+{
+	"extends": "@aamini/config-typescript/tanstack",
+	"include": ["**/*.ts", "**/*.tsx"],
+	"exclude": [".output"],
+	"compilerOptions": {
+		"paths": {
+			"@/*": ["./src/*"]
+		}
+	}
+}
