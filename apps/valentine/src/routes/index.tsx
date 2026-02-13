@@ -6,7 +6,14 @@ export const Route = createFileRoute('/')({
 })
 
 const HEART_EMOJIS = ['❤️', '💕', '💖', '💗', '💘', '💝', '💓', '💞', '🩷']
-const SIZES = ['text-xl', 'text-2xl', 'text-3xl', 'text-4xl', 'text-5xl', 'text-6xl']
+const SIZES = [
+	'text-xl',
+	'text-2xl',
+	'text-3xl',
+	'text-4xl',
+	'text-5xl',
+	'text-6xl',
+]
 
 interface Particle {
 	id: number
@@ -82,9 +89,9 @@ function Index() {
 					<img
 						src="https://media1.tenor.com/m/AEQdP5OKt6IAAAAC/be-my-valentine-valentines-day.gif"
 						alt="Happy Valentine's Day penguins"
-						className="h-64 w-64 rounded-2xl shadow-warm-lg"
+						className="shadow-warm-lg h-64 w-64 rounded-2xl"
 					/>
-					<h1 className="text-center text-5xl font-bold text-primary md:text-6xl">
+					<h1 className="text-primary text-center text-5xl font-bold md:text-6xl">
 						Yay! Happy Valentine's Day!
 					</h1>
 				</div>
@@ -105,7 +112,7 @@ function Index() {
 				<HeartIcon />
 			</div>
 
-			<h1 className="animate-fade-up mb-12 text-center text-5xl font-bold text-primary md:text-6xl">
+			<h1 className="animate-fade-up text-primary mb-12 text-center text-5xl font-bold md:text-6xl">
 				Will you be my Valentine?
 			</h1>
 
@@ -117,7 +124,7 @@ function Index() {
 				{particles.map((p) => (
 					<span
 						key={p.id}
-						className={`pointer-events-none absolute left-1/2 top-1/2 ${p.size}`}
+						className={`pointer-events-none absolute top-1/2 left-1/2 ${p.size}`}
 						style={{
 							animation: `explode ${p.duration}s cubic-bezier(0.25, 0.46, 0.45, 0.94) ${p.delay}s forwards`,
 							['--tx' as string]: `${p.x}px`,
@@ -132,15 +139,18 @@ function Index() {
 					onClick={handleYes}
 					style={{
 						transform: `scale(${scale})`,
-						animation: clicks > 0 ? `button-shake ${0.5 - clicks * 0.08}s ease-in-out infinite` : undefined,
+						animation:
+							clicks > 0
+								? `button-shake ${0.5 - clicks * 0.08}s ease-in-out infinite`
+								: undefined,
 					}}
-					className="cursor-pointer rounded-lg bg-primary px-8 py-3 text-lg font-semibold text-primary-foreground shadow-warm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-warm-lg"
+					className="bg-primary text-primary-foreground shadow-warm hover:shadow-warm-lg cursor-pointer rounded-lg px-8 py-3 text-lg font-semibold transition-all duration-200 hover:-translate-y-0.5"
 				>
 					Yes
 				</button>
 				<button
 					onClick={handleYes}
-					className="cursor-pointer rounded-lg bg-foreground px-8 py-3 text-lg font-semibold text-background shadow-warm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-warm-lg"
+					className="bg-foreground text-background shadow-warm hover:shadow-warm-lg cursor-pointer rounded-lg px-8 py-3 text-lg font-semibold transition-all duration-200 hover:-translate-y-0.5"
 				>
 					No
 				</button>
@@ -155,7 +165,7 @@ function HeartIcon() {
 			xmlns="http://www.w3.org/2000/svg"
 			viewBox="0 0 24 24"
 			fill="currentColor"
-			className="h-16 w-16 text-primary"
+			className="text-primary h-16 w-16"
 		>
 			<path d="M11.645 20.91l-.007-.003-.022-.012a15.247 15.247 0 01-.383-.218 25.18 25.18 0 01-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0112 5.052 5.5 5.5 0 0116.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 01-4.244 3.17 15.247 15.247 0 01-.383.219l-.022.012-.007.004-.003.001a.752.752 0 01-.704 0l-.003-.001z" />
 		</svg>

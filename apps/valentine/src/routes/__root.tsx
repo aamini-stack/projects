@@ -26,7 +26,7 @@ function RootComponent() {
 			<head>
 				<HeadContent />
 			</head>
-			<body className="m-0 min-h-full w-full bg-background font-sans text-foreground antialiased">
+			<body className="bg-background text-foreground m-0 min-h-full w-full font-sans antialiased">
 				<Outlet />
 				<Scripts />
 			</body>

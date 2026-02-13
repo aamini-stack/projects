@@ -11,7 +11,9 @@
 		"dev": "vite dev --port 3001",
 		"serve": "vite preview",
 		"start": "node .output/server/index.mjs",
-		"typecheck": "tsc --noEmit"
+		"typecheck": "tsc --noEmit",
+		"e2e": "playwright test",
+		"e2e:update": "playwright test --update-snapshots"
 	},
 	"dependencies": {
 		"@tanstack/react-router": "^1.143.11",
@@ -21,8 +23,10 @@
 		"react-dom": "^19.2.3"
 	},
 	"devDependencies": {
+		"@aamini/config-testing": "workspace:*",
 		"@aamini/config-typescript": "workspace:*",
 		"@aamini/config-vite": "workspace:*",
+		"@playwright/test": "^1.52.0",
 		"@tailwindcss/vite": "^4.1.18",
 		"@tanstack/devtools-vite": "^0.3.11",
 		"@types/react": "^19.2.7",

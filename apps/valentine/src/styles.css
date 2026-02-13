@@ -7,9 +7,9 @@
 :root {
 	--background: oklch(0.96 0.015 75);
 	--foreground: oklch(0.28 0.04 55);
-	--primary: oklch(0.40 0.12 15);
+	--primary: oklch(0.4 0.12 15);
 	--primary-foreground: oklch(0.96 0.015 75);
-	--muted-foreground: oklch(0.50 0.03 55);
+	--muted-foreground: oklch(0.5 0.03 55);
 }
 
 @theme inline {
@@ -23,8 +23,10 @@
 	--color-primary-foreground: var(--primary-foreground);
 	--color-muted-foreground: var(--muted-foreground);
 
-	--shadow-warm: 0 2px 8px oklch(0.40 0.05 20 / 10%), 0 1px 3px oklch(0.40 0.05 20 / 8%);
-	--shadow-warm-lg: 0 4px 16px oklch(0.40 0.05 20 / 12%), 0 2px 6px oklch(0.40 0.05 20 / 8%);
+	--shadow-warm:
+		0 2px 8px oklch(0.4 0.05 20 / 10%), 0 1px 3px oklch(0.4 0.05 20 / 8%);
+	--shadow-warm-lg:
+		0 4px 16px oklch(0.4 0.05 20 / 12%), 0 2px 6px oklch(0.4 0.05 20 / 8%);
 }
 
 @layer base {
@@ -32,7 +34,9 @@
 		@apply bg-background text-foreground min-h-screen font-sans antialiased;
 	}
 
-	h1, h2, h3 {
+	h1,
+	h2,
+	h3 {
 		font-family: var(--font-heading);
 		font-weight: 600;
 	}
@@ -41,9 +45,21 @@
 @layer utilities {
 	.paper-texture {
 		background-image:
-			radial-gradient(ellipse at 20% 50%, oklch(0.95 0.02 75 / 40%) 0%, transparent 60%),
-			radial-gradient(ellipse at 80% 20%, oklch(0.92 0.03 40 / 25%) 0%, transparent 50%),
-			radial-gradient(ellipse at 50% 80%, oklch(0.94 0.02 60 / 30%) 0%, transparent 55%);
+			radial-gradient(
+				ellipse at 20% 50%,
+				oklch(0.95 0.02 75 / 40%) 0%,
+				transparent 60%
+			),
+			radial-gradient(
+				ellipse at 80% 20%,
+				oklch(0.92 0.03 40 / 25%) 0%,
+				transparent 50%
+			),
+			radial-gradient(
+				ellipse at 50% 80%,
+				oklch(0.94 0.02 60 / 30%) 0%,
+				transparent 55%
+			);
 	}
 
 	.animate-gentle-float {
@@ -64,42 +80,105 @@
 }
 
 @keyframes gentle-float {
-	0%, 100% { transform: translateY(0px); }
-	50% { transform: translateY(-4px); }
+	0%,
+	100% {
+		transform: translateY(0px);
+	}
+	50% {
+		transform: translateY(-4px);
+	}
 }
 
 @keyframes fade-up {
-	from { opacity: 0; transform: translateY(20px); }
-	to { opacity: 1; transform: translateY(0); }
+	from {
+		opacity: 0;
+		transform: translateY(20px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
 }
 
 @keyframes explode {
-	0% { transform: translate(-50%, -50%) scale(0.5); opacity: 1; }
-	20% { transform: translate(calc(-50% + var(--tx) * 0.15), calc(-50% + var(--ty) * 0.15)) scale(1.4); opacity: 1; }
-	100% { transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(0.8); opacity: 0; }
+	0% {
+		transform: translate(-50%, -50%) scale(0.5);
+		opacity: 1;
+	}
+	20% {
+		transform: translate(
+				calc(-50% + var(--tx) * 0.15),
+				calc(-50% + var(--ty) * 0.15)
+			)
+			scale(1.4);
+		opacity: 1;
+	}
+	100% {
+		transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty)))
+			scale(0.8);
+		opacity: 0;
+	}
 }
 
 @keyframes shake {
-	0%, 100% { transform: translate(0, 0); }
-	10% { transform: translate(-8px, -6px); }
-	20% { transform: translate(8px, 4px); }
-	30% { transform: translate(-6px, 8px); }
-	40% { transform: translate(6px, -4px); }
-	50% { transform: translate(-4px, 6px); }
-	60% { transform: translate(4px, -8px); }
-	70% { transform: translate(-8px, 4px); }
-	80% { transform: translate(6px, -6px); }
-	90% { transform: translate(-4px, 8px); }
+	0%,
+	100% {
+		transform: translate(0, 0);
+	}
+	10% {
+		transform: translate(-8px, -6px);
+	}
+	20% {
+		transform: translate(8px, 4px);
+	}
+	30% {
+		transform: translate(-6px, 8px);
+	}
+	40% {
+		transform: translate(6px, -4px);
+	}
+	50% {
+		transform: translate(-4px, 6px);
+	}
+	60% {
+		transform: translate(4px, -8px);
+	}
+	70% {
+		transform: translate(-8px, 4px);
+	}
+	80% {
+		transform: translate(6px, -6px);
+	}
+	90% {
+		transform: translate(-4px, 8px);
+	}
 }
 
 @keyframes flash {
-	0% { opacity: 0.7; }
-	100% { opacity: 0; }
+	0% {
+		opacity: 0.7;
+	}
+	100% {
+		opacity: 0;
+	}
 }
 
 @keyframes button-shake {
-	0%, 100% { translate: 0 0; rotate: 0deg; }
-	25% { translate: -3px 2px; rotate: -2deg; }
-	50% { translate: 2px -2px; rotate: 1.5deg; }
-	75% { translate: -2px 1px; rotate: -1deg; }
+	0%,
+	100% {
+		translate: 0 0;
+		rotate: 0deg;
+	}
+	25% {
+		translate: -3px 2px;
+		rotate: -2deg;
+	}
+	50% {
+		translate: 2px -2px;
+		rotate: 1.5deg;
+	}
+	75% {
+		translate: -2px 1px;
+		rotate: -1deg;
+	}
 }
