@@ -19,17 +19,17 @@
 	},
 	"devDependencies": {
 		"@playwright/test": "^1.57.0",
-		"oxlint": "^1.38.0",
-		"oxlint-tsgolint": "^0.10.1",
-		"prettier": "^3.7.4",
+		"oxlint": "^1.47.0",
+		"oxlint-tsgolint": "^0.12.2",
+		"prettier": "^3.8.1",
 		"prettier-plugin-jsdoc": "^1.8.0",
 		"prettier-plugin-organize-imports": "^4.3.0",
 		"prettier-plugin-tailwindcss": "^0.7.2",
 		"tsx": "^4.21.0",
-		"turbo": "^2.7.3"
+		"turbo": "^2.8.8"
 	},
 	"engines": {
 		"node": ">=22"
 	},
-	"packageManager": "pnpm@10.25.0"
+	"packageManager": "pnpm@10.29.3"
 }
