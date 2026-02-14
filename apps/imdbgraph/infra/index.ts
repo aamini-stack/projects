@@ -1,10 +1,11 @@
 import { AppDatabase } from '@aamini/infra/src/components'
 import * as pulumi from '@pulumi/pulumi'
 
-const config = new pulumi.Config()
-
-// Reference the global infrastructure stack
-const globalStack = new pulumi.StackReference(config.require('globalStack'))
+// Reference the global infrastructure stack using the current stack's environment name
+const currentStack = pulumi.getStack()
+const globalStack = new pulumi.StackReference(
+	`aamini11/aamini-infra/${currentStack}`,
+)
 
 // Get server details from global stack
 const serverResourceGroup = globalStack.getOutput('postgresResourceGroup')
