@@ -10,13 +10,11 @@ import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { Link, useRouter } from '@tanstack/react-router'
 import { Command } from 'cmdk'
 import { Search as SearchIcon, Star } from 'lucide-react'
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 
 /** https://www.w3.org/WAI/ARIA/apg/patterns/combobox/examples/combobox-autocomplete-list/ */
 export function SearchBar({ className }: { className?: string }) {
 	const [search, setSearch] = useState('')
-	const [open, setOpen] = useState(false)
-	const containerRef = useRef<HTMLDivElement>(null)
 	const router = useRouter()
 
 	const {
@@ -38,18 +36,11 @@ export function SearchBar({ className }: { className?: string }) {
 
 	return (
 		<Command
-			ref={containerRef}
 			className={cn(
 				'bg-background text-popover-foreground relative flex h-full w-full flex-col text-sm',
 				className,
 			)}
 			shouldFilter={false}
-			onFocus={() => setOpen(true)}
-			onBlur={(e) => {
-				if (!containerRef.current?.contains(e.relatedTarget)) {
-					setOpen(false)
-				}
-			}}
 		>
 			<InputGroup className="border-border">
 				<Command.Input
@@ -79,7 +70,7 @@ export function SearchBar({ className }: { className?: string }) {
 				</div>
 			)}
 
-			{open && search && !error && searchResults && (
+			{search && !error && searchResults && (
 				<Command.List className="bg-popover absolute top-full right-0 left-0 z-50 mt-3 w-full rounded-xl border p-2 shadow-lg">
 					{searchResults.length === 0 && !isFetching && (
 						<Command.Empty className="text-muted-foreground px-2 py-1.5 text-center">
@@ -92,7 +83,6 @@ export function SearchBar({ className }: { className?: string }) {
 							value={show.imdbId}
 							asChild
 							onSelect={() => {
-								setOpen(false)
 								void router.navigate({
 									to: '/ratings/$id',
 									params: { id: show.imdbId },
