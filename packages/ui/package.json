@@ -35,7 +35,7 @@
 		"@aamini/config-typescript": "workspace:*",
 		"@radix-ui/react-select": "^2.2.6",
 		"@tailwindcss/postcss": "^4.1.18",
-		"@types/node": "^24.10.2",
+		"@types/node": "^25.2.3",
 		"@types/react": "^19.2.14",
 		"@types/react-dom": "^19.2.3",
 		"clsx": "^2.1.1",

@@ -15,7 +15,7 @@
 	},
 	"devDependencies": {
 		"@aamini/config-typescript": "workspace:*",
-		"@types/node": "^24.10.2",
+		"@types/node": "^25.2.3",
 		"typescript": "^5.9.3"
 	}
 }
