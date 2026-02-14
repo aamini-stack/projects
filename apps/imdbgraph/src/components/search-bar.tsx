@@ -110,7 +110,7 @@ export function SearchBar({ className }: { className?: string }) {
 								{/* 1-10 Rating + Blue Star Icon */}
 								<div className="text-muted-foreground flex items-center space-x-1 text-sm">
 									<span>{`${show.rating.toFixed(1)} / 10.0`}</span>
-									<Star className="size-4 text-sky-500" />
+									<Star className="size-4 text-purple-400" />
 								</div>
 							</Link>
 						</Command.Item>
