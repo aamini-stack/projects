@@ -95,6 +95,19 @@ export class AppDatabase extends pulumi.ComponentResource {
 			{ parent: this, provider: pgProvider, dependsOn: [role] },
 		)
 
+		// Grant all privileges on the public schema to the app user
+		new postgresql.Grant(
+			`${name}-schema-grant`,
+			{
+				role: role.name,
+				database: database.name,
+				schema: 'public',
+				objectType: 'schema',
+				privileges: ['ALL'],
+			},
+			{ parent: this, provider: pgProvider, dependsOn: [role] },
+		)
+
 		// Enable pg_trgm extension (allow-listed at the server level)
 		const dbProvider = new postgresql.Provider(
 			`${name}-pg-db-provider`,

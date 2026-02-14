@@ -21,10 +21,11 @@ const adminPassword = new random.RandomPassword('pg-admin-password', {
 	special: true,
 })
 
-// Use existing resource group
-const resourceGroupName = config.get('resourceGroup') ?? `rg-aamini-${env}`
-const resourceGroup = azure.resources.getResourceGroupOutput({
+// Create resource group
+const resourceGroupName = config.require('resourceGroup')
+const resourceGroup = new azure.resources.ResourceGroup(resourceGroupName, {
 	resourceGroupName,
+	location: azureConfig.require('location'),
 })
 
 // PostgreSQL Flexible Server
@@ -64,6 +65,14 @@ new azure.dbforpostgresql.FirewallRule('allow-azure-services', {
 	serverName: server.name,
 	startIpAddress: '0.0.0.0',
 	endIpAddress: '0.0.0.0',
+})
+
+// Allow all public IPs to connect
+new azure.dbforpostgresql.FirewallRule('allow-all', {
+	resourceGroupName: resourceGroup.name,
+	serverName: server.name,
+	startIpAddress: '0.0.0.0',
+	endIpAddress: '255.255.255.255',
 })
 
 // Exports for apps to consume
