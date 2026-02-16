@@ -241,6 +241,9 @@ importers:
       '@vitest/browser':
         specifier: ^4.0.18
         version: 4.0.18(msw@2.12.4(@types/node@25.2.3)(typescript@5.9.3))(vite@7.3.1(@types/node@25.2.3)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0)(yaml@2.8.2))(vitest@4.0.18)
+      babel-plugin-react-compiler:
+        specifier: ^1.0.0
+        version: 1.0.0
       tailwindcss:
         specifier: ^4.1.18
         version: 4.1.18
@@ -531,6 +534,9 @@ importers:
       '@vitest/browser':
         specifier: ^4.0.18
         version: 4.0.18(msw@2.12.4(@types/node@25.2.3)(typescript@5.9.3))(vite@7.3.1(@types/node@25.2.3)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0)(yaml@2.8.2))(vitest@4.0.18)
+      babel-plugin-react-compiler:
+        specifier: ^1.0.0
+        version: 1.0.0
       tailwindcss:
         specifier: ^4.1.18
         version: 4.1.18
@@ -679,6 +685,9 @@ importers:
       '@vitest/browser':
         specifier: ^4.0.18
         version: 4.0.18(msw@2.12.4(@types/node@25.2.3)(typescript@5.9.3))(vite@7.3.1(@types/node@25.2.3)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0)(yaml@2.8.2))(vitest@4.0.18)
+      babel-plugin-react-compiler:
+        specifier: ^1.0.0
+        version: 1.0.0
       msw:
         specifier: ^2.12.4
         version: 2.12.4(@types/node@25.2.3)(typescript@5.9.3)
