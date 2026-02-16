@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
         - name: app
-          image: ghcr.io/aamini-stack/app:main
+          image: docker.io/aamini/app:latest
           ports:
             - containerPort: 3000
           resources:

@@ -9,7 +9,7 @@ spec:
       namespace: networking
       sectionName: web
   hostnames:
-    - app.example.com
+    - app.ariaamini.dev
   rules:
     - filters:
         - type: RequestRedirect
@@ -26,7 +26,7 @@ spec:
       namespace: networking
       sectionName: websecure
   hostnames:
-    - app.example.com
+    - app.ariaamini.dev
   rules:
     - matches:
         - path:

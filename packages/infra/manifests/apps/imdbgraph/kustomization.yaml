@@ -14,9 +14,9 @@ commonLabels:
   app: imdbgraph-api
 
 images:
-  - name: ghcr.io/aamini-stack/app
-    newName: ghcr.io/aamini11/imdbgraph-client
-    newTag: main
+  - name: docker.io/aamini/app
+    newName: docker.io/aamini/imdbgraph
+    newTag: latest
 
 replicas:
   - name: app-deployment
@@ -46,4 +46,4 @@ patches:
     patch: |-
       - op: replace
         path: /spec/hostnames/0
-        value: "staging.imdbgraph.org"
+        value: "imdbgraph.ariaamini.dev"
