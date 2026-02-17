@@ -30,4 +30,4 @@ patches:
     patch: |-
       - op: replace
         path: /spec/hostnames/0
-        value: "pc-tune-ups.ariaamini.dev"
+        value: "pc-tune-ups.ariaamini.com"

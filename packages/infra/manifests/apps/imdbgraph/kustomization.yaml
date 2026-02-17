@@ -46,4 +46,4 @@ patches:
     patch: |-
       - op: replace
         path: /spec/hostnames/0
-        value: "imdbgraph.ariaamini.dev"
+        value: "imdbgraph.ariaamini.com"

@@ -24,12 +24,25 @@ spec:
     - name: websecure
       port: 8443
       protocol: HTTPS
-      hostname: staging.imdbgraph.org
+      hostname: '*.ariaamini.com'
       tls:
         mode: Terminate
         certificateRefs:
           - kind: Secret
-            name: imdbgraph-org-tls
+            name: ariaamini-com-tls
+            namespace: networking
+      allowedRoutes:
+        namespaces:
+          from: All
+    - name: websecure-root
+      port: 8443
+      protocol: HTTPS
+      hostname: ariaamini.com
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - kind: Secret
+            name: ariaamini-com-tls
             namespace: networking
       allowedRoutes:
         namespaces:

@@ -5,6 +5,7 @@ namespace: portfolio
 
 resources:
   - ../base
+  - httproute-root.yaml
 
 nameSuffix: ''
 namePrefix: portfolio-
@@ -13,9 +14,9 @@ commonLabels:
   app: portfolio
 
 images:
-  - name: ghcr.io/aamini-stack/app
-    newName: ghcr.io/aamini-stack/portfolio
-    newTag: main
+  - name: docker.io/aamini/app
+    newName: docker.io/aamini/portfolio
+    newTag: latest
 
 patches:
   - target:
@@ -27,7 +28,15 @@ patches:
         value: portfolio
   - target:
       kind: HTTPRoute
+      name: app-http
     patch: |-
       - op: replace
         path: /spec/hostnames/0
-        value: "ariaamini.dev"
+        value: "portfolio.ariaamini.com"
+  - target:
+      kind: HTTPRoute
+      name: app-https
+    patch: |-
+      - op: replace
+        path: /spec/hostnames/0
+        value: "portfolio.ariaamini.com"

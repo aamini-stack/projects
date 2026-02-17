@@ -28,3 +28,8 @@ spec:
         enabled: true
     gateway:
       enabled: false
+    service:
+      annotations:
+        service.beta.kubernetes.io/azure-load-balancer-resource-group: ${TRAEFIK_NODE_RESOURCE_GROUP}
+      spec:
+        loadBalancerIP: ${TRAEFIK_PUBLIC_IP}

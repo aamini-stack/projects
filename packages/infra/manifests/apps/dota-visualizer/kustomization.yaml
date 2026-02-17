@@ -30,4 +30,4 @@ patches:
     patch: |-
       - op: replace
         path: /spec/hostnames/0
-        value: "dota-visualizer.ariaamini.dev"
+        value: "dota-visualizer.ariaamini.com"

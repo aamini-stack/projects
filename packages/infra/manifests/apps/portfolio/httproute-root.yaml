@@ -2,14 +2,14 @@
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
-  name: app-http
+  name: portfolio-root-http
 spec:
   parentRefs:
     - name: traefik-gateway
       namespace: networking
       sectionName: web
   hostnames:
-    - app.ariaamini.com
+    - ariaamini.com
   rules:
     - filters:
         - type: RequestRedirect
@@ -19,19 +19,19 @@ spec:
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
-  name: app-https
+  name: portfolio-root-https
 spec:
   parentRefs:
     - name: traefik-gateway
       namespace: networking
-      sectionName: websecure
+      sectionName: websecure-root
   hostnames:
-    - app.ariaamini.com
+    - ariaamini.com
   rules:
     - matches:
         - path:
             type: PathPrefix
             value: /
       backendRefs:
-        - name: app-service
+        - name: portfolio-app-service
           port: 80
