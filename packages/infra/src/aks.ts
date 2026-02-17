@@ -94,17 +94,8 @@ new command.local.Command(
 )
 
 // Outputs
-const creds = azure.containerservice.listManagedClusterUserCredentialsOutput({
-	resourceGroupName: resourceGroupName,
-	resourceName: aksCluster.name,
-})
-const encoded = creds.kubeconfigs[0]?.value
-export const kubeconfig = pulumi.secret(
-	encoded?.apply((enc) => Buffer.from(enc, 'base64').toString()) ?? '',
-)
 export const aksClusterId = aksCluster.id
-/** @internal — consumed by networking.ts, not intended as a stack output */
-export { getAksCredentials }
+export const aksCredentials = pulumi.secret(getAksCredentials.stdout)
 export const nodeResourceGroup = aksCluster.nodeResourceGroup
 export const oidcIssuerUrl = aksCluster.oidcIssuerProfile.apply(
 	(p) => p?.issuerURL || '',
