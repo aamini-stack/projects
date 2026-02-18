@@ -704,6 +704,9 @@ importers:
       '@pulumi/command':
         specifier: ^1.1.3
         version: 1.1.3(typescript@5.9.3)
+      '@pulumi/kubernetes':
+        specifier: ^4.0.0
+        version: 4.25.0(typescript@5.9.3)
       '@pulumi/local':
         specifier: ^0.1.6
         version: 0.1.6(typescript@5.9.3)
@@ -719,9 +722,6 @@ importers:
       '@pulumi/tls':
         specifier: ^5.3.0
         version: 5.3.0(typescript@5.9.3)
-      '@worawat/flux':
-        specifier: ^1.0.1
-        version: 1.0.1(typescript@5.9.3)
     devDependencies:
       '@aamini/config-typescript':
         specifier: workspace:*
@@ -2637,6 +2637,9 @@ packages:
   '@pulumi/command@1.1.3':
     resolution: {integrity: sha512-eBzGE/BQlxMNcxrrA62N4cLaHdL0xDSRACXxB0Hjc4rJG60vhpDVO130xxb4x3cZ7HT1kvjS4KuuoH8R5JRbIQ==}
 
+  '@pulumi/kubernetes@4.25.0':
+    resolution: {integrity: sha512-KP/ZJpS7eY58oKoGaMIGQWjM3mLpWlGUnOt+jjdGsqqk/t9OqhJCfAGC2E83usMKjuP312zMC7xi7sEQuJQ7uw==}
+
   '@pulumi/local@0.1.6':
     resolution: {integrity: sha512-+up1eN7OgACaaHUSsWjA8qlm2OTFzQ83LZEH+gxmUYTWpVviBftom/mYEL9VBTWTtq71EJI2ERFaCy+TpmTO5g==}
 
@@ -3885,9 +3888,6 @@ packages:
 
   '@vitest/utils@4.0.18':
     resolution: {integrity: sha512-msMRKLMVLWygpK3u2Hybgi4MNjcYJvwTb0Ru09+fOyCXIgT5raYP041DRRdiJiI3k/2U6SEbAETB3YtBrUkCFA==}
-
-  '@worawat/flux@1.0.1':
-    resolution: {integrity: sha512-/70YrZlLOkfM42fzMRSQCJuGsDRBfkn/cEqa2IJvxIkm9KoIm6NbMWl4+CQ1BdQwGxD4JxlGs1J28gXvPQGT2w==}
 
   abbrev@4.0.0:
     resolution: {integrity: sha512-a1wflyaL0tHtJSmLSOVybYhy22vRih4eduhhrkcjgrWGnRfrZtovJ2FRjxuTtkkj47O/baf0R86QU5OuYpz8fA==}
@@ -8165,6 +8165,16 @@ snapshots:
       - ts-node
       - typescript
 
+  '@pulumi/kubernetes@4.25.0(typescript@5.9.3)':
+    dependencies:
+      '@pulumi/pulumi': 3.220.0(typescript@5.9.3)
+      glob: 10.5.0
+      shell-quote: 1.8.3
+    transitivePeerDependencies:
+      - supports-color
+      - ts-node
+      - typescript
+
   '@pulumi/local@0.1.6(typescript@5.9.3)':
     dependencies:
       '@pulumi/pulumi': 3.220.0(typescript@5.9.3)
@@ -9611,14 +9621,6 @@ snapshots:
     dependencies:
       '@vitest/pretty-format': 4.0.18
       tinyrainbow: 3.0.3
-
-  '@worawat/flux@1.0.1(typescript@5.9.3)':
-    dependencies:
-      '@pulumi/pulumi': 3.220.0(typescript@5.9.3)
-    transitivePeerDependencies:
-      - supports-color
-      - ts-node
-      - typescript
 
   abbrev@4.0.0: {}
 
