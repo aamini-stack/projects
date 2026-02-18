@@ -9,18 +9,20 @@ nameSuffix: ''
 namePrefix: imdbgraph-
 
 commonLabels:
-  app: imdbgraph-api
+  app: imdbgraph
 
 images:
   - name: docker.io/aamini/app
     newName: docker.io/aamini/imdbgraph
     newTag: latest
 
-replicas:
-  - name: app-deployment
-    count: 2
-
 patches:
+  - target:
+      kind: HTTPRoute
+    patch: |-
+      - op: replace
+        path: /spec/hostnames/0
+        value: "imdbgraph.ariaamini.com"
   - target:
       kind: Deployment
       name: app-deployment
@@ -32,9 +34,4 @@ patches:
               name: imdbgraph-config
           - secretRef:
               name: imdbgraph-secrets
-  - target:
-      kind: HTTPRoute
-    patch: |-
-      - op: replace
-        path: /spec/hostnames/0
-        value: "imdbgraph.ariaamini.com"
+

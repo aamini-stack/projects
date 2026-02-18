@@ -3,7 +3,6 @@ kind: Kustomization
 
 resources:
   - ../base
-  - httproute-root.yaml
 
 nameSuffix: ''
 namePrefix: portfolio-
@@ -19,14 +18,6 @@ images:
 patches:
   - target:
       kind: HTTPRoute
-      name: app-http
-    patch: |-
-      - op: replace
-        path: /spec/hostnames/0
-        value: "portfolio.ariaamini.com"
-  - target:
-      kind: HTTPRoute
-      name: app-https
     patch: |-
       - op: replace
         path: /spec/hostnames/0
