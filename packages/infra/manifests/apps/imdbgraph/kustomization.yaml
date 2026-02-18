@@ -34,4 +34,3 @@ patches:
               name: imdbgraph-config
           - secretRef:
               name: imdbgraph-secrets
-

@@ -1,8 +1,8 @@
 import * as azure from '@pulumi/azure-native'
 import * as command from '@pulumi/command'
 import * as pulumi from '@pulumi/pulumi'
-import { resourceGroupName } from './resource-group'
 import { getAksCredentials, nodeResourceGroup, oidcIssuerUrl } from './aks'
+import { resourceGroupName } from './resource-group'
 
 const config = new pulumi.Config('azure-native')
 const subscriptionId = config.require('subscriptionId')
