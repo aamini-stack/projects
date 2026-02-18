@@ -3,10 +3,3 @@ kind: Kustomization
 resources:
   - cert.yaml
   - gateway.yaml
-configMapGenerator:
-  - name: networking-config
-    namespace: flux-system
-    envs:
-      - .env
-    options:
-      disableNameSuffixHash: true
