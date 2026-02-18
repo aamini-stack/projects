@@ -1,6 +1,7 @@
 import * as azure from '@pulumi/azure-native'
 import * as command from '@pulumi/command'
 import * as pulumi from '@pulumi/pulumi'
+import { resourceGroupName } from './resource-group'
 
 const config = new pulumi.Config('azure-native')
 const githubConfig = new pulumi.Config('github')
@@ -9,14 +10,10 @@ const location = config.require('location')
 const subscriptionId = config.require('subscriptionId')
 const githubToken = githubConfig.requireSecret('token')
 
-const resourceGroup = new azure.resources.ResourceGroup('rg-aamini-stack', {
-	location: location,
-})
-
 // AKS Cluster
 const aksCluster = new azure.containerservice.ManagedCluster('aks', {
 	dnsPrefix: 'aamini-stack',
-	resourceGroupName: resourceGroup.name,
+	resourceGroupName: resourceGroupName,
 	agentPoolProfiles: [
 		{
 			name: 'agentpool',
@@ -52,7 +49,7 @@ const workloadIdentity = new azure.managedidentity.UserAssignedIdentity(
 	'azure-alb-identity',
 	{
 		location: location,
-		resourceGroupName: resourceGroup.name,
+		resourceGroupName: resourceGroupName,
 	},
 )
 
@@ -69,7 +66,7 @@ new azure.authorization.RoleAssignment('reader-role', {
 
 new azure.managedidentity.FederatedIdentityCredential('managed-identity', {
 	federatedIdentityCredentialResourceName: workloadIdentity.name,
-	resourceGroupName: resourceGroup.name,
+	resourceGroupName: resourceGroupName,
 	resourceName: workloadIdentity.name,
 	audiences: ['api://AzureADTokenExchange'],
 	issuer: aksCluster.oidcIssuerProfile.apply((p) => p?.issuerURL || ''),
@@ -80,7 +77,7 @@ new azure.managedidentity.FederatedIdentityCredential('managed-identity', {
 const getAksCredentials = new command.local.Command(
 	'get-aks-credentials',
 	{
-		create: pulumi.interpolate`az aks get-credentials --name ${aksCluster.name} --resource-group ${resourceGroup.name} --overwrite-existing`,
+		create: pulumi.interpolate`az aks get-credentials --name ${aksCluster.name} --resource-group ${resourceGroupName} --overwrite-existing`,
 	},
 	{ dependsOn: [aksCluster] },
 )
@@ -88,7 +85,7 @@ const getAksCredentials = new command.local.Command(
 new command.local.Command(
 	'flux-boostrap',
 	{
-		create: pulumi.interpolate`flux bootstrap github --owner=aamini-stack --repository=projects --branch=main --path=./packages/infra/manifests/gitops --personal --token-auth`,
+		create: pulumi.interpolate`flux bootstrap github --owner=aamini-stack --repository=projects --branch=feature/database --path=./packages/infra/manifests/gitops --personal --token-auth`,
 		environment: {
 			GITHUB_TOKEN: githubToken,
 		},
@@ -97,12 +94,9 @@ new command.local.Command(
 )
 
 // Outputs
-const creds = azure.containerservice.listManagedClusterUserCredentialsOutput({
-	resourceGroupName: resourceGroup.name,
-	resourceName: aksCluster.name,
-})
-const encoded = creds.kubeconfigs[0]?.value
-export const kubeconfig = pulumi.secret(
-	encoded?.apply((enc) => Buffer.from(enc, 'base64').toString()) ?? '',
-)
 export const aksClusterId = aksCluster.id
+export const aksCredentials = pulumi.secret(getAksCredentials.stdout)
+export const nodeResourceGroup = aksCluster.nodeResourceGroup
+export const oidcIssuerUrl = aksCluster.oidcIssuerProfile.apply(
+	(p) => p?.issuerURL || '',
+)

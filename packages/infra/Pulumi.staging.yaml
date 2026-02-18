@@ -1,5 +1,6 @@
 config:
   # Azure
+  azure-native:resourceGroup: rg-aamini-staging
   azure-native:location: westus
   azure-native:subscriptionId: 331269d5-143f-4246-b389-9c1f41bb5882
   # Postgres
@@ -9,3 +10,5 @@ config:
     storageSizeGb: 32
     backupRetentionDays: 7
     geoRedundantBackup: Disabled
+  github:token:
+    secure: AAABANuvXTgIhf1bhwB+kFpVBS8rhojdvoHLz6dbVS0v5EuWIbIjJYqwQBwTglDuWuerm7/eYiNzUhLxsmzdJ+6W7G6rjh3XBqXRkBIerzh0s+6LY2hnhEb2NWzlWwuYJaqDEuXDZ+n3QhIwMcROzI/7pTanxXXDljpzzBo=

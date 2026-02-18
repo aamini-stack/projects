@@ -1,8 +1,6 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
-namespace: imdbgraph
-
 resources:
   - ../base
   - sealed-secret.yaml
@@ -11,25 +9,20 @@ nameSuffix: ''
 namePrefix: imdbgraph-
 
 commonLabels:
-  app: imdbgraph-api
+  app: imdbgraph
 
 images:
-  - name: ghcr.io/aamini-stack/app
-    newName: ghcr.io/aamini11/imdbgraph-client
-    newTag: main
-
-replicas:
-  - name: app-deployment
-    count: 2
+  - name: docker.io/aamini/app
+    newName: docker.io/aamini/imdbgraph
+    newTag: latest
 
 patches:
   - target:
-      kind: Namespace
-      name: app
+      kind: HTTPRoute
     patch: |-
       - op: replace
-        path: /metadata/name
-        value: imdbgraph
+        path: /spec/hostnames/0
+        value: "imdbgraph.ariaamini.com"
   - target:
       kind: Deployment
       name: app-deployment
@@ -41,9 +34,3 @@ patches:
               name: imdbgraph-config
           - secretRef:
               name: imdbgraph-secrets
-  - target:
-      kind: HTTPRoute
-    patch: |-
-      - op: replace
-        path: /spec/hostnames/0
-        value: "staging.imdbgraph.org"

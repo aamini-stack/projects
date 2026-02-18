@@ -2,12 +2,13 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: imdbgraph-org
+  name: ariaamini-com-wildcard
   namespace: networking
 spec:
-  secretName: imdbgraph-org-tls
+  secretName: ariaamini-com-tls
   dnsNames:
-    - staging.imdbgraph.org
+    - '*.ariaamini.com'
+    - ariaamini.com
   privateKey:
     rotationPolicy: Always
   issuerRef:
@@ -26,9 +27,11 @@ spec:
     privateKeySecretRef:
       name: acme-issuer-account-key
     solvers:
-      - http01:
-          gatewayHTTPRoute:
-            parentRefs:
-              - name: traefik-gateway
-                namespace: networking
-                kind: Gateway
+      - dns01:
+          azureDNS:
+            subscriptionID: ${AZURE_SUBSCRIPTION_ID}
+            resourceGroupName: ${AZURE_DNS_RESOURCE_GROUP}
+            hostedZoneName: ariaamini.com
+            environment: AzurePublicCloud
+            managedIdentity:
+              clientID: ${CERT_MANAGER_CLIENT_ID}

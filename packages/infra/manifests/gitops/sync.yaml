@@ -37,6 +37,23 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
+  name: dota-visualizer
+  namespace: flux-system
+spec:
+  path: ./packages/infra/manifests/apps/dota-visualizer
+  dependsOn:
+    - name: system
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  interval: 10m0s
+  retryInterval: 1m0s
+  timeout: 5m0s
+  prune: true
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
   name: portfolio
   namespace: flux-system
 spec:
@@ -70,6 +87,10 @@ spec:
   retryInterval: 1m0s
   timeout: 5m0s
   prune: true
+  postBuild:
+    substituteFrom:
+      - kind: ConfigMap
+        name: networking-config
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
@@ -85,3 +106,7 @@ spec:
   retryInterval: 1m0s
   timeout: 5m0s
   prune: true
+  postBuild:
+    substituteFrom:
+      - kind: ConfigMap
+        name: networking-config

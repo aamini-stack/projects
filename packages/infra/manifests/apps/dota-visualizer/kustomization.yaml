@@ -5,14 +5,14 @@ resources:
   - ../base
 
 nameSuffix: ''
-namePrefix: pc-tune-ups-
+namePrefix: dota-visualizer-
 
 commonLabels:
-  app: pc-tune-ups
+  app: dota-visualizer
 
 images:
   - name: docker.io/aamini/app
-    newName: docker.io/aamini/pc-tune-ups
+    newName: docker.io/aamini/dota-visualizer
     newTag: latest
 
 patches:
@@ -21,4 +21,4 @@ patches:
     patch: |-
       - op: replace
         path: /spec/hostnames/0
-        value: "pc-tune-ups.ariaamini.com"
+        value: "dota-visualizer.ariaamini.com"

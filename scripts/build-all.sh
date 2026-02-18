@@ -1,25 +1,10 @@
 #!/usr/bin/env bash
 set -e
 
-# Images mapping: app-name:image-name:tag
-declare -a APPS=(
-  "ducky-mot:ghcr.io/aamini-stack/ducky-mot:main"
-  "imdbgraph:ghcr.io/aamini11/imdbgraph-client:main"
-  "pc-tune-ups:ghcr.io/aamini-stack/pc-tune-ups:main"
-  "portfolio:ghcr.io/aamini-stack/portfolio:main"
-)
+APPS=(ducky-mot imdbgraph pc-tune-ups portfolio)
 
-for app_config in "${APPS[@]}"; do
-  IFS=':' read -r app image tag <<< "$app_config"
-
-  echo "Building $app..."
-  docker build --build-arg APP_NAME="$app" --target production -f Dockerfile -t "$image:$tag" .
-
-  echo "Pushing $image:$tag..."
-  docker push "$image:$tag"
-
-  echo "✓ Done: $app"
-  echo ""
+for app in "${APPS[@]}"; do
+  node scripts/docker-build.js "$app"
 done
 
-echo "All images built and pushed!"
+echo "All images built!"

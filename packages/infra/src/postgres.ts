@@ -1,6 +1,7 @@
 import * as azure from '@pulumi/azure-native'
 import * as pulumi from '@pulumi/pulumi'
 import * as random from '@pulumi/random'
+import { resourceGroupName } from './resource-group'
 
 interface PostgresConfig {
 	skuName: string
@@ -21,18 +22,11 @@ const adminPassword = new random.RandomPassword('pg-admin-password', {
 	special: true,
 })
 
-// Create resource group
-const resourceGroupName = config.require('resourceGroup')
-const resourceGroup = new azure.resources.ResourceGroup(resourceGroupName, {
-	resourceGroupName,
-	location: azureConfig.require('location'),
-})
-
 // PostgreSQL Flexible Server
 const serverName = `pg-aamini-${env}`
 const server = new azure.dbforpostgresql.Server(serverName, {
 	serverName,
-	resourceGroupName: resourceGroup.name,
+	resourceGroupName: resourceGroupName,
 	location: azureConfig.require('location'),
 	version: '16',
 	administratorLogin: 'pgadmin',
@@ -52,7 +46,7 @@ const server = new azure.dbforpostgresql.Server(serverName, {
 
 // Allow-list PostgreSQL extensions
 new azure.dbforpostgresql.Configuration('pg-extensions', {
-	resourceGroupName: resourceGroup.name,
+	resourceGroupName: resourceGroupName,
 	serverName: server.name,
 	configurationName: 'azure.extensions',
 	value: 'PG_TRGM',
@@ -61,7 +55,7 @@ new azure.dbforpostgresql.Configuration('pg-extensions', {
 
 // Allow Azure services to connect
 new azure.dbforpostgresql.FirewallRule('allow-azure-services', {
-	resourceGroupName: resourceGroup.name,
+	resourceGroupName: resourceGroupName,
 	serverName: server.name,
 	startIpAddress: '0.0.0.0',
 	endIpAddress: '0.0.0.0',
@@ -69,7 +63,7 @@ new azure.dbforpostgresql.FirewallRule('allow-azure-services', {
 
 // Allow all public IPs to connect
 new azure.dbforpostgresql.FirewallRule('allow-all', {
-	resourceGroupName: resourceGroup.name,
+	resourceGroupName: resourceGroupName,
 	serverName: server.name,
 	startIpAddress: '0.0.0.0',
 	endIpAddress: '255.255.255.255',
@@ -79,6 +73,4 @@ new azure.dbforpostgresql.FirewallRule('allow-all', {
 export const postgresHost = server.fullyQualifiedDomainName
 export const postgresAdminUser = server.administratorLogin
 export const postgresAdminPassword = pulumi.secret(adminPassword.result)
-export const postgresPort = 5432
-export const postgresResourceGroup = resourceGroup.name
 export const postgresServerName = server.name
