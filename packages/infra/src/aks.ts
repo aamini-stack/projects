@@ -1,5 +1,7 @@
 import * as azure from '@pulumi/azure-native'
+import * as containerservice from '@pulumi/azure-native/containerservice'
 import * as command from '@pulumi/command'
+import * as k8s from '@pulumi/kubernetes'
 import * as pulumi from '@pulumi/pulumi'
 import { resourceGroupName } from './resource-group'
 
@@ -73,14 +75,23 @@ new azure.managedidentity.FederatedIdentityCredential('managed-identity', {
 	subject: 'system:serviceaccount:azure-alb-system:alb-controller-sa',
 })
 
-// Get AKS credentials and update kubeconfig before running Flux
-const getAksCredentials = new command.local.Command(
-	'get-aks-credentials',
-	{
-		create: pulumi.interpolate`az aks get-credentials --name ${aksCluster.name} --resource-group ${resourceGroupName} --overwrite-existing`,
+new command.local.Command('flux-bootstrap', {
+	create: `flux bootstrap git \
+		--url=https://github.com/aamini-stack/projects \
+		--branch=main \
+		--path=./packages/infra/manifests/gitops \
+		--username=git \
+		--password="$FLUX_GIT_TOKEN"`,
+	delete: 'flux uninstall --silent',
+	environment: {
+		FLUX_GIT_TOKEN: githubToken,
 	},
-	{ dependsOn: [aksCluster] },
-)
+})
+
+// Get AKS credentials and update kubeconfig before running Flux
+const getAksCredentials = new command.local.Command('get-aks-credentials', {
+	create: pulumi.interpolate`az aks get-credentials --name ${aksCluster.name} --resource-group ${resourceGroupName} --overwrite-existing`,
+})
 
 new command.local.Command(
 	'flux-boostrap',
@@ -93,10 +104,102 @@ new command.local.Command(
 	{ dependsOn: [aksCluster, getAksCredentials] },
 )
 
-// Outputs
-export const aksClusterId = aksCluster.id
-export const aksCredentials = pulumi.secret(getAksCredentials.stdout)
-export const nodeResourceGroup = aksCluster.nodeResourceGroup
-export const oidcIssuerUrl = aksCluster.oidcIssuerProfile.apply(
+// Static IP for Traefik (must be in node resource group for AKS LB)
+const traefikIp = new azure.network.PublicIPAddress('traefik-ip', {
+	resourceGroupName: aksCluster.nodeResourceGroup.apply((rg) => rg!),
+	location: location,
+	publicIPAllocationMethod: 'Static',
+	sku: { name: 'Standard' },
+})
+
+const domain = 'ariaamini.com'
+
+// DNS Zone
+const dnsZone = new azure.dns.Zone('dns-zone', {
+	zoneName: domain,
+	resourceGroupName: resourceGroupName,
+	location: 'global',
+})
+
+// Wildcard A record
+new azure.dns.RecordSet('dns-wildcard', {
+	zoneName: dnsZone.name,
+	resourceGroupName: resourceGroupName,
+	relativeRecordSetName: '*',
+	recordType: 'A',
+	ttl: 300,
+	aRecords: [{ ipv4Address: traefikIp.ipAddress.apply((ip) => ip!) }],
+})
+
+// Root A record
+new azure.dns.RecordSet('dns-root', {
+	zoneName: dnsZone.name,
+	resourceGroupName: resourceGroupName,
+	relativeRecordSetName: '@',
+	recordType: 'A',
+	ttl: 300,
+	aRecords: [{ ipv4Address: traefikIp.ipAddress.apply((ip) => ip!) }],
+})
+
+const creds = containerservice.listManagedClusterUserCredentialsOutput({
+	resourceGroupName: resourceGroupName,
+	resourceName: aksCluster.name,
+})
+
+const encoded = creds.kubeconfigs[0]?.value
+export const kubeconfig = pulumi.secret(
+	encoded?.apply((enc) => Buffer.from(enc, 'base64').toString()) ?? '',
+)
+
+// Workload identity for cert-manager
+const certManagerIdentity = new azure.managedidentity.UserAssignedIdentity(
+	'cert-manager-identity',
+	{
+		resourceGroupName: resourceGroupName,
+		location: location,
+	},
+)
+
+// DNS Zone Contributor role for cert-manager identity
+new azure.authorization.RoleAssignment('cert-manager-dns-role', {
+	roleDefinitionId: `/subscriptions/${subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/befefa01-2a29-4197-83a8-272ff33ce314`,
+	principalId: certManagerIdentity.principalId,
+	scope: dnsZone.id,
+	principalType: 'ServicePrincipal',
+})
+
+const oidcIssuerUrl = aksCluster.oidcIssuerProfile.apply(
 	(p) => p?.issuerURL || '',
 )
+
+// Federated identity credential for cert-manager workload identity
+new azure.managedidentity.FederatedIdentityCredential(
+	'cert-manager-federated-credential',
+	{
+		federatedIdentityCredentialResourceName: certManagerIdentity.name,
+		resourceGroupName: resourceGroupName,
+		resourceName: certManagerIdentity.name,
+		audiences: ['api://AzureADTokenExchange'],
+		issuer: oidcIssuerUrl,
+		subject: 'system:serviceaccount:networking:cert-manager',
+	},
+)
+
+new k8s.core.v1.ConfigMap('networking-configmap', {
+	metadata: { name: 'networking-config', namespace: 'flux-system' },
+	data: {
+		TRAEFIK_PUBLIC_IP: traefikIp.ipAddress.apply((ip) => ip!),
+		TRAEFIK_NODE_RESOURCE_GROUP: aksCluster.nodeResourceGroup.apply(
+			(rg) => rg!,
+		),
+		CERT_MANAGER_CLIENT_ID: certManagerIdentity.clientId,
+		AZURE_SUBSCRIPTION_ID: config.require('subscriptionId'),
+		AZURE_DNS_RESOURCE_GROUP: resourceGroupName,
+	},
+})
+
+// Outputs
+export const aksClusterId = aksCluster.id
+export const aksClusterName = aksCluster.name
+export const nodeResourceGroup = aksCluster.nodeResourceGroup
+export const ip = traefikIp.ipAddress
