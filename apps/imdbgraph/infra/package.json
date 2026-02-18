@@ -4,6 +4,7 @@
 	"dependencies": {
 		"@aamini/infra": "workspace:*",
 		"@pulumi/azure-native": "^3.13.0",
+		"@pulumi/command": "^1.1.3",
 		"@pulumi/postgresql": "^3.0.0",
 		"@pulumi/pulumi": "^3.220.0"
 	}

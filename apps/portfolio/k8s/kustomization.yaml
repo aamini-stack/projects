@@ -2,7 +2,9 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
-  - ../base
+  - ../../../packages/infra/manifests/apps/base
+  - httproute-root.yaml
+  - sealed-secret.yaml
 
 nameSuffix: ''
 namePrefix: portfolio-
@@ -22,3 +24,12 @@ patches:
       - op: replace
         path: /spec/hostnames/0
         value: "portfolio.ariaamini.com"
+  - target:
+      kind: Deployment
+      name: app-deployment
+    patch: |-
+      - op: add
+        path: /spec/template/spec/containers/0/envFrom
+        value:
+          - secretRef:
+              name: portfolio-secrets

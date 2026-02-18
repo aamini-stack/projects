@@ -6,7 +6,7 @@ metadata:
   name: imdbgraph
   namespace: flux-system
 spec:
-  path: ./packages/infra/manifests/apps/imdbgraph
+  path: ./apps/imdbgraph/k8s
   dependsOn:
     - name: system
   sourceRef:
@@ -23,7 +23,7 @@ metadata:
   name: pc-tune-ups
   namespace: flux-system
 spec:
-  path: ./packages/infra/manifests/apps/pc-tune-ups
+  path: ./apps/pc-tune-ups/k8s
   dependsOn:
     - name: system
   sourceRef:
@@ -40,7 +40,7 @@ metadata:
   name: dota-visualizer
   namespace: flux-system
 spec:
-  path: ./packages/infra/manifests/apps/dota-visualizer
+  path: ./apps/dota-visualizer/k8s
   dependsOn:
     - name: system
   sourceRef:
@@ -57,7 +57,7 @@ metadata:
   name: portfolio
   namespace: flux-system
 spec:
-  path: ./packages/infra/manifests/apps/portfolio
+  path: ./apps/portfolio/k8s
   dependsOn:
     - name: system
   sourceRef:
