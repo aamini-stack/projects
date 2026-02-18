@@ -1,7 +1,6 @@
 import * as azure from '@pulumi/azure-native'
 import * as containerservice from '@pulumi/azure-native/containerservice'
 import * as command from '@pulumi/command'
-import * as k8s from '@pulumi/kubernetes'
 import * as pulumi from '@pulumi/pulumi'
 import { resourceGroupName } from './resource-group'
 
@@ -79,28 +78,6 @@ new azure.managedidentity.FederatedIdentityCredential('managed-identity', {
 const getAksCredentials = new command.local.Command('get-aks-credentials', {
 	create: pulumi.interpolate`az aks get-credentials --name ${aksCluster.name} --resource-group ${resourceGroupName} --overwrite-existing`,
 })
-
-new command.local.Command(
-	'flux-boostrap',
-	{
-		create: pulumi.interpolate`flux bootstrap github --owner=aamini-stack --repository=projects --branch=main --path=./packages/infra/manifests/gitops --personal --token-auth`,
-		environment: {
-			GITHUB_TOKEN: githubToken,
-		},
-	},
-	{ dependsOn: [aksCluster, getAksCredentials] },
-)
-
-new command.local.Command(
-	'flux-boostrap',
-	{
-		create: pulumi.interpolate`flux bootstrap github --owner=aamini-stack --repository=projects --branch=feature/database --path=./packages/infra/manifests/gitops --personal --token-auth`,
-		environment: {
-			GITHUB_TOKEN: githubToken,
-		},
-	},
-	{ dependsOn: [aksCluster, getAksCredentials] },
-)
 
 // Static IP for Traefik (must be in node resource group for AKS LB)
 const traefikIp = new azure.network.PublicIPAddress('traefik-ip', {
@@ -183,18 +160,20 @@ new azure.managedidentity.FederatedIdentityCredential(
 	},
 )
 
-new k8s.core.v1.ConfigMap('networking-configmap', {
-	metadata: { name: 'networking-config', namespace: 'flux-system' },
-	data: {
-		TRAEFIK_PUBLIC_IP: traefikIp.ipAddress.apply((ip) => ip!),
-		TRAEFIK_NODE_RESOURCE_GROUP: aksCluster.nodeResourceGroup.apply(
-			(rg) => rg!,
-		),
-		CERT_MANAGER_CLIENT_ID: certManagerIdentity.clientId,
-		AZURE_SUBSCRIPTION_ID: config.require('subscriptionId'),
-		AZURE_DNS_RESOURCE_GROUP: resourceGroupName,
-	},
+const writeNetworkingEnv = new command.local.Command('write-networking-env', {
+	create: pulumi.interpolate`./scripts/write-networking-env.sh "${traefikIp.ipAddress.apply((ip) => ip!)}" "${aksCluster.nodeResourceGroup.apply((rg) => rg!)}" "${certManagerIdentity.clientId}" "${subscriptionId}" "${resourceGroupName}"`,
 })
+
+new command.local.Command(
+	'flux-boostrap',
+	{
+		create: pulumi.interpolate`flux bootstrap github --owner=aamini-stack --repository=projects --branch=main --path=./packages/infra/manifests/gitops --personal --token-auth`,
+		environment: {
+			GITHUB_TOKEN: githubToken,
+		},
+	},
+	{ dependsOn: [aksCluster, getAksCredentials, writeNetworkingEnv] },
+)
 
 // Outputs
 export const aksClusterId = aksCluster.id
