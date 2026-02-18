@@ -75,23 +75,21 @@ new azure.managedidentity.FederatedIdentityCredential('managed-identity', {
 	subject: 'system:serviceaccount:azure-alb-system:alb-controller-sa',
 })
 
-new command.local.Command('flux-bootstrap', {
-	create: `flux bootstrap git \
-		--url=https://github.com/aamini-stack/projects \
-		--branch=main \
-		--path=./packages/infra/manifests/gitops \
-		--username=git \
-		--password="$FLUX_GIT_TOKEN"`,
-	delete: 'flux uninstall --silent',
-	environment: {
-		FLUX_GIT_TOKEN: githubToken,
-	},
-})
-
 // Get AKS credentials and update kubeconfig before running Flux
 const getAksCredentials = new command.local.Command('get-aks-credentials', {
 	create: pulumi.interpolate`az aks get-credentials --name ${aksCluster.name} --resource-group ${resourceGroupName} --overwrite-existing`,
 })
+
+new command.local.Command(
+	'flux-boostrap',
+	{
+		create: pulumi.interpolate`flux bootstrap github --owner=aamini-stack --repository=projects --branch=main --path=./packages/infra/manifests/gitops --personal --token-auth`,
+		environment: {
+			GITHUB_TOKEN: githubToken,
+		},
+	},
+	{ dependsOn: [aksCluster, getAksCredentials] },
+)
 
 new command.local.Command(
 	'flux-boostrap',
