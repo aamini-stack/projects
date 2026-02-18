@@ -1,8 +1,6 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
-namespace: pc-tune-ups
-
 resources:
   - ../base
 
@@ -18,13 +16,6 @@ images:
     newTag: latest
 
 patches:
-  - target:
-      kind: Namespace
-      name: app
-    patch: |-
-      - op: replace
-        path: /metadata/name
-        value: pc-tune-ups
   - target:
       kind: HTTPRoute
     patch: |-
