@@ -1,38 +1,35 @@
 #!/usr/bin/env bash
+#
+# Usage: ./scripts/seal.sh
+#
+# Loops through all apps/ directories, and for each one that has a .env.local,
+# seals it with kubeseal and writes the SealedSecret to apps/<app-name>/k8s/sealed-secret.yaml.
 set -euo pipefail
 
-# Generate a SealedSecret YAML from key=value pairs.
-# Requires kubectl and kubeseal on the PATH.
-#
-# Usage:
-#   seal.sh --name <secret-name> --namespace <ns> --output <path> KEY=VALUE ...
+REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
-name=""
-namespace=""
-output=""
-literals=()
+for APP_DIR in "$REPO_ROOT"/apps/*/; do
+	APP="$(basename "$APP_DIR")"
+	ENV_FILE="$APP_DIR.env.local"
 
-while [[ $# -gt 0 ]]; do
-  case "$1" in
-    --name)      name="$2";      shift 2 ;;
-    --namespace) namespace="$2"; shift 2 ;;
-    --output)    output="$2";    shift 2 ;;
-    *=*)         literals+=("--from-literal=$1"); shift ;;
-    *)           echo "Unknown arg: $1" >&2; exit 1 ;;
-  esac
+	if [[ ! -f "$ENV_FILE" ]]; then
+		continue
+	fi
+
+	OUTPUT="$APP_DIR/k8s/sealed-secret.yaml"
+	mkdir -p "$(dirname "$OUTPUT")"
+
+	echo "Sealing $APP..."
+
+	kubectl create secret generic "$APP-secrets" \
+		--namespace "$APP" \
+		--from-env-file="$ENV_FILE" \
+		--dry-run=client -o yaml |
+		kubeseal --format=yaml \
+			--controller-name=sealed-secrets \
+			--controller-namespace=kube-system |
+		sed "s/^  name: $APP-secrets$/  name: secrets/" \
+		>"$OUTPUT"
+
+	echo "Written to $OUTPUT"
 done
-
-if [[ -z "$name" || -z "$namespace" || -z "$output" || ${#literals[@]} -eq 0 ]]; then
-  echo "Usage: seal.sh --name NAME --namespace NS --output PATH KEY=VALUE ..." >&2
-  exit 1
-fi
-
-mkdir -p "$(dirname "$output")"
-
-kubectl create secret generic "$name" \
-  --namespace "$namespace" \
-  --dry-run=client -o yaml \
-  "${literals[@]}" |
-  kubeseal --format=yaml \
-    --controller-name=sealed-secrets \
-    --controller-namespace=kube-system > "$output"

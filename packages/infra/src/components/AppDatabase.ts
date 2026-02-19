@@ -1,7 +1,7 @@
 import * as azure from '@pulumi/azure-native'
+import * as command from '@pulumi/command'
 import * as postgresql from '@pulumi/postgresql'
 import * as pulumi from '@pulumi/pulumi'
-import * as random from '@pulumi/random'
 
 export interface AppDatabaseArgs {
 	/** Database name (e.g., "imdbgraph") */
@@ -20,6 +20,8 @@ export interface AppDatabaseArgs {
 	charset?: pulumi.Input<string>
 	/** Collation (default: en_US.utf8) */
 	collation?: pulumi.Input<string>
+	/** App user password */
+	userPassword: pulumi.Input<string>
 }
 
 export class AppDatabase extends pulumi.ComponentResource {
@@ -47,16 +49,6 @@ export class AppDatabase extends pulumi.ComponentResource {
 			{ parent: this },
 		)
 
-		// Generate app-specific user password
-		const userPassword = new random.RandomPassword(
-			`${name}-db-password`,
-			{
-				length: 32,
-				special: false,
-			},
-			{ parent: this },
-		)
-
 		// Create a PostgreSQL provider using admin credentials
 		const pgProvider = new postgresql.Provider(
 			`${name}-pg-provider`,
@@ -78,7 +70,7 @@ export class AppDatabase extends pulumi.ComponentResource {
 			{
 				name: appUserName,
 				login: true,
-				password: userPassword.result,
+				password: args.userPassword,
 			},
 			{ parent: this, provider: pgProvider, dependsOn: [database] },
 		)
@@ -125,12 +117,17 @@ export class AppDatabase extends pulumi.ComponentResource {
 		new postgresql.Extension(
 			`${name}-ext-pg_trgm`,
 			{ name: 'pg_trgm' },
-			{ parent: this, provider: dbProvider, dependsOn: [database] },
+			{
+				parent: this,
+				provider: dbProvider,
+				dependsOn: [database],
+				retainOnDelete: true,
+			},
 		)
 
 		this.databaseName = database.name
 		this.userName = appUserName
-		this.userPassword = pulumi.secret(userPassword.result)
+		this.userPassword = pulumi.secret(args.userPassword)
 
 		this.registerOutputs({
 			databaseName: this.databaseName,

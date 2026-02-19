@@ -1,6 +1,8 @@
 import { AppDatabase } from '@aamini/infra/src/components'
-import * as command from '@pulumi/command'
 import * as pulumi from '@pulumi/pulumi'
+
+const config = new pulumi.Config()
+const dbPassword = config.requireSecret('dbPassword')
 
 // Reference the global infrastructure stack using the current stack's environment name
 const currentStack = pulumi.getStack()
@@ -31,17 +33,7 @@ const appDb = new AppDatabase('imdbgraph', {
 	adminPassword: globalStack
 		.getOutput('postgres')
 		.apply((pg: any) => pg.postgresAdminPassword),
-})
-
-// Auto-generate sealed secret for DATABASE_PASSWORD
-// OMDB_KEY is manually managed and already present in the sealed secret
-new command.local.Command('seal-imdbgraph-secrets', {
-	create: pulumi.interpolate`bash scripts/seal.sh --name imdbgraph-secrets --namespace imdbgraph --output apps/imdbgraph/k8s/sealed-secret.yaml DATABASE_PASSWORD=${appDb.userPassword}`,
-	dir: '../../../',
-	environment: {
-		DATABASE_PASSWORD: appDb.userPassword,
-	},
-	triggers: [appDb.userPassword],
+	userPassword: dbPassword,
 })
 
 // Export connection string for app to use
