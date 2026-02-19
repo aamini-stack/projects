@@ -1,5 +1,4 @@
 import * as azure from '@pulumi/azure-native'
-import * as command from '@pulumi/command'
 import * as postgresql from '@pulumi/postgresql'
 import * as pulumi from '@pulumi/pulumi'
 

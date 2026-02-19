@@ -161,9 +161,13 @@ new azure.managedidentity.FederatedIdentityCredential(
 	},
 )
 
-const k8sProvider = new k8s.Provider('k8s-provider', {
-	kubeconfig: kubeconfig,
-}, { dependsOn: [getAksCredentials] })
+const k8sProvider = new k8s.Provider(
+	'k8s-provider',
+	{
+		kubeconfig: kubeconfig,
+	},
+	{ dependsOn: [getAksCredentials] },
+)
 
 const fluxBootstrap = new command.local.Command(
 	'flux-boostrap',
@@ -187,7 +191,9 @@ new k8s.core.v1.ConfigMap(
 		},
 		data: {
 			TRAEFIK_PUBLIC_IP: traefikIp.ipAddress.apply((ip) => ip!),
-			TRAEFIK_NODE_RESOURCE_GROUP: aksCluster.nodeResourceGroup.apply((rg) => rg!),
+			TRAEFIK_NODE_RESOURCE_GROUP: aksCluster.nodeResourceGroup.apply(
+				(rg) => rg!,
+			),
 			CERT_MANAGER_CLIENT_ID: certManagerIdentity.clientId,
 			AZURE_SUBSCRIPTION_ID: subscriptionId,
 			AZURE_DNS_RESOURCE_GROUP: resourceGroupName,
