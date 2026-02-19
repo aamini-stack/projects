@@ -1,0 +1,7 @@
+config:
+  {
+    'imdbgraph-infra:dbPassword':
+      {
+        secure: AAABAIZ9BsakkW7pbCEfpDlks4YAKYfPP2difGbkASC0t4VOTnMOhHSst3CkQiCs2wikaJSSbKa1q+Ek8WpnDg==,
+      },
+  }

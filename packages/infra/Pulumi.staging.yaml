@@ -12,3 +12,5 @@ config:
     geoRedundantBackup: Disabled
   github:token:
     secure: AAABANuvXTgIhf1bhwB+kFpVBS8rhojdvoHLz6dbVS0v5EuWIbIjJYqwQBwTglDuWuerm7/eYiNzUhLxsmzdJ+6W7G6rjh3XBqXRkBIerzh0s+6LY2hnhEb2NWzlWwuYJaqDEuXDZ+n3QhIwMcROzI/7pTanxXXDljpzzBo=
+  aamini-infra:postgresAdminPassword:
+    secure: AAABAO4EhTvlOZpUviRtmyUcunElv2tuKsWm6N8KQ7lxDpuC0zb9q0PaU02pbty5uvnuqduiA58X622ofQ0+3amQRZuYet/p
