@@ -11,6 +11,13 @@ export const baseConfig = defineConfig({
 	plugins: [
 		devtools(),
 		nitro({
+			routeRules: {
+				'/assets/**': {
+					headers: {
+						'Cache-Control': 'public, max-age=31536000, immutable',
+					},
+				},
+			},
 			rollupConfig: {
 				onwarn(warning, defaultHandler) {
 					const ignored = new Set([
