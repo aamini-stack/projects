@@ -21,6 +21,7 @@
 		"@playwright/test": "^1.57.0",
 		"oxlint": "^1.47.0",
 		"oxlint-tsgolint": "^0.12.2",
+		"portless": "^0.4.0",
 		"prettier": "^3.8.1",
 		"prettier-plugin-jsdoc": "^1.8.0",
 		"prettier-plugin-organize-imports": "^4.3.0",
