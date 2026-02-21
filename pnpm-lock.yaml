@@ -7,6 +7,10 @@ settings:
 importers:
 
   .:
+    dependencies:
+      portless:
+        specifier: ^0.4.0
+        version: 0.4.0
     devDependencies:
       '@playwright/test':
         specifier: ^1.57.0
@@ -5850,6 +5854,12 @@ packages:
     resolution: {integrity: sha512-LKWqWJRhstyYo9pGvgor/ivk2w94eSjE3RGVuzLGlr3NmD8bf7RcYGze1mNdEHRP6TRP6rMuDHk5t44hnTRyow==}
     engines: {node: '>=14.19.0'}
 
+  portless@0.4.0:
+    resolution: {integrity: sha512-CW3ERwHux/9VNrnvaSXa4sCtNlY300b5sUh6A52IBkpYMfJm7dMS4NipRVaSMFwyLAwFSp+OxGxpRD0zItiBWg==}
+    engines: {node: '>=20'}
+    os: [darwin, linux]
+    hasBin: true
+
   postcss-selector-parser@7.1.1:
     resolution: {integrity: sha512-orRsuYpJVw8LdAwqqLykBj9ecS5/cRHlI5+nvTo8LcCKmzDmqVORXtOIYEEQuL9D4BxtA1lm5isAqzQZCoQ6Eg==}
     engines: {node: '>=4'}
@@ -6434,6 +6444,7 @@ packages:
   tar@7.5.7:
     resolution: {integrity: sha512-fov56fJiRuThVFXD6o6/Q354S7pnWMJIVlDBYijsTNx6jKSE4pvrDTs6lUnmGvNyfJwFQQwWy3owKz1ucIhveQ==}
     engines: {node: '>=18'}
+    deprecated: Old versions of tar are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
 
   testcontainers@11.11.0:
     resolution: {integrity: sha512-nKTJn3n/gkyGg/3SVkOwX+isPOGSHlfI+CWMobSmvQrsj7YW01aWvl2pYIfV4LMd+C8or783yYrzKSK2JlP+Qw==}
@@ -11857,6 +11868,10 @@ snapshots:
       fsevents: 2.3.2
 
   pngjs@7.0.0: {}
+
+  portless@0.4.0:
+    dependencies:
+      chalk: 5.6.2
 
   postcss-selector-parser@7.1.1:
     dependencies:
