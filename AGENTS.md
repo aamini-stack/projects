@@ -40,3 +40,8 @@ from root will use turbo to run that command for each subproject. (Ex: Running '
 | Deployment     | Vercel                                                   |
 | Package Manger | pnpm (CRITICAL: DO NOT USE npm)                          |
 | Task Runner    | Turborepo for Monorepo support + task management/caching |
+
+## Verification
+
+After completing a task, run `pnpm verify` in the relevant app directory to ensure
+all checks pass (build, lint, format, typecheck, test, e2e).

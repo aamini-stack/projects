@@ -1,0 +1,8 @@
+{
+	"extends": "@aamini/config-typescript/strict",
+	"include": ["**/*.ts"],
+	"compilerOptions": {
+		"module": "NodeNext",
+		"moduleResolution": "NodeNext"
+	}
+}
