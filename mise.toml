@@ -8,5 +8,4 @@ flux2 = "2.7.5"
 "npm:tsx" = "4.21.0"
 
 [env]
-_.path = ["./scripts"]
-_.file = '.env.local'
+_.path = ["./scripts/bin"]
