@@ -1,2 +1,4 @@
 #!/usr/bin/env bash
-exec tsx "$(dirname "$0")/../src/pm.ts" "$@"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(git -C "$SCRIPT_DIR" rev-parse --show-toplevel 2>/dev/null || (cd "$SCRIPT_DIR/../.." && pwd))"
+exec pnpm --dir "$REPO_ROOT" exec tsx "$SCRIPT_DIR/../src/pm.ts" "$@"
