@@ -1,22 +1,22 @@
 #!/bin/bash
 set -e
 
-# Usage: ./scripts/e2e.sh <app-name> [playwright-args...]
-# Example: ./scripts/e2e.sh imdbgraph
-# Example: ./scripts/e2e.sh imdbgraph --update-snapshots
+# Usage: aamini e2e <app-name> [playwright-args...]
+# Example: aamini e2e imdbgraph
+# Example: aamini e2e imdbgraph --update-snapshots
 
 if [ -z "$1" ]; then
   echo "Error: APP_NAME is required"
-  echo "Usage: ./scripts/e2e.sh <app-name> [playwright-args...]"
+  echo "Usage: aamini e2e <app-name> [playwright-args...]"
   exit 1
 fi
 
 APP_NAME=$1
 shift # Remove first arg, rest are playwright args
 
-# Navigate to repository root (directory containing pnpm-workspace.yaml)
+# Navigate to repository root
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+REPO_ROOT="$(git -C "$SCRIPT_DIR" rev-parse --show-toplevel 2>/dev/null || (cd "$SCRIPT_DIR/../.." && pwd))"
 cd "$REPO_ROOT"
 
 echo "Building e2e Docker image for $APP_NAME..."

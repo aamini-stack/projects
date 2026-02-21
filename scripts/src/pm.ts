@@ -151,19 +151,19 @@ function cmdUpdate(id: string, field: string, value: string): void {
 
 function printHelp(): void {
 	console.log(`
-  pm - Project Manager CLI for tasks.json
+  aamini pm - Project Manager CLI for tasks.json
 
   Usage:
-    pm next              Show next available tasks (topological order)
-    pm show <id>         Show details for a story (e.g., pm show 1.1)
-    pm update <id> <field> <value>   Update a story field
+    aamini pm next              Show next available tasks (topological order)
+    aamini pm show <id>         Show details for a story (e.g., aamini pm show 1.1)
+    aamini pm update <id> <field> <value>   Update a story field
                          Fields: done, notes, commitSha, title, description
 
   Examples:
-    pm next
-    pm show 1.1
-    pm update 1.1 done true
-    pm update 1.1 notes "Implemented with optimization"
+    aamini pm next
+    aamini pm show 1.1
+    aamini pm update 1.1 done true
+    aamini pm update 1.1 notes "Implemented with optimization"
 `)
 }
 
@@ -195,7 +195,7 @@ async function main(): Promise<void> {
 			break
 		case 'update':
 			if (!args[1] || !args[2] || args[3] === undefined) {
-				console.error('Error: Usage: pm update <id> <field> <value>')
+				console.error('Error: Usage: aamini pm update <id> <field> <value>')
 				process.exit(1)
 			}
 			cmdUpdate(args[1], args[2], args.slice(3).join(' '))

@@ -1,7 +1,7 @@
 #!/bin/bash
 # ralph.sh - Autonomous Ralph loop with deterministic CI enforcement
-# Usage: ./scripts/ralph.sh [iterations]
-# Example: ./scripts/ralph.sh 50
+# Usage: aamini ralph [iterations]
+# Example: aamini ralph 50
 
 set -e
 
@@ -114,8 +114,8 @@ Query and manage tasks.json for autonomous workflows:
 
 | Command                        | Action                                                            |
 | :----------------------------- | :---------------------------------------------------------------- |
-| $(pm next)                      | Show next available tasks (topological order)                     |
-| $(pm show $id)                 | Show details for a story (e.g., pm show 1.1)                      |
+| $(aamini pm next)                      | Show next available tasks (topological order)                     |
+| $(aamini pm show $id)                 | Show details for a story (e.g., aamini pm show 1.1)                      |
 
 ## Pre-flight Check
 
@@ -258,5 +258,5 @@ echo "║              ITERATION LIMIT REACHED                        ║"
 echo "╠════════════════════════════════════════════════════════════╣"
 echo "║  Completed: $ITERATIONS iterations"
 echo "║  Remaining: $(count_remaining) stories"
-echo "║  Run again with: ./scripts/ralph.sh $ITERATIONS"
+echo "║  Run again with: aamini ralph $ITERATIONS"
 echo "╚════════════════════════════════════════════════════════════╝"

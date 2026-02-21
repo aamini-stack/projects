@@ -17,8 +17,8 @@
 		"test:unit": "vitest run --project unit",
 		"test:integration": "vitest run --project browser --project server",
 		"test:watch": "vitest --watch",
-		"e2e": "bash ../../scripts/e2e.sh pc-tune-ups",
-		"e2e:update": "bash ../../scripts/e2e.sh pc-tune-ups --update-snapshots",
+		"e2e": "pnpm --filter @aamini/scripts exec aamini e2e pc-tune-ups",
+		"e2e:update": "pnpm --filter @aamini/scripts exec aamini e2e pc-tune-ups --update-snapshots",
 		"report": "playwright show-report",
 		"verify": "turbo run build lint format test typecheck e2e"
 	},

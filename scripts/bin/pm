@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-exec tsx "$(dirname "$0")/pm.ts" "$@"
+exec tsx "$(dirname "$0")/../src/pm.ts" "$@"
