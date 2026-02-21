@@ -208,7 +208,7 @@ async function main(): Promise<void> {
 }
 
 if (process.argv[1] === import.meta.url.replace('file://', '')) {
-	main()
+	void main()
 }
 
 export {
