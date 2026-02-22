@@ -14,8 +14,8 @@
 		"test:unit": "vitest run --project unit",
 		"test:integration": "vitest run --project browser --project server",
 		"test:watch": "vitest --watch",
-		"e2e": "pnpm -w exec aamini e2e imdbgraph",
-		"e2e:update": "pnpm -w exec aamini e2e imdbgraph --update-snapshots",
+		"e2e": "bash ../../scripts/bin/e2e.sh imdbgraph",
+		"e2e:update": "bash ../../scripts/bin/e2e.sh imdbgraph --update-snapshots",
 		"report": "playwright show-report",
 		"verify": "turbo run build lint format test typecheck e2e",
 		"populate": "tsx --env-file .env.local scripts/populate-db.ts"
