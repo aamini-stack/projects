@@ -14,6 +14,7 @@
 		"test:unit": "turbo run test:unit",
 		"test:integration": "turbo run test:integration",
 		"e2e": "turbo run --continue=dependencies-successful e2e",
+		"e2e:staging": "turbo run --continue=dependencies-successful e2e:staging",
 		"e2e:update": "turbo run --continue=dependencies-successful e2e:update",
 		"verify": "turbo run --continue=dependencies-successful build lint format test typecheck e2e"
 	},
