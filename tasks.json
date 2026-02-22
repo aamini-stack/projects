@@ -17,9 +17,9 @@
 						"Test routing to a sample Knative service"
 					],
 					"dependencies": [],
-					"commitSha": "5a7ef1e0e6935b7d9dfa3973f9fe7c3953ed5183",
-					"done": true,
-					"notes": "Existing wildcard DNS/TLS and Traefik gateway remain in place. Knative Serving deployed via HelmRelease with autoscaling, Traefik networking, and domain mapping configured. Verification items require live AKS cluster."
+					"commitSha": null,
+					"done": false,
+					"notes": ""
 				},
 				{
 					"id": "1.2",
@@ -32,9 +32,9 @@
 						"Document secret naming convention"
 					],
 					"dependencies": [],
-					"commitSha": "330f03af81843f255fbe91089bd2fd7bada981f7",
-					"done": true,
-					"notes": "Created preview namespace with shared secrets for portfolio (PostHog, Mailgun) and imdbgraph (PostHog, Database). Flux Kustomization added to apply secrets. Documented secret naming convention in README."
+					"commitSha": null,
+					"done": false,
+					"notes": ""
 				}
 			]
 		},
@@ -54,9 +54,9 @@
 						"Output manifests to packages/infra/manifests/previews/pr-<num>/"
 					],
 					"dependencies": [],
-					"commitSha": "5dc850fe21b5cd368b04963d600039e9c42d725d",
-					"done": true,
-					"notes": "Created preview scripts: changed-apps detects PR changes, sanitize-branch creates DNS-safe slugs with hash suffix for long names, render-manifests generates Knative Service YAMLs with autoscaling. Priority demo sets min-scale to 1. Output goes to packages/infra/manifests/previews/pr-<num>/."
+					"commitSha": null,
+					"done": false,
+					"notes": ""
 				}
 			]
 		},
@@ -77,10 +77,13 @@
 						"Poll for readiness (Flux Kustomization, Knative Service, HTTP smoke)",
 						"Post GitHub Deployment status and PR comment with URLs"
 					],
-					"dependencies": ["1.1", "2.1"],
-					"commitSha": "8fc7427f678f9ac1974d4a352740d677c6353f3a",
-					"done": true,
-					"notes": "Created preview-pr.yml workflow with jobs: detect-changed-apps, build-and-push (matrix), render-manifests, trigger-flux, wait-for-deployment, post-preview-status, cleanup-preview. Deployment env name: pr-<num>-<app>, Commit status context: preview/<app>."
+					"dependencies": [
+						"1.1",
+						"2.1"
+					],
+					"commitSha": null,
+					"done": false,
+					"notes": ""
 				},
 				{
 					"id": "3.2",
@@ -92,10 +95,12 @@
 						"Trigger Flux reconciliation after cleanup",
 						"Log cleanup actions for debugging"
 					],
-					"dependencies": ["3.1"],
-					"commitSha": "c34ba7aac1e53de6f9a240f34dfc048eb33503c4",
-					"done": true,
-					"notes": "Created preview-cleanup.yml (runs on PR close/merge) and preview-gc.yml (hourly cron, 24h TTL). Both trigger Flux webhook and log actions for debugging."
+					"dependencies": [
+						"3.1"
+					],
+					"commitSha": null,
+					"done": false,
+					"notes": ""
 				}
 			]
 		},
@@ -115,10 +120,12 @@
 						"Store webhook URL/secret in GitHub secrets",
 						"Test webhook triggers immediate reconciliation"
 					],
-					"dependencies": ["1.1"],
-					"commitSha": "423df6d40f1696372e624a49df5fff3799362ec4",
-					"done": true,
-					"notes": "Created preview-source GitRepository (preview-state branch), previews Kustomization (1m interval, health checks enabled), and preview-receiver (GitHub type). Added webhook-token secret placeholder and documentation for GitHub webhook setup."
+					"dependencies": [
+						"1.1"
+					],
+					"commitSha": null,
+					"done": false,
+					"notes": ""
 				}
 			]
 		},
@@ -140,10 +147,14 @@
 						"Test scale-to-zero with multiple idle previews",
 						"Test burst traffic scales previews up successfully"
 					],
-					"dependencies": ["3.1", "3.2", "4.1"],
-					"commitSha": "517bfe7f559389e2720d87d367aff39320a07800",
-					"done": true,
-					"notes": "Enhanced preview-pr.yml with Azure login, AKS credentials, kubectl readiness checks, and HTTP smoke tests. Requires live AKS cluster to run actual validation tests (items 1-8). Verified portfolio app passes build/lint/typecheck/test/e2e."
+					"dependencies": [
+						"3.1",
+						"3.2",
+						"4.1"
+					],
+					"commitSha": null,
+					"done": false,
+					"notes": ""
 				}
 			]
 		},
@@ -162,10 +173,12 @@
 						"Implement priority-demo label detection in workflow",
 						"Optional: add warmup probe job for labeled PRs"
 					],
-					"dependencies": ["5.1"],
+					"dependencies": [
+						"5.1"
+					],
 					"commitSha": null,
 					"done": false,
-					"notes": "Cold-start controls: keep image small, avoid blocking migrations."
+					"notes": ""
 				}
 			]
 		}

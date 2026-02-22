@@ -83,6 +83,21 @@ function getNextTasks(tasks: TasksFile): Story[] {
 	return available
 }
 
+function wipeAllProgress(tasks: TasksFile): number {
+	let storyCount = 0
+
+	for (const epic of tasks.epics) {
+		for (const story of epic.stories) {
+			story.done = false
+			story.commitSha = null
+			story.notes = ''
+			storyCount += 1
+		}
+	}
+
+	return storyCount
+}
+
 function cmdNext(): void {
 	const tasks = loadTasks()
 	const next = getNextTasks(tasks)
@@ -166,21 +181,30 @@ function cmdUpdate(id: string, field: string, value: string): void {
 	console.log(`Updated ${id}.${field} = ${value}`)
 }
 
+function cmdEipe(): void {
+	const tasks = loadTasks()
+	const storyCount = wipeAllProgress(tasks)
+	saveTasks(tasks)
+	console.log(`Wiped progress for ${storyCount} stories`)
+}
+
 function printHelp(): void {
 	console.log(`
   pm - Project Manager CLI for tasks.json
 
-  Usage:
-    pm next              Show next available tasks (topological order)
-    pm show <id>         Show details for a story (e.g., pm show 1.1)
-    pm update <id> <field> <value>   Update a story field
+	Usage:
+	  pm next              Show next available tasks (topological order)
+	  pm show <id>         Show details for a story (e.g., pm show 1.1)
+	  pm eipe              Wipe all progress (done, notes, commitSha)
+	  pm update <id> <field> <value>   Update a story field
                          Fields: done, notes, commitSha, title, description
 
-  Examples:
-    pm next
-    pm show 1.1
-    pm update 1.1 done true
-    pm update 1.1 notes "Implemented with optimization"
+	Examples:
+	  pm next
+	  pm show 1.1
+	  pm eipe
+	  pm update 1.1 done true
+	  pm update 1.1 notes "Implemented with optimization"
 `)
 }
 
@@ -202,6 +226,9 @@ async function main(): Promise<void> {
 	switch (cmd) {
 		case 'next':
 			cmdNext()
+			break
+		case 'eipe':
+			cmdEipe()
 			break
 		case 'show':
 			if (!args[1]) {
@@ -235,5 +262,6 @@ export {
 	getStoryById,
 	loadTasks,
 	saveTasks,
+	wipeAllProgress,
 }
 export type { Epic, Story, TasksFile }

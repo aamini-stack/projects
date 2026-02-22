@@ -5,6 +5,7 @@ import {
 	getNextTasks,
 	getStoryById,
 	type TasksFile,
+	wipeAllProgress,
 } from './pm.js'
 
 function createMockTasks(): TasksFile {
@@ -122,5 +123,25 @@ describe('getNextTasks', () => {
 		const next = getNextTasks(tasks)
 		expect(next).toHaveLength(1)
 		expect(next[0]!.id).toBe('1.2')
+	})
+})
+
+describe('wipeAllProgress', () => {
+	it('resets done, notes, and commitSha for all stories', () => {
+		const tasks = createMockTasks()
+		tasks.epics[0]!.stories[0]!.done = true
+		tasks.epics[0]!.stories[0]!.commitSha = 'xyz789'
+		tasks.epics[0]!.stories[0]!.notes = 'in progress'
+
+		const count = wipeAllProgress(tasks)
+
+		expect(count).toBe(3)
+		for (const epic of tasks.epics) {
+			for (const story of epic.stories) {
+				expect(story.done).toBe(false)
+				expect(story.commitSha).toBeNull()
+				expect(story.notes).toBe('')
+			}
+		}
 	})
 })
