@@ -1,4 +1,0 @@
-#! /usr/bin/env tsx
-console.log('🎉 pm CLI is working!')
-console.log('Node version:', process.version)
-console.log('Args:', process.argv.slice(2))

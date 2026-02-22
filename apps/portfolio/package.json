@@ -17,8 +17,8 @@
 		"test:unit": "vitest run --project unit",
 		"test:integration": "vitest run --project browser --project server",
 		"test:watch": "vitest --watch",
-		"e2e": "bash ../../scripts/e2e.sh portfolio",
-		"e2e:update": "bash ../../scripts/e2e.sh portfolio --update-snapshots",
+		"e2e": "bash ../../scripts/bin/e2e.sh portfolio",
+		"e2e:update": "bash ../../scripts/bin/e2e.sh portfolio --update-snapshots",
 		"report": "playwright show-report",
 		"verify": "turbo run build lint format test typecheck e2e"
 	},
