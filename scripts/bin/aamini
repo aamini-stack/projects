@@ -17,14 +17,12 @@ Commands:
 	unseal                                Pull app Secrets from cluster into .env.local files
   build-all                             Build Docker images for all configured apps
   ralph [iterations]                    Run the autonomous Ralph loop
-  pm <subcommand> [args...]             Manage tasks.json workflow
 
 Examples:
   aamini e2e imdbgraph
   aamini e2e imdbgraph --update-snapshots
 	aamini seal
 	aamini unseal
-  aamini pm next
 EOF
 }
 
@@ -51,9 +49,6 @@ case "$CMD" in
 		;;
 	ralph)
 		exec "$SCRIPT_DIR/ralph.sh" "$@"
-		;;
-	pm)
-		exec pnpm --dir "$REPO_ROOT" exec tsx "$SCRIPT_DIR/../src/pm.ts" "$@"
 		;;
 	help | --help | -h)
 		print_help

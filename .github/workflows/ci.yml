@@ -75,38 +75,10 @@ jobs:
           cache: 'pnpm'
       - run: pnpm i
       - run: pnpm exec playwright install --with-deps chromium
-      # Deploy
-      - name: Deploy to Vercel
-        working-directory: ./apps/${{ matrix.app }}
-        run: |
-          pnpm i -g vercel
-          pnpm vercel link \
-            --yes \
-            --repo \
-            --token=${{ secrets.VERCEL_TOKEN }} \
-            --scope=${{ vars.TURBO_TEAM }}
 
-          # Add --prod flag if pushing to main branch (not a PR)
-          if [ "${{ github.event_name }}" = "push" ] && [ "${{ github.ref }}" = "refs/heads/main" ]; then
-            PROD_FLAG="--prod"
-          else
-            PROD_FLAG=""
-          fi
-
-          BASE_URL=$(pnpm vercel \
-            --yes \
-            $PROD_FLAG \
-            --token=${{ secrets.VERCEL_TOKEN }} \
-            --scope=${{ vars.TURBO_TEAM }} \
-            -m githubDeployment='1' \
-            -m githubCommitRef='${{ github.head_ref || github.ref_name }}' \
-            -m githubCommitSha='${{ github.sha }}' \
-          | tail -1)
-          echo BASE_URL=$BASE_URL >> $GITHUB_ENV
-
-      - name: Run Playwright tests
+      - name: Run Playwright tests against staging
         working-directory: './apps/${{ matrix.app }}'
-        run: pnpm e2e
+        run: pnpm e2e:staging
 
       - name: Publish Report
         uses: actions/upload-artifact@v4

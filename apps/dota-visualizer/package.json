@@ -18,6 +18,7 @@
 		"test:integration": "vitest run --project browser --project server",
 		"test:watch": "vitest --watch",
 		"e2e": "bash ../../scripts/bin/e2e.sh dota-visualizer",
+		"e2e:staging": "BASE_URL=https://dota-visualizer.ariaamini.com pnpm playwright test",
 		"e2e:update": "bash ../../scripts/bin/e2e.sh dota-visualizer --update-snapshots",
 		"report": "playwright show-report",
 		"verify": "turbo run build lint format test typecheck e2e"

@@ -1,4 +1,3 @@
 #!/usr/bin/env bash
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="$(git -C "$SCRIPT_DIR" rev-parse --show-toplevel 2>/dev/null || (cd "$SCRIPT_DIR/../.." && pwd))"
-exec pnpm --dir "$REPO_ROOT" exec tsx "$SCRIPT_DIR/../src/pm.ts" "$@"
+exec node --experimental-strip-types "$SCRIPT_DIR/../src/pm.ts" "$@"

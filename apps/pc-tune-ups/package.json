@@ -18,6 +18,7 @@
 		"test:integration": "vitest run --project browser --project server",
 		"test:watch": "vitest --watch",
 		"e2e": "bash ../../scripts/bin/e2e.sh pc-tune-ups",
+		"e2e:staging": "BASE_URL=https://pc-tune-ups.ariaamini.com pnpm playwright test",
 		"e2e:update": "bash ../../scripts/bin/e2e.sh pc-tune-ups --update-snapshots",
 		"report": "playwright show-report",
 		"verify": "turbo run build lint format test typecheck e2e"

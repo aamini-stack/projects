@@ -1,8 +1,9 @@
 #!/usr/bin/env node
+import { spawnSync } from 'node:child_process'
 import * as fs from 'node:fs'
 import * as path from 'node:path'
 
-interface Story {
+interface Task {
 	id: string
 	title: string
 	description: string
@@ -13,17 +14,27 @@ interface Story {
 	notes: string
 }
 
-interface Epic {
-	id: number
-	title: string
-	stories: Story[]
-}
-
 interface TasksFile {
-	epics: Epic[]
+	tasks: Task[]
 }
 
-const TASKS_PATH = path.resolve(process.cwd(), 'tasks.json')
+function getRepoRoot(): string {
+	const result = spawnSync('git', ['rev-parse', '--show-toplevel'], {
+		cwd: process.cwd(),
+		encoding: 'utf8',
+	})
+
+	if (result.status === 0) {
+		const root = result.stdout.trim()
+		if (root) {
+			return root
+		}
+	}
+
+	return process.cwd()
+}
+
+const TASKS_PATH = path.resolve(getRepoRoot(), 'tasks.json')
 
 function loadTasks(): TasksFile {
 	if (!fs.existsSync(TASKS_PATH)) {
@@ -37,33 +48,30 @@ function saveTasks(tasks: TasksFile): void {
 	fs.writeFileSync(TASKS_PATH, JSON.stringify(tasks, null, '\t') + '\n')
 }
 
-function getAllStories(tasks: TasksFile): Story[] {
-	return tasks.epics.flatMap((epic) => epic.stories)
+function getTaskById(tasks: TasksFile, id: string): Task | undefined {
+	return tasks.tasks.find((t) => t.id === id)
 }
 
-function getStoryById(tasks: TasksFile, id: string): Story | undefined {
-	return getAllStories(tasks).find((s) => s.id === id)
-}
-
-function areDependenciesMet(tasks: TasksFile, story: Story): boolean {
-	return story.dependencies.every((depId) => {
-		const dep = getStoryById(tasks, depId)
+function areDependenciesMet(tasks: TasksFile, task: Task): boolean {
+	return task.dependencies.every((depId) => {
+		const dep = getTaskById(tasks, depId)
 		return dep?.done === true
 	})
 }
 
-function getNextTasks(tasks: TasksFile): Story[] {
-	const available: Story[] = []
+function getNextTasks(tasks: TasksFile): Task[] {
+	return tasks.tasks.filter(
+		(task) => !task.done && areDependenciesMet(tasks, task),
+	)
+}
 
-	for (const epic of tasks.epics) {
-		for (const story of epic.stories) {
-			if (!story.done && areDependenciesMet(tasks, story)) {
-				available.push(story)
-			}
-		}
+function wipeAllProgress(tasks: TasksFile): number {
+	for (const task of tasks.tasks) {
+		task.done = false
+		task.commitSha = null
+		task.notes = ''
 	}
-
-	return available
+	return tasks.tasks.length
 }
 
 function cmdNext(): void {
@@ -78,70 +86,62 @@ function cmdNext(): void {
 	}
 
 	console.log('Next available tasks:\n')
-	for (const story of next) {
-		console.log(`  ${story.id}: ${story.title}`)
+	for (const task of next) {
+		console.log(`  ${task.id}: ${task.title}`)
 	}
 }
 
 function cmdShow(id: string): void {
 	const tasks = loadTasks()
-	const story = getStoryById(tasks, id)
+	const task = getTaskById(tasks, id)
 
-	if (!story) {
-		console.error(`Error: Story ${id} not found`)
+	if (!task) {
+		console.error(`Error: Task ${id} not found`)
 		process.exit(1)
 	}
 
-	console.log(`\n  ${story.id}: ${story.title}`)
+	console.log(`\n  ${task.id}: ${task.title}`)
 	console.log('  ─'.repeat(30))
-	console.log(`  Description: ${story.description}`)
-	console.log(`  Done: ${story.done}`)
+	console.log(`  Description: ${task.description}`)
+	console.log(`  Done: ${task.done}`)
 	console.log(
-		`  Dependencies: ${story.dependencies.length > 0 ? story.dependencies.join(', ') : 'none'}`,
+		`  Dependencies: ${task.dependencies.length > 0 ? task.dependencies.join(', ') : 'none'}`,
 	)
-	console.log(`  Commit: ${story.commitSha || 'none'}`)
+	console.log(`  Commit: ${task.commitSha || 'none'}`)
 	console.log(`  Todo:`)
-	for (const item of story.todo) {
+	for (const item of task.todo) {
 		console.log(`    - ${item}`)
 	}
-	if (story.notes) {
-		console.log(`  Notes: ${story.notes}`)
+	if (task.notes) {
+		console.log(`  Notes: ${task.notes}`)
 	}
 	console.log()
 }
 
 function cmdUpdate(id: string, field: string, value: string): void {
 	const tasks = loadTasks()
+	const task = getTaskById(tasks, id)
 
-	let found = false
-	for (const epic of tasks.epics) {
-		for (const story of epic.stories) {
-			if (story.id === id) {
-				found = true
-
-				if (field === 'done') {
-					story.done = value === 'true'
-				} else if (field === 'notes') {
-					story.notes = value
-				} else if (field === 'commitSha') {
-					story.commitSha = value
-				} else if (field === 'title') {
-					story.title = value
-				} else if (field === 'description') {
-					story.description = value
-				} else if (field in story) {
-					console.error(`Error: Cannot update field '${field}' directly`)
-					process.exit(1)
-				} else {
-					console.error(`Error: Unknown field '${field}'`)
-					process.exit(1)
-				}
-			}
-		}
+	if (!task) {
+		console.error(`Error: Task ${id} not found`)
+		process.exit(1)
 	}
 
-	if (!found) {
-		console.error(`Error: Story ${id} not found`)
+	if (field === 'done') {
+		task.done = value === 'true'
+	} else if (field === 'notes') {
+		task.notes = value
+	} else if (field === 'commitSha') {
+		task.commitSha = value
+	} else if (field === 'title') {
+		task.title = value
+	} else if (field === 'description') {
+		task.description = value
+	} else if (field in task) {
+		console.error(`Error: Cannot update field '${field}' directly`)
+		process.exit(1)
+	} else {
+		console.error(`Error: Unknown field '${field}'`)
 		process.exit(1)
 	}
 
@@ -149,21 +149,30 @@ function cmdUpdate(id: string, field: string, value: string): void {
 	console.log(`Updated ${id}.${field} = ${value}`)
 }
 
+function cmdWipe(): void {
+	const tasks = loadTasks()
+	const count = wipeAllProgress(tasks)
+	saveTasks(tasks)
+	console.log(`Wiped progress for ${count} tasks`)
+}
+
 function printHelp(): void {
 	console.log(`
-  aamini pm - Project Manager CLI for tasks.json
+  pm - Project Manager CLI for tasks.json
 
-  Usage:
-    aamini pm next              Show next available tasks (topological order)
-    aamini pm show <id>         Show details for a story (e.g., aamini pm show 1.1)
-    aamini pm update <id> <field> <value>   Update a story field
+	Usage:
+	  pm next              Show next available tasks (topological order)
+	  pm show <id>         Show details for a task (e.g., pm show 1)
+	  pm wipe              Wipe all progress (done, notes, commitSha)
+	  pm update <id> <field> <value>   Update a task field
                          Fields: done, notes, commitSha, title, description
 
-  Examples:
-    aamini pm next
-    aamini pm show 1.1
-    aamini pm update 1.1 done true
-    aamini pm update 1.1 notes "Implemented with optimization"
+	Examples:
+	  pm next
+	  pm show 1
+	  pm wipe
+	  pm update 1 done true
+	  pm update 1 notes "Implemented with optimization"
 `)
 }
 
@@ -186,16 +195,19 @@ async function main(): Promise<void> {
 		case 'next':
 			cmdNext()
 			break
+		case 'wipe':
+			cmdWipe()
+			break
 		case 'show':
 			if (!args[1]) {
-				console.error('Error: Please provide a story id')
+				console.error('Error: Please provide a task id')
 				process.exit(1)
 			}
 			cmdShow(args[1])
 			break
 		case 'update':
 			if (!args[1] || !args[2] || args[3] === undefined) {
-				console.error('Error: Usage: aamini pm update <id> <field> <value>')
+				console.error('Error: Usage: pm update <id> <field> <value>')
 				process.exit(1)
 			}
 			cmdUpdate(args[1], args[2], args.slice(3).join(' '))
@@ -213,10 +225,10 @@ if (process.argv[1] === import.meta.url.replace('file://', '')) {
 
 export {
 	areDependenciesMet,
-	getAllStories,
 	getNextTasks,
-	getStoryById,
+	getTaskById,
 	loadTasks,
 	saveTasks,
+	wipeAllProgress,
 }
-export type { Epic, Story, TasksFile }
+export type { Task, TasksFile }
