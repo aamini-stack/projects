@@ -7,6 +7,10 @@ set -e
 
 corepack enable
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(git -C "$SCRIPT_DIR" rev-parse --show-toplevel 2>/dev/null || (cd "$SCRIPT_DIR/../.." && pwd))"
+PROMPT_PATH="$SCRIPT_DIR/RALPH.md"
+
 ITERATIONS=${1:-20}
 START_TIME=$(date +%s)
 MAX_FIX_RETRIES=5
@@ -14,6 +18,12 @@ MAX_FIX_RETRIES=5
 if [ ! -f "tasks.json" ]; then
 	echo "Error: tasks.json not found in current directory"
 	echo "Create tasks.json with your stories before running Ralph"
+	exit 1
+fi
+
+if [ ! -f "$PROMPT_PATH" ]; then
+	echo "Error: RALPH.md not found next to ralph.sh"
+	echo "Expected prompt file at: $PROMPT_PATH"
 	exit 1
 fi
 
@@ -42,7 +52,11 @@ count_remaining() {
 }
 
 get_app_dirs() {
-	find apps -maxdepth 1 -mindepth 1 -type d | head -20
+	for dir in apps/*; do
+		if [ -d "$dir" ] && [ -f "$dir/package.json" ]; then
+			echo "$dir"
+		fi
+	done
 }
 
 run_ci_checks() {
@@ -50,11 +64,9 @@ run_ci_checks() {
 	local failed_check=""
 	local failed_output=""
 	local app_dir=""
+	local output=""
 
 	for app_dir in $(get_app_dirs); do
-		if [ ! -f "$app_dir/package.json" ]; then
-			continue
-		fi
 
 		echo ""
 		echo "Checking $app_dir..."
@@ -106,60 +118,101 @@ run_ci_checks() {
 	return 0
 }
 
-MAIN_PROMPT="You are an autonomous agent working on a single story from tasks.json.
+load_ci_state_context() {
+	local build_status="Passes"
+	local typecheck_status="Passes"
+	local lint_status="Passes"
+	local test_status="Passes"
+	local e2e_status="Passes"
+	local build_failures=""
+	local typecheck_failures=""
+	local lint_failures=""
+	local test_failures=""
+	local e2e_failures=""
+	local app_dir=""
+	local output=""
 
-## Project Manager (pm) CLI
+	for app_dir in $(get_app_dirs); do
+		if ! output=$(cd "$app_dir" && pnpm build 2>&1); then
+			build_status="Failed"
+			build_failures="$build_failures
+[$app_dir]
+$output
+"
+		fi
 
-Query and manage tasks.json for autonomous workflows:
+		if ! output=$(cd "$app_dir" && pnpm typecheck 2>&1); then
+			typecheck_status="Failed"
+			typecheck_failures="$typecheck_failures
+[$app_dir]
+$output
+"
+		fi
 
-| Command                        | Action                                                            |
-| :----------------------------- | :---------------------------------------------------------------- |
-| $(aamini pm next)                      | Show next available tasks (topological order)                     |
-| $(aamini pm show $id)                 | Show details for a story (e.g., aamini pm show 1.1)                      |
+		if ! output=$(cd "$app_dir" && pnpm lint 2>&1); then
+			lint_status="Failed"
+			lint_failures="$lint_failures
+[$app_dir]
+$output
+"
+		fi
 
-## Pre-flight Check
+		if ! output=$(cd "$app_dir" && pnpm test:unit 2>&1); then
+			test_status="Failed"
+			test_failures="$test_failures
+[$app_dir]
+$output
+"
+		fi
 
-1. BEFORE starting any work, run pnpm verify in the relevant app directory
-2. If tests fail, STOP and report the failures - do not proceed with new work
-3. Only proceed if all tests pass
+		if ! output=$(cd "$app_dir" && pnpm e2e 2>&1); then
+			e2e_status="Failed"
+			e2e_failures="$e2e_failures
+[$app_dir]
+$output
+"
+		fi
+	done
 
-## Find Your Task
+	echo "Current Code Quality:"
+	echo "Build: $build_status"
+	echo "Typecheck: $typecheck_status"
+	echo "Lint: $lint_status"
+	echo "Test: $test_status"
+	echo "E2E: $e2e_status"
 
-1. Read tasks.json
-2. Find the NEXT available story where: done is false AND ALL dependencies have done: true
-3. If multiple available, pick by: epic order then story order
+	if [ "$build_status" = "Failed" ]; then
+		echo ""
+		echo "Build Failure Output:"
+		echo "$build_failures"
+	fi
 
-## Implement the Story
+	if [ "$typecheck_status" = "Failed" ]; then
+		echo ""
+		echo "Typecheck Failure Output:"
+		echo "$typecheck_failures"
+	fi
 
-1. Complete ALL items in the story's todo array
-2. Work ONLY on this single story - do not touch other stories
-3. Run pnpm verify in the relevant app directory after implementing
+	if [ "$lint_status" = "Failed" ]; then
+		echo ""
+		echo "Lint Failure Output:"
+		echo "$lint_failures"
+	fi
 
-## Commit
+	if [ "$test_status" = "Failed" ]; then
+		echo ""
+		echo "Test Failure Output:"
+		echo "$test_failures"
+	fi
 
-Format: feat(scope): story X.Y - Title
-- Get scope from epic title (lowercase, hyphenated)
-- Example: Epic 'User Dashboard' -> scope 'user-dashboard'
+	if [ "$e2e_status" = "Failed" ]; then
+		echo ""
+		echo "E2E Failure Output:"
+		echo "$e2e_failures"
+	fi
+}
 
-## Update tasks.json
-
-After successful commit:
-- Set done: true
-- Set commitSha to output of git rev-parse HEAD
-- Add any notes about implementation decisions
-
-## Completion Signal
-
-If NO stories are available (all done OR no stories with met dependencies):
-- Output EXACTLY: <ralph>COMPLETE</ralph>
-- Otherwise, NEVER output this signal
-
-## Critical Rules
-
-- Run pnpm verify BEFORE and AFTER implementing
-- ONE story per iteration - ALWAYS
-- Never mark done without a commit
-- Never work on a story with unmet dependencies"
+MAIN_PROMPT=$(<"$PROMPT_PATH")
 
 for ((i = 1; i <= $ITERATIONS; i++)); do
 	REMAINING=$(count_remaining)
@@ -173,8 +226,17 @@ for ((i = 1; i <= $ITERATIONS; i++)); do
 	echo ""
 
 	BEFORE_SHA=$(git rev-parse HEAD 2>/dev/null || echo "")
+	CI_STATE_CONTEXT=$(load_ci_state_context)
 
-	opencode run "@tasks.json" "$MAIN_PROMPT"
+	RUN_PROMPT="$MAIN_PROMPT
+
+## Current Code Quality
+
+$CI_STATE_CONTEXT
+
+Use this CI state as additional context. If a check is currently failing, prioritize fixing the relevant issues as part of this task when appropriate."
+
+	opencode run "@tasks.json" "$RUN_PROMPT"
 
 	AFTER_SHA=$(git rev-parse HEAD 2>/dev/null || echo "")
 
