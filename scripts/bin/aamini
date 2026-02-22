@@ -13,7 +13,8 @@ Usage:
 
 Commands:
   e2e <app-name> [playwright-args...]   Run Dockerized e2e tests for an app
-  seal                                  Seal app .env.local files into SealedSecrets
+	seal                                  Seal app .env.local files into SealedSecrets
+	unseal                                Pull app Secrets from cluster into .env.local files
   build-all                             Build Docker images for all configured apps
   ralph [iterations]                    Run the autonomous Ralph loop
   pm <subcommand> [args...]             Manage tasks.json workflow
@@ -21,7 +22,8 @@ Commands:
 Examples:
   aamini e2e imdbgraph
   aamini e2e imdbgraph --update-snapshots
-  aamini seal
+	aamini seal
+	aamini unseal
   aamini pm next
 EOF
 }
@@ -40,6 +42,9 @@ case "$CMD" in
 		;;
 	seal)
 		exec "$SCRIPT_DIR/seal.sh" "$@"
+		;;
+	unseal)
+		exec "$SCRIPT_DIR/unseal.sh" "$@"
 		;;
 	build-all)
 		exec "$SCRIPT_DIR/build-all.sh" "$@"
