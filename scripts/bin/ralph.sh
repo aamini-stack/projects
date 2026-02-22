@@ -14,6 +14,7 @@ PROMPT_PATH="$SCRIPT_DIR/RALPH.md"
 ITERATIONS=${1:-20}
 START_TIME=$(date +%s)
 MAX_FIX_RETRIES=5
+MAX_FAILURE_LINES=12
 
 if [ ! -f "tasks.json" ]; then
 	echo "Error: tasks.json not found in current directory"
@@ -59,46 +60,76 @@ get_app_dirs() {
 	done
 }
 
+get_app_names() {
+	local app_dir=""
+	for app_dir in $(get_app_dirs); do
+		basename "$app_dir"
+	done
+}
+
+run_pnpm_check() {
+	local app_dir="$1"
+	local command_name="$2"
+	local stream_fd="${3:-1}"
+	local tmp_output
+	tmp_output=$(mktemp)
+
+	if [ "$stream_fd" = "2" ]; then
+		(
+			cd "$app_dir" && pnpm "$command_name"
+		) 2>&1 | tee "$tmp_output" >&2
+	else
+		(
+			cd "$app_dir" && pnpm "$command_name"
+		) 2>&1 | tee "$tmp_output"
+	fi
+
+	local status=${PIPESTATUS[0]}
+	CHECK_OUTPUT=$(cat "$tmp_output")
+	rm -f "$tmp_output"
+
+	return $status
+}
+
 run_ci_checks() {
 	local failed=0
 	local failed_check=""
 	local failed_output=""
 	local app_dir=""
-	local output=""
 
 	for app_dir in $(get_app_dirs); do
 
 		echo ""
 		echo "Checking $app_dir..."
 
-		if ! output=$(cd "$app_dir" && pnpm typecheck 2>&1); then
+		if ! run_pnpm_check "$app_dir" typecheck; then
 			failed=1
 			failed_check="typecheck"
-			failed_output="$output"
+			failed_output="$CHECK_OUTPUT"
 			break
 		fi
 		echo "  ✓ typecheck"
 
-		if ! output=$(cd "$app_dir" && pnpm lint 2>&1); then
+		if ! run_pnpm_check "$app_dir" lint; then
 			failed=1
 			failed_check="lint"
-			failed_output="$output"
+			failed_output="$CHECK_OUTPUT"
 			break
 		fi
 		echo "  ✓ lint"
 
-		if ! output=$(cd "$app_dir" && pnpm test:unit 2>&1); then
+		if ! run_pnpm_check "$app_dir" test:unit; then
 			failed=1
 			failed_check="test:unit"
-			failed_output="$output"
+			failed_output="$CHECK_OUTPUT"
 			break
 		fi
 		echo "  ✓ test:unit"
 
-		if ! output=$(cd "$app_dir" && pnpm e2e 2>&1); then
+		if ! run_pnpm_check "$app_dir" e2e; then
 			failed=1
 			failed_check="e2e"
-			failed_output="$output"
+			failed_output="$CHECK_OUTPUT"
 			break
 		fi
 		echo "  ✓ e2e"
@@ -119,97 +150,151 @@ run_ci_checks() {
 }
 
 load_ci_state_context() {
-	local build_status="Passes"
-	local typecheck_status="Passes"
-	local lint_status="Passes"
-	local test_status="Passes"
-	local e2e_status="Passes"
-	local build_failures=""
-	local typecheck_failures=""
-	local lint_failures=""
-	local test_failures=""
-	local e2e_failures=""
-	local app_dir=""
-	local output=""
+	local app_names_csv
+	app_names_csv=$(get_app_names | paste -sd ',' -)
 
-	for app_dir in $(get_app_dirs); do
-		if ! output=$(cd "$app_dir" && pnpm build 2>&1); then
-			build_status="Failed"
-			build_failures="$build_failures
-[$app_dir]
-$output
-"
-		fi
+	if [ -z "$app_names_csv" ]; then
+		echo "Current Code Quality:"
+		echo "Apps scoped: 0"
+		echo "Build: Unknown"
+		echo "Typecheck: Unknown"
+		echo "Lint: Unknown"
+		echo "Test: Unknown"
+		echo "E2E: Unknown"
+		return
+	fi
 
-		if ! output=$(cd "$app_dir" && pnpm typecheck 2>&1); then
-			typecheck_status="Failed"
-			typecheck_failures="$typecheck_failures
-[$app_dir]
-$output
-"
-		fi
+	local turbo_output_file
+	turbo_output_file=$(mktemp)
 
-		if ! output=$(cd "$app_dir" && pnpm lint 2>&1); then
-			lint_status="Failed"
-			lint_failures="$lint_failures
-[$app_dir]
-$output
-"
-		fi
+	local turbo_args=(
+		turbo run build typecheck lint test:unit e2e
+		--summarize
+		--continue=always
+		--output-logs=errors-only
+		--log-order=grouped
+		--concurrency=1
+	)
 
-		if ! output=$(cd "$app_dir" && pnpm test:unit 2>&1); then
-			test_status="Failed"
-			test_failures="$test_failures
-[$app_dir]
-$output
-"
-		fi
-
-		if ! output=$(cd "$app_dir" && pnpm e2e 2>&1); then
-			e2e_status="Failed"
-			e2e_failures="$e2e_failures
-[$app_dir]
-$output
-"
-		fi
+	local app_name=""
+	for app_name in $(get_app_names); do
+		turbo_args+=(--filter="$app_name")
 	done
 
-	echo "Current Code Quality:"
-	echo "Build: $build_status"
-	echo "Typecheck: $typecheck_status"
-	echo "Lint: $lint_status"
-	echo "Test: $test_status"
-	echo "E2E: $e2e_status"
+	echo "" >&2
+	echo "Collecting CI state snapshot via turbo --summarize..." >&2
 
-	if [ "$build_status" = "Failed" ]; then
+	set +e
+	pnpm "${turbo_args[@]}" 2>&1 | tee "$turbo_output_file" >&2
+	local turbo_exit=${PIPESTATUS[0]}
+	set -e
+
+	local summary_path
+	summary_path=$(node -e '
+		const fs = require("fs")
+		const text = fs.readFileSync(process.argv[1], "utf8")
+		const matches = [...text.matchAll(/Summary:\s+([^\s]+)/g)]
+		if (matches.length === 0) process.exit(0)
+		process.stdout.write(matches[matches.length - 1][1])
+	' "$turbo_output_file")
+
+	rm -f "$turbo_output_file"
+
+	if [ -z "$summary_path" ] || [ ! -f "$summary_path" ]; then
+		echo "Current Code Quality:"
+		echo "Apps scoped: $(echo "$app_names_csv" | tr ',' '\n' | wc -l | tr -d ' ')"
+		echo "Build: Unknown"
+		echo "Typecheck: Unknown"
+		echo "Lint: Unknown"
+		echo "Test: Unknown"
+		echo "E2E: Unknown"
 		echo ""
-		echo "Build Failure Output:"
-		echo "$build_failures"
+		echo "Turbo summary missing. Turbo exit code: $turbo_exit"
+		return
 	fi
 
-	if [ "$typecheck_status" = "Failed" ]; then
-		echo ""
-		echo "Typecheck Failure Output:"
-		echo "$typecheck_failures"
-	fi
+	node - "$summary_path" "$REPO_ROOT" "$app_names_csv" "$MAX_FAILURE_LINES" <<'NODE'
+const fs = require('fs')
+const path = require('path')
 
-	if [ "$lint_status" = "Failed" ]; then
-		echo ""
-		echo "Lint Failure Output:"
-		echo "$lint_failures"
-	fi
+const summaryPath = process.argv[2]
+const repoRoot = process.argv[3]
+const appsCsv = process.argv[4] || ''
+const maxFailureLines = Number(process.argv[5] || '12')
 
-	if [ "$test_status" = "Failed" ]; then
-		echo ""
-		echo "Test Failure Output:"
-		echo "$test_failures"
-	fi
+const appSet = new Set(appsCsv.split(',').filter(Boolean))
+const summary = JSON.parse(fs.readFileSync(summaryPath, 'utf8'))
 
-	if [ "$e2e_status" = "Failed" ]; then
-		echo ""
-		echo "E2E Failure Output:"
-		echo "$e2e_failures"
-	fi
+const checks = [
+	{ task: 'build', label: 'Build' },
+	{ task: 'typecheck', label: 'Typecheck' },
+	{ task: 'lint', label: 'Lint' },
+	{ task: 'test:unit', label: 'Test' },
+	{ task: 'e2e', label: 'E2E' },
+]
+
+const lines = [
+	'Current Code Quality:',
+	`Apps scoped: ${appSet.size}`,
+	`Turbo summary: ${path.relative(repoRoot, summaryPath)}`,
+]
+
+for (const check of checks) {
+	const tasks = (summary.tasks || []).filter(
+		(task) => appSet.has(task.package) && task.task === check.task,
+	)
+	if (tasks.length === 0) {
+		lines.push(`${check.label}: Unknown`)
+		continue
+	}
+	const failed = tasks.filter((task) => (task.execution?.exitCode ?? 0) !== 0)
+	if (failed.length > 0) {
+		lines.push(`${check.label}: Failed (${failed.length}/${tasks.length})`)
+	} else {
+		lines.push(`${check.label}: Passes (${tasks.length}/${tasks.length})`)
+	}
+}
+
+for (const check of checks) {
+	const failedTasks = (summary.tasks || []).filter(
+		(task) =>
+			appSet.has(task.package) &&
+			task.task === check.task &&
+			(task.execution?.exitCode ?? 0) !== 0,
+	)
+	if (failedTasks.length === 0) continue
+
+	lines.push('')
+	lines.push(`${check.label} Failures:`)
+
+	for (const task of failedTasks.slice(0, 3)) {
+		lines.push(`- ${task.package} (${task.taskId})`)
+		const logFile = task.logFile ? path.join(repoRoot, task.logFile) : null
+		if (!logFile || !fs.existsSync(logFile)) {
+			lines.push('  No log output found')
+			continue
+		}
+
+		const raw = fs.readFileSync(logFile, 'utf8')
+		const snippets = raw
+			.split(/\r?\n/)
+			.map((line) => line.trim())
+			.filter(Boolean)
+			.slice(-maxFailureLines)
+			.map((line) => (line.length > 220 ? `${line.slice(0, 220)}...` : line))
+
+		if (snippets.length === 0) {
+			lines.push('  No log output found')
+		} else {
+			for (const snippet of snippets) {
+				lines.push(`  ${snippet}`)
+			}
+		}
+	}
+}
+
+process.stdout.write(`${lines.join('\n')}\n`)
+NODE
 }
 
 MAIN_PROMPT=$(<"$PROMPT_PATH")
