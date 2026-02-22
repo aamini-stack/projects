@@ -12,9 +12,9 @@
 				"Define SLOs for reconcile latency, deployment readiness, and cold-start thresholds"
 			],
 			"dependencies": [],
-			"commitSha": null,
-			"done": false,
-			"notes": ""
+			"commitSha": "163d16ca50b8a86a15cce91aa62b419cba1f3b7f",
+			"done": true,
+			"notes": "Documented AKS+Knative+Flux runtime contract, env and URL model, image tagging policy, tenant/secret boundaries, and baseline platform SLO targets."
 		},
 		{
 			"id": "2",

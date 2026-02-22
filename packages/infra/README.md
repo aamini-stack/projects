@@ -6,3 +6,5 @@ flux bootstrap github \
  --personal --force
 
 pulumi config get github:token
+
+Architecture baseline: `packages/infra/docs/platform-architecture-baseline.md`
