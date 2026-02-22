@@ -39,15 +39,14 @@ echo "╚═══════════════════════�
 echo ""
 
 count_remaining() {
-	local count=$(cat tasks.json | node -e "
-		const data = JSON.parse(require('fs').readFileSync('/dev/stdin', 'utf8'));
-		let remaining = 0;
-		for (const epic of data.epics || []) {
-			for (const story of epic.stories || []) {
-				if (!story.done) remaining++;
-			}
-		}
-		console.log(remaining);
+	local output=$(
+		"$SCRIPT_DIR/pm" progress 2>/dev/null || echo "unknown"
+	)
+	local count
+	count=$(printf '%s' "$output" | node -e "
+		const input = require('fs').readFileSync(0, 'utf8').trim();
+		const match = input.match(/\((\d+) left\)$/);
+		console.log(match ? match[1] : 'unknown');
 	" 2>/dev/null || echo "unknown")
 	echo "$count"
 }
