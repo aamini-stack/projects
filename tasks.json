@@ -1,186 +1,71 @@
 {
-	"epics": [
+	"tasks": [
 		{
-			"id": 1,
+			"id": "1",
 			"title": "Knative Infrastructure Setup",
-			"stories": [
-				{
-					"id": "1.1",
-					"title": "Install and configure Knative Serving with Traefik",
-					"description": "Install Knative Serving on AKS, configure Traefik gateway integration, and set up autoscaling defaults for preview workloads.",
-					"todo": [
-						"Add Knative Serving Helm chart or manifests to packages/infra",
-						"Configure Knative namespace and autoscaling defaults (min-scale: 0, max-scale: 5, target: 50, scale-down-delay: 2m)",
-						"Configure Knative to use Traefik ingress",
-						"Set up Knative domain mapping for ariaamini.com",
-						"Verify wildcard DNS/TLS works with Knative services",
-						"Test routing to a sample Knative service"
-					],
-					"dependencies": [],
-					"commitSha": null,
-					"done": false,
-					"notes": ""
-				},
-				{
-					"id": "1.2",
-					"title": "Create shared preview secrets per app",
-					"description": "Set up shared secrets for each app that can be used by preview environments.",
-					"todo": [
-						"Identify which secrets each app needs",
-						"Create shared preview secrets in the preview namespace",
-						"Configure secret access for Knative services",
-						"Document secret naming convention"
-					],
-					"dependencies": [],
-					"commitSha": null,
-					"done": false,
-					"notes": ""
-				}
-			]
+			"description": "Install Knative Serving on AKS with Traefik gateway, configure autoscaling defaults (min-scale: 0, max-scale: 5, target: 50), and set up shared preview secrets per app.",
+			"todo": [
+				"Add Knative Serving Helm chart/manifests to packages/infra",
+				"Configure Knative namespace, autoscaling defaults, and Traefik ingress",
+				"Set up Knative domain mapping for ariaamini.com",
+				"Create shared preview secrets in preview namespace",
+				"Verify wildcard DNS/TLS works with Knative services"
+			],
+			"dependencies": [],
+			"commitSha": null,
+			"done": false,
+			"notes": ""
 		},
 		{
-			"id": 2,
-			"title": "Preview Tooling",
-			"stories": [
-				{
-					"id": "2.1",
-					"title": "Create preview scripts",
-					"description": "Build scripts for detecting changed apps, sanitizing branch names, and rendering Knative manifests.",
-					"todo": [
-						"Create scripts/preview/changed-apps.ts - detect which apps changed in PR",
-						"Create scripts/preview/sanitize-branch.ts - DNS-safe slugification (lowercase, <=63 chars, hash suffix)",
-						"Create scripts/preview/render-manifests.ts - generate Knative Service YAMLs with autoscaling annotations",
-						"Handle priority demo label (min-scale: 1) in manifest rendering",
-						"Output manifests to packages/infra/manifests/previews/pr-<num>/"
-					],
-					"dependencies": [],
-					"commitSha": null,
-					"done": false,
-					"notes": ""
-				}
-			]
+			"id": "2",
+			"title": "Preview Scripts & Tooling",
+			"description": "Build scripts for detecting changed apps, sanitizing branch names (DNS-safe, <=63 chars), and rendering Knative Service manifests with autoscaling annotations.",
+			"todo": [
+				"Create scripts/preview/changed-apps.ts - detect changed apps in PR",
+				"Create scripts/preview/sanitize-branch.ts - DNS-safe slugification",
+				"Create scripts/preview/render-manifests.ts - generate Knative YAMLs",
+				"Handle priority-demo label (min-scale: 1) in manifest rendering",
+				"Output manifests to packages/infra/manifests/previews/pr-<num>/"
+			],
+			"dependencies": [],
+			"commitSha": null,
+			"done": false,
+			"notes": ""
 		},
 		{
-			"id": 3,
-			"title": "CI/CD Workflows",
-			"stories": [
-				{
-					"id": "3.1",
-					"title": "Create PR preview workflow",
-					"description": "GitHub Actions workflow to build and deploy preview environments on PR events.",
-					"todo": [
-						"Create .github/workflows/preview-pr.yml",
-						"Detect changed apps using changed-apps script",
-						"Build and push images with sha-<shortsha> tags",
-						"Render manifests and commit to preview-state branch",
-						"Trigger Flux Receiver webhook",
-						"Poll for readiness (Flux Kustomization, Knative Service, HTTP smoke)",
-						"Post GitHub Deployment status and PR comment with URLs"
-					],
-					"dependencies": [
-						"1.1",
-						"2.1"
-					],
-					"commitSha": null,
-					"done": false,
-					"notes": ""
-				},
-				{
-					"id": "3.2",
-					"title": "Create cleanup and GC workflows",
-					"description": "Workflows to clean up previews on PR close/merge and garbage collect stale previews.",
-					"todo": [
-						"Create .github/workflows/preview-cleanup.yml - remove manifests on PR close/merge",
-						"Create .github/workflows/preview-gc.yml - scheduled cleanup of previews older than 24h",
-						"Trigger Flux reconciliation after cleanup",
-						"Log cleanup actions for debugging"
-					],
-					"dependencies": [
-						"3.1"
-					],
-					"commitSha": null,
-					"done": false,
-					"notes": ""
-				}
-			]
+			"id": "3",
+			"title": "CI/CD Workflows & Flux Integration",
+			"description": "GitHub Actions workflows for PR preview deployment/cleanup/GC, plus Flux Kustomization and Receiver webhook for GitOps-based reconciliation.",
+			"todo": [
+				"Create .github/workflows/preview-pr.yml (build, push, render, commit, trigger, poll, post status)",
+				"Create .github/workflows/preview-cleanup.yml (remove manifests on PR close/merge)",
+				"Create .github/workflows/preview-gc.yml (scheduled 24h TTL cleanup)",
+				"Create Flux Kustomization targeting preview-state branch",
+				"Create Flux Receiver for webhook-triggered reconciliation",
+				"Store webhook URL/secret in GitHub secrets"
+			],
+			"dependencies": ["1", "2"],
+			"commitSha": null,
+			"done": false,
+			"notes": ""
 		},
 		{
-			"id": 4,
-			"title": "Flux Integration",
-			"stories": [
-				{
-					"id": "4.1",
-					"title": "Configure Flux for preview deployments",
-					"description": "Set up Flux Kustomization and Receiver for GitOps-based preview deployments.",
-					"todo": [
-						"Create Flux Kustomization resource targeting preview-state branch",
-						"Set path to packages/infra/manifests/previews/",
-						"Configure sync interval and health checks",
-						"Create Flux Receiver for webhook-triggered reconciliation",
-						"Store webhook URL/secret in GitHub secrets",
-						"Test webhook triggers immediate reconciliation"
-					],
-					"dependencies": [
-						"1.1"
-					],
-					"commitSha": null,
-					"done": false,
-					"notes": ""
-				}
-			]
-		},
-		{
-			"id": 5,
-			"title": "Testing & Validation",
-			"stories": [
-				{
-					"id": "5.1",
-					"title": "End-to-end validation",
-					"description": "Validate all preview environment scenarios work correctly.",
-					"todo": [
-						"Test single-app PR creates one Knative preview and URL",
-						"Test multi-app PR creates independent previews/statuses per app",
-						"Test branch with slashes/long names yields valid deterministic host",
-						"Test re-push updates revision without URL change",
-						"Test PR close removes resources and invalidates URL",
-						"Test TTL GC cleans stale previews if close hook missed",
-						"Test scale-to-zero with multiple idle previews",
-						"Test burst traffic scales previews up successfully"
-					],
-					"dependencies": [
-						"3.1",
-						"3.2",
-						"4.1"
-					],
-					"commitSha": null,
-					"done": false,
-					"notes": ""
-				}
-			]
-		},
-		{
-			"id": 6,
-			"title": "Documentation & Polish",
-			"stories": [
-				{
-					"id": "6.1",
-					"title": "Document workflow and add priority demo support",
-					"description": "Create developer documentation and implement priority demo warmup feature.",
-					"todo": [
-						"Document preview URL format and status checking",
-						"Document priority-demo label usage (min-scale: 1 for warm starts)",
-						"Document troubleshooting steps",
-						"Implement priority-demo label detection in workflow",
-						"Optional: add warmup probe job for labeled PRs"
-					],
-					"dependencies": [
-						"5.1"
-					],
-					"commitSha": null,
-					"done": false,
-					"notes": ""
-				}
-			]
+			"id": "4",
+			"title": "Testing & Documentation",
+			"description": "Validate all preview scenarios (single/multi-app PRs, long branch names, re-push, cleanup, scale-to-zero) and document usage.",
+			"todo": [
+				"Test single-app and multi-app PR preview creation",
+				"Test branch slugification for edge cases (slashes, long names)",
+				"Test re-push updates revision without URL change",
+				"Test PR close removes resources",
+				"Test TTL GC cleans stale previews",
+				"Test scale-to-zero with idle previews and burst scaling",
+				"Document preview URL format, priority-demo label, and troubleshooting"
+			],
+			"dependencies": ["3"],
+			"commitSha": null,
+			"done": false,
+			"notes": ""
 		}
 	]
 }
