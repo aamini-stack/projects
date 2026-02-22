@@ -6,8 +6,8 @@
 	"scripts": {
 		"build": "turbo build",
 		"docker:build": "node scripts/docker-build.js",
-		"format": "prettier --check '**/*.{js,ts,tsx,json,html,css,md,yml,yaml}'",
-		"format:fix": "prettier --write '**/*.{js,ts,tsx,json,html,css,md,yml,yaml}'",
+		"format": "oxfmt --check '**/*.{js,ts,tsx,json,html,css,md,yml,yaml}'",
+		"format:fix": "oxfmt --write '**/*.{js,ts,tsx,json,html,css,md,yml,yaml}'",
 		"typecheck": "turbo run typecheck",
 		"lint": "oxlint --type-aware --max-warnings=0",
 		"test": "turbo run test",
@@ -19,6 +19,7 @@
 	},
 	"devDependencies": {
 		"@playwright/test": "^1.57.0",
+		"oxfmt": "^0.34.0",
 		"oxlint": "^1.47.0",
 		"oxlint-tsgolint": "^0.12.2",
 		"prettier": "^3.8.1",
