@@ -74,6 +74,20 @@ function wipeAllProgress(tasks: TasksFile): number {
 	return tasks.tasks.length
 }
 
+function getProgress(tasks: TasksFile): {
+	completed: number
+	total: number
+	remaining: number
+} {
+	const total = tasks.tasks.length
+	const completed = tasks.tasks.filter((task) => task.done).length
+	return {
+		completed,
+		total,
+		remaining: total - completed,
+	}
+}
+
 function cmdNext(): void {
 	const tasks = loadTasks()
 	const next = getNextTasks(tasks)
@@ -156,12 +170,27 @@ function cmdWipe(): void {
 	console.log(`Wiped progress for ${count} tasks`)
 }
 
+function cmdProgress(args: string[]): void {
+	if (args.length > 0) {
+		console.error('Error: Usage: pm progress')
+		process.exit(1)
+	}
+
+	const tasks = loadTasks()
+	const progress = getProgress(tasks)
+
+	console.log(
+		`${progress.completed}/${progress.total} completed (${progress.remaining} left)`,
+	)
+}
+
 function printHelp(): void {
 	console.log(`
   pm - Project Manager CLI for tasks.json
 
 	Usage:
 	  pm next              Show next available tasks (topological order)
+	  pm progress          Show task progress
 	  pm show <id>         Show details for a task (e.g., pm show 1)
 	  pm wipe              Wipe all progress (done, notes, commitSha)
 	  pm update <id> <field> <value>   Update a task field
@@ -169,6 +198,7 @@ function printHelp(): void {
 
 	Examples:
 	  pm next
+	  pm progress
 	  pm show 1
 	  pm wipe
 	  pm update 1 done true
@@ -194,6 +224,9 @@ async function main(): Promise<void> {
 	switch (cmd) {
 		case 'next':
 			cmdNext()
+			break
+		case 'progress':
+			cmdProgress(args.slice(1))
 			break
 		case 'wipe':
 			cmdWipe()
@@ -226,6 +259,7 @@ if (process.argv[1] === import.meta.url.replace('file://', '')) {
 export {
 	areDependenciesMet,
 	getNextTasks,
+	getProgress,
 	getTaskById,
 	loadTasks,
 	saveTasks,
