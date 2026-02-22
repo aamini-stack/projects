@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import * as fs from 'node:fs'
 import * as path from 'node:path'
+import { spawnSync } from 'node:child_process'
 
 interface Story {
 	id: string
@@ -23,7 +24,23 @@ interface TasksFile {
 	epics: Epic[]
 }
 
-const TASKS_PATH = path.resolve(process.cwd(), 'tasks.json')
+function getRepoRoot(): string {
+	const result = spawnSync('git', ['rev-parse', '--show-toplevel'], {
+		cwd: process.cwd(),
+		encoding: 'utf8',
+	})
+
+	if (result.status === 0) {
+		const root = result.stdout.trim()
+		if (root) {
+			return root
+		}
+	}
+
+	return process.cwd()
+}
+
+const TASKS_PATH = path.resolve(getRepoRoot(), 'tasks.json')
 
 function loadTasks(): TasksFile {
 	if (!fs.existsSync(TASKS_PATH)) {
