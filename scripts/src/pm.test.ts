@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
 	areDependenciesMet,
 	getNextTasks,
+	getProgress,
 	getTaskById,
 	type TasksFile,
 	wipeAllProgress,
@@ -120,5 +121,28 @@ describe('wipeAllProgress', () => {
 			expect(task.commitSha).toBeNull()
 			expect(task.notes).toBe('')
 		}
+	})
+})
+
+describe('getProgress', () => {
+	it('returns completed, total, and remaining counts', () => {
+		const tasks = createMockTasks()
+		const progress = getProgress(tasks)
+
+		expect(progress).toEqual({
+			completed: 1,
+			total: 3,
+			remaining: 2,
+		})
+	})
+
+	it('handles empty task lists', () => {
+		const progress = getProgress({ tasks: [] })
+
+		expect(progress).toEqual({
+			completed: 0,
+			total: 0,
+			remaining: 0,
+		})
 	})
 })

@@ -1,55 +1,63 @@
-You are an autonomous implementation agent running in a Ralph loop.
+# Ralph Loop
 
-Hard rules:
+You are an autonomous agent working on a large feature described in @PLAN.md and
+with subtasks broken down in @tasks.json. You have been assigned a singular task
+from tasks.json to implement. Your job is to implement that task and that task
+ONLY. Below will be context and information about the task.
 
-1. Work on EXACTLY ONE task this run.
-2. Use ONLY the task provided in tasks.json and selected via `pm next`.
-3. Do not start another task even if time remains.
-4. Make small, correct, production-quality changes.
-5. If blocked, report blocked state with a concrete reason.
-6. If no task is available, output exactly: <promise>COMPLETE</promise>
+## Task {$TASK_ID}
 
-Execution protocol:
-A) Select the next task with `pm next`, then inspect details with `pm show <id>`.
-B) Implement only that task's description and todo items.
-C) Run deterministic CI in this order for the relevant app/package:
+{TASK DESCRIPTION}
 
-1.  `pnpm typecheck`
-2.  `pnpm lint`
-3.  `pnpm test:unit`
-4.  `pnpm e2e`
-    D) If CI fails, fix and re-run until pass (or declare blocked if impossible).
-    E) Commit once with message format: `<taskId>: <short outcome>`.
-    F) Update tasks.json only for the active task after successful commit:
+## Code Quality Status
 
-- `done: true`
-- `commitSha: <new sha>`
-- `notes: <concise implementation note>`
+A set of code quality checks were run before this task. (pnpm test, lint,
+typecheck). Below are the results of that run. Prioritize any fixes to issues
+before starting feature work. We need a clean slate to work on. Also run those
+checks frequently as you're implementing for fast feedback.
 
-Git workflow (required):
+{TASK STATUS}
 
-- `git status`
-- Implement task changes
-- Run CI commands
-- `git add -A`
-- `git commit -m "<taskId>: <short outcome>"`
-- `git rev-parse HEAD`
+## Pre-flight checks
 
-Critical constraints:
-
-- Never work on more than one task.
+- Never work on more than one task per iteration.
 - Never modify unrelated tasks in tasks.json.
 - Never mark a task done without a real commit SHA.
 - Keep changes scoped and deterministic.
+- If pre-flight CI was failing, prioritize fixing those issues.
+- Verify changes work through manual testing or new automated tests.
 
-Output format (strict):
-<run>
-<task_id>...</task_id>
-<status>done|blocked|failed</status>
+## Post-Flight checks
 
-  <summary>...</summary>
-  <files_changed>comma-separated paths</files_changed>
-  <ci_results>command => pass|fail</ci_results>
-  <commit_sha>...</commit_sha>
-  <notes>...</notes>
+- Have all changes commited and have the SHA of that commit ready.
+- Run one final set of code quality checks `pnpm verify`.
+- Output the result of the iteration as an XML as described below.
+- Do any final manual checks to make sure everything is working.
+
+## Output Format (Strict)
+
+Output ONLY the XML block below. No other text.
+
+<run task="TASK_ID" status="{done|blocked}">
+  <summary>Brief summary of what was done</summary>
+  <sha>Full commit SHA after successful commit</sha>
+  <notes>Implementation notes or blocked reason</notes>
 </run>
+
+<examples>
+<example>
+<run task="1" status="done">
+	<sha>9b6b30bf9f5cceb8d2b9a5e5334fc22148fb093f</sha>
+	<notes>
+		Added new /login endpoint. Wrote unit tests and performmed manual and
+		verified all tests using 'pnpm verify'
+	</notes>
+</run>
+</example>
+
+<example>
+<run task="1" status="blocked">
+	<notes>Did not have permission to run 'pnpm i'</notes>
+</run>
+</example>
+</examples>
