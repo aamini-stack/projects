@@ -1,93 +1,110 @@
-## PR Preview Environments on AKS with Flux + GitHub Actions + Knative
+## Serverless PaaS on AKS (GitOps + Knative + Flux)
 
-### Summary
+### Goal
 
-Implement PR previews as GitOps-managed Knative services on AKS, with CI pushing image/manifests and Flux pulling/applying state.  
-Each changed app in a PR gets a preview URL:
+Build an internal serverless PaaS on top of AKS where apps are deployed as Knative Services, images are built in CI, release state is managed through GitOps, and Flux automation keeps workloads aligned with published images.
 
-`<sanitized-branch>.<app>.ariaamini.com`
+This keeps the platform request-driven, cost-efficient at idle (scale-to-zero), and operationally consistent across many services.
 
-Knative is required for true serverless behavior (scale-to-zero + request-driven scale-up) at 100s preview environments.
+### Is the previous plan still viable?
 
-### Core Architecture (Locked)
+Yes. The previous PR preview plan is still a viable foundation and can be promoted into a broader platform plan.
 
-- Preview scope: changed apps only.
-- Runtime: Knative Serving for preview workloads (not Deployments).
-- CI→CD bridge: GitHub Actions commits preview state + Flux Receiver webhook.
-- Secrets: shared per-app preview secrets.
-- Data deps: shared staging services.
-- Cleanup: PR close/merge + 24h TTL GC.
+What still works:
 
-### Why Knative (vs vanilla)
+- Knative on AKS is the right runtime for HTTP scale-to-zero workloads.
+- GitHub Actions -> registry push -> Flux reconcile remains a solid CI/CD bridge.
+- Flux Receiver webhook is still useful for fast post-commit convergence.
+- Preview environments remain a strong first PaaS capability and validation path.
 
-- Vanilla Kubernetes + HPA: autoscale yes, but no robust HTTP-driven scale-to-zero.
-- Knative: built-in scale-to-zero, activator queueing, revision routing, and better density/cost profile for many mostly-idle previews.
+What needed cleanup:
 
-### Knative Performance Profile (New)
+- Separate platform-wide architecture from the preview-only workflow.
+- Add first-class image automation (Flux ImageRepository/ImagePolicy/ImageUpdateAutomation).
+- Clarify CI contract for immutable tagging and metadata.
+- Define clear implementation phases and acceptance criteria.
 
-- Defaults for preview services:
-  - `autoscaling.knative.dev/min-scale: "0"`
-  - `autoscaling.knative.dev/max-scale: "5"` (per preview, tunable)
-  - `autoscaling.knative.dev/target: "50"` (target concurrency)
-  - `autoscaling.knative.dev/scale-down-delay: "2m"` (reduce flapping)
-- For “priority demo” PRs via label:
-  - set `min-scale: 1` for selected apps.
-- Cold-start controls:
-  - keep image small and startup path minimal.
-  - avoid blocking startup on heavy migrations.
-  - add optional warmup probe job for labeled PRs.
+### Target Architecture
 
-### CI/CD Flow
+- Runtime: Knative Serving on AKS for app workloads.
+- Delivery model: GitOps via Flux (desired state in git, cluster pulls and applies).
+- Image flow:
+  1. CI builds and pushes immutable image tags (for example `sha-<shortsha>`).
+  2. Flux image-reflector scans registry tags.
+  3. Flux image policy selects the deployable tag.
+  4. Flux image automation updates git manifests.
+  5. Flux reconcile applies changes to AKS.
+- Triggering:
+  - Primary: automatic polling/scan intervals.
+  - Fast path: webhook from CI to Flux Receiver to trigger immediate reconcile.
+- Exposure:
+  - Preview URLs: `<branch-slug>.<app>.ariaamini.com`.
+  - Stable env URLs follow existing domain routing patterns.
 
-1. PR event → detect changed apps.
-2. Build/push immutable image tags (`sha-<shortsha>`) to registry.
-3. Render Knative preview manifests under `packages/infra/manifests/previews/pr-<num>/`.
-4. Commit to `preview-state` branch.
-5. Trigger Flux Receiver webhook.
-6. Poll readiness:
+### Delivery Phases
 
-- Flux Kustomization Ready
-- Knative Service Ready
-- HTTP smoke at preview URL
+#### Phase 1 - Platform Foundation
 
-7. Post GitHub Deployment status + sticky PR comment with URLs.
-8. On PR close, remove manifest dir and reconcile; scheduled GC removes stale TTL previews.
+- Install/validate Knative Serving on AKS with ingress and TLS.
+- Define baseline Knative autoscaling defaults:
+  - `min-scale: 0`
+  - `max-scale: 5` (override per app when needed)
+  - `target: 50`
+  - `scale-down-delay: 2m`
+- Create shared platform namespaces/secrets/config conventions.
 
-### Public Interfaces / Additions
+#### Phase 2 - CI Build and Push Stage
 
-- Workflows:
-  - `.github/workflows/preview-pr.yml`
-  - `.github/workflows/preview-cleanup.yml`
-  - `.github/workflows/preview-gc.yml`
-- Scripts:
-  - `scripts/preview/changed-apps.ts`
-  - `scripts/preview/sanitize-branch.ts`
-  - `scripts/preview/render-manifests.ts`
-- Flux additions:
-  - Preview `Kustomization` targeting `preview-state` branch/path.
-  - Flux `Receiver` for webhook-triggered reconcile.
-- Knative package manifests managed by Flux in infra package set.
+- Add CI stage to build and push OCI images for changed apps.
+- Publish immutable tags plus OCI labels (commit SHA, repo, build time).
+- Optionally publish a mutable channel tag (`preview`, `staging`) for human ergonomics, but deploy from immutable policy.
 
-### URL and Naming Rules
+#### Phase 3 - GitOps and Image Automation
 
-- Hostname: `<branch-slug>.<app>.ariaamini.com`
-- Branch slug: lowercase, DNS-safe, <=63 chars, hash suffix on truncation/collision.
-- Deployment env name: `pr-<num>-<app>`
-- Commit status context: `preview/<app>`
+- Add Flux `ImageRepository` per app (or per registry scope).
+- Add Flux `ImagePolicy` to select tags (for example semver, regex, or branch-aware patterns).
+- Add Flux `ImageUpdateAutomation` to patch manifests in git.
+- Add Flux `Receiver` and CI webhook call for low-latency reconcile.
 
-### Test Scenarios
+#### Phase 4 - Preview Environment Productization
 
-- Single-app PR creates one Knative preview and URL.
-- Multi-app PR creates independent previews/statuses per app.
-- Branch with slashes/long names yields valid deterministic host.
-- Re-push updates revision/image without URL change.
-- PR close removes resources and invalidates URL.
-- TTL GC cleans stale previews if close hook missed.
-- 100+ concurrent idle previews remain mostly scaled to zero.
-- Burst traffic scales previews up and serves successfully.
+- Detect changed apps in PRs.
+- Render Knative preview manifests under `packages/infra/manifests/previews/pr-<num>/`.
+- Commit preview state and trigger Flux.
+- Post readiness + URLs back to PR.
+- Cleanup on PR close/merge and run scheduled TTL garbage collection.
 
-### Assumptions
+#### Phase 5 - Operations and Guardrails
 
-- Existing wildcard DNS/TLS and Traefik gateway remain in place.
-- Registry throughput is sufficient for concurrent PR builds.
-- Shared preview secrets are safe for PR-level exposure.
+- Define SLOs and alerts (reconcile health, Knative readiness, cold-start latency).
+- Add quotas/limits and security boundaries for multi-team tenancy.
+- Document onboarding contract for new apps.
+
+### CI/CD Contract (Minimal)
+
+- CI must output:
+  - image repository
+  - immutable tag(s)
+  - commit SHA
+  - environment target
+- GitOps repo must contain:
+  - Knative Service manifests per app/environment
+  - Flux image automation resources
+  - Kustomization wiring
+- Reconcile trigger:
+  - CI sends webhook to Flux Receiver after push/commit.
+
+### Risks and Mitigations
+
+- Cold starts for heavy apps -> keep images lean; label-based `min-scale: 1` for priority apps.
+- Registry/API throttling at scale -> concurrency limits + retries + backoff in CI.
+- Drift between CI and GitOps state -> immutable tags and policy-driven promotion only.
+- Preview sprawl -> mandatory TTL + cleanup controller/workflow.
+
+### Success Criteria
+
+- Apps deploy as Knative Services and scale to zero when idle.
+- CI reliably builds and pushes immutable images for changed apps.
+- Flux image automation updates manifests and reconciles without manual edits.
+- Webhook-triggered reconcile shortens time-to-preview/update.
+- PR previews are created, updated, and garbage-collected automatically.

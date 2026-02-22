@@ -2,14 +2,14 @@
 	"tasks": [
 		{
 			"id": "1",
-			"title": "Knative Infrastructure Setup",
-			"description": "Install Knative Serving on AKS with Traefik gateway, configure autoscaling defaults (min-scale: 0, max-scale: 5, target: 50), and set up shared preview secrets per app.",
+			"title": "Platform Architecture Baseline",
+			"description": "Lock the PaaS architecture for AKS + Knative + Flux, including promotion model, naming conventions, and security boundaries.",
 			"todo": [
-				"Add Knative Serving Helm chart/manifests to packages/infra",
-				"Configure Knative namespace, autoscaling defaults, and Traefik ingress",
-				"Set up Knative domain mapping for ariaamini.com",
-				"Create shared preview secrets in preview namespace",
-				"Verify wildcard DNS/TLS works with Knative services"
+				"Document runtime contract for apps (port, probes, env vars, startup expectations)",
+				"Define environment model (preview, staging, production) and URL conventions",
+				"Define image tagging strategy (immutable sha tags + optional channel tags)",
+				"Define multi-tenant namespace and secret model",
+				"Define SLOs for reconcile latency, deployment readiness, and cold-start thresholds"
 			],
 			"dependencies": [],
 			"commitSha": null,
@@ -18,51 +18,97 @@
 		},
 		{
 			"id": "2",
-			"title": "Preview Scripts & Tooling",
-			"description": "Build scripts for detecting changed apps, sanitizing branch names (DNS-safe, <=63 chars), and rendering Knative Service manifests with autoscaling annotations.",
+			"title": "Knative Foundation on AKS",
+			"description": "Install and validate Knative Serving with ingress, TLS, autoscaling defaults, and domain mapping.",
 			"todo": [
-				"Create scripts/preview/changed-apps.ts - detect changed apps in PR",
-				"Create scripts/preview/sanitize-branch.ts - DNS-safe slugification",
-				"Create scripts/preview/render-manifests.ts - generate Knative YAMLs",
-				"Handle priority-demo label (min-scale: 1) in manifest rendering",
-				"Output manifests to packages/infra/manifests/previews/pr-<num>/"
+				"Add Knative Serving manifests/helm wiring under packages/infra",
+				"Configure ingress path (Traefik or existing gateway) and domain mapping",
+				"Apply default autoscaling annotations (min 0, max 5, target 50, scale-down-delay 2m)",
+				"Create shared preview/staging secrets per app boundary",
+				"Verify wildcard DNS/TLS routing for Knative Services"
 			],
-			"dependencies": [],
+			"dependencies": ["1"],
 			"commitSha": null,
 			"done": false,
 			"notes": ""
 		},
 		{
 			"id": "3",
-			"title": "CI/CD Workflows & Flux Integration",
-			"description": "GitHub Actions workflows for PR preview deployment/cleanup/GC, plus Flux Kustomization and Receiver webhook for GitOps-based reconciliation.",
+			"title": "CI Build and Push Stage",
+			"description": "Add CI steps that build and push OCI images for changed apps, producing immutable metadata used by GitOps automation.",
 			"todo": [
-				"Create .github/workflows/preview-pr.yml (build, push, render, commit, trigger, poll, post status)",
-				"Create .github/workflows/preview-cleanup.yml (remove manifests on PR close/merge)",
-				"Create .github/workflows/preview-gc.yml (scheduled 24h TTL cleanup)",
-				"Create Flux Kustomization targeting preview-state branch",
-				"Create Flux Receiver for webhook-triggered reconciliation",
-				"Store webhook URL/secret in GitHub secrets"
+				"Implement changed-app detection in CI scope",
+				"Build per-app Docker images with reproducible build args",
+				"Push immutable image tags (sha-shortsha) to registry",
+				"Attach OCI labels (commit SHA, source repo, build timestamp)",
+				"Export image metadata artifact for downstream deploy/automation steps"
 			],
-			"dependencies": ["1", "2"],
+			"dependencies": ["1"],
 			"commitSha": null,
 			"done": false,
 			"notes": ""
 		},
 		{
 			"id": "4",
-			"title": "Testing & Documentation",
-			"description": "Validate all preview scenarios (single/multi-app PRs, long branch names, re-push, cleanup, scale-to-zero) and document usage.",
+			"title": "Flux Image Automation",
+			"description": "Introduce Flux image scanning, policy selection, and automated manifest updates so image promotion does not require manual edits.",
 			"todo": [
-				"Test single-app and multi-app PR preview creation",
-				"Test branch slugification for edge cases (slashes, long names)",
-				"Test re-push updates revision without URL change",
-				"Test PR close removes resources",
-				"Test TTL GC cleans stale previews",
-				"Test scale-to-zero with idle previews and burst scaling",
-				"Document preview URL format, priority-demo label, and troubleshooting"
+				"Create ImageRepository resources for app registries",
+				"Create ImagePolicy resources for tag selection rules",
+				"Create ImageUpdateAutomation resources to patch manifests in git",
+				"Wire Kustomizations to consume updated manifests",
+				"Document rollback strategy (policy pin or git revert)"
 			],
-			"dependencies": ["3"],
+			"dependencies": ["2", "3"],
+			"commitSha": null,
+			"done": false,
+			"notes": ""
+		},
+		{
+			"id": "5",
+			"title": "Webhook-Triggered Reconcile",
+			"description": "Add a webhook path from CI to Flux Receiver so new image/manifests reconcile immediately instead of waiting for intervals.",
+			"todo": [
+				"Create Flux Receiver and secret",
+				"Store receiver URL and secret in GitHub Actions secrets",
+				"Call webhook after image push and/or manifest commit",
+				"Add retry/backoff and non-blocking error handling",
+				"Emit logs/metrics for reconcile trigger success rate"
+			],
+			"dependencies": ["4"],
+			"commitSha": null,
+			"done": false,
+			"notes": ""
+		},
+		{
+			"id": "6",
+			"title": "Preview Environment Workflows",
+			"description": "Implement PR preview creation/update/cleanup workflows built on the platform primitives.",
+			"todo": [
+				"Create preview-pr workflow (detect, build/push, render, commit, trigger, report)",
+				"Create preview-cleanup workflow for PR close/merge",
+				"Create preview-gc workflow for TTL-based stale cleanup",
+				"Render manifests to packages/infra/manifests/previews/pr-<num>/",
+				"Post sticky PR comment with per-app preview URLs"
+			],
+			"dependencies": ["2", "3", "5"],
+			"commitSha": null,
+			"done": false,
+			"notes": "First product surface for the serverless PaaS."
+		},
+		{
+			"id": "7",
+			"title": "Validation, Runbooks, and Onboarding",
+			"description": "Prove reliability with scenario tests and publish docs for operating and onboarding services to the platform.",
+			"todo": [
+				"Test single-app and multi-app preview lifecycle",
+				"Test branch slug edge cases and deterministic hostnames",
+				"Test re-push and image policy update behavior",
+				"Test PR close cleanup and scheduled TTL garbage collection",
+				"Write runbooks for failure modes (build fail, reconcile fail, cold-start regressions)",
+				"Write onboarding guide for adding a new app to the platform"
+			],
+			"dependencies": ["6"],
 			"commitSha": null,
 			"done": false,
 			"notes": ""
