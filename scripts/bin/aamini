@@ -53,7 +53,7 @@ case "$CMD" in
 		exec "$SCRIPT_DIR/ralph.sh" "$@"
 		;;
 	pm)
-		exec pnpm --dir "$REPO_ROOT" exec tsx "$SCRIPT_DIR/../src/pm.ts" "$@"
+		exec node --experimental-strip-types "$SCRIPT_DIR/../src/pm.ts" "$@"
 		;;
 	help | --help | -h)
 		print_help
