@@ -181,7 +181,7 @@ function cmdUpdate(id: string, field: string, value: string): void {
 	console.log(`Updated ${id}.${field} = ${value}`)
 }
 
-function cmdEipe(): void {
+function cmdWipe(): void {
 	const tasks = loadTasks()
 	const storyCount = wipeAllProgress(tasks)
 	saveTasks(tasks)
@@ -195,14 +195,14 @@ function printHelp(): void {
 	Usage:
 	  pm next              Show next available tasks (topological order)
 	  pm show <id>         Show details for a story (e.g., pm show 1.1)
-	  pm eipe              Wipe all progress (done, notes, commitSha)
+	  pm wipe              Wipe all progress (done, notes, commitSha)
 	  pm update <id> <field> <value>   Update a story field
                          Fields: done, notes, commitSha, title, description
 
 	Examples:
 	  pm next
 	  pm show 1.1
-	  pm eipe
+	  pm wipe
 	  pm update 1.1 done true
 	  pm update 1.1 notes "Implemented with optimization"
 `)
@@ -227,8 +227,8 @@ async function main(): Promise<void> {
 		case 'next':
 			cmdNext()
 			break
-		case 'eipe':
-			cmdEipe()
+		case 'wipe':
+			cmdWipe()
 			break
 		case 'show':
 			if (!args[1]) {
