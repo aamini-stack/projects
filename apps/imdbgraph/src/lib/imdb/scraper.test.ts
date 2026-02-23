@@ -28,6 +28,9 @@ describe('scraper tests', () => {
 		expect(await getRatingsDb(db, GAME_OF_THRONES_ID)).toEqual(
 			gameOfThronesRatings,
 		)
+
+		const gotRatings = await getRatingsDb(db, GAME_OF_THRONES_ID)
+		expect(gotRatings?.allEpisodeRatings[2]?.[3]).toBeUndefined()
 		expect(await getRatingsDb(db, SIMPSONS_ID)).toBeUndefined()
 	})
 

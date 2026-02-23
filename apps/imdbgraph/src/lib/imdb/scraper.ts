@@ -4,6 +4,9 @@ import { pipeline } from 'node:stream/promises'
 import type { Pool, PoolClient } from 'pg'
 import { from as copyFrom } from 'pg-copy-streams'
 
+const MIN_RATING = 1
+const MIN_VOTES = 1
+
 /**
  * Main method that downloads the latest files from IMDB and updates our
  * internal database with the latest data.
@@ -119,12 +122,14 @@ async function transfer(client: PoolClient) {
     SELECT imdb_id FROM temp_title JOIN temp_ratings USING (imdb_id)
     WHERE 
       title_type IN ('tvSeries', 'tvShort', 'tvSpecial', 'tvMiniSeries') AND 
-      num_votes > 0 AND
+      num_votes > ${MIN_VOTES} AND
+      imdb_rating > ${MIN_RATING} AND
       imdb_id IN (
         SELECT show_id
         FROM temp_episode JOIN temp_ratings ON (episode_id = imdb_id)
+        WHERE num_votes > ${MIN_VOTES} AND imdb_rating > ${MIN_RATING}
         GROUP BY show_id
-        HAVING sum(num_votes) > 0
+        HAVING count(*) > 0
       )
   `)
 
@@ -156,6 +161,8 @@ async function transfer(client: PoolClient) {
       JOIN temp_ratings USING (imdb_id)
     WHERE 
       show_id IN (select imdb_id FROM valid_shows) AND 
+      num_votes > ${MIN_VOTES} AND
+      imdb_rating > ${MIN_RATING} AND
       season_num > 0 AND
       episode_num > 0
   `)
