@@ -1,12 +1,8 @@
-import { download } from '@/lib/imdb/file-downloader'
+import { downloadStream, type ImdbFile } from '@/lib/imdb/file-downloader'
 import type { NodePgDatabase } from 'drizzle-orm/node-postgres'
-import { randomUUID } from 'node:crypto'
-import { createReadStream, createWriteStream } from 'node:fs'
-import { mkdir } from 'node:fs/promises'
-import { tmpdir } from 'node:os'
-import path from 'node:path'
+import { once } from 'node:events'
 import { createInterface } from 'node:readline'
-import { pipeline } from 'node:stream/promises'
+import { finished } from 'node:stream/promises'
 import type { Pool, PoolClient } from 'pg'
 import { from as copyFrom } from 'pg-copy-streams'
 
@@ -45,9 +41,9 @@ export async function update(
 }
 
 /**
- * Download files and store them in temp tables using efficient bulk operations.
- * Once all data is loaded into temp tables, update all the real tables with
- * data from the temp tables.
+ * Stream files from IMDB directly into temp tables using COPY. Once all data is
+ * loaded into temp tables, update all the real tables with data from the temp
+ * tables.
  */
 async function transfer(client: PoolClient) {
 	await client.query(`
@@ -80,46 +76,14 @@ async function transfer(client: PoolClient) {
     ) ON COMMIT DROP;
   `)
 
-	// Download files and store them in temp tables.
-	const tempDir = path.join(tmpdir(), `imdb-run-${randomUUID()}`)
-	await mkdir(tempDir)
-	const ratingsFile = path.join(tempDir, 'ratings.tsv')
-	const episodesFile = path.join(tempDir, 'episodes.tsv')
-	const titlesFile = path.join(tempDir, 'titles.tsv')
-	const filteredEpisodesFile = path.join(tempDir, 'episodes.filtered.tsv')
-	const filteredTitlesFile = path.join(tempDir, 'titles.filtered.tsv')
+	console.log('Starting ratings stream...')
+	const ratedIds = await copyRatingsAndCollectRatedIds(client)
 
-	console.log('Starting downloads...')
-	await download('title.ratings.tsv.gz', ratingsFile)
-	await download('title.episode.tsv.gz', episodesFile)
-	await download('title.basics.tsv.gz', titlesFile)
+	console.log('Starting episodes stream...')
+	const validShowIds = await copyEpisodesAndCollectShowIds(client, ratedIds)
 
-	console.log('Starting local pre-filtering...')
-	const ratedIds = await getRatedIds(ratingsFile)
-	const validShowIds = await getShowIdsWithRatedEpisodes(episodesFile, ratedIds)
-	await filterEpisodesFile(episodesFile, filteredEpisodesFile, validShowIds)
-	await filterTitlesFile(titlesFile, filteredTitlesFile, ratedIds, validShowIds)
-
-	const copy = async (file: string, cmd: string) => {
-		const sourceStream = createReadStream(file)
-		const ingestStream = client.query(copyFrom(cmd))
-		await pipeline(sourceStream, ingestStream)
-		console.log(`Successfully transferred ${file}`)
-	}
-
-	console.log('Starting file to temp table transfers...')
-	await copy(
-		ratingsFile,
-		"COPY temp_ratings FROM STDIN WITH (DELIMITER '\t', HEADER TRUE) WHERE num_votes > 0;",
-	)
-	await copy(
-		filteredEpisodesFile,
-		"COPY temp_episode FROM STDIN WITH (DELIMITER '\t', HEADER TRUE);",
-	)
-	await copy(
-		filteredTitlesFile,
-		"COPY temp_title FROM STDIN WITH (DELIMITER '\t', HEADER TRUE);",
-	)
+	console.log('Starting titles stream...')
+	await copyTitles(client, ratedIds, validShowIds)
 
 	/*
 	 * Download files and store them in temp tables using the Postgres copy
@@ -230,161 +194,145 @@ async function transfer(client: PoolClient) {
 	console.log('Database migration successfull')
 }
 
-async function getRatedIds(ratingsFile: string): Promise<Set<string>> {
+async function copyRatingsAndCollectRatedIds(
+	client: PoolClient,
+): Promise<Set<string>> {
 	const ratedIds = new Set<string>()
-	const reader = createInterface({
-		input: createReadStream(ratingsFile, { encoding: 'utf8' }),
-		crlfDelay: Number.POSITIVE_INFINITY,
-	})
 
-	let isHeader = true
-	for await (const line of reader) {
-		if (isHeader) {
-			isHeader = false
-			continue
-		}
+	await copyFromImdbStream(
+		client,
+		'title.ratings.tsv.gz',
+		"COPY temp_ratings FROM STDIN WITH (DELIMITER '\t', HEADER TRUE);",
+		(line, isHeader) => {
+			if (isHeader) {
+				return line
+			}
 
-		if (!line) {
-			continue
-		}
+			const [imdbId, _imdbRating, numVotesRaw] = line.split('\t')
+			if (imdbId && Number(numVotesRaw) > 0) {
+				ratedIds.add(imdbId)
+				return line
+			}
 
-		const [imdbId, _imdbRating, numVotesRaw] = line.split('\t')
-		if (!imdbId || !numVotesRaw) {
-			continue
-		}
-
-		if (Number(numVotesRaw) > 0) {
-			ratedIds.add(imdbId)
-		}
-	}
+			return undefined
+		},
+	)
 
 	return ratedIds
 }
 
-async function getShowIdsWithRatedEpisodes(
-	episodesFile: string,
+async function copyEpisodesAndCollectShowIds(
+	client: PoolClient,
 	ratedIds: Set<string>,
 ): Promise<Set<string>> {
 	const validShowIds = new Set<string>()
-	const reader = createInterface({
-		input: createReadStream(episodesFile, { encoding: 'utf8' }),
-		crlfDelay: Number.POSITIVE_INFINITY,
-	})
 
-	let isHeader = true
-	for await (const line of reader) {
-		if (isHeader) {
-			isHeader = false
-			continue
-		}
+	await copyFromImdbStream(
+		client,
+		'title.episode.tsv.gz',
+		"COPY temp_episode FROM STDIN WITH (DELIMITER '\t', HEADER TRUE);",
+		(line, isHeader) => {
+			if (isHeader) {
+				return line
+			}
 
-		if (!line) {
-			continue
-		}
+			const [episodeId, showId] = line.split('\t')
+			if (episodeId && showId && ratedIds.has(episodeId)) {
+				validShowIds.add(showId)
+				return line
+			}
 
-		const [episodeId, showId] = line.split('\t')
-		if (!episodeId || !showId) {
-			continue
-		}
-
-		if (ratedIds.has(episodeId)) {
-			validShowIds.add(showId)
-		}
-	}
+			return undefined
+		},
+	)
 
 	return validShowIds
 }
 
-async function filterEpisodesFile(
-	inputFile: string,
-	outputFile: string,
-	validShowIds: Set<string>,
-): Promise<void> {
-	const reader = createInterface({
-		input: createReadStream(inputFile, { encoding: 'utf8' }),
-		crlfDelay: Number.POSITIVE_INFINITY,
-	})
-	const writer = createWriteStream(outputFile, { encoding: 'utf8' })
-
-	let isHeader = true
-	for await (const line of reader) {
-		if (isHeader) {
-			writer.write(`${line}\n`)
-			isHeader = false
-			continue
-		}
-
-		if (!line) {
-			continue
-		}
-
-		const [_episodeId, showId] = line.split('\t')
-		if (!showId || !validShowIds.has(showId)) {
-			continue
-		}
-
-		writer.write(`${line}\n`)
-	}
-
-	await new Promise<void>((resolve, reject) => {
-		writer.on('error', reject)
-		writer.end(resolve)
-	})
-}
-
-async function filterTitlesFile(
-	inputFile: string,
-	outputFile: string,
+async function copyTitles(
+	client: PoolClient,
 	ratedIds: Set<string>,
 	validShowIds: Set<string>,
 ): Promise<void> {
-	const reader = createInterface({
-		input: createReadStream(inputFile, { encoding: 'utf8' }),
-		crlfDelay: Number.POSITIVE_INFINITY,
-	})
-	const writer = createWriteStream(outputFile, { encoding: 'utf8' })
-
-	let isHeader = true
-	for await (const line of reader) {
-		if (isHeader) {
-			writer.write(`${line}\n`)
-			isHeader = false
-			continue
-		}
-
-		if (!line) {
-			continue
-		}
-
-		const [imdbId, titleType, _primary, _original, _isAdult, startYear] =
-			line.split('\t')
-
-		if (!imdbId || !titleType) {
-			continue
-		}
-
-		if (titleType === 'tvEpisode') {
-			if (ratedIds.has(imdbId)) {
-				writer.write(`${line}\n`)
+	await copyFromImdbStream(
+		client,
+		'title.basics.tsv.gz',
+		"COPY temp_title FROM STDIN WITH (DELIMITER '\t', HEADER TRUE);",
+		(line, isHeader) => {
+			if (isHeader) {
+				return line
 			}
-			continue
-		}
 
-		if (
-			(titleType === 'tvSeries' ||
+			const [imdbId, titleType, _primary, _original, _isAdult, startYear] =
+				line.split('\t')
+			if (!imdbId || !titleType) {
+				return undefined
+			}
+
+			if (titleType === 'tvEpisode') {
+				if (ratedIds.has(imdbId)) {
+					return line
+				}
+
+				return undefined
+			}
+
+			const isShowType =
+				titleType === 'tvSeries' ||
 				titleType === 'tvShort' ||
 				titleType === 'tvSpecial' ||
-				titleType === 'tvMiniSeries') &&
-			startYear &&
-			startYear !== '\\N' &&
-			validShowIds.has(imdbId)
-		) {
-			writer.write(`${line}\n`)
-		}
-	}
+				titleType === 'tvMiniSeries'
 
-	await new Promise<void>((resolve, reject) => {
-		writer.on('error', reject)
-		writer.end(resolve)
+			if (
+				isShowType &&
+				startYear &&
+				startYear !== '\\N' &&
+				validShowIds.has(imdbId)
+			) {
+				return line
+			}
+
+			return undefined
+		},
+	)
+}
+
+async function copyFromImdbStream(
+	client: PoolClient,
+	file: ImdbFile,
+	cmd: string,
+	mapLine: (line: string, isHeader: boolean) => string | undefined,
+): Promise<void> {
+	const sourceStream = await downloadStream(file)
+	const reader = createInterface({
+		input: sourceStream,
+		crlfDelay: Number.POSITIVE_INFINITY,
 	})
+	const ingestStream = client.query(copyFrom(cmd))
+
+	try {
+		let isHeader = true
+		for await (const line of reader) {
+			if (!line && !isHeader) {
+				continue
+			}
+
+			const mapped = mapLine(line, isHeader)
+			isHeader = false
+			if (!mapped) {
+				continue
+			}
+
+			if (!ingestStream.write(`${mapped}\n`)) {
+				await once(ingestStream, 'drain')
+			}
+		}
+
+		ingestStream.end()
+		await finished(ingestStream)
+		console.log(`Successfully transferred ${file}`)
+	} catch (error) {
+		ingestStream.destroy(error as Error)
+		throw error
+	}
 }
