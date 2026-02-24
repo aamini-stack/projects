@@ -1,4 +1,6 @@
+import { createWriteStream } from 'node:fs'
 import { Readable } from 'node:stream'
+import { pipeline } from 'node:stream/promises'
 import type { ReadableStream } from 'node:stream/web'
 import { createGunzip } from 'node:zlib'
 
@@ -9,21 +11,23 @@ export type ImdbFile =
 	| 'title.episode.tsv.gz'
 	| 'title.ratings.tsv.gz'
 
-/**
- * Fetches a gzipped file from IMDB and returns a decompressed readable stream.
- * This avoids writing to disk, which is important for serverless environments
- * with limited disk space.
- */
-export async function getGunzipStream(file: ImdbFile): Promise<Readable> {
+export async function download(file: ImdbFile, output: string): Promise<void> {
 	const uri = `${baseUri}/${file}`
-	const { body, ok, status } = await fetch(uri)
-	if (!ok) {
-		throw new Error(`HTTP error! status: ${status.toString()}`)
+	try {
+		const { body, ok, status } = await fetch(uri)
+		if (!ok) {
+			throw new Error(`HTTP error! status: ${status.toString()}`)
+		}
+		if (!body) {
+			throw new Error('Response body is null')
+		}
+		await pipeline(
+			Readable.fromWeb(body as ReadableStream),
+			createGunzip(),
+			createWriteStream(output),
+		)
+		console.log(`Download completed: ${output.toString()}`)
+	} catch (error) {
+		throw new Error(`Failed to download ${uri}`, { cause: error })
 	}
-	if (!body) {
-		throw new Error('Response body is null')
-	}
-	const gunzip = createGunzip()
-	Readable.fromWeb(body as ReadableStream).pipe(gunzip)
-	return gunzip
 }

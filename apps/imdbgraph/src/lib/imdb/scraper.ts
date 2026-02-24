@@ -1,5 +1,10 @@
-import { getGunzipStream, type ImdbFile } from '@/lib/imdb/file-downloader'
+import { download } from '@/lib/imdb/file-downloader'
 import type { NodePgDatabase } from 'drizzle-orm/node-postgres'
+import { randomUUID } from 'node:crypto'
+import { createReadStream } from 'node:fs'
+import { mkdir } from 'node:fs/promises'
+import { tmpdir } from 'node:os'
+import path from 'node:path'
 import { pipeline } from 'node:stream/promises'
 import type { Pool, PoolClient } from 'pg'
 import { from as copyFrom } from 'pg-copy-streams'
@@ -26,8 +31,12 @@ export async function update(
 			`✅ Database population completed successfully in ${duration} seconds!`,
 		)
 	} catch (error) {
-		console.error('❌ Database population failed:')
-		console.error(error)
+		try {
+			await client.query('ROLLBACK')
+		} catch (rollbackError) {
+			throw new Error('Failed to rollback', { cause: rollbackError })
+		}
+
 		throw error
 	} finally {
 		client.release()
@@ -35,13 +44,9 @@ export async function update(
 }
 
 /**
- * Stream files directly from IMDB into temp tables using efficient bulk
- * operations. Once all data is loaded into temp tables, update all the real
- * tables with data from the temp tables.
- *
- * This approach streams data directly into the database without writing to
- * disk, which is important for serverless environments with limited disk
- * space.
+ * Download files and store them in temp tables using efficient bulk operations.
+ * Once all data is loaded into temp tables, update all the real tables with
+ * data from the temp tables.
  */
 async function transfer(client: PoolClient) {
 	await client.query(`
@@ -74,27 +79,33 @@ async function transfer(client: PoolClient) {
     ) ON COMMIT DROP;
   `)
 
-	// Stream files directly from IMDB into temp tables.
-	const streamToTable = async (file: ImdbFile, cmd: string) => {
-		console.log(`Streaming ${file} to database...`)
-		const sourceStream = await getGunzipStream(file)
+	// Download files and store them in temp tables.
+	const tempDir = path.join(tmpdir(), `imdb-run-${randomUUID()}`)
+	await mkdir(tempDir)
+	console.log('Starting downloads...')
+	await download('title.basics.tsv.gz', path.join(tempDir, 'titles.tsv'))
+	await download('title.episode.tsv.gz', path.join(tempDir, 'episodes.tsv'))
+	await download('title.ratings.tsv.gz', path.join(tempDir, 'ratings.tsv'))
+
+	const copy = async (file: string, cmd: string) => {
+		const sourceStream = createReadStream(file)
 		const ingestStream = client.query(copyFrom(cmd))
 		await pipeline(sourceStream, ingestStream)
-		console.log(`Successfully transferred ${file} to temp table`)
+		console.log(`Successfully transferred ${file} to table temp_title`)
 	}
 
-	console.log('Starting streaming transfers...')
-	await streamToTable(
-		'title.basics.tsv.gz',
+	console.log('Starting file to temp table transfers...')
+	await copy(
+		path.join(tempDir, 'titles.tsv'),
 		`COPY temp_title FROM STDIN WITH (DELIMITER '\t', HEADER TRUE) 
     WHERE title_type IN ('tvSeries', 'tvEpisode', 'tvShort', 'tvSpecial', 'tvMiniSeries') AND start_year IS NOT NULL;`,
 	)
-	await streamToTable(
-		'title.episode.tsv.gz',
+	await copy(
+		path.join(tempDir, 'episodes.tsv'),
 		"COPY temp_episode FROM STDIN WITH (DELIMITER '\t', HEADER TRUE);",
 	)
-	await streamToTable(
-		'title.ratings.tsv.gz',
+	await copy(
+		path.join(tempDir, 'ratings.tsv'),
 		"COPY temp_ratings FROM STDIN WITH (DELIMITER '\t', HEADER TRUE);",
 	)
 
