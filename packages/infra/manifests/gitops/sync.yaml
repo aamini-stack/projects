@@ -3,11 +3,29 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
+  name: image-automation
+  namespace: flux-system
+spec:
+  path: ./packages/infra/manifests/gitops/image-automation
+  dependsOn:
+    - name: flux-system
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  interval: 1m0s
+  retryInterval: 1m0s
+  timeout: 5m0s
+  prune: true
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
   name: imdbgraph
   namespace: flux-system
 spec:
   path: ./apps/imdbgraph/k8s
   dependsOn:
+    - name: image-automation
     - name: system
   sourceRef:
     kind: GitRepository
@@ -25,6 +43,7 @@ metadata:
 spec:
   path: ./apps/pc-tune-ups/k8s
   dependsOn:
+    - name: image-automation
     - name: system
   sourceRef:
     kind: GitRepository
@@ -42,6 +61,7 @@ metadata:
 spec:
   path: ./apps/dota-visualizer/k8s
   dependsOn:
+    - name: image-automation
     - name: system
   sourceRef:
     kind: GitRepository
@@ -59,6 +79,7 @@ metadata:
 spec:
   path: ./apps/portfolio/k8s
   dependsOn:
+    - name: image-automation
     - name: system
   sourceRef:
     kind: GitRepository

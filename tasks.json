@@ -2,67 +2,69 @@
 	"tasks": [
 		{
 			"id": "1",
-			"title": "Knative Infrastructure Setup",
-			"description": "Install Knative Serving on AKS with Traefik gateway, configure autoscaling defaults (min-scale: 0, max-scale: 5, target: 50), and set up shared preview secrets per app.",
+			"title": "CI Docker Build Stage",
+			"description": "Add docker-build job to CI workflow that builds and pushes images for changed apps with sha-<shortsha> tags to Docker Hub.",
 			"todo": [
-				"Add Knative Serving Helm chart/manifests to packages/infra",
-				"Configure Knative namespace, autoscaling defaults, and Traefik ingress",
-				"Set up Knative domain mapping for ariaamini.com",
-				"Create shared preview secrets in preview namespace",
-				"Verify wildcard DNS/TLS works with Knative services"
+				"Add docker-build job to .github/workflows/ci.yml (matrix per changed app)",
+				"Login to Docker Hub using DOCKER_USERNAME/DOCKER_PASSWORD secrets",
+				"Build with Dockerfile using APP_NAME build arg",
+				"Push image tagged as sha-<short-sha> (immutable)",
+				"Trigger Flux webhook after push for fast reconciliation"
 			],
 			"dependencies": [],
-			"commitSha": null,
-			"done": false,
-			"notes": ""
+			"commitSha": "3e989bd7d5e8fe62cbd2141bf69ea1cca8499925",
+			"done": true,
+			"notes": "Added docker-build job to CI workflow that builds/pushes images for changed apps with sha-<sha> tags to Docker Hub and triggers Flux webhook",
+			"blocked": false
 		},
 		{
 			"id": "2",
-			"title": "Preview Scripts & Tooling",
-			"description": "Build scripts for detecting changed apps, sanitizing branch names (DNS-safe, <=63 chars), and rendering Knative Service manifests with autoscaling annotations.",
+			"title": "Flux Image Automation",
+			"description": "Configure FluxCD ImageRepository, ImagePolicy, and ImageUpdateAutomation to detect new images and commit updated tags to staging branch.",
 			"todo": [
-				"Create scripts/preview/changed-apps.ts - detect changed apps in PR",
-				"Create scripts/preview/sanitize-branch.ts - DNS-safe slugification",
-				"Create scripts/preview/render-manifests.ts - generate Knative YAMLs",
-				"Handle priority-demo label (min-scale: 1) in manifest rendering",
-				"Output manifests to packages/infra/manifests/previews/pr-<num>/"
+				"Create packages/infra/manifests/gitops/image-automation/ directory",
+				"Add ImageRepository per app (scan Docker Hub every 1m for sha-* tags)",
+				"Add ImagePolicy per app (select latest by creation time)",
+				"Add ImageUpdateAutomation to commit tag updates to staging branch",
+				"Add Flux Receiver webhook for instant reconciliation after CI push"
 			],
-			"dependencies": [],
-			"commitSha": null,
-			"done": false,
-			"notes": ""
+			"dependencies": [
+				"1"
+			],
+			"commitSha": "f985891",
+			"done": true,
+			"notes": "Created FluxCD image automation with ImageRepository (scans Docker Hub every 1m), ImagePolicy (selects latest sha-* tag), ImageUpdateAutomation (commits tag updates to staging), and webhook receiver for instant reconciliation",
+			"blocked": false
 		},
 		{
 			"id": "3",
-			"title": "CI/CD Workflows & Flux Integration",
-			"description": "GitHub Actions workflows for PR preview deployment/cleanup/GC, plus Flux Kustomization and Receiver webhook for GitOps-based reconciliation.",
+			"title": "K8s Manifest Updates",
+			"description": "Update app kustomizations to use image policy markers and add image-automation path to Flux sync.",
 			"todo": [
-				"Create .github/workflows/preview-pr.yml (build, push, render, commit, trigger, poll, post status)",
-				"Create .github/workflows/preview-cleanup.yml (remove manifests on PR close/merge)",
-				"Create .github/workflows/preview-gc.yml (scheduled 24h TTL cleanup)",
-				"Create Flux Kustomization targeting preview-state branch",
-				"Create Flux Receiver for webhook-triggered reconciliation",
-				"Store webhook URL/secret in GitHub secrets"
+				"Update apps/*/k8s/kustomization.yaml image tags to use sha-* placeholder",
+				"Add image-automation/ path to packages/infra/manifests/gitops/sync.yaml",
+				"Verify Flux can update image tags in kustomization files"
 			],
-			"dependencies": ["1", "2"],
+			"dependencies": [
+				"2"
+			],
 			"commitSha": null,
 			"done": false,
 			"notes": ""
 		},
 		{
 			"id": "4",
-			"title": "Testing & Documentation",
-			"description": "Validate all preview scenarios (single/multi-app PRs, long branch names, re-push, cleanup, scale-to-zero) and document usage.",
+			"title": "Secrets & Testing",
+			"description": "Configure required secrets and validate end-to-end flow.",
 			"todo": [
-				"Test single-app and multi-app PR preview creation",
-				"Test branch slugification for edge cases (slashes, long names)",
-				"Test re-push updates revision without URL change",
-				"Test PR close removes resources",
-				"Test TTL GC cleans stale previews",
-				"Test scale-to-zero with idle previews and burst scaling",
-				"Document preview URL format, priority-demo label, and troubleshooting"
+				"Add DOCKER_USERNAME and DOCKER_PASSWORD to GitHub repo secrets",
+				"Create Docker Hub access token with write permission",
+				"Generate Flux webhook token and add to GitHub secrets",
+				"Test: push to main → Docker build → Flux detects → Deployment updates"
 			],
-			"dependencies": ["3"],
+			"dependencies": [
+				"3"
+			],
 			"commitSha": null,
 			"done": false,
 			"notes": ""

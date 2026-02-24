@@ -1,0 +1,64 @@
+---
+apiVersion: image.toolkit.fluxcd.io/v1beta1
+kind: ImagePolicy
+metadata:
+  name: imdbgraph
+  namespace: flux-system
+spec:
+  imageRepositoryRef:
+    name: imdbgraph
+  policy:
+    semver:
+      range: 'sha-*'
+    alphabetical:
+      order: asc
+  filterTags:
+    pattern: 'sha-*'
+---
+apiVersion: image.toolkit.fluxcd.io/v1beta1
+kind: ImagePolicy
+metadata:
+  name: pc-tune-ups
+  namespace: flux-system
+spec:
+  imageRepositoryRef:
+    name: pc-tune-ups
+  policy:
+    semver:
+      range: 'sha-*'
+    alphabetical:
+      order: asc
+  filterTags:
+    pattern: 'sha-*'
+---
+apiVersion: image.toolkit.fluxcd.io/v1beta1
+kind: ImagePolicy
+metadata:
+  name: dota-visualizer
+  namespace: flux-system
+spec:
+  imageRepositoryRef:
+    name: dota-visualizer
+  policy:
+    semver:
+      range: 'sha-*'
+    alphabetical:
+      order: asc
+  filterTags:
+    pattern: 'sha-*'
+---
+apiVersion: image.toolkit.fluxcd.io/v1beta1
+kind: ImagePolicy
+metadata:
+  name: portfolio
+  namespace: flux-system
+spec:
+  imageRepositoryRef:
+    name: portfolio
+  policy:
+    semver:
+      range: 'sha-*'
+    alphabetical:
+      order: asc
+  filterTags:
+    pattern: 'sha-*'

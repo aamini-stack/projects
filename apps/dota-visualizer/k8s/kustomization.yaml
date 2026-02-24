@@ -16,7 +16,7 @@ commonLabels:
 images:
   - name: docker.io/aamini/app
     newName: docker.io/aamini/dota-visualizer
-    newTag: latest
+    newTag: latest # {"$imagepolicy": "flux-system:dota-visualizer:tag"}
 
 patches:
   - target:

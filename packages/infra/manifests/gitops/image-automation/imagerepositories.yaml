@@ -1,0 +1,44 @@
+---
+apiVersion: image.toolkit.fluxcd.io/v1beta1
+kind: ImageRepository
+metadata:
+  name: imdbgraph
+  namespace: flux-system
+spec:
+  image: docker.io/aamini/imdbgraph
+  interval: 1m0s
+  secretRef:
+    name: docker-hub-credentials
+---
+apiVersion: image.toolkit.fluxcd.io/v1beta1
+kind: ImageRepository
+metadata:
+  name: pc-tune-ups
+  namespace: flux-system
+spec:
+  image: docker.io/aamini/pc-tune-ups
+  interval: 1m0s
+  secretRef:
+    name: docker-hub-credentials
+---
+apiVersion: image.toolkit.fluxcd.io/v1beta1
+kind: ImageRepository
+metadata:
+  name: dota-visualizer
+  namespace: flux-system
+spec:
+  image: docker.io/aamini/dota-visualizer
+  interval: 1m0s
+  secretRef:
+    name: docker-hub-credentials
+---
+apiVersion: image.toolkit.fluxcd.io/v1beta1
+kind: ImageRepository
+metadata:
+  name: portfolio
+  namespace: flux-system
+spec:
+  image: docker.io/aamini/portfolio
+  interval: 1m0s
+  secretRef:
+    name: docker-hub-credentials

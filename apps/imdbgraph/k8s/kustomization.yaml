@@ -17,7 +17,7 @@ commonLabels:
 images:
   - name: docker.io/aamini/app
     newName: docker.io/aamini/imdbgraph
-    newTag: latest
+    newTag: latest # {"$imagepolicy": "flux-system:imdbgraph:tag"}
 
 patches:
   - target:

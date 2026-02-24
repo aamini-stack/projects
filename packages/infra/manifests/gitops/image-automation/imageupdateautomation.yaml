@@ -1,0 +1,24 @@
+---
+apiVersion: image.toolkit.fluxcd.io/v1beta2
+kind: ImageUpdateAutomation
+metadata:
+  name: flux-system
+  namespace: flux-system
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  interval: 1m0s
+  checkout:
+    ref:
+      branch: staging
+  commit:
+    author:
+      email: fluxcd@github.com
+      name: fluxcd
+    messageTemplate: '{{range .Updated.Images}}{{println .}}{{end}}'
+  update:
+    strategy: Setters
+    selectors:
+      - matchLabels:
+          app.kubernetes.io/part-of: fluxcd

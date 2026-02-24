@@ -18,7 +18,7 @@ commonLabels:
 images:
   - name: docker.io/aamini/app
     newName: docker.io/aamini/portfolio
-    newTag: latest
+    newTag: latest # {"$imagepolicy": "flux-system:portfolio:tag"}
 
 patches:
   - target:

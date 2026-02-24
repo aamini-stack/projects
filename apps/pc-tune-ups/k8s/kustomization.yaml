@@ -16,7 +16,7 @@ commonLabels:
 images:
   - name: docker.io/aamini/app
     newName: docker.io/aamini/pc-tune-ups
-    newTag: latest
+    newTag: latest # {"$imagepolicy": "flux-system:pc-tune-ups:tag"}
 
 patches:
   - target:
