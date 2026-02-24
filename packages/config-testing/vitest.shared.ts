@@ -131,7 +131,7 @@ export const createBaseConfig = (
 								name: 'server',
 								include: ['src/**/*.test.ts'],
 								testTimeout: 30_000,
-								fileParallelism: !process.env.CI,
+								fileParallelism: false,
 								setupFiles: hasLocalSetup ? [localSetup] : [],
 							},
 						} satisfies TestProjectConfiguration,

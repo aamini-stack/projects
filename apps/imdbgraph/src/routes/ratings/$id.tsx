@@ -1,6 +1,7 @@
 import { Graph } from '@/components/graph'
 import { HomeButton } from '@/components/home-button'
 import { SearchBar } from '@/components/search-bar'
+import { createDb } from '@/db/connection'
 import { getRatings } from '@/lib/imdb/ratings'
 import { type Ratings } from '@/lib/imdb/types'
 import { createFileRoute, notFound } from '@tanstack/react-router'
@@ -24,7 +25,7 @@ export const Route = createFileRoute('/ratings/$id')({
 			throw notFound()
 		}
 
-		const ratings = await getRatings({ data: { showId } })
+		const ratings = await getRatings(createDb(), showId)
 
 		if (!ratings) {
 			throw notFound()
