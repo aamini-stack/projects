@@ -50,6 +50,7 @@ export const test = baseTest.extend<DbFixture>({
 	db: [
 		async ({ seedFunction }: Pick<DbFixture, 'seedFunction'>, use) => {
 			const { PostgreSqlContainer } = await import('@testcontainers/postgresql')
+			const { Wait } = await import('testcontainers')
 			const { drizzle } = await import('drizzle-orm/node-postgres')
 			const { migrate } = await import('drizzle-orm/node-postgres/migrator')
 			const { reset } = await import('drizzle-seed')
@@ -62,7 +63,9 @@ export const test = baseTest.extend<DbFixture>({
 			// Resolve migrations folder relative to cwd (app root)
 			const migrationsFolder = resolve(process.cwd(), DEFAULT_MIGRATIONS_PATH)
 
-			const container = await new PostgreSqlContainer(DEFAULT_IMAGE).start()
+			const container = await new PostgreSqlContainer(DEFAULT_IMAGE)
+				.withWaitStrategy(Wait.forHealthCheck())
+				.start()
 			const db = drizzle({
 				client: new Pool({ connectionString: container.getConnectionUri() }),
 			}) as Database

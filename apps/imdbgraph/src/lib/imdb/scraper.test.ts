@@ -1,5 +1,5 @@
-import { getGunzipStream, type ImdbFile } from '@/lib/imdb/file-downloader'
-import { getRatingsDb } from '@/lib/imdb/ratings'
+import { downloadStream, type ImdbFile } from '@/lib/imdb/file-downloader'
+import { getRatings } from '@/lib/imdb/ratings'
 import { update } from '@/lib/imdb/scraper'
 import { test } from '@aamini/config-testing/test/db'
 import { createReadStream } from 'node:fs'
@@ -25,10 +25,10 @@ describe('scraper tests', () => {
 
 		await update(db)
 
-		expect(await getRatingsDb(db, GAME_OF_THRONES_ID)).toEqual(
+		expect(await getRatings(db, GAME_OF_THRONES_ID)).toEqual(
 			gameOfThronesRatings,
 		)
-		expect(await getRatingsDb(db, SIMPSONS_ID)).toBeUndefined()
+		expect(await getRatings(db, SIMPSONS_ID)).toBeUndefined()
 	})
 
 	test('handling bad files', async ({ db }) => {
@@ -47,7 +47,7 @@ describe('scraper tests', () => {
 // Helpers
 // =============================================================================
 function mockDownloads(mockedFiles: Record<ImdbFile, string>) {
-	vi.mocked(getGunzipStream).mockImplementation(async (imdbFile) => {
+	vi.mocked(downloadStream).mockImplementation(async (imdbFile) => {
 		const input = path.join(import.meta.dirname, mockedFiles[imdbFile])
 		return createReadStream(input)
 	})
