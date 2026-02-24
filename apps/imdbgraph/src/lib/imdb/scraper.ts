@@ -1,10 +1,11 @@
 import { download } from '@/lib/imdb/file-downloader'
 import type { NodePgDatabase } from 'drizzle-orm/node-postgres'
 import { randomUUID } from 'node:crypto'
-import { createReadStream } from 'node:fs'
+import { createReadStream, createWriteStream } from 'node:fs'
 import { mkdir } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
+import { createInterface } from 'node:readline'
 import { pipeline } from 'node:stream/promises'
 import type { Pool, PoolClient } from 'pg'
 import { from as copyFrom } from 'pg-copy-streams'
@@ -82,31 +83,42 @@ async function transfer(client: PoolClient) {
 	// Download files and store them in temp tables.
 	const tempDir = path.join(tmpdir(), `imdb-run-${randomUUID()}`)
 	await mkdir(tempDir)
+	const ratingsFile = path.join(tempDir, 'ratings.tsv')
+	const episodesFile = path.join(tempDir, 'episodes.tsv')
+	const titlesFile = path.join(tempDir, 'titles.tsv')
+	const filteredEpisodesFile = path.join(tempDir, 'episodes.filtered.tsv')
+	const filteredTitlesFile = path.join(tempDir, 'titles.filtered.tsv')
+
 	console.log('Starting downloads...')
-	await download('title.basics.tsv.gz', path.join(tempDir, 'titles.tsv'))
-	await download('title.episode.tsv.gz', path.join(tempDir, 'episodes.tsv'))
-	await download('title.ratings.tsv.gz', path.join(tempDir, 'ratings.tsv'))
+	await download('title.ratings.tsv.gz', ratingsFile)
+	await download('title.episode.tsv.gz', episodesFile)
+	await download('title.basics.tsv.gz', titlesFile)
+
+	console.log('Starting local pre-filtering...')
+	const ratedIds = await getRatedIds(ratingsFile)
+	const validShowIds = await getShowIdsWithRatedEpisodes(episodesFile, ratedIds)
+	await filterEpisodesFile(episodesFile, filteredEpisodesFile, validShowIds)
+	await filterTitlesFile(titlesFile, filteredTitlesFile, ratedIds, validShowIds)
 
 	const copy = async (file: string, cmd: string) => {
 		const sourceStream = createReadStream(file)
 		const ingestStream = client.query(copyFrom(cmd))
 		await pipeline(sourceStream, ingestStream)
-		console.log(`Successfully transferred ${file} to table temp_title`)
+		console.log(`Successfully transferred ${file}`)
 	}
 
 	console.log('Starting file to temp table transfers...')
 	await copy(
-		path.join(tempDir, 'titles.tsv'),
-		`COPY temp_title FROM STDIN WITH (DELIMITER '\t', HEADER TRUE) 
-    WHERE title_type IN ('tvSeries', 'tvEpisode', 'tvShort', 'tvSpecial', 'tvMiniSeries') AND start_year IS NOT NULL;`,
+		ratingsFile,
+		"COPY temp_ratings FROM STDIN WITH (DELIMITER '\t', HEADER TRUE) WHERE num_votes > 0;",
 	)
 	await copy(
-		path.join(tempDir, 'episodes.tsv'),
+		filteredEpisodesFile,
 		"COPY temp_episode FROM STDIN WITH (DELIMITER '\t', HEADER TRUE);",
 	)
 	await copy(
-		path.join(tempDir, 'ratings.tsv'),
-		"COPY temp_ratings FROM STDIN WITH (DELIMITER '\t', HEADER TRUE);",
+		filteredTitlesFile,
+		"COPY temp_title FROM STDIN WITH (DELIMITER '\t', HEADER TRUE);",
 	)
 
 	/*
@@ -216,4 +228,163 @@ async function transfer(client: PoolClient) {
 	console.log('Updated episode table')
 
 	console.log('Database migration successfull')
+}
+
+async function getRatedIds(ratingsFile: string): Promise<Set<string>> {
+	const ratedIds = new Set<string>()
+	const reader = createInterface({
+		input: createReadStream(ratingsFile, { encoding: 'utf8' }),
+		crlfDelay: Number.POSITIVE_INFINITY,
+	})
+
+	let isHeader = true
+	for await (const line of reader) {
+		if (isHeader) {
+			isHeader = false
+			continue
+		}
+
+		if (!line) {
+			continue
+		}
+
+		const [imdbId, _imdbRating, numVotesRaw] = line.split('\t')
+		if (!imdbId || !numVotesRaw) {
+			continue
+		}
+
+		if (Number(numVotesRaw) > 0) {
+			ratedIds.add(imdbId)
+		}
+	}
+
+	return ratedIds
+}
+
+async function getShowIdsWithRatedEpisodes(
+	episodesFile: string,
+	ratedIds: Set<string>,
+): Promise<Set<string>> {
+	const validShowIds = new Set<string>()
+	const reader = createInterface({
+		input: createReadStream(episodesFile, { encoding: 'utf8' }),
+		crlfDelay: Number.POSITIVE_INFINITY,
+	})
+
+	let isHeader = true
+	for await (const line of reader) {
+		if (isHeader) {
+			isHeader = false
+			continue
+		}
+
+		if (!line) {
+			continue
+		}
+
+		const [episodeId, showId] = line.split('\t')
+		if (!episodeId || !showId) {
+			continue
+		}
+
+		if (ratedIds.has(episodeId)) {
+			validShowIds.add(showId)
+		}
+	}
+
+	return validShowIds
+}
+
+async function filterEpisodesFile(
+	inputFile: string,
+	outputFile: string,
+	validShowIds: Set<string>,
+): Promise<void> {
+	const reader = createInterface({
+		input: createReadStream(inputFile, { encoding: 'utf8' }),
+		crlfDelay: Number.POSITIVE_INFINITY,
+	})
+	const writer = createWriteStream(outputFile, { encoding: 'utf8' })
+
+	let isHeader = true
+	for await (const line of reader) {
+		if (isHeader) {
+			writer.write(`${line}\n`)
+			isHeader = false
+			continue
+		}
+
+		if (!line) {
+			continue
+		}
+
+		const [_episodeId, showId] = line.split('\t')
+		if (!showId || !validShowIds.has(showId)) {
+			continue
+		}
+
+		writer.write(`${line}\n`)
+	}
+
+	await new Promise<void>((resolve, reject) => {
+		writer.on('error', reject)
+		writer.end(resolve)
+	})
+}
+
+async function filterTitlesFile(
+	inputFile: string,
+	outputFile: string,
+	ratedIds: Set<string>,
+	validShowIds: Set<string>,
+): Promise<void> {
+	const reader = createInterface({
+		input: createReadStream(inputFile, { encoding: 'utf8' }),
+		crlfDelay: Number.POSITIVE_INFINITY,
+	})
+	const writer = createWriteStream(outputFile, { encoding: 'utf8' })
+
+	let isHeader = true
+	for await (const line of reader) {
+		if (isHeader) {
+			writer.write(`${line}\n`)
+			isHeader = false
+			continue
+		}
+
+		if (!line) {
+			continue
+		}
+
+		const [imdbId, titleType, _primary, _original, _isAdult, startYear] =
+			line.split('\t')
+
+		if (!imdbId || !titleType) {
+			continue
+		}
+
+		if (titleType === 'tvEpisode') {
+			if (ratedIds.has(imdbId)) {
+				writer.write(`${line}\n`)
+			}
+			continue
+		}
+
+		if (
+			(titleType === 'tvSeries' ||
+				titleType === 'tvShort' ||
+				titleType === 'tvSpecial' ||
+				titleType === 'tvMiniSeries') &&
+			startYear &&
+			startYear !== '\\N' &&
+			validShowIds.has(imdbId)
+		) {
+			writer.write(`${line}\n`)
+		}
+	}
+
+	await new Promise<void>((resolve, reject) => {
+		writer.on('error', reject)
+		writer.end(resolve)
+	})
 }
