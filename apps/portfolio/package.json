@@ -17,9 +17,9 @@
 		"test:unit": "vitest run --project unit",
 		"test:integration": "vitest run --project browser --project server",
 		"test:watch": "vitest --watch",
-		"e2e": "bash ../../scripts/bin/e2e.sh portfolio",
+		"e2e": "node --experimental-strip-types ../../scripts/src/e2e.ts portfolio",
 		"e2e:staging": "BASE_URL=https://portfolio.ariaamini.com pnpm playwright test",
-		"e2e:update": "bash ../../scripts/bin/e2e.sh portfolio --update-snapshots",
+		"e2e:update": "node --experimental-strip-types ../../scripts/src/e2e.ts portfolio --update-snapshots",
 		"report": "playwright show-report",
 		"verify": "turbo run build lint format test typecheck e2e"
 	},
