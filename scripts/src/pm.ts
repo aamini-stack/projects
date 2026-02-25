@@ -1,7 +1,8 @@
 #!/usr/bin/env node
-import { spawnSync } from 'node:child_process'
+import { cac } from 'cac'
 import * as fs from 'node:fs'
 import * as path from 'node:path'
+import { $ } from 'zx'
 
 interface Task {
 	id: string
@@ -11,6 +12,7 @@ interface Task {
 	dependencies: string[]
 	commitSha: string | null
 	done: boolean
+	blocked: boolean
 	notes: string
 }
 
@@ -19,19 +21,20 @@ interface TasksFile {
 }
 
 function getRepoRoot(): string {
-	const result = spawnSync('git', ['rev-parse', '--show-toplevel'], {
-		cwd: process.cwd(),
-		encoding: 'utf8',
-	})
+	let current = path.resolve(process.cwd())
 
-	if (result.status === 0) {
-		const root = result.stdout.trim()
-		if (root) {
-			return root
+	while (true) {
+		if (fs.existsSync(path.join(current, '.git'))) {
+			return current
 		}
-	}
 
-	return process.cwd()
+		const parent = path.dirname(current)
+		if (parent === current) {
+			return process.cwd()
+		}
+
+		current = parent
+	}
 }
 
 const TASKS_PATH = path.resolve(getRepoRoot(), 'tasks.json')
@@ -163,6 +166,138 @@ function cmdUpdate(id: string, field: string, value: string): void {
 	console.log(`Updated ${id}.${field} = ${value}`)
 }
 
+function cmdDone(id: string, commitSha: string, notes: string): void {
+	const tasks = loadTasks()
+	const task = getTaskById(tasks, id)
+
+	if (!task) {
+		console.error(`Error: Task ${id} not found`)
+		process.exit(1)
+	}
+
+	task.done = true
+	task.blocked = false
+	task.commitSha = commitSha
+	task.notes = notes
+
+	saveTasks(tasks)
+	console.log(`Marked task ${id} as done (commit: ${commitSha})`)
+}
+
+interface DonePayload {
+	task: number | string
+	status: 'done' | 'blocked' | 'failed'
+	sha?: string
+	summary?: string
+	notes?: string
+}
+
+function cmdDoneJson(jsonStr: string): void {
+	let payload: DonePayload
+	try {
+		payload = JSON.parse(jsonStr)
+	} catch {
+		console.error('Error: Invalid JSON')
+		process.exit(1)
+	}
+
+	if (!payload.task) {
+		console.error('Error: JSON must contain "task" field')
+		process.exit(1)
+	}
+
+	const tasks = loadTasks()
+	const taskId = String(payload.task)
+	const task = getTaskById(tasks, taskId)
+
+	if (!task) {
+		console.error(`Error: Task ${taskId} not found`)
+		process.exit(1)
+	}
+
+	task.done = payload.status === 'done'
+	task.blocked = payload.status === 'blocked'
+	task.commitSha = payload.sha || null
+	task.notes = payload.notes || payload.summary || ''
+
+	saveTasks(tasks)
+	console.log(
+		`Marked task ${taskId} as ${payload.status} (commit: ${task.commitSha || 'none'})`,
+	)
+}
+
+function cmdBlocked(id: string, notes: string): void {
+	const tasks = loadTasks()
+	const task = getTaskById(tasks, id)
+
+	if (!task) {
+		console.error(`Error: Task ${id} not found`)
+		process.exit(1)
+	}
+
+	task.blocked = true
+	task.done = false
+	task.notes = notes
+
+	saveTasks(tasks)
+	console.log(`Marked task ${id} as blocked`)
+}
+
+interface CIResult {
+	app: string
+	check: string
+	passed: boolean
+	output: string
+}
+
+interface CIReturn {
+	passed: boolean
+	results: CIResult[]
+}
+
+async function cmdCi(): Promise<void> {
+	const repoRoot = getRepoRoot()
+	const appsDir = path.join(repoRoot, 'apps')
+
+	if (!fs.existsSync(appsDir)) {
+		console.error('Error: apps directory not found')
+		process.exit(1)
+	}
+
+	const appDirs = fs.readdirSync(appsDir).filter((name) => {
+		const pkgPath = path.join(appsDir, name, 'package.json')
+		return fs.existsSync(pkgPath)
+	})
+
+	const checks = ['typecheck', 'lint', 'test:unit', 'e2e']
+	const allResults: CIResult[] = []
+
+	for (const app of appDirs) {
+		for (const check of checks) {
+			const result = await $({
+				cwd: repoRoot,
+				nothrow: true,
+				stdio: 'pipe',
+			})`pnpm --filter ${app} ${check}`
+
+			allResults.push({
+				app,
+				check,
+				passed: result.exitCode === 0,
+				output: result.stderr || result.stdout,
+			})
+		}
+	}
+
+	const passed = allResults.every((r) => r.passed)
+	const output: CIReturn = { passed, results: allResults }
+
+	console.log(JSON.stringify(output, null, 2))
+
+	if (!passed) {
+		process.exit(1)
+	}
+}
 function cmdWipe(): void {
 	const tasks = loadTasks()
 	const count = wipeAllProgress(tasks)
@@ -170,9 +305,25 @@ function cmdWipe(): void {
 	console.log(`Wiped progress for ${count} tasks`)
 }
 
+async function readFromStdin(): Promise<string> {
+	return new Promise((resolve) => {
+		let data = ''
+		process.stdin.on('data', (chunk) => {
+			data += chunk
+		})
+		process.stdin.on('end', () => {
+			resolve(data.trim())
+		})
+		process.stdin.on('error', () => {
+			resolve('')
+		})
+		setTimeout(() => resolve(''), 100)
+	})
+}
+
 function cmdProgress(args: string[]): void {
 	if (args.length > 0) {
-		console.error('Error: Usage: pm progress')
+		console.error('Error: Usage: aamini pm progress')
 		process.exit(1)
 	}
 
@@ -184,72 +335,94 @@ function cmdProgress(args: string[]): void {
 	)
 }
 
-function printHelp(): void {
-	console.log(`
-  pm - Project Manager CLI for tasks.json
-
-	Usage:
-	  pm next              Show next available tasks (topological order)
-	  pm progress          Show task progress
-	  pm show <id>         Show details for a task (e.g., pm show 1)
-	  pm wipe              Wipe all progress (done, notes, commitSha)
-	  pm update <id> <field> <value>   Update a task field
-                         Fields: done, notes, commitSha, title, description
-
-	Examples:
-	  pm next
-	  pm progress
-	  pm show 1
-	  pm wipe
-	  pm update 1 done true
-	  pm update 1 notes "Implemented with optimization"
-`)
-}
-
 async function main(): Promise<void> {
-	const args = process.argv.slice(2)
+	const cli = cac('aamini pm')
+	cli.help()
+	cli.version('0.0.1')
 
-	if (
-		args.length === 0 ||
-		args[0] === 'help' ||
-		args[0] === '--help' ||
-		args[0] === '-h'
-	) {
-		printHelp()
-		return
-	}
+	cli.command('next', 'Show next available tasks').action(() => {
+		cmdNext()
+	})
 
-	const cmd = args[0]
+	cli.command('progress', 'Show task progress').action(() => {
+		cmdProgress([])
+	})
 
-	switch (cmd) {
-		case 'next':
-			cmdNext()
-			break
-		case 'progress':
-			cmdProgress(args.slice(1))
-			break
-		case 'wipe':
-			cmdWipe()
-			break
-		case 'show':
-			if (!args[1]) {
-				console.error('Error: Please provide a task id')
+	cli.command('wipe', 'Wipe all progress fields').action(() => {
+		cmdWipe()
+	})
+
+	cli.command('show <id>', 'Show details for a task').action((id: string) => {
+		cmdShow(id)
+	})
+
+	cli
+		.command('update <id> <field> [...value]', 'Update task field')
+		.action((id: string, field: string, value: string[] = []) => {
+			if (value.length === 0) {
+				console.error('Error: Usage: aamini pm update <id> <field> <value>')
 				process.exit(1)
 			}
-			cmdShow(args[1])
-			break
-		case 'update':
-			if (!args[1] || !args[2] || args[3] === undefined) {
-				console.error('Error: Usage: pm update <id> <field> <value>')
-				process.exit(1)
-			}
-			cmdUpdate(args[1], args[2], args.slice(3).join(' '))
-			break
-		default:
-			console.error(`Error: Unknown command '${cmd}'`)
-			printHelp()
-			process.exit(1)
-	}
+			cmdUpdate(id, field, value.join(' '))
+		})
+
+	cli
+		.command('done [taskOrJson] [commitSha] [...notes]', 'Mark task done')
+		.action(
+			async (
+				taskOrJson: string | undefined,
+				commitSha: string | undefined,
+				notes: string[] = [],
+			) => {
+				if (!taskOrJson) {
+					const jsonStr = await readFromStdin()
+					if (jsonStr) {
+						cmdDoneJson(jsonStr)
+						return
+					}
+					console.error(
+						'Error: Usage: aamini pm done <task-id> <commit-sha> [notes]',
+					)
+					console.error(
+						'       or: aamini pm done \'{"task": 1, "status": "done", "sha": "abc", "notes": "..."}\'',
+					)
+					console.error('       or: echo \'{"task": 1, ...}\' | aamini pm done')
+					process.exit(1)
+				}
+
+				if (taskOrJson.startsWith('{')) {
+					cmdDoneJson(taskOrJson)
+					return
+				}
+
+				if (!commitSha) {
+					console.error(
+						'Error: Usage: aamini pm done <task-id> <commit-sha> [notes]',
+					)
+					process.exit(1)
+				}
+
+				cmdDone(taskOrJson, commitSha, notes.join(' '))
+			},
+		)
+
+	cli
+		.command('blocked <id> [...notes]', 'Mark task blocked')
+		.action((id: string, notes: string[] = []) => {
+			cmdBlocked(id, notes.join(' '))
+		})
+
+	cli.command('ci', 'Run CI checks across all apps').action(async () => {
+		await cmdCi()
+	})
+
+	cli.on('command:*', () => {
+		console.error(`Error: Unknown command '${cli.args[0] ?? ''}'`)
+		cli.outputHelp()
+		process.exit(1)
+	})
+
+	cli.parse()
 }
 
 if (process.argv[1] === import.meta.url.replace('file://', '')) {
@@ -265,4 +438,4 @@ export {
 	saveTasks,
 	wipeAllProgress,
 }
-export type { Task, TasksFile }
+export type { CIResult, CIReturn, Task, TasksFile }
