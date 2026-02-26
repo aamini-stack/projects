@@ -63,3 +63,4 @@ preview environments.
   <https://docs.github.com/en/rest/commits/statuses>
 - GitHub branch protection required status checks:
   <https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches>
+Verification note: docs-only commit for tasks 1.0-1.2 scenario validation.
