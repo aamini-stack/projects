@@ -8,5 +8,5 @@
 
 ## Verification
 
-After completing a task, run `pnpm verify` in the relevant app directory to ensure
-all checks pass (build, lint, format, typecheck, test, e2e).
+After completing a task, run `pnpm verify` in the relevant app directory to
+ensure all checks pass (build, lint, format, typecheck, test, e2e).
