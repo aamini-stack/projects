@@ -4,18 +4,22 @@ A web application for visualizing Dota 2 hero statistics and data.
 
 ## App Architecture
 
-The app uses a **view registry pattern** for easy extensibility. Each visualization is a self-contained "view" that receives hero data and renders its own UI.
+The app uses a **view registry pattern** for easy extensibility. Each
+visualization is a self-contained "view" that receives hero data and renders its
+own UI.
 
 ### Key Files
 
 - `src/components/views/types.ts` - View type definitions
 - `src/components/views/registry.ts` - View registry with all available views
 - `src/components/app-header.tsx` - Header with view selector dropdown
-- `src/routes/index.tsx` - Main route that handles view switching via `?view=` query param
+- `src/routes/index.tsx` - Main route that handles view switching via `?view=`
+  query param
 
 ### URL Pattern
 
-Views are selected via query parameter: `/?view=hero-stats`, `/?view=armor-table`
+Views are selected via query parameter: `/?view=hero-stats`,
+`/?view=armor-table`
 
 ## How to Add a New View
 
@@ -52,4 +56,5 @@ export const views: ViewDefinition[] = [
 
 1. Hero data is fetched once in the route loader (`fetchLatestHeroData`)
 2. The `heroDictionary` (Map<HeroName, Hero>) is passed to the current view
-3. Views can use utilities from `@/lib/dota/` for analysis (e.g., `HeroStatsAnalyzer`)
+3. Views can use utilities from `@/lib/dota/` for analysis (e.g.,
+   `HeroStatsAnalyzer`)

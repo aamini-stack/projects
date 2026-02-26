@@ -46,7 +46,8 @@ async function main(): Promise<void> {
 	cli
 		.command('ralph <task-id>', 'Run Ralph workflow for task')
 		.action(async (taskId: string) => {
-			await $`node --experimental-strip-types ${path.resolve(path.dirname(fileURLToPath(import.meta.url)), 'ralph.ts')} ${taskId}`
+			const interactive = $({ stdio: 'inherit' })
+			await interactive`node --experimental-strip-types ${path.resolve(path.dirname(fileURLToPath(import.meta.url)), 'ralph.ts')} ${taskId}`
 		})
 
 	cli
