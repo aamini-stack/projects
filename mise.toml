@@ -6,6 +6,9 @@ pulumi = "3.219.0"
 kubectl = "1.34.3"
 flux2 = "2.7.5"
 "npm:tsx" = "4.21.0"
+"npm:oxfmt" = "latest"
+"npm:oxlint" = "latest"
+"npm:markdownlint-cli" = "latest"
 
 [env]
 _.path = ["./scripts/bin"]

@@ -1,71 +1,104 @@
-{
-	"tasks": [
-		{
-			"id": "1",
-			"title": "Knative Infrastructure Setup",
-			"description": "Install Knative Serving on AKS with Traefik gateway, configure autoscaling defaults (min-scale: 0, max-scale: 5, target: 50), and set up shared preview secrets per app.",
-			"todo": [
-				"Add Knative Serving Helm chart/manifests to packages/infra",
-				"Configure Knative namespace, autoscaling defaults, and Traefik ingress",
-				"Set up Knative domain mapping for ariaamini.com",
-				"Create shared preview secrets in preview namespace",
-				"Verify wildcard DNS/TLS works with Knative services"
-			],
-			"dependencies": [],
-			"commitSha": null,
-			"done": false,
-			"notes": ""
-		},
-		{
-			"id": "2",
-			"title": "Preview Scripts & Tooling",
-			"description": "Build scripts for detecting changed apps, sanitizing branch names (DNS-safe, <=63 chars), and rendering Knative Service manifests with autoscaling annotations.",
-			"todo": [
-				"Create scripts/preview/changed-apps.ts - detect changed apps in PR",
-				"Create scripts/preview/sanitize-branch.ts - DNS-safe slugification",
-				"Create scripts/preview/render-manifests.ts - generate Knative YAMLs",
-				"Handle priority-demo label (min-scale: 1) in manifest rendering",
-				"Output manifests to packages/infra/manifests/previews/pr-<num>/"
-			],
-			"dependencies": [],
-			"commitSha": null,
-			"done": false,
-			"notes": ""
-		},
-		{
-			"id": "3",
-			"title": "CI/CD Workflows & Flux Integration",
-			"description": "GitHub Actions workflows for PR preview deployment/cleanup/GC, plus Flux Kustomization and Receiver webhook for GitOps-based reconciliation.",
-			"todo": [
-				"Create .github/workflows/preview-pr.yml (build, push, render, commit, trigger, poll, post status)",
-				"Create .github/workflows/preview-cleanup.yml (remove manifests on PR close/merge)",
-				"Create .github/workflows/preview-gc.yml (scheduled 24h TTL cleanup)",
-				"Create Flux Kustomization targeting preview-state branch",
-				"Create Flux Receiver for webhook-triggered reconciliation",
-				"Store webhook URL/secret in GitHub secrets"
-			],
-			"dependencies": ["1", "2"],
-			"commitSha": null,
-			"done": false,
-			"notes": ""
-		},
-		{
-			"id": "4",
-			"title": "Testing & Documentation",
-			"description": "Validate all preview scenarios (single/multi-app PRs, long branch names, re-push, cleanup, scale-to-zero) and document usage.",
-			"todo": [
-				"Test single-app and multi-app PR preview creation",
-				"Test branch slugification for edge cases (slashes, long names)",
-				"Test re-push updates revision without URL change",
-				"Test PR close removes resources",
-				"Test TTL GC cleans stale previews",
-				"Test scale-to-zero with idle previews and burst scaling",
-				"Document preview URL format, priority-demo label, and troubleshooting"
-			],
-			"dependencies": ["3"],
-			"commitSha": null,
-			"done": false,
-			"notes": ""
-		}
-	]
-}
+[
+	{
+		"id": "1.0",
+		"title": "Detect changed apps per commit and emit canonical matrix artifact",
+		"description": "Implement CI logic that diffs the previous commit range (`HEAD~1..HEAD` or PR equivalent previous commit) and writes a machine-readable matrix artifact with app, imageTag, and previewUrl fields.",
+		"dependencies": [],
+		"commitSha": null,
+		"done": false,
+		"blocked": false,
+		"acceptance-criteria": [
+			"Commit a change that touches only app-a, push a branch, and open a PR with gh. Check GitHub Actions artifacts and verify the matrix payload contains exactly one entry for app-a with app, imageTag, and previewUrl fields.",
+			"Commit a follow-up change in the same PR that touches only app-b. Check the new workflow run artifact and verify the matrix contains app-b only (baseline is previous commit), not app-a.",
+			"Commit a docs-only change and push. Verify the matrix artifact contains zero app entries and downstream build/deploy jobs are skipped in the workflow graph."
+		]
+	},
+	{
+		"id": "1.1",
+		"title": "Build and push preview images only for changed apps",
+		"description": "Use the matrix artifact to build/push only changed apps and tag images deterministically as `<app>:pr-<number>-<shortsha>`.",
+		"dependencies": ["1.0"],
+		"commitSha": null,
+		"done": false,
+		"blocked": false,
+		"acceptance-criteria": [
+			"Run a PR workflow where only app-a changed. Inspect GitHub Actions logs and verify only app-a build/push steps executed and no other app build started.",
+			"After the run, query the container registry and verify the pushed tag matches `<app>:pr-<number>-<shortsha>` for the PR SHA.",
+			"Re-run the same workflow for the same commit SHA. Verify the computed tag is identical and points to the same image digest in the registry."
+		]
+	},
+	{
+		"id": "1.2",
+		"title": "Wire Flux image automation and immediate webhook reconciliation",
+		"description": "Configure Flux image policies to track preview tag patterns and trigger Flux notification receiver immediately after image push to reduce reconciliation latency.",
+		"dependencies": ["1.1"],
+		"commitSha": null,
+		"done": false,
+		"blocked": false,
+		"acceptance-criteria": [
+			"Configure Flux image policy/filter to include preview tags only. Verify via `kubectl get imagepolicy -o yaml` that the filter matches `pr-` preview tags and excludes non-preview release tags.",
+			"From CI, send the webhook call immediately after a successful image push. Verify GitHub Actions logs show a successful webhook response and include receiver endpoint/status evidence.",
+			"After webhook delivery, check Flux controller events/logs and verify reconciliation starts without waiting for the polling interval and references the new preview image tag."
+		]
+	},
+	{
+		"id": "1.3",
+		"title": "Deploy Knative preview services and expose deterministic preview URLs",
+		"description": "Create/update preview deployments so each changed app resolves to `<branch>.<app>.ariaamini.com` with the required Knative autoscaling profile.",
+		"dependencies": ["1.2"],
+		"commitSha": null,
+		"done": false,
+		"blocked": false,
+		"acceptance-criteria": [
+			"Deploy a PR with a changed app and verify the service URL resolves at `<branch>.<app>.ariaamini.com` and returns the app response over HTTPS.",
+			"Inspect the Knative Service revision annotations with `kubectl get ksvc <name> -o yaml` and verify `autoscaling.knative.dev/min-scale=\"0\"`, `max-scale=\"5\"`, `target=\"50\"`, and `scale-down-delay=\"2m\"` are present.",
+			"Generate no traffic for at least the configured delay and verify pods scale to zero; then send a request and verify the service scales back up and serves traffic.",
+			"Add/update deployment tests or assertions that validate the preview URL template and required Knative annotations, then run them in CI and verify they pass."
+		]
+	},
+	{
+		"id": "1.4",
+		"title": "Publish deployment commit statuses and gate e2e on green deploy status",
+		"description": "Report deployment lifecycle to GitHub commit statuses/checks and ensure e2e starts only after deployment status transitions to success.",
+		"dependencies": ["1.3"],
+		"commitSha": null,
+		"done": false,
+		"blocked": false,
+		"acceptance-criteria": [
+			"Trigger the preview deployment workflow for a PR SHA. Query `gh api repos/{owner}/{repo}/commits/{sha}/status` and verify the deploy context transitions `pending` to `success`.",
+			"Inspect workflow execution order and verify e2e jobs do not start while deploy status is pending or failed.",
+			"Force a deployment failure scenario (for example invalid image tag) and verify commit status is `failure` and e2e is skipped/not triggered.",
+			"Fix the deployment issue, re-run workflow, and verify deploy status becomes `success` and e2e runs to completion."
+		]
+	},
+	{
+		"id": "1.5",
+		"title": "Implement preview lifecycle cleanup on PR close/merge",
+		"description": "Add explicit teardown for preview services, DNS records, and preview image references when PRs close or merge to prevent resource drift and churn.",
+		"dependencies": ["1.3"],
+		"commitSha": null,
+		"done": false,
+		"blocked": false,
+		"acceptance-criteria": [
+			"Close or merge a PR that has active previews and run the cleanup workflow. Verify GitHub Actions logs show successful deletion steps for each changed app preview.",
+			"After cleanup, query cluster resources with `kubectl get ksvc -A` and verify no preview services for the closed PR remain.",
+			"Resolve `<branch>.<app>.ariaamini.com` after cleanup and verify DNS no longer points to an active preview endpoint (NXDOMAIN or removed mapping according to platform behavior).",
+			"Verify cleanup logic is idempotent by re-running the same cleanup workflow and confirming it exits successfully without recreating or failing on already-removed resources."
+		]
+	},
+	{
+		"id": "1.6",
+		"title": "Enforce branch protection with required preview deploy and e2e checks",
+		"description": "Configure repository branch protection so PRs cannot merge unless preview deployment and e2e checks succeed.",
+		"dependencies": ["1.4"],
+		"commitSha": null,
+		"done": false,
+		"blocked": false,
+		"acceptance-criteria": [
+			"Configure required status checks for the target branch using GitHub settings or API and include the preview deploy and e2e check contexts.",
+			"Open a PR with failing deploy or failing e2e and verify the merge button remains blocked with required-check failure shown in GitHub UI.",
+			"Fix the failing condition, re-run checks, and verify all required contexts are green and merge is allowed.",
+			"Query branch protection via `gh api repos/{owner}/{repo}/branches/{branch}/protection` and verify required checks list matches the enforced deploy/e2e contexts."
+		]
+	}
+]

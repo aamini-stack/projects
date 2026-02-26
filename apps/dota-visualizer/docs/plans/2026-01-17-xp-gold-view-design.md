@@ -2,7 +2,9 @@
 
 ## Overview
 
-A new view for learning about Dota 2's XP/level system, creep scaling formulas, and neutral camp gold values. Single scrollable page with three flowing sections.
+A new view for learning about Dota 2's XP/level system, creep scaling formulas,
+and neutral camp gold values. Single scrollable page with three flowing
+sections.
 
 ## Structure
 
@@ -23,13 +25,17 @@ A new view for learning about Dota 2's XP/level system, creep scaling formulas, 
 
 **Tone: Dark Fantasy Strategy Guide**
 
-Feels like opening an ancient tome of game wisdom. Dark, moody, with gold accents tying into the XP/gold theme.
+Feels like opening an ancient tome of game wisdom. Dark, moody, with gold
+accents tying into the XP/gold theme.
 
-- **Typography**: Distinctive serif/display font for headings, clean readable body font
-- **Colors**: Deep slate/charcoal background, warm gold/amber for XP data, muted green for gold values, subtle texture for depth
+- **Typography**: Distinctive serif/display font for headings, clean readable
+  body font
+- **Colors**: Deep slate/charcoal background, warm gold/amber for XP data, muted
+  green for gold values, subtle texture for depth
 - **Layout**: Generous whitespace between sections, chart as hero visual element
 - **Motion**: Fade-in on scroll, XP chart line animates drawing on load
-- **Signature Detail**: XP curve gradient shifting from cool (low levels) to warm gold (high levels)
+- **Signature Detail**: XP curve gradient shifting from cool (low levels) to
+  warm gold (high levels)
 
 ## Section 1: Hero Levels
 
@@ -74,7 +80,8 @@ Hardcoded XP values from Dota's level system:
 - Formulas in monospace font with subtle background
 - Each creep type as a small card
 - Gold values in muted green, XP values in gold/amber
-- Data from `stats.json` (`upgradeGoldPerInterval`, `upgradeXpPerInterval` fields)
+- Data from `stats.json` (`upgradeGoldPerInterval`, `upgradeXpPerInterval`
+  fields)
 
 ## Section 3: Neutral Creeps Gold
 
