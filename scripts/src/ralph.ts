@@ -15,9 +15,20 @@ interface Task {
 	notes: string
 }
 
-interface TasksFile {
-	tasks: Task[]
+interface RawTask {
+	id: unknown
+	title: unknown
+	description: unknown
+	todo?: unknown
+	dependencies?: unknown
+	commitSha?: unknown
+	done?: unknown
+	blocked?: unknown
+	notes?: unknown
+	'acceptance-criteria'?: unknown
 }
+
+type TasksFile = { tasks: RawTask[] } | RawTask[]
 
 interface PromptData {
 	template: string
@@ -66,10 +77,9 @@ Dependencies:
 
 ## Code Quality Status
 
-A set of code quality checks were run before this task. (pnpm test, lint,
-typecheck). Below are the results of that run. Prioritize any fixes to issues
-before starting feature work. We need a clean slate to work on. Also run those
-checks frequently as you're implementing for fast feedback.
+Pre-flight checks are intentionally skipped by the runner for speed. If you hit
+an error while implementing, run only the relevant targeted check first.
+Run full verification only once at the end.
 
 {{TASK_STATUS}}
 
@@ -79,7 +89,7 @@ checks frequently as you're implementing for fast feedback.
 
 ## Instructions
 
-1. If CI is currently failing (shown above), prioritize fixing the relevant issues as part of this task when appropriate.
+1. If you discover CI issues while implementing, prioritize fixing the relevant issues as part of this task when appropriate.
 2. Implement the task described above.
 3. After implementation, output your results in the required JSON format.
 
@@ -155,7 +165,8 @@ const RALPH_CI_FIX_TEMPLATE = `CI check failed and must be fixed.
 1. Analyze the error output above
 2. Fix the issue that caused the failure
 3. Do NOT commit yet - just fix the issue
-4. Run 'pnpm verify' to verify the fix works
+4. Run only the failed check ('pnpm --filter {{FAILED_APP}} {{FAILED_CHECK}}') to verify the fix quickly
+5. Run 'pnpm verify' only once at the very end before marking the task done
 `
 
 type RalphLogger = Pick<Console, 'log' | 'error'>
@@ -173,6 +184,70 @@ interface RunRalphOptions {
 	shell?: RalphShell
 	logger?: RalphLogger
 	maxFixRetries?: number
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+	return typeof value === 'object' && value !== null
+}
+
+function toStringArray(value: unknown): string[] {
+	if (!Array.isArray(value)) {
+		return []
+	}
+
+	return value
+		.filter((item): item is string => typeof item === 'string')
+		.map((item) => item.trim())
+		.filter((item) => item.length > 0)
+}
+
+function parseTasks(rawJson: string): Task[] {
+	const parsed = JSON.parse(rawJson) as TasksFile
+
+	const rawTasks = Array.isArray(parsed)
+		? parsed
+		: Array.isArray(parsed.tasks)
+			? parsed.tasks
+			: null
+
+	if (!rawTasks) {
+		throw new Error(
+			'tasks.json must be an array or an object with a tasks array',
+		)
+	}
+
+	return rawTasks.map((rawTask, index) => {
+		if (!isRecord(rawTask)) {
+			throw new Error(`Invalid task at index ${index}`)
+		}
+
+		const title = typeof rawTask.title === 'string' ? rawTask.title.trim() : ''
+		const description =
+			typeof rawTask.description === 'string' ? rawTask.description.trim() : ''
+		const id = String(rawTask.id ?? '').trim()
+
+		if (!id || !title || !description) {
+			throw new Error(
+				`Task at index ${index} is missing id, title, or description`,
+			)
+		}
+
+		const todo = toStringArray(rawTask.todo)
+		const acceptanceCriteria = toStringArray(rawTask['acceptance-criteria'])
+
+		return {
+			id,
+			title,
+			description,
+			todo: todo.length > 0 ? todo : acceptanceCriteria,
+			dependencies: toStringArray(rawTask.dependencies),
+			commitSha:
+				typeof rawTask.commitSha === 'string' ? rawTask.commitSha : null,
+			done: typeof rawTask.done === 'boolean' ? rawTask.done : false,
+			blocked: typeof rawTask.blocked === 'boolean' ? rawTask.blocked : false,
+			notes: typeof rawTask.notes === 'string' ? rawTask.notes : '',
+		}
+	})
 }
 
 function createZxShell(): RalphShell {
@@ -232,10 +307,12 @@ function createZxShell(): RalphShell {
 			return quietResult(repoRoot, (zx$) => zx$`pnpm --filter ${app} ${check}`)
 		},
 		async runOpencode(prompt: string): Promise<void> {
-			await $`opencode . --model opencode/minimax-m2.5-free --prompt ${prompt}`
+			const interactive = $({ stdio: 'inherit' })
+			await interactive`opencode . --prompt ${prompt}`
 		},
 		async continueOpencode(): Promise<void> {
-			await $`opencode . --continue`
+			const interactive = $({ stdio: 'inherit' })
+			await interactive`opencode . --continue`
 		},
 	}
 }
@@ -257,19 +334,6 @@ function renderResults(results: CIResult[], logger: RalphLogger): void {
 		logger.log(`  [${status}] ${appPad} ${checkPad}`)
 	}
 	logger.log(SUBSECTION_LINE)
-}
-
-function buildCIStatus(ci: { passed: boolean; results: CIResult[] }): string {
-	if (ci.passed) {
-		return 'All CI checks passing'
-	}
-
-	const failed = ci.results
-		.filter((result) => !result.passed)
-		.map((result) => `  - ${result.app}: ${result.check}`)
-		.join('\n')
-
-	return `CI failing:\n${failed}`
 }
 
 async function getRepoRoot(shell: RalphShell): Promise<string> {
@@ -298,7 +362,7 @@ function runCI(
 	const appsDir = path.join(repoRoot, 'apps')
 
 	if (!fs.existsSync(appsDir)) {
-		return Promise.resolve({ passed: false, results: [] })
+		return Promise.resolve({ passed: true, results: [] })
 	}
 
 	const appDirs = fs.readdirSync(appsDir).filter((name) => {
@@ -419,21 +483,18 @@ async function runRalph(options: RunRalphOptions): Promise<void> {
 		throw new Error('tasks.json not found in current directory')
 	}
 
-	const tasks = JSON.parse(fs.readFileSync(tasksPath, 'utf8')) as TasksFile
-	const task = tasks.tasks.find((candidate) => candidate.id === options.taskId)
+	const tasks = parseTasks(fs.readFileSync(tasksPath, 'utf8'))
+	const task = tasks.find((candidate) => candidate.id === options.taskId)
 	if (!task) {
 		throw new Error(`Task ${options.taskId} not found in tasks.json`)
 	}
 
-	const [gitLog, ci] = await Promise.all([
-		getGitLog(repoRoot, shell),
-		runCI(repoRoot, shell),
-	])
+	const gitLog = await getGitLog(repoRoot, shell)
 
 	const prompt = generatePrompt({
 		template: RALPH_PROMPT_TEMPLATE,
 		task,
-		ciOutput: buildCIStatus(ci),
+		ciOutput: 'Pre-flight checks skipped by runner',
 		gitLog,
 	})
 
@@ -464,10 +525,8 @@ async function runRalph(options: RunRalphOptions): Promise<void> {
 	}
 
 	logger.log(`\n${SECTION_LINE}`)
-	logger.log('RALPH CONTINUE SESSION')
+	logger.log('RALPH COMPLETE')
 	logger.log(SECTION_LINE)
-
-	await shell.continueOpencode()
 }
 
 async function main(): Promise<void> {
