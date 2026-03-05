@@ -6,6 +6,7 @@
 	"experimentalTailwindcss": {},
 	"printWidth": 80,
 	"experimentalSortPackageJson": false,
+	"proseWrap": "always",
 	"ignorePatterns": [
 		"**/.vercel",
 		"**/.output",
