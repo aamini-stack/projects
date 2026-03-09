@@ -1264,7 +1264,7 @@ multiple MCP servers are available.
 
 Don't assume packages are available:
 
-````markdown theme={null}
+`````markdown theme={null}
 **Bad example: Assumes installation**: "Use the pdf library to process the
 file."
 
@@ -1278,7 +1278,9 @@ from pypdf import PdfReader
 reader = PdfReader("file.pdf")
 ```"
 ````
-````
+`````
+
+```
 
 ## Technical notes
 
@@ -1346,3 +1348,4 @@ Before sharing a Skill, verify:
     Upload and use Skills programmatically
   </Card>
 </CardGroup>
+```

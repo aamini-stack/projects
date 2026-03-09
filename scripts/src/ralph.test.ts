@@ -34,19 +34,22 @@ describe('runRalph', () => {
 			]),
 		)
 
+		const runCheck = vi.fn(async () => ({
+			stdout: '',
+			stderr: '',
+			exitCode: 0,
+			ok: true,
+		}))
+		const continueOpencode = vi.fn(async () => {})
+
 		const shell: RalphShell = {
 			getRepoRoot: vi.fn(async () => repoRoot),
 			branchExists: vi.fn(async () => false),
 			gitLogRange: vi.fn(async () => ''),
 			gitLogRecent: vi.fn(async () => 'recent'),
-			runCheck: vi.fn(async () => ({
-				stdout: '',
-				stderr: '',
-				exitCode: 0,
-				ok: true,
-			})),
+			runCheck,
 			runOpencode: vi.fn(async () => {}),
-			continueOpencode: vi.fn(async () => {}),
+			continueOpencode,
 		}
 
 		const logger = { log: vi.fn(), error: vi.fn() }
@@ -61,7 +64,7 @@ describe('runRalph', () => {
 			}),
 		).resolves.toBeUndefined()
 
-		expect(shell.continueOpencode).not.toHaveBeenCalled()
-		expect(shell.runCheck).not.toHaveBeenCalled()
+		expect(continueOpencode).not.toHaveBeenCalled()
+		expect(runCheck).not.toHaveBeenCalled()
 	})
 })

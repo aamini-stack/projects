@@ -224,7 +224,10 @@ function parseTasks(rawJson: string): Task[] {
 		const title = typeof rawTask.title === 'string' ? rawTask.title.trim() : ''
 		const description =
 			typeof rawTask.description === 'string' ? rawTask.description.trim() : ''
-		const id = String(rawTask.id ?? '').trim()
+		const id =
+			typeof rawTask.id === 'string' || typeof rawTask.id === 'number'
+				? String(rawTask.id).trim()
+				: ''
 
 		if (!id || !title || !description) {
 			throw new Error(

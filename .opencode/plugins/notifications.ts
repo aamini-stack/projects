@@ -1,9 +1,9 @@
 export const NotificationPlugin = async ({
-	project,
-	client,
+	project: _project,
+	client: _client,
 	$,
-	directory,
-	worktree,
+	directory: _directory,
+	worktree: _worktree,
 }) => {
 	return {
 		event: async ({ event }) => {
