@@ -1,8 +1,22 @@
 config:
   # Azure
   azure-native:resourceGroup: rg-aamini-staging
+  azure-native:nodeResourceGroup: rg-aamini-nodes-staging
   azure-native:location: westus
   azure-native:subscriptionId: 331269d5-143f-4246-b389-9c1f41bb5882
+  aamini-infra:aks:
+    nodeCount: 1
+    vmSize: Standard_D8ds_v5
+    maxSurge: '1'
+  aamini-infra:flux:
+    ociRepository: oci://ghcr.io/aamini-stack/projects-gitops
+    ociTag: latest
+  aamini-infra:fluxOperator:
+    githubRepository: aamini-stack/projects
+    githubSecretName: github-operator-auth
+    registryServer: ghcr.io
+    registryUsername: aamini-stack
+    registrySecretName: ghcr-auth
   # Postgres
   aamini-infra:postgres:
     skuName: Standard_B1ms
@@ -11,6 +25,8 @@ config:
     backupRetentionDays: 7
     geoRedundantBackup: Disabled
   github:token:
-    secure: AAABANuvXTgIhf1bhwB+kFpVBS8rhojdvoHLz6dbVS0v5EuWIbIjJYqwQBwTglDuWuerm7/eYiNzUhLxsmzdJ+6W7G6rjh3XBqXRkBIerzh0s+6LY2hnhEb2NWzlWwuYJaqDEuXDZ+n3QhIwMcROzI/7pTanxXXDljpzzBo=
+    secure: AAABAEn5sQBN8aOyIdo5XwUwiG7GJ5Ph+lw1YXhzmkKt6M7iLbNqcSpyBt7IUUQUNTI4qp99/7bhEvgNA+/k4eXcbCUEMirDrzHUmhQdbWwpCUuW+ZgONSohQUBq1d80L2PUjSBdmTWT2sQTg8+ayNs7OWpdm1iveU7ZZro=
   aamini-infra:postgresAdminPassword:
-    secure: AAABAO4EhTvlOZpUviRtmyUcunElv2tuKsWm6N8KQ7lxDpuC0zb9q0PaU02pbty5uvnuqduiA58X622ofQ0+3amQRZuYet/p
+    secure: AAABAKE91IagSDI/hctrf8si0Kt7aJ62MFl/vSIJu0zEIZPpd+lCTG8YumF/N7rv
+  cloudflare:apiToken:
+    secure: AAABACByNobnYI4YhGFqM3DS0tG72wzDHXBdRhJosY6kkJyLeV9Xukp8kGK0DA/VUrXqBHyR3camz0YBu4jSN3748qmLUyR7
