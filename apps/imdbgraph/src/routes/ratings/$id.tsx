@@ -5,6 +5,13 @@ import { createDb } from '@/db/connection'
 import { getRatings } from '@/lib/imdb/ratings'
 import { type Ratings } from '@/lib/imdb/types'
 import { createFileRoute, notFound } from '@tanstack/react-router'
+import { createServerFn } from '@tanstack/react-start'
+
+const getShowRatings = createServerFn({ method: 'GET' })
+	.inputValidator((input: { showId: string }) => input)
+	.handler(async ({ data }) => {
+		return getRatings(createDb(), data.showId)
+	})
 
 function hasRatings(ratings: Ratings): boolean {
 	for (const seasonRatings of Object.values(ratings.allEpisodeRatings)) {
@@ -25,7 +32,9 @@ export const Route = createFileRoute('/ratings/$id')({
 			throw notFound()
 		}
 
-		const ratings = await getRatings(createDb(), showId)
+		const ratings = (await getShowRatings({
+			data: { showId },
+		})) as Ratings | undefined
 
 		if (!ratings) {
 			throw notFound()
@@ -44,13 +53,15 @@ function Ratings() {
 				<HomeButton />
 				<SearchBar className="max-w-md" />
 			</header>
-			{!hasRatings(ratings) ? (
-				<h1 className="pt-8 text-center text-6xl leading-tight">
-					No Ratings Found
-				</h1>
-			) : (
-				<Graph ratings={ratings} />
-			)}
+			<main data-testid="ratings-content">
+				{!hasRatings(ratings) ? (
+					<h1 className="pt-8 text-center text-6xl leading-tight">
+						No Ratings Found
+					</h1>
+				) : (
+					<Graph ratings={ratings} />
+				)}
+			</main>
 		</>
 	)
 }

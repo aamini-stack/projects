@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as RatingsIdRouteImport } from './routes/ratings/$id'
 import { Route as ApiSuggestionsRouteImport } from './routes/api/suggestions'
+import { Route as ApiRatingsRouteImport } from './routes/api/ratings'
 import { Route as ApiPopulateRouteImport } from './routes/api/populate'
 
 const IndexRoute = IndexRouteImport.update({
@@ -29,6 +30,11 @@ const ApiSuggestionsRoute = ApiSuggestionsRouteImport.update({
   path: '/api/suggestions',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiRatingsRoute = ApiRatingsRouteImport.update({
+  id: '/api/ratings',
+  path: '/api/ratings',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPopulateRoute = ApiPopulateRouteImport.update({
   id: '/api/populate',
   path: '/api/populate',
@@ -38,12 +44,14 @@ const ApiPopulateRoute = ApiPopulateRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/api/populate': typeof ApiPopulateRoute
+  '/api/ratings': typeof ApiRatingsRoute
   '/api/suggestions': typeof ApiSuggestionsRoute
   '/ratings/$id': typeof RatingsIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/api/populate': typeof ApiPopulateRoute
+  '/api/ratings': typeof ApiRatingsRoute
   '/api/suggestions': typeof ApiSuggestionsRoute
   '/ratings/$id': typeof RatingsIdRoute
 }
@@ -51,20 +59,38 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/api/populate': typeof ApiPopulateRoute
+  '/api/ratings': typeof ApiRatingsRoute
   '/api/suggestions': typeof ApiSuggestionsRoute
   '/ratings/$id': typeof RatingsIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/api/populate' | '/api/suggestions' | '/ratings/$id'
+  fullPaths:
+    | '/'
+    | '/api/populate'
+    | '/api/ratings'
+    | '/api/suggestions'
+    | '/ratings/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/api/populate' | '/api/suggestions' | '/ratings/$id'
-  id: '__root__' | '/' | '/api/populate' | '/api/suggestions' | '/ratings/$id'
+  to:
+    | '/'
+    | '/api/populate'
+    | '/api/ratings'
+    | '/api/suggestions'
+    | '/ratings/$id'
+  id:
+    | '__root__'
+    | '/'
+    | '/api/populate'
+    | '/api/ratings'
+    | '/api/suggestions'
+    | '/ratings/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ApiPopulateRoute: typeof ApiPopulateRoute
+  ApiRatingsRoute: typeof ApiRatingsRoute
   ApiSuggestionsRoute: typeof ApiSuggestionsRoute
   RatingsIdRoute: typeof RatingsIdRoute
 }
@@ -92,6 +118,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiSuggestionsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/ratings': {
+      id: '/api/ratings'
+      path: '/api/ratings'
+      fullPath: '/api/ratings'
+      preLoaderRoute: typeof ApiRatingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/populate': {
       id: '/api/populate'
       path: '/api/populate'
@@ -105,6 +138,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ApiPopulateRoute: ApiPopulateRoute,
+  ApiRatingsRoute: ApiRatingsRoute,
   ApiSuggestionsRoute: ApiSuggestionsRoute,
   RatingsIdRoute: RatingsIdRoute,
 }
