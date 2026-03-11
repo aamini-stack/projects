@@ -1,0 +1,10 @@
+name: imdbgraph
+namespace: imdbgraph
+image:
+  repository: ghcr.io/aamini-stack/imdbgraph
+  policy: imdbgraph
+stable:
+  host: imdbgraph.ariaamini.com
+  envFromSecret: imdbgraph-secrets
+preview:
+  enabled: true

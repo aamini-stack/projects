@@ -1,0 +1,9 @@
+name: dota-visualizer
+namespace: dota-visualizer
+image:
+  repository: ghcr.io/aamini-stack/dota-visualizer
+  policy: dota-visualizer
+stable:
+  host: dota-visualizer.ariaamini.com
+preview:
+  enabled: true

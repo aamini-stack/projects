@@ -3,27 +3,66 @@ import * as containerservice from '@pulumi/azure-native/containerservice'
 import * as command from '@pulumi/command'
 import * as k8s from '@pulumi/kubernetes'
 import * as pulumi from '@pulumi/pulumi'
-import { resourceGroupName } from './resource-group'
 
-const config = new pulumi.Config('azure-native')
+interface AksConfig {
+	nodeCount: number
+	vmSize: string
+	maxSurge: string
+}
+
+interface FluxConfig {
+	ociRepository: string
+	ociTag: string
+}
+
+interface FluxOperatorConfig {
+	githubRepository: string
+	githubSecretName: string
+	registryServer: string
+	registryUsername: string
+	registrySecretName: string
+}
+
+const config = new pulumi.Config()
+const azureConfig = new pulumi.Config('azure-native')
+const cloudflareConfig = new pulumi.Config('cloudflare')
 const githubConfig = new pulumi.Config('github')
+const aksConfig = config.requireObject<AksConfig>('aks')
+const fluxConfig = config.getObject<FluxConfig>('flux') ?? {
+	ociRepository: 'oci://ghcr.io/aamini-stack/projects-gitops',
+	ociTag: 'latest',
+}
+const fluxOperatorConfig = config.getObject<FluxOperatorConfig>(
+	'fluxOperator',
+) ?? {
+	githubRepository: 'aamini-stack/projects',
+	githubSecretName: 'github-operator-auth',
+	registryServer: 'ghcr.io',
+	registryUsername: 'aamini-stack',
+	registrySecretName: 'ghcr-auth',
+}
 
-const location = config.require('location')
-const subscriptionId = config.require('subscriptionId')
+const location = azureConfig.require('location')
+const nodeResourceGroupName = azureConfig.require('nodeResourceGroup')
+const resourceGroupName = azureConfig.require('resourceGroup')
+const subscriptionId = azureConfig.require('subscriptionId')
+const cloudflareApiToken = cloudflareConfig.requireSecret('apiToken')
 const githubToken = githubConfig.requireSecret('token')
 
 // AKS Cluster
 const aksCluster = new azure.containerservice.ManagedCluster('aks', {
 	dnsPrefix: 'aamini-stack',
+	location: location,
+	nodeResourceGroup: nodeResourceGroupName,
 	resourceGroupName: resourceGroupName,
 	agentPoolProfiles: [
 		{
 			name: 'agentpool',
-			count: 2,
-			vmSize: 'Standard_D2d_v5',
+			count: aksConfig.nodeCount,
+			vmSize: aksConfig.vmSize,
 			mode: 'System',
 			upgradeSettings: {
-				maxSurge: '10%',
+				maxSurge: aksConfig.maxSurge,
 			},
 		},
 	],
@@ -56,7 +95,7 @@ const workloadIdentity = new azure.managedidentity.UserAssignedIdentity(
 )
 
 const nodeResourceGroupId = aksCluster.nodeResourceGroup.apply(
-	(nrg) => `subscriptions/${subscriptionId}/resourceGroups/${nrg}`,
+	(nrg) => `/subscriptions/${subscriptionId}/resourceGroups/${nrg}`,
 )
 
 new azure.authorization.RoleAssignment('reader-role', {
@@ -80,43 +119,6 @@ const getAksCredentials = new command.local.Command('get-aks-credentials', {
 	create: pulumi.interpolate`az aks get-credentials --name ${aksCluster.name} --resource-group ${resourceGroupName} --overwrite-existing`,
 })
 
-// Static IP for Traefik (must be in node resource group for AKS LB)
-const traefikIp = new azure.network.PublicIPAddress('traefik-ip', {
-	resourceGroupName: aksCluster.nodeResourceGroup.apply((rg) => rg!),
-	location: location,
-	publicIPAllocationMethod: 'Static',
-	sku: { name: 'Standard' },
-})
-
-const domain = 'ariaamini.com'
-
-// DNS Zone
-const dnsZone = new azure.dns.Zone('dns-zone', {
-	zoneName: domain,
-	resourceGroupName: resourceGroupName,
-	location: 'global',
-})
-
-// Wildcard A record
-new azure.dns.RecordSet('dns-wildcard', {
-	zoneName: dnsZone.name,
-	resourceGroupName: resourceGroupName,
-	relativeRecordSetName: '*',
-	recordType: 'A',
-	ttl: 300,
-	aRecords: [{ ipv4Address: traefikIp.ipAddress.apply((ip) => ip!) }],
-})
-
-// Root A record
-new azure.dns.RecordSet('dns-root', {
-	zoneName: dnsZone.name,
-	resourceGroupName: resourceGroupName,
-	relativeRecordSetName: '@',
-	recordType: 'A',
-	ttl: 300,
-	aRecords: [{ ipv4Address: traefikIp.ipAddress.apply((ip) => ip!) }],
-})
-
 const creds = containerservice.listManagedClusterUserCredentialsOutput({
 	resourceGroupName: resourceGroupName,
 	resourceName: aksCluster.name,
@@ -127,40 +129,6 @@ export const kubeconfig = pulumi.secret(
 	encoded?.apply((enc) => Buffer.from(enc, 'base64').toString()) ?? '',
 )
 
-// Workload identity for cert-manager
-const certManagerIdentity = new azure.managedidentity.UserAssignedIdentity(
-	'cert-manager-identity',
-	{
-		resourceGroupName: resourceGroupName,
-		location: location,
-	},
-)
-
-// DNS Zone Contributor role for cert-manager identity
-new azure.authorization.RoleAssignment('cert-manager-dns-role', {
-	roleDefinitionId: `/subscriptions/${subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/befefa01-2a29-4197-83a8-272ff33ce314`,
-	principalId: certManagerIdentity.principalId,
-	scope: dnsZone.id,
-	principalType: 'ServicePrincipal',
-})
-
-const oidcIssuerUrl = aksCluster.oidcIssuerProfile.apply(
-	(p) => p?.issuerURL || '',
-)
-
-// Federated identity credential for cert-manager workload identity
-new azure.managedidentity.FederatedIdentityCredential(
-	'cert-manager-federated-credential',
-	{
-		federatedIdentityCredentialResourceName: certManagerIdentity.name,
-		resourceGroupName: resourceGroupName,
-		resourceName: certManagerIdentity.name,
-		audiences: ['api://AzureADTokenExchange'],
-		issuer: oidcIssuerUrl,
-		subject: 'system:serviceaccount:networking:cert-manager',
-	},
-)
-
 const k8sProvider = new k8s.Provider(
 	'k8s-provider',
 	{
@@ -169,41 +137,128 @@ const k8sProvider = new k8s.Provider(
 	{ dependsOn: [getAksCredentials] },
 )
 
-const fluxBootstrap = new command.local.Command(
-	'flux-boostrap',
-	{
-		create: pulumi.interpolate`flux bootstrap github --owner=aamini-stack --repository=projects --branch=main --path=./packages/infra/manifests/gitops --personal --token-auth`,
-		environment: {
-			GITHUB_TOKEN: githubToken,
-		},
-	},
-	{ dependsOn: [aksCluster, getAksCredentials] },
-)
-
-// Create networking-config ConfigMap directly in cluster after flux bootstrap creates the flux-system namespace.
-// This is referenced by postBuild.substituteFrom in the system and helm Flux Kustomizations.
-new k8s.core.v1.ConfigMap(
-	'networking-config',
+const fluxNamespace = new k8s.core.v1.Namespace(
+	'flux-system',
 	{
 		metadata: {
-			name: 'networking-config',
-			namespace: 'flux-system',
-		},
-		data: {
-			TRAEFIK_PUBLIC_IP: traefikIp.ipAddress.apply((ip) => ip!),
-			TRAEFIK_NODE_RESOURCE_GROUP: aksCluster.nodeResourceGroup.apply(
-				(rg) => rg!,
-			),
-			CERT_MANAGER_CLIENT_ID: certManagerIdentity.clientId,
-			AZURE_SUBSCRIPTION_ID: subscriptionId,
-			AZURE_DNS_RESOURCE_GROUP: resourceGroupName,
+			name: 'flux-system',
 		},
 	},
-	{ provider: k8sProvider, dependsOn: [fluxBootstrap] },
+	{ provider: k8sProvider },
+)
+
+const ghcrAuth = pulumi.all([githubToken]).apply(([token]) =>
+	JSON.stringify({
+		auths: {
+			[fluxOperatorConfig.registryServer]: {
+				username: fluxOperatorConfig.registryUsername,
+				password: token,
+				auth: Buffer.from(
+					`${fluxOperatorConfig.registryUsername}:${token}`,
+				).toString('base64'),
+			},
+		},
+	}),
+)
+
+const fluxInstanceValues = {
+	instance: {
+		distribution: {
+			version: '2.x',
+			registry: 'ghcr.io/fluxcd',
+			artifact: 'oci://ghcr.io/controlplaneio-fluxcd/flux-operator-manifests',
+		},
+		components: [
+			'source-controller',
+			'kustomize-controller',
+			'helm-controller',
+			'notification-controller',
+			'image-reflector-controller',
+			'image-automation-controller',
+		],
+		cluster: {
+			type: 'kubernetes',
+			multitenant: false,
+			networkPolicy: true,
+			domain: 'cluster.local',
+		},
+		sync: {
+			kind: 'OCIRepository',
+			url: fluxConfig.ociRepository,
+			ref: fluxConfig.ociTag,
+			path: './bootstrap',
+			pullSecret: fluxOperatorConfig.registrySecretName,
+		},
+	},
+}
+
+const fluxOperator = new k8s.helm.v3.Release(
+	'flux-operator',
+	{
+		chart: 'oci://ghcr.io/controlplaneio-fluxcd/charts/flux-operator',
+		namespace: fluxNamespace.metadata.name,
+		createNamespace: false,
+	},
+	{ provider: k8sProvider, dependsOn: [fluxNamespace] },
+)
+
+new k8s.helm.v3.Release(
+	'flux-instance',
+	{
+		chart: 'oci://ghcr.io/controlplaneio-fluxcd/charts/flux-instance',
+		namespace: fluxNamespace.metadata.name,
+		createNamespace: false,
+		values: fluxInstanceValues,
+	},
+	{ provider: k8sProvider, dependsOn: [fluxNamespace, fluxOperator] },
+)
+
+// Provide Cloudflare credentials to Flux postBuild substitution without storing plaintext in git.
+new k8s.core.v1.Secret(
+	'networking-secrets',
+	{
+		metadata: {
+			name: 'networking-secrets',
+			namespace: fluxNamespace.metadata.name,
+		},
+		stringData: {
+			CLOUDFLARE_API_TOKEN: cloudflareApiToken,
+		},
+	},
+	{ provider: k8sProvider, dependsOn: [fluxNamespace] },
+)
+
+new k8s.core.v1.Secret(
+	'github-operator-auth',
+	{
+		metadata: {
+			name: fluxOperatorConfig.githubSecretName,
+			namespace: fluxNamespace.metadata.name,
+		},
+		stringData: {
+			username: 'flux',
+			password: githubToken,
+		},
+	},
+	{ provider: k8sProvider, dependsOn: [fluxNamespace] },
+)
+
+new k8s.core.v1.Secret(
+	'ghcr-auth',
+	{
+		metadata: {
+			name: fluxOperatorConfig.registrySecretName,
+			namespace: fluxNamespace.metadata.name,
+		},
+		type: 'kubernetes.io/dockerconfigjson',
+		stringData: {
+			'.dockerconfigjson': ghcrAuth,
+		},
+	},
+	{ provider: k8sProvider, dependsOn: [fluxNamespace] },
 )
 
 // Outputs
 export const aksClusterId = aksCluster.id
 export const aksClusterName = aksCluster.name
 export const nodeResourceGroup = aksCluster.nodeResourceGroup
-export const ip = traefikIp.ipAddress

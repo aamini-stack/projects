@@ -2,6 +2,7 @@ import { AppDatabase } from '@aamini/infra/src/components'
 import * as pulumi from '@pulumi/pulumi'
 
 const config = new pulumi.Config()
+const azureConfig = new pulumi.Config('azure-native')
 const dbPassword = config.requireSecret('dbPassword')
 
 // Reference the global infrastructure stack using the current stack's environment name
@@ -11,9 +12,7 @@ const globalStack = new pulumi.StackReference(
 )
 
 // Get server details from global stack
-const serverResourceGroup = globalStack
-	.getOutput('resourceGroup')
-	.apply((rg: any) => rg.resourceGroupName)
+const serverResourceGroup = azureConfig.require('resourceGroup')
 const serverName = globalStack
 	.getOutput('postgres')
 	.apply((pg: any) => pg.postgresServerName)
