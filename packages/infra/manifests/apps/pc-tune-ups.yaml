@@ -1,0 +1,9 @@
+name: pc-tune-ups
+namespace: pc-tune-ups
+image:
+  repository: ghcr.io/aamini-stack/pc-tune-ups
+  policy: pc-tune-ups
+stable:
+  host: pc-tune-ups.ariaamini.com
+preview:
+  enabled: true

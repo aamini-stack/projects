@@ -1,0 +1,53 @@
+{{- $name := include "app-release.name" . -}}
+{{- $hosts := list .Values.host -}}
+{{- if .Values.rootHost }}
+{{- $hosts = append $hosts .Values.rootHost -}}
+{{- end }}
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: {{ $name }}-http
+  labels:
+    app.kubernetes.io/name: {{ include "app-release.name" . }}
+    app.kubernetes.io/instance: {{ include "app-release.name" . }}
+    app: {{ include "app-release.name" . }}
+spec:
+  parentRefs:
+    - name: traefik-gateway
+      namespace: networking
+      sectionName: web
+  hostnames:
+    {{- range $hosts }}
+    - {{ . | quote }}
+    {{- end }}
+  rules:
+    - filters:
+        - type: RequestRedirect
+          requestRedirect:
+            scheme: https
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: {{ $name }}-https
+  labels:
+    app.kubernetes.io/name: {{ include "app-release.name" . }}
+    app.kubernetes.io/instance: {{ include "app-release.name" . }}
+    app: {{ include "app-release.name" . }}
+spec:
+  parentRefs:
+    - name: traefik-gateway
+      namespace: networking
+      sectionName: websecure
+  hostnames:
+    {{- range $hosts }}
+    - {{ . | quote }}
+    {{- end }}
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: {{ $name }}-service
+          port: {{ .Values.service.port }}
