@@ -18,7 +18,7 @@ env:
   TURBO_TEAM: ${{ vars.TURBO_TEAM }}
 
 jobs:
-  checks:
+  quality:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -30,11 +30,21 @@ jobs:
       - run: pnpm i
       - run: pnpm turbo run format typecheck lint test:unit
       - run: pnpm --filter @aamini/infra chart:package-check
+
+  integration:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: 'pnpm'
+      - run: pnpm i
       - run: pnpm exec playwright install --with-deps chromium
       - run: pnpm test:integration
 
   artifacts:
-    needs: checks
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -55,7 +65,7 @@ jobs:
 
   preview:
     if: github.event_name == 'pull_request'
-    needs: [checks, artifacts]
+    needs: artifacts
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -76,7 +86,7 @@ jobs:
 
   release-state:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    needs: [checks, artifacts]
+    needs: [quality, integration, artifacts]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
