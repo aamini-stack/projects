@@ -1,4 +1,4 @@
-import { getGunzipStream, type ImdbFile } from '@/lib/imdb/file-downloader'
+import { downloadStream, type ImdbFile } from '@/lib/imdb/file-downloader'
 import { getRatingsDb } from '@/lib/imdb/ratings'
 import { update } from '@/lib/imdb/scraper'
 import { test } from '@aamini/config-testing/test/db'
@@ -47,7 +47,7 @@ describe('scraper tests', () => {
 // Helpers
 // =============================================================================
 function mockDownloads(mockedFiles: Record<ImdbFile, string>) {
-	vi.mocked(getGunzipStream).mockImplementation(async (imdbFile) => {
+	vi.mocked(downloadStream).mockImplementation(async (imdbFile) => {
 		const input = path.join(import.meta.dirname, mockedFiles[imdbFile])
 		return createReadStream(input)
 	})
