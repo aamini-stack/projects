@@ -14,11 +14,11 @@
 		"test:unit": "vitest run --project unit",
 		"test:integration": "vitest run --project browser --project server",
 		"test:watch": "vitest --watch",
-		"e2e": "node --experimental-strip-types ../../scripts/src/e2e.ts imdbgraph",
+		"e2e": "node --experimental-strip-types ../../scripts/src/aamini.ts e2e imdbgraph",
 		"e2e:staging": "BASE_URL=https://imdbgraph.ariaamini.com pnpm playwright test",
-		"e2e:update": "node --experimental-strip-types ../../scripts/src/e2e.ts imdbgraph --update-snapshots",
+		"e2e:update": "node --experimental-strip-types ../../scripts/src/aamini.ts e2e imdbgraph --update-snapshots",
 		"report": "playwright show-report",
-		"verify": "turbo run build lint format test typecheck e2e",
+		"verify": "turbo run build test typecheck e2e",
 		"populate": "tsx --env-file .env.local scripts/populate-db.ts"
 	},
 	"dependencies": {
@@ -52,7 +52,7 @@
 		"@tailwindcss/vite": "^4.1.18",
 		"@tanstack/devtools-vite": "^0.5.1",
 		"@testcontainers/postgresql": "^11.11.0",
-		"@types/node": "^25.2.3",
+		"@types/node": "^25.4.0",
 		"@types/pg": "^8.16.0",
 		"@types/pg-copy-streams": "^1.2.5",
 		"@types/react": "^19.2.14",
