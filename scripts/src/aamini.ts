@@ -4,8 +4,8 @@ import * as path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { $ } from 'zx'
 import { runE2E } from './e2e.ts'
-import { runBuild } from './helpers/build.ts'
-import { sealAll, unsealAll } from './helpers/k8secrets.ts'
+import { runBuild } from './build.ts'
+import { sealAll, unsealAll } from './k8secrets.ts'
 import { getRepoRoot } from './helpers/repo.ts'
 
 async function main(): Promise<void> {
@@ -46,7 +46,8 @@ async function main(): Promise<void> {
 	cli
 		.command('ralph <task-id>', 'Run Ralph workflow for task')
 		.action(async (taskId: string) => {
-			await $`node --experimental-strip-types ${path.resolve(path.dirname(fileURLToPath(import.meta.url)), 'ralph.ts')} ${taskId}`
+			const interactive = $({ stdio: 'inherit' })
+			await interactive`node --experimental-strip-types ${path.resolve(path.dirname(fileURLToPath(import.meta.url)), 'ralph.ts')} ${taskId}`
 		})
 
 	cli
