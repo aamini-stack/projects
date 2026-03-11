@@ -1,0 +1,31 @@
+name: Publish Flux GitOps OCI
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'packages/infra/manifests/**'
+      - 'packages/infra/src/gitops/**'
+      - 'packages/infra/package.json'
+      - '.github/workflows/publish-flux-gitops-oci.yaml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dagger/dagger-for-github@v8.4.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          verb: call
+          args: >-
+            publish-gitops-state --registry=ghcr.io/aamini-stack/projects-gitops
+            --tags=latest --tags=main-${{ github.sha }}
+            --github-token=env://GITHUB_TOKEN --github-actor=${{ github.actor }}

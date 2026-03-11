@@ -5,6 +5,7 @@
 	"type": "module",
 	"scripts": {
 		"build": "turbo build",
+		"dagger:local": "node --experimental-strip-types scripts/src/aamini.ts dagger",
 		"docker:build": "node scripts/docker-build.js",
 		"format": "oxfmt --check '**/*.{js,ts,tsx,json,html,css,md,yml,yaml}' '!**/charts/**/templates/**/*.{yml,yaml}'",
 		"format:fix": "oxfmt --write '**/*.{js,ts,tsx,json,html,css,md,yml,yaml}' '!**/charts/**/templates/**/*.{yml,yaml}'",
@@ -17,6 +18,10 @@
 		"e2e:staging": "turbo run --continue=dependencies-successful e2e:staging",
 		"e2e:update": "turbo run --continue=dependencies-successful e2e:update",
 		"verify": "turbo run --continue=dependencies-successful build lint format test typecheck e2e"
+	},
+	"dependencies": {
+		"@dagger.io/dagger": "^0.20.1",
+		"yaml": "^2.8.1"
 	},
 	"devDependencies": {
 		"@playwright/test": "^1.57.0",
@@ -33,5 +38,8 @@
 	"engines": {
 		"node": ">=22"
 	},
-	"packageManager": "pnpm@10.29.3"
+	"packageManager": "pnpm@10.29.3",
+	"dagger": {
+		"runtime": "node@22.12.0"
+	}
 }

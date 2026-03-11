@@ -1,0 +1,19 @@
+{
+	"name": "@aamini/dagger",
+	"private": true,
+	"type": "module",
+	"packageManager": "pnpm@10.29.3",
+	"scripts": {
+		"test": "vitest run"
+	},
+	"dependencies": {
+		"@dagger.io/dagger": "^0.20.1",
+		"yaml": "^2.8.1"
+	},
+	"devDependencies": {
+		"vitest": "^4.0.18"
+	},
+	"dagger": {
+		"runtime": "node@22.12.0"
+	}
+}

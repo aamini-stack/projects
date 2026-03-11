@@ -1,4 +1,5 @@
 packages:
+  - dagger
   - apps/*
   - apps/*/infra
   - packages/*

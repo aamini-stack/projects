@@ -1,0 +1,16 @@
+{
+	"name": "preview-pipeline",
+	"sdk": "typescript",
+	"source": "dagger",
+	"include": [
+		".git/**",
+		"Dockerfile",
+		"apps/**",
+		"package.json",
+		"packages/**",
+		"pnpm-lock.yaml",
+		"pnpm-workspace.yaml",
+		"scripts/**",
+		"turbo.json"
+	]
+}

@@ -9,15 +9,16 @@ on:
       - main
 
 permissions:
-  contents: write
+  contents: read
   statuses: write
+  packages: write
 
 env:
   TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
   TURBO_TEAM: ${{ vars.TURBO_TEAM }}
 
 jobs:
-  quality-checks:
+  checks:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -28,45 +29,74 @@ jobs:
           cache: 'pnpm'
       - run: pnpm i
       - run: pnpm turbo run format typecheck lint test:unit
-
-  integration-tests:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v6
-        with:
-          node-version: 22
-          cache: 'pnpm'
-      - run: pnpm i
+      - run: pnpm --filter @aamini/infra chart:package-check
       - run: pnpm exec playwright install --with-deps chromium
       - run: pnpm test:integration
 
-  find-apps:
+  artifacts:
+    needs: checks
     runs-on: ubuntu-latest
-    outputs:
-      apps: ${{ steps.calculate-apps.outputs.apps }}
     steps:
       - uses: actions/checkout@v4
+      - uses: dagger/dagger-for-github@v8.4.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GHCR_TOKEN }}
         with:
-          fetch-depth: 0
-      - name: Get Changed Apps
-        id: calculate-apps
-        run: |
-          FILTER="{./apps/*}...[HEAD~...HEAD]"
-          APPS=$(npx turbo@2.5.8 build --filter="$FILTER" --dry=json | jq -c .packages)
-          echo $APPS
-          echo "apps=$APPS" >> $GITHUB_OUTPUT
+          dagger-flags: --progress dots -q
+          verb: call
+          args: >-
+            ci-run --mode=artifacts --event=${{ github.event_name ==
+            'pull_request' && 'pr' || 'main' }} --sha=${{ github.sha }}
+            --pr-number=${{ github.event.pull_request.number }}
+            --registry=ghcr.io/aamini-stack --base-ref=${{ github.event_name ==
+            'pull_request' && github.event.pull_request.base.sha ||
+            github.event.before }} --head-ref=${{ github.sha }}
+            --github-token=env://GITHUB_TOKEN --github-actor=${{ github.actor }}
+
+  preview:
+    if: github.event_name == 'pull_request'
+    needs: [checks, artifacts]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dagger/dagger-for-github@v8.4.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GHCR_TOKEN }}
+        with:
+          dagger-flags: --progress dots -q
+          verb: call
+          args: >-
+            ci-run --mode=preview --event=pr --sha=${{
+            github.event.pull_request.head.sha }} --pr-number=${{
+            github.event.pull_request.number }}
+            --registry=ghcr.io/aamini-stack/projects-gitops --base-ref=${{
+            github.event.pull_request.base.sha }} --head-ref=${{
+            github.event.pull_request.head.sha }}
+            --github-token=env://GITHUB_TOKEN --github-actor=${{ github.actor }}
+
+  release-state:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [checks, artifacts]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dagger/dagger-for-github@v8.4.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GHCR_TOKEN }}
+        with:
+          dagger-flags: --progress dots -q
+          verb: call
+          args: >-
+            ci-run --mode=release-state --event=main --sha=${{ github.sha }}
+            --registry=ghcr.io/aamini-stack/projects-gitops --base-ref=${{
+            github.event.before }} --head-ref=${{ github.sha }}
+            --github-token=env://GITHUB_TOKEN --github-actor=${{ github.actor }}
 
   e2e:
-    needs: [find-apps]
+    if: github.event_name == 'pull_request'
+    needs: preview
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        app: ${{ fromJson(needs.find-apps.outputs.apps) }}
-      fail-fast: false
     steps:
-      # Setup
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v6
@@ -75,15 +105,4 @@ jobs:
           cache: 'pnpm'
       - run: pnpm i
       - run: pnpm exec playwright install --with-deps chromium
-
-      - name: Run Playwright tests against staging
-        working-directory: './apps/${{ matrix.app }}'
-        run: pnpm e2e:staging
-
-      - name: Publish Report
-        uses: actions/upload-artifact@v4
-        if: failure()
-        with:
-          name: playwright-report-${{ matrix.app }}
-          path: './apps/${{ matrix.app }}/playwright-report'
-          retention-days: 30
+      - run: pnpm e2e:staging

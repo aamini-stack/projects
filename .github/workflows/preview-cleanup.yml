@@ -1,0 +1,20 @@
+name: Preview Cleanup
+
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # TODO: Add a stale-preview cleanup path for orphaned PR environments like pr-134.
+      # Closing PRs is not sufficient when preview HTTPRoutes or workloads outlive the source PR state.
+      - uses: dagger/dagger-for-github@v8.4.0
+        with:
+          verb: call
+          args: >-
+            delete-preview-state --pr-number=${{
+            github.event.pull_request.number }} --registry=${{
+            vars.PREVIEW_STATE_REGISTRY }}

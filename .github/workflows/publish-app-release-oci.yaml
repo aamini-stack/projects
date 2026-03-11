@@ -1,0 +1,30 @@
+name: Publish App Release Helm Chart
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'packages/infra/charts/app-release/**'
+      - 'packages/infra/package.json'
+      - '.github/workflows/publish-app-release-oci.yaml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dagger/dagger-for-github@v8.4.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          verb: call
+          args: >-
+            publish-app-release-chart
+            --registry=oci://ghcr.io/aamini-stack/app-release
+            --github-token=env://GITHUB_TOKEN --github-actor=${{ github.actor }}
