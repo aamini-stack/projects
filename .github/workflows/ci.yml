@@ -106,3 +106,11 @@ jobs:
       - run: pnpm i
       - run: pnpm exec playwright install --with-deps chromium
       - run: pnpm e2e:staging
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: imdbgraph-playwright-report-${{ github.run_id }}
+          path: |
+            apps/imdbgraph/playwright-report
+            apps/imdbgraph/test-results
+          if-no-files-found: ignore
