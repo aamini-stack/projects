@@ -1,0 +1,11 @@
+name: portfolio
+namespace: portfolio
+image:
+  repository: ghcr.io/aamini-stack/portfolio
+  policy: portfolio
+stable:
+  host: portfolio.ariaamini.com
+  rootHost: ariaamini.com
+  envFromSecret: portfolio-secrets
+preview:
+  enabled: true
