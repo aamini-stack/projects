@@ -35,19 +35,6 @@ export class AppDatabase extends pulumi.ComponentResource {
 	) {
 		super('aamini:infra:AppDatabase', name, {}, opts)
 
-		// Create the database
-		const database = new azure.dbforpostgresql.Database(
-			`${name}-db`,
-			{
-				resourceGroupName: args.serverResourceGroupName,
-				serverName: args.serverName,
-				databaseName: args.name,
-				charset: args.charset ?? 'UTF8',
-				collation: args.collation ?? 'en_US.utf8',
-			},
-			{ parent: this },
-		)
-
 		// Create a PostgreSQL provider using admin credentials
 		const pgProvider = new postgresql.Provider(
 			`${name}-pg-provider`,
@@ -71,7 +58,20 @@ export class AppDatabase extends pulumi.ComponentResource {
 				login: true,
 				password: args.userPassword,
 			},
-			{ parent: this, provider: pgProvider, dependsOn: [database] },
+			{ parent: this, provider: pgProvider },
+		)
+
+		// Create the database after the app role so destroy tears down the database first.
+		const database = new azure.dbforpostgresql.Database(
+			`${name}-db`,
+			{
+				resourceGroupName: args.serverResourceGroupName,
+				serverName: args.serverName,
+				databaseName: args.name,
+				charset: args.charset ?? 'UTF8',
+				collation: args.collation ?? 'en_US.utf8',
+			},
+			{ parent: this, dependsOn: [role] },
 		)
 
 		// Grant all privileges on the database to the app user
@@ -83,7 +83,7 @@ export class AppDatabase extends pulumi.ComponentResource {
 				objectType: 'database',
 				privileges: ['ALL'],
 			},
-			{ parent: this, provider: pgProvider, dependsOn: [role] },
+			{ parent: this, provider: pgProvider, dependsOn: [role, database] },
 		)
 
 		// Grant all privileges on the public schema to the app user
@@ -96,7 +96,7 @@ export class AppDatabase extends pulumi.ComponentResource {
 				objectType: 'schema',
 				privileges: ['ALL'],
 			},
-			{ parent: this, provider: pgProvider, dependsOn: [role] },
+			{ parent: this, provider: pgProvider, dependsOn: [role, database] },
 		)
 
 		// Enable pg_trgm extension (allow-listed at the server level)
@@ -120,7 +120,6 @@ export class AppDatabase extends pulumi.ComponentResource {
 				parent: this,
 				provider: dbProvider,
 				dependsOn: [database],
-				retainOnDelete: true,
 			},
 		)
 

@@ -24,6 +24,9 @@
 		"typecheck": {
 			"dependsOn": ["^build", "build", "^typecheck"]
 		},
+		"preview": {
+			"cache": false
+		},
 		"test": {
 			"dependsOn": ["^build", "^test"]
 		},
