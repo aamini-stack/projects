@@ -18,5 +18,7 @@ Thumbs.db
 # Playwright
 test-results/
 playwright-report/
+.playwright
 
 .pnpm-store
+.worktrees

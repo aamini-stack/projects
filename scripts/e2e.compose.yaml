@@ -1,0 +1,17 @@
+services:
+  e2e:
+    image: ${APP_NAME}-e2e:latest
+    build:
+      context: ..
+      dockerfile: Dockerfile
+      target: e2e
+      args:
+        APP_NAME: ${APP_NAME}
+        CI: ${CI:-}
+    environment:
+      BASE_URL: ${BASE_URL:-}
+      PLAYWRIGHT_HTML_OUTPUT_DIR: /app/apps/${APP_NAME}/playwright-report
+    volumes:
+      - ../apps/${APP_NAME}/test-results:/app/apps/${APP_NAME}/test-results
+      - ../apps/${APP_NAME}/playwright-report:/app/apps/${APP_NAME}/playwright-report
+      - ../apps/${APP_NAME}/e2e:/app/apps/${APP_NAME}/e2e

@@ -12,8 +12,9 @@ function Home() {
 	useEffect(() => {
 		// Preload the ratings page code bundle (without executing the loader)
 		const ratingsRoute = router.routesByPath['/ratings/$id']
-		if (ratingsRoute) {
-			router.loadRouteChunk(ratingsRoute).catch(() => {
+		const loadRouteChunk = router.loadRouteChunk
+		if (ratingsRoute && loadRouteChunk) {
+			loadRouteChunk(ratingsRoute)?.catch(() => {
 				// Silently fail if preload doesn't work
 			})
 		}

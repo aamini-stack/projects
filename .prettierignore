@@ -1,5 +1,0 @@
-**/.vercel
-**/.output
-pnpm-lock.yaml
-routeTree.gen.ts
-packages/infra/manifests/gitops/flux-system/gotk-components.yaml

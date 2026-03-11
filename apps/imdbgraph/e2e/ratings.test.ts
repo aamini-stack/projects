@@ -1,13 +1,8 @@
 import { expect, test } from '@playwright/test'
 
-test.beforeEach(async ({ page }) => {
-	await page.goto('ratings/tt0417299', { waitUntil: 'networkidle' })
-})
-
-test('Title works', async ({ page }) => {
+test('Ratings page title works', async ({ page }) => {
+	await page.goto('/ratings/tt0944947', { waitUntil: 'networkidle' })
 	await expect(
-		page.getByRole('heading', {
-			name: 'Avatar: The Last Airbender',
-		}),
+		page.getByRole('heading', { name: 'Game of Thrones' }),
 	).toBeVisible()
 })

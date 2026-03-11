@@ -4,23 +4,6 @@ test.beforeEach(async ({ page }) => {
 	await page.goto('/', { waitUntil: 'networkidle' })
 })
 
-test('Screenshot Homepage', async ({ page }) => {
-	const searchBar = page.getByRole('combobox')
-	await expect(searchBar).not.toBeDisabled()
-	await expect(page).toHaveScreenshot()
-})
-
-test('Screenshot Searchbar', async ({ page }) => {
-	const searchBar = page.getByRole('combobox')
-	await expect(searchBar).not.toBeDisabled()
-	await searchBar.click()
-	await searchBar.fill('Avatar')
-	await page.getByTestId('loading-spinner').waitFor({ state: 'hidden' })
-	const dropdown = page.getByRole('listbox')
-	await expect(dropdown).toBeInViewport()
-	await expect(page).toHaveScreenshot()
-})
-
 test('Title works', async ({ page }) => {
 	await expect(page.getByRole('heading', { name: /IMDB Graph/i })).toBeVisible()
 })

@@ -6,30 +6,32 @@
 	"scripts": {
 		"build": "turbo build",
 		"docker:build": "node scripts/docker-build.js",
-		"format": "prettier --check '**/*.{js,ts,tsx,json,html,css,md,yml,yaml}'",
-		"format:fix": "prettier --write '**/*.{js,ts,tsx,json,html,css,md,yml,yaml}'",
+		"format": "oxfmt --check '**/*.{js,ts,tsx,json,html,css,md,yml,yaml}' '!**/charts/**/templates/**/*.{yml,yaml}'",
+		"format:fix": "oxfmt --write '**/*.{js,ts,tsx,json,html,css,md,yml,yaml}' '!**/charts/**/templates/**/*.{yml,yaml}'",
 		"typecheck": "turbo run typecheck",
 		"lint": "oxlint --type-aware --max-warnings=0",
 		"test": "turbo run test",
 		"test:unit": "turbo run test:unit",
 		"test:integration": "turbo run test:integration",
 		"e2e": "turbo run --continue=dependencies-successful e2e",
+		"e2e:staging": "turbo run --continue=dependencies-successful e2e:staging",
 		"e2e:update": "turbo run --continue=dependencies-successful e2e:update",
 		"verify": "turbo run --continue=dependencies-successful build lint format test typecheck e2e"
 	},
 	"devDependencies": {
-		"@playwright/test": "^1.57.0",
-		"oxlint": "^1.47.0",
-		"oxlint-tsgolint": "^0.12.2",
+		"@playwright/test": "^1.58.2",
+		"oxfmt": "^0.38.0",
+		"oxlint": "^1.53.0",
+		"oxlint-tsgolint": "^0.16.0",
 		"prettier": "^3.8.1",
 		"prettier-plugin-jsdoc": "^1.8.0",
 		"prettier-plugin-organize-imports": "^4.3.0",
 		"prettier-plugin-tailwindcss": "^0.7.2",
 		"tsx": "^4.21.0",
-		"turbo": "^2.8.8"
+		"turbo": "^2.8.16"
 	},
 	"engines": {
 		"node": ">=22"
 	},
-	"packageManager": "pnpm@10.29.3"
+	"packageManager": "pnpm@10.32.1+sha512.a706938f0e89ac1456b6563eab4edf1d1faf3368d1191fc5c59790e96dc918e4456ab2e67d613de1043d2e8c81f87303e6b40d4ffeca9df15ef1ad567348f2be"
 }
