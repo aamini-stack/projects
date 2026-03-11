@@ -13,8 +13,10 @@ Shared packages are located in /packages and include:
 
 ## Commands
 
-cd into the right /apps directory and run these commands. Running commands
-from root will use turbo to run that command for each subproject. (Ex: Running 'pnpm build' from root will launch 5 concurrent build tasks for all 5 apps. But running 'pnpm build' in apps/imdbgraph will only run build for imdbgraph)
+cd into the right /apps directory and run these commands. Running commands from
+root will use turbo to run that command for each subproject. (Ex: Running 'pnpm
+build' from root will launch 5 concurrent build tasks for all 5 apps. But
+running 'pnpm build' in apps/imdbgraph will only run build for imdbgraph)
 
 | Command                 | Action                                          |
 | :---------------------- | :---------------------------------------------- |
@@ -43,5 +45,5 @@ from root will use turbo to run that command for each subproject. (Ex: Running '
 
 ## Verification
 
-After completing a task, run `pnpm verify` in the relevant app directory to ensure
-all checks pass (build, lint, format, typecheck, test, e2e).
+After completing a task, run `pnpm verify` in the relevant app directory to
+ensure all checks pass (build, lint, format, typecheck, test, e2e).

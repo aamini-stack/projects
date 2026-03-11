@@ -10,9 +10,9 @@
 		"@aamini/config-typescript": "workspace:*"
 	},
 	"dependencies": {
-		"@tailwindcss/vite": "^4.1.18",
-		"@tanstack/devtools-vite": "^0.5.1",
-		"@tanstack/react-start": "^1.159.11",
+		"@tailwindcss/vite": "^4.2.1",
+		"@tanstack/devtools-vite": "^0.5.3",
+		"@tanstack/react-start": "^1.166.7",
 		"@vitejs/plugin-react": "^5.1.4",
 		"babel-plugin-react-compiler": "^1.0.0",
 		"nitro": "latest",
