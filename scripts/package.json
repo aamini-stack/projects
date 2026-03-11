@@ -6,10 +6,7 @@
 	"scripts": {
 		"typecheck": "tsc --noEmit",
 		"test": "vitest run",
-		"test:watch": "vitest --watch",
-		"preview:changed-apps": "tsx scripts/preview/changed-apps.ts",
-		"preview:sanitize": "tsx scripts/preview/sanitize-branch.ts",
-		"preview:render": "tsx scripts/preview/render-manifests.ts"
+		"test:watch": "vitest --watch"
 	},
 	"devDependencies": {
 		"@aamini/config-testing": "workspace:*",
