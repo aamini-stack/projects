@@ -1,6 +1,8 @@
-import { getGunzipStream, type ImdbFile } from '@/lib/imdb/file-downloader'
+import { downloadStream, type ImdbFile } from '@/lib/imdb/file-downloader'
 import type { NodePgDatabase } from 'drizzle-orm/node-postgres'
-import { pipeline } from 'node:stream/promises'
+import { once } from 'node:events'
+import { createInterface } from 'node:readline'
+import { finished } from 'node:stream/promises'
 import type { Pool, PoolClient } from 'pg'
 import { from as copyFrom } from 'pg-copy-streams'
 
@@ -26,8 +28,12 @@ export async function update(
 			`✅ Database population completed successfully in ${duration} seconds!`,
 		)
 	} catch (error) {
-		console.error('❌ Database population failed:')
-		console.error(error)
+		try {
+			await client.query('ROLLBACK')
+		} catch (rollbackError) {
+			throw new Error('Failed to rollback', { cause: rollbackError })
+		}
+
 		throw error
 	} finally {
 		client.release()
@@ -35,13 +41,9 @@ export async function update(
 }
 
 /**
- * Stream files directly from IMDB into temp tables using efficient bulk
- * operations. Once all data is loaded into temp tables, update all the real
- * tables with data from the temp tables.
- *
- * This approach streams data directly into the database without writing to
- * disk, which is important for serverless environments with limited disk
- * space.
+ * Stream files from IMDB directly into temp tables using COPY. Once all data is
+ * loaded into temp tables, update all the real tables with data from the temp
+ * tables.
  */
 async function transfer(client: PoolClient) {
 	await client.query(`
@@ -74,29 +76,14 @@ async function transfer(client: PoolClient) {
     ) ON COMMIT DROP;
   `)
 
-	// Stream files directly from IMDB into temp tables.
-	const streamToTable = async (file: ImdbFile, cmd: string) => {
-		console.log(`Streaming ${file} to database...`)
-		const sourceStream = await getGunzipStream(file)
-		const ingestStream = client.query(copyFrom(cmd))
-		await pipeline(sourceStream, ingestStream)
-		console.log(`Successfully transferred ${file} to temp table`)
-	}
+	console.log('Starting ratings stream...')
+	const ratedIds = await copyRatingsAndCollectRatedIds(client)
 
-	console.log('Starting streaming transfers...')
-	await streamToTable(
-		'title.basics.tsv.gz',
-		`COPY temp_title FROM STDIN WITH (DELIMITER '\t', HEADER TRUE) 
-    WHERE title_type IN ('tvSeries', 'tvEpisode', 'tvShort', 'tvSpecial', 'tvMiniSeries') AND start_year IS NOT NULL;`,
-	)
-	await streamToTable(
-		'title.episode.tsv.gz',
-		"COPY temp_episode FROM STDIN WITH (DELIMITER '\t', HEADER TRUE);",
-	)
-	await streamToTable(
-		'title.ratings.tsv.gz',
-		"COPY temp_ratings FROM STDIN WITH (DELIMITER '\t', HEADER TRUE);",
-	)
+	console.log('Starting episodes stream...')
+	const validShowIds = await copyEpisodesAndCollectShowIds(client, ratedIds)
+
+	console.log('Starting titles stream...')
+	await copyTitles(client, ratedIds, validShowIds)
 
 	/*
 	 * Download files and store them in temp tables using the Postgres copy
@@ -205,4 +192,147 @@ async function transfer(client: PoolClient) {
 	console.log('Updated episode table')
 
 	console.log('Database migration successfull')
+}
+
+async function copyRatingsAndCollectRatedIds(
+	client: PoolClient,
+): Promise<Set<string>> {
+	const ratedIds = new Set<string>()
+
+	await copyFromImdbStream(
+		client,
+		'title.ratings.tsv.gz',
+		"COPY temp_ratings FROM STDIN WITH (DELIMITER '\t', HEADER TRUE);",
+		(line, isHeader) => {
+			if (isHeader) {
+				return line
+			}
+
+			const [imdbId, _imdbRating, numVotesRaw] = line.split('\t')
+			if (imdbId && Number(numVotesRaw) > 0) {
+				ratedIds.add(imdbId)
+				return line
+			}
+
+			return undefined
+		},
+	)
+
+	return ratedIds
+}
+
+async function copyEpisodesAndCollectShowIds(
+	client: PoolClient,
+	ratedIds: Set<string>,
+): Promise<Set<string>> {
+	const validShowIds = new Set<string>()
+
+	await copyFromImdbStream(
+		client,
+		'title.episode.tsv.gz',
+		"COPY temp_episode FROM STDIN WITH (DELIMITER '\t', HEADER TRUE);",
+		(line, isHeader) => {
+			if (isHeader) {
+				return line
+			}
+
+			const [episodeId, showId] = line.split('\t')
+			if (episodeId && showId && ratedIds.has(episodeId)) {
+				validShowIds.add(showId)
+				return line
+			}
+
+			return undefined
+		},
+	)
+
+	return validShowIds
+}
+
+async function copyTitles(
+	client: PoolClient,
+	ratedIds: Set<string>,
+	validShowIds: Set<string>,
+): Promise<void> {
+	await copyFromImdbStream(
+		client,
+		'title.basics.tsv.gz',
+		"COPY temp_title FROM STDIN WITH (DELIMITER '\t', HEADER TRUE);",
+		(line, isHeader) => {
+			if (isHeader) {
+				return line
+			}
+
+			const [imdbId, titleType, _primary, _original, _isAdult, startYear] =
+				line.split('\t')
+			if (!imdbId || !titleType) {
+				return undefined
+			}
+
+			if (titleType === 'tvEpisode') {
+				if (ratedIds.has(imdbId)) {
+					return line
+				}
+
+				return undefined
+			}
+
+			const isShowType =
+				titleType === 'tvSeries' ||
+				titleType === 'tvShort' ||
+				titleType === 'tvSpecial' ||
+				titleType === 'tvMiniSeries'
+
+			if (
+				isShowType &&
+				startYear &&
+				startYear !== '\\N' &&
+				validShowIds.has(imdbId)
+			) {
+				return line
+			}
+
+			return undefined
+		},
+	)
+}
+
+async function copyFromImdbStream(
+	client: PoolClient,
+	file: ImdbFile,
+	cmd: string,
+	mapLine: (line: string, isHeader: boolean) => string | undefined,
+): Promise<void> {
+	const sourceStream = await downloadStream(file)
+	const reader = createInterface({
+		input: sourceStream,
+		crlfDelay: Number.POSITIVE_INFINITY,
+	})
+	const ingestStream = client.query(copyFrom(cmd))
+
+	try {
+		let isHeader = true
+		for await (const line of reader) {
+			if (!line && !isHeader) {
+				continue
+			}
+
+			const mapped = mapLine(line, isHeader)
+			isHeader = false
+			if (!mapped) {
+				continue
+			}
+
+			if (!ingestStream.write(`${mapped}\n`)) {
+				await once(ingestStream, 'drain')
+			}
+		}
+
+		ingestStream.end()
+		await finished(ingestStream)
+		console.log(`Successfully transferred ${file}`)
+	} catch (error) {
+		ingestStream.destroy(error as Error)
+		throw error
+	}
 }
