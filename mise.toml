@@ -10,6 +10,7 @@ flux2 = "2.7.5"
 "npm:oxfmt" = "latest"
 "npm:oxlint" = "latest"
 "npm:markdownlint-cli" = "latest"
+"npm:playwriter" = "latest"
 
 [env]
 _.path = ["./scripts/bin"]
