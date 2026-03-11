@@ -1,10 +1,20 @@
 import { Graph } from '@/components/graph'
 import { HomeButton } from '@/components/home-button'
 import { SearchBar } from '@/components/search-bar'
-import { createDb } from '@/db/connection'
-import { getRatings } from '@/lib/imdb/ratings'
 import { type Ratings } from '@/lib/imdb/types'
 import { createFileRoute, notFound } from '@tanstack/react-router'
+import { createServerFn } from '@tanstack/react-start'
+
+const getRatingsServerFn = createServerFn({ method: 'GET' })
+	.inputValidator((data: { showId: string }) => data)
+	.handler(async ({ data }) => {
+		const [{ createDb }, { getRatings }] = await Promise.all([
+			import('@/db/connection'),
+			import('@/lib/imdb/ratings'),
+		])
+
+		return (await getRatings(createDb(), data.showId)) ?? null
+	})
 
 function hasRatings(ratings: Ratings): boolean {
 	for (const seasonRatings of Object.values(ratings.allEpisodeRatings)) {
@@ -25,25 +35,9 @@ export const Route = createFileRoute('/ratings/$id')({
 			throw notFound()
 		}
 
-		let ratings: Ratings | undefined
-
-		if (import.meta.env.SSR) {
-			ratings = await getRatings(createDb(), showId)
-		} else {
-			const response = await fetch(
-				`/api/ratings?id=${encodeURIComponent(showId)}`,
-			)
-
-			if (response.status === 404) {
-				throw notFound()
-			}
-
-			if (!response.ok) {
-				throw new Error(`Failed to load ratings for ${showId}`)
-			}
-
-			ratings = (await response.json()) as Ratings
-		}
+		const ratings = await getRatingsServerFn({
+			data: { showId },
+		})
 
 		if (!ratings) {
 			throw notFound()
