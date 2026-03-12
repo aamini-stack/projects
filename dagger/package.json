@@ -1,0 +1,12 @@
+{
+	"name": "@aamini/dagger",
+	"private": true,
+	"type": "module",
+	"packageManager": "pnpm@10.32.1",
+	"dependencies": {
+		"@dagger.io/dagger": "^0.20.1"
+	},
+	"dagger": {
+		"runtime": "node@22.12.0"
+	}
+}

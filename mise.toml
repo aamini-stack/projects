@@ -1,4 +1,5 @@
 [tools]
+dagger = "0.20.1"
 node = "22"
 kubeseal = "0.33.1"
 pulumi = "3.219.0"

@@ -1,0 +1,77 @@
+[
+	{
+		"id": "1.0",
+		"title": "Define the Dagger CI contract and repo execution primitives",
+		"description": "Implement the top-level `ci` function interface, typed lane/result models, repo bootstrap helpers, and changed-app detection using GitHub base/head refs.",
+		"dependencies": [],
+		"commitSha": null,
+		"done": false,
+		"blocked": false,
+		"acceptance-criteria": [
+			"Implement a callable Dagger `ci` entrypoint that accepts event type, SHA, base/head refs, optional PR number, and required credentials/config inputs. Run `dagger call ci --help` or the equivalent module inspection command and verify the arguments are exposed with the expected names.",
+			"Run the Dagger changed-app detection against a docs-only diff. Check the returned summary and verify `changedApps` is empty and the deploy/e2e lanes are marked skipped.",
+			"Run the same detection against a branch that changes only one app under `apps/`. Check the returned summary and verify only that app appears in `changedApps`.",
+			"Run `pnpm typecheck` from the repo root and verify the Dagger module changes do not introduce TypeScript failures."
+		]
+	},
+	{
+		"id": "2.0",
+		"title": "Implement the quality and integration lanes inside Dagger",
+		"description": "Build independent Dagger branches for `build`, `lint`, `format`, `test:unit`, `typecheck`, and `test:integration`, with a structured per-command summary instead of one combined shell pipeline.",
+		"dependencies": ["1.0"],
+		"commitSha": null,
+		"done": false,
+		"blocked": false,
+		"acceptance-criteria": [
+			"Run the Dagger `ci` entrypoint on a clean branch and verify the result summary contains separate statuses for `build`, `lint`, `format`, `test:unit`, `typecheck`, and `integration`.",
+			"Introduce a temporary failure in one quality command, execute the Dagger `ci` entrypoint, and verify the failed command is reported by name while the other quality branches still emit their own statuses.",
+			"Run `pnpm test:integration` through the Dagger integration lane and verify the container setup installs the required browser/runtime dependencies instead of relying on the GitHub runner image.",
+			"Remove the temporary failure and re-run the Dagger `ci` entrypoint. Verify the quality and integration lanes both report success."
+		]
+	},
+	{
+		"id": "3.0",
+		"title": "Move the current deploy and e2e behavior behind the Dagger deploy lane",
+		"description": "Reproduce the existing changed-app Vercel deployment and per-app Playwright execution inside the Dagger deploy lane so the current GitHub Actions behavior is preserved before adding new publish surfaces.",
+		"dependencies": ["1.0"],
+		"commitSha": null,
+		"done": false,
+		"blocked": false,
+		"acceptance-criteria": [
+			"Run the Dagger `ci` entrypoint for a pull request context that changes one app. Check the deploy summary and verify only that app is deployed and scheduled for e2e.",
+			"Run the Dagger `ci` entrypoint for a docs-only change. Check the deploy summary and verify deploy and e2e are explicitly skipped with a reason tied to zero changed apps.",
+			"Trigger a branch run in GitHub Actions after wiring Vercel credentials into Dagger. Check the logs and verify the app deploys through the Dagger lane and the matching Playwright suite runs afterward.",
+			"On a branch where one changed app has no staging e2e command, execute the Dagger deploy lane and verify the summary records an explicit e2e skip for that app instead of failing silently."
+		]
+	},
+	{
+		"id": "4.0",
+		"title": "Add the long-term publish adapters for image, chart, and GitOps outputs",
+		"description": "Extend the deploy lane so it can publish the desired release artifacts and report their references in the CI summary, using the existing infra package as the source of truth where possible.",
+		"dependencies": ["3.0"],
+		"commitSha": null,
+		"done": false,
+		"blocked": false,
+		"acceptance-criteria": [
+			"Implement publish adapters for the selected deploy surfaces and run the Dagger deploy lane in a PR-like context. Check the returned summary and verify it includes concrete artifact references for every publish step that ran.",
+			"Run the same deploy lane in a `main`-branch context. Verify the publish outputs use the documented mainline tagging/versioning behavior rather than the PR preview variant.",
+			"Run the infra tests that cover rendered GitOps/chart output, including `packages/infra/test/gitops-render.test.ts`, and verify they still pass after the publish integration changes.",
+			"Execute a no-op or docs-only branch through the Dagger deploy lane and verify publish steps are skipped cleanly without creating artifacts."
+		]
+	},
+	{
+		"id": "5.0",
+		"title": "Replace the GitHub Actions orchestration with one thin Dagger workflow",
+		"description": "Collapse `.github/workflows/ci.yml` into checkout plus Dagger invocation, passing GitHub event data and secrets to the Dagger `ci` function and removing duplicated orchestration logic from Actions.",
+		"dependencies": ["2.0", "3.0", "4.0"],
+		"commitSha": null,
+		"done": false,
+		"blocked": false,
+		"acceptance-criteria": [
+			"Update `.github/workflows/ci.yml` so the workflow performs checkout, Dagger setup/invocation, and no longer contains separate quality, integration, changed-app, deploy, or e2e job graphs.",
+			"Push a branch with a single-app change and inspect the GitHub Actions run. Verify only the thin Dagger job appears at the workflow level while the logs show the full Dagger lane summary.",
+			"Push a docs-only branch and inspect the GitHub Actions run. Verify the workflow succeeds and the Dagger summary reports deploy/e2e skipped because no apps changed.",
+			"Merge or simulate a `main` run and verify the same workflow file handles mainline CI without branching back into Actions-native orchestration."
+		]
+	}
+]

@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url'
 import { $ } from 'zx'
 import { runE2E } from './e2e.ts'
 import { runBuild } from './build.ts'
+import { runCi } from './ci.ts'
 import { sealAll, unsealAll } from './k8secrets.ts'
 import { getRepoRoot } from './helpers/repo.ts'
 
@@ -29,6 +30,27 @@ async function main(): Promise<void> {
 		.allowUnknownOptions()
 		.action(async () => {
 			await runBuild(await getRepoRoot(), getRawCommandArgs())
+		})
+
+	cli
+		.command('ci [...args]', 'Run the Dagger CI wrapper with inferred git refs')
+		.allowUnknownOptions()
+		.action(async () => {
+			await runCi(await getRepoRoot(), getRawCommandArgs())
+		})
+
+	cli
+		.command('ci:pr [...args]', 'Run the Dagger CI wrapper in pull_request mode')
+		.allowUnknownOptions()
+		.action(async () => {
+			await runCi(await getRepoRoot(), ['--event=pull_request', ...getRawCommandArgs()])
+		})
+
+	cli
+		.command('ci:main [...args]', 'Run the Dagger CI wrapper in push mode')
+		.allowUnknownOptions()
+		.action(async () => {
+			await runCi(await getRepoRoot(), ['--event=push', ...getRawCommandArgs()])
 		})
 
 	cli
