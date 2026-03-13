@@ -73,6 +73,7 @@ export function buildRenderedAppManifests(apps: AppDefinition[]): {
 export function buildRenderedAppManifestsWithExtras(input: {
 	apps: AppDefinition[]
 	appManifests: string[]
+	deployRevision?: string
 }): {
 	chartSource: string
 	applications: string
@@ -80,7 +81,7 @@ export function buildRenderedAppManifestsWithExtras(input: {
 	imageAutomation: string
 	previews: string
 } {
-	const stableApps = buildStableAppsManifest(input.apps)
+	const stableApps = buildStableAppsManifest(input.apps, input.deployRevision)
 	const imageAutomation = buildImageAutomationManifest(input.apps)
 	const previews = buildPreviewManifest(input.apps)
 
@@ -113,6 +114,7 @@ export function renderGitopsBundle(input: {
 	sourceRoot: string
 	outputRoot: string
 	appManifestRoot?: string
+	deployRevision?: string
 }): void {
 	const appsSource = path.join(input.sourceRoot, 'apps')
 	const apps = loadAppDefinitions(appsSource)
@@ -131,6 +133,7 @@ export function renderGitopsBundle(input: {
 	const renderedApps = buildRenderedAppManifestsWithExtras({
 		apps,
 		appManifests,
+		...(input.deployRevision ? { deployRevision: input.deployRevision } : {}),
 	})
 
 	rmSync(input.outputRoot, { force: true, recursive: true })
@@ -153,17 +156,13 @@ export function renderGitopsBundle(input: {
 		path.join(platformControllersOutput, 'kustomization.yaml'),
 		buildKustomizationManifest(['controllers.yaml']),
 	)
-	copyFileSyncInto(
-		path.join(input.sourceRoot, 'platform', 'networking.yaml'),
-		path.join(platformConfigOutput, 'networking.yaml'),
-	)
-	copyFileSyncInto(
-		path.join(input.sourceRoot, 'platform', 'previews.yaml'),
-		path.join(platformConfigOutput, 'previews.yaml'),
+	const platformConfigResources = copyPlatformConfigManifests(
+		path.join(input.sourceRoot, 'platform'),
+		platformConfigOutput,
 	)
 	writeFileSync(
 		path.join(platformConfigOutput, 'kustomization.yaml'),
-		buildKustomizationManifest(['networking.yaml', 'previews.yaml']),
+		buildKustomizationManifest(platformConfigResources),
 	)
 
 	writeFileSync(
@@ -220,6 +219,19 @@ function copyFileSyncInto(source: string, destination: string): void {
 	writeFileSync(destination, readFileSync(source, 'utf8'))
 }
 
+function copyPlatformConfigManifests(
+	sourceRoot: string,
+	outputRoot: string,
+): string[] {
+	return readdirSync(sourceRoot)
+		.filter((file) => file.endsWith('.yaml') && file !== 'controllers.yaml')
+		.sort()
+		.map((file) => {
+			copyFileSyncInto(path.join(sourceRoot, file), path.join(outputRoot, file))
+			return file
+		})
+}
+
 function loadAppManifestDocuments(
 	appManifestRoot: string,
 	apps: AppDefinition[],
@@ -240,7 +252,10 @@ function loadAppManifestDocuments(
 	})
 }
 
-function buildStableAppsManifest(apps: AppDefinition[]): string {
+function buildStableAppsManifest(
+	apps: AppDefinition[],
+	deployRevision?: string,
+): string {
 	return apps
 		.map((app) =>
 			[
@@ -249,8 +264,15 @@ function buildStableAppsManifest(apps: AppDefinition[]): string {
 				'metadata:',
 				`  name: ${app.name}`,
 				'  namespace: flux-system',
+				'  labels:',
+				'    aamini.dev/deploy-ready: enabled',
 				'  annotations:',
 				`    aamini.dev/image-policy: flux-system:${app.image.policy}`,
+				`    event.toolkit.fluxcd.io/app: ${app.name}`,
+				'    event.toolkit.fluxcd.io/environment: stable',
+				`    event.toolkit.fluxcd.io/url: https://${app.stable.host}`,
+				`    event.toolkit.fluxcd.io/commit: ${quoteYamlString(deployRevision)}`,
+				`    event.toolkit.fluxcd.io/image_tag: ${quoteYamlString(deployRevision ? `main-${deployRevision}` : '')}`,
 				'spec:',
 				`  releaseName: ${app.name}`,
 				`  targetNamespace: ${app.namespace}`,
@@ -368,10 +390,16 @@ function buildPreviewManifest(apps: AppDefinition[]): string {
 			'      metadata:',
 			`        name: ${app.name}-pr-<< inputs.id >>`,
 			'        namespace: app-preview',
+			'        labels:',
+			'          aamini.dev/deploy-ready: enabled',
 			'        annotations:',
+			`          event.toolkit.fluxcd.io/app: ${app.name}`,
+			'          event.toolkit.fluxcd.io/environment: preview',
 			'          event.toolkit.fluxcd.io/change_request: << inputs.id | quote >>',
 			'          event.toolkit.fluxcd.io/commit: << inputs.sha | quote >>',
-			`          event.toolkit.fluxcd.io/preview-url: "https://${app.name}-pr-<< inputs.id >>.preview.ariaamini.com"`,
+			'          event.toolkit.fluxcd.io/url: "https://${app.name}-pr-<< inputs.id >>.ariaamini.com"',
+			'          event.toolkit.fluxcd.io/image_tag: "pr-<< inputs.id >>"',
+			`          event.toolkit.fluxcd.io/preview-url: "https://${app.name}-pr-<< inputs.id >>.ariaamini.com"`,
 			'      spec:',
 			`        releaseName: ${app.name}-pr-<< inputs.id >>`,
 			'        interval: 10m',
@@ -386,7 +414,7 @@ function buildPreviewManifest(apps: AppDefinition[]): string {
 			'          image:',
 			`            repository: ${app.image.repository}`,
 			'            tag: pr-<< inputs.id >>',
-			`          host: ${app.name}-pr-<< inputs.id >>.preview.ariaamini.com`,
+			`          host: ${app.name}-pr-<< inputs.id >>.ariaamini.com`,
 			...(app.stable.envFromSecret
 				? [`          envFromSecret: ${app.stable.envFromSecret}`]
 				: []),

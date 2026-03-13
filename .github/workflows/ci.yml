@@ -7,10 +7,11 @@ on:
   pull_request:
     branches:
       - main
+  workflow_dispatch:
 
-permissions:
-  contents: write
-  statuses: write
+concurrency:
+  group: ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 env:
   TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
@@ -19,99 +20,87 @@ env:
 jobs:
   quality-checks:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v6
         with:
           node-version: 22
-          cache: 'pnpm'
-      - run: pnpm i
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
       - run: pnpm turbo run format typecheck lint test:unit
 
   integration-tests:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v6
         with:
           node-version: 22
-          cache: 'pnpm'
-      - run: pnpm i
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
       - run: pnpm exec playwright install --with-deps chromium
       - run: pnpm test:integration
 
-  find-apps:
+  publish-gitops:
+    needs:
+      - quality-checks
+      - integration-tests
+    if:
+      ${{ github.event_name == 'push' ||
+      !github.event.pull_request.head.repo.fork }}
     runs-on: ubuntu-latest
-    outputs:
-      apps: ${{ steps.calculate-apps.outputs.apps }}
+    permissions:
+      contents: read
+      packages: write
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: Get Changed Apps
-        id: calculate-apps
-        run: |
-          FILTER="{./apps/*}...[HEAD~...HEAD]"
-          APPS=$(npx turbo@2.5.8 build --filter="$FILTER" --dry=json | jq -c .packages)
-          echo $APPS
-          echo "apps=$APPS" >> $GITHUB_OUTPUT
-
-  e2e:
-    needs: [find-apps]
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        app: ${{ fromJson(needs.find-apps.outputs.apps) }}
-      fail-fast: false
-    steps:
-      # Setup
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v6
         with:
           node-version: 22
-          cache: 'pnpm'
-      - run: pnpm i
-      - run: pnpm exec playwright install --with-deps chromium
-      # Deploy
-      - name: Deploy to Vercel
-        working-directory: ./apps/${{ matrix.app }}
-        run: |
-          pnpm i -g vercel
-          pnpm vercel link \
-            --yes \
-            --repo \
-            --token=${{ secrets.VERCEL_TOKEN }} \
-            --scope=${{ vars.TURBO_TEAM }}
-
-          # Add --prod flag if pushing to main branch (not a PR)
-          if [ "${{ github.event_name }}" = "push" ] && [ "${{ github.ref }}" = "refs/heads/main" ]; then
-            PROD_FLAG="--prod"
-          else
-            PROD_FLAG=""
-          fi
-
-          BASE_URL=$(pnpm vercel \
-            --yes \
-            $PROD_FLAG \
-            --token=${{ secrets.VERCEL_TOKEN }} \
-            --scope=${{ vars.TURBO_TEAM }} \
-            -m githubDeployment='1' \
-            -m githubCommitRef='${{ github.head_ref || github.ref_name }}' \
-            -m githubCommitSha='${{ github.sha }}' \
-          | tail -1)
-          echo BASE_URL=$BASE_URL >> $GITHUB_ENV
-
-      - name: Run Playwright tests
-        working-directory: './apps/${{ matrix.app }}'
-        run: pnpm e2e
-
-      - name: Publish Report
-        uses: actions/upload-artifact@v4
-        if: failure()
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - uses: docker/login-action@v4
         with:
-          name: playwright-report-${{ matrix.app }}
-          path: './apps/${{ matrix.app }}/playwright-report'
-          retention-days: 30
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GHCR_TOKEN }}
+      - uses: azure/setup-helm@v4
+      - uses: oras-project/setup-oras@v1
+      - name: Authenticate OCI clients
+        env:
+          GHCR_USERNAME: ${{ github.actor }}
+          GHCR_PASSWORD: ${{ secrets.GHCR_TOKEN }}
+        run: |
+          printf '%s' "$GHCR_PASSWORD" | helm registry login ghcr.io --username "$GHCR_USERNAME" --password-stdin
+          printf '%s' "$GHCR_PASSWORD" | oras login ghcr.io --username "$GHCR_USERNAME" --password-stdin
+      - name: Render GitOps bundle
+        run:
+          pnpm node --experimental-strip-types scripts/src/publish-gitops.ts
+          render --deploy-revision ${{ github.sha }}
+      - name: Push app-release chart
+        run: |
+          mkdir -p .tmp/chart
+          helm package packages/infra/charts/app-release --destination .tmp/chart
+          helm push .tmp/chart/app-release-0.1.0.tgz oci://ghcr.io/aamini-stack
+      - name: Push GitOps OCI bundle
+        run: |
+          tar -C .tmp/gitops-bundle -czf .tmp/projects-gitops.tar.gz .
+          oras push ghcr.io/aamini-stack/projects-gitops:latest \
+            .tmp/projects-gitops.tar.gz:application/vnd.aamini.gitops.bundle.v1+tar.gz
+      - name: Notify Flux receiver
+        env:
+          FLUX_RECEIVER_URL: ${{ secrets.FLUX_RECEIVER_URL }}
+        run: |
+          test -n "$FLUX_RECEIVER_URL"
+          curl --fail --show-error --silent \
+            --request POST \
+            --header 'Content-Type: application/json' \
+            --data '{"source":"github-actions","workflow":"ci","run_id":"${{ github.run_id }}","sha":"${{ github.sha }}"}' \
+            "$FLUX_RECEIVER_URL"
