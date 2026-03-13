@@ -16,6 +16,7 @@ spec:
   secretName: ariaamini-com-tls
   dnsNames:
     - '*.ariaamini.com'
+    - '*.preview.ariaamini.com'
     - ariaamini.com
   privateKey:
     rotationPolicy: Always
@@ -67,6 +68,19 @@ spec:
       port: 8443
       protocol: HTTPS
       hostname: '*.ariaamini.com'
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - kind: Secret
+            name: ariaamini-com-tls
+            namespace: networking
+      allowedRoutes:
+        namespaces:
+          from: All
+    - name: websecure-preview
+      port: 8443
+      protocol: HTTPS
+      hostname: '*.preview.ariaamini.com'
       tls:
         mode: Terminate
         certificateRefs:

@@ -371,7 +371,7 @@ function buildPreviewManifest(apps: AppDefinition[]): string {
 			'        annotations:',
 			'          event.toolkit.fluxcd.io/change_request: << inputs.id | quote >>',
 			'          event.toolkit.fluxcd.io/commit: << inputs.sha | quote >>',
-			`          event.toolkit.fluxcd.io/preview-url: "https://${app.name}-pr-<< inputs.id >>.preview.ariaamini.com"`,
+			`          event.toolkit.fluxcd.io/preview-url: "https://${app.name}-pr-<< inputs.id >>.ariaamini.com"`,
 			'      spec:',
 			`        releaseName: ${app.name}-pr-<< inputs.id >>`,
 			'        interval: 10m',
@@ -386,7 +386,7 @@ function buildPreviewManifest(apps: AppDefinition[]): string {
 			'          image:',
 			`            repository: ${app.image.repository}`,
 			'            tag: pr-<< inputs.id >>',
-			`          host: ${app.name}-pr-<< inputs.id >>.preview.ariaamini.com`,
+			`          host: ${app.name}-pr-<< inputs.id >>.ariaamini.com`,
 			...(app.stable.envFromSecret
 				? [`          envFromSecret: ${app.stable.envFromSecret}`]
 				: []),

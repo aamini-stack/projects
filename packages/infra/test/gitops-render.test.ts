@@ -136,6 +136,14 @@ void test('buildRenderedAppManifests renders stable, image automation, and previ
 	assert.match(rendered.previews, /inputs\.id/)
 	assert.match(rendered.previews, /inputs\.sha/)
 	assert.match(
+		rendered.previews,
+		/preview-url: "https:\/\/portfolio-pr-<< inputs\.id >>\.ariaamini\.com"/,
+	)
+	assert.match(
+		rendered.previews,
+		/host: portfolio-pr-<< inputs\.id >>\.ariaamini\.com/,
+	)
+	assert.match(
 		rendered.stableApps,
 		/chartRef:\s*\n\s*kind: OCIRepository\s*\n\s*name: app-release/,
 	)
