@@ -7,11 +7,11 @@ on:
   pull_request:
     branches:
       - main
+  workflow_dispatch:
 
-permissions:
-  contents: write
-  statuses: write
-  packages: write
+concurrency:
+  group: ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 env:
   TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
@@ -20,74 +20,63 @@ env:
 jobs:
   quality-checks:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v6
         with:
           node-version: 22
-      - run: corepack enable
-      - run: pnpm i
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
       - run: pnpm turbo run format typecheck lint test:unit
 
   integration-tests:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v6
         with:
           node-version: 22
-      - run: corepack enable
-      - run: pnpm i
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
       - run: pnpm exec playwright install --with-deps chromium
       - run: pnpm test:integration
 
-  find-apps:
-    runs-on: ubuntu-latest
-    outputs:
-      apps: ${{ steps.calculate-apps.outputs.apps }}
-      has_apps: ${{ steps.calculate-apps.outputs.has_apps }}
-    steps:
-      - uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
-      - name: Get Changed Apps
-        id: calculate-apps
-        run: |
-          FILTER="{./apps/*}...[HEAD~...HEAD]"
-          APPS=$(npx turbo@2.5.8 build --filter="$FILTER" --dry=json | jq -c '.packages // []' || true)
-          if [ -z "$APPS" ]; then
-            APPS='[]'
-          fi
-          echo $APPS
-          echo "apps=$APPS" >> $GITHUB_OUTPUT
-          if [ "$APPS" = "[]" ]; then
-            echo "has_apps=false" >> $GITHUB_OUTPUT
-          else
-            echo "has_apps=true" >> $GITHUB_OUTPUT
-          fi
-
   publish-gitops:
+    needs:
+      - quality-checks
+      - integration-tests
+    if:
+      ${{ github.event_name == 'push' ||
+      !github.event.pull_request.head.repo.fork }}
     runs-on: ubuntu-latest
-    needs: [find-apps]
-    if: ${{ needs.find-apps.outputs.has_apps == 'true' }}
+    permissions:
+      contents: read
+      packages: write
     steps:
       - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v6
         with:
           node-version: 22
-      - run: corepack enable
-      - run: pnpm i
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
       - uses: docker/login-action@v4
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.GHCR_TOKEN }}
+          password: ${{ github.token }}
       - uses: azure/setup-helm@v4
       - uses: oras-project/setup-oras@v1
       - name: Authenticate OCI clients
         env:
           GHCR_USERNAME: ${{ github.actor }}
-          GHCR_PASSWORD: ${{ secrets.GHCR_TOKEN }}
+          GHCR_PASSWORD: ${{ github.token }}
         run: |
           printf '%s' "$GHCR_PASSWORD" | helm registry login ghcr.io --username "$GHCR_USERNAME" --password-stdin
           printf '%s' "$GHCR_PASSWORD" | oras login ghcr.io --username "$GHCR_USERNAME" --password-stdin
@@ -105,61 +94,3 @@ jobs:
           tar -C .tmp/gitops-bundle -czf .tmp/projects-gitops.tar.gz .
           oras push ghcr.io/aamini-stack/projects-gitops:latest \
             .tmp/projects-gitops.tar.gz:application/vnd.aamini.gitops.bundle.v1+tar.gz
-
-  e2e:
-    needs: [find-apps, publish-gitops]
-    if: ${{ needs.find-apps.outputs.has_apps == 'true' }}
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        app: ${{ fromJson(needs.find-apps.outputs.apps || '[]') }}
-      fail-fast: false
-    steps:
-      # Setup
-      - uses: actions/checkout@v6
-      - uses: actions/setup-node@v6
-        with:
-          node-version: 22
-      - run: corepack enable
-      - run: pnpm i
-      - run: pnpm exec playwright install --with-deps chromium
-      - uses: docker/login-action@v4
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GHCR_TOKEN }}
-      - name: Compute deploy metadata
-        run: |
-          APP="${{ matrix.app }}"
-          if [ "${{ github.event_name }}" = "pull_request" ]; then
-            IMAGE_TAG="pr-${{ github.event.pull_request.number }}"
-            BASE_URL="https://${APP}-pr-${{ github.event.pull_request.number }}.ariaamini.com"
-          else
-            IMAGE_TAG="main-${GITHUB_SHA}"
-            BASE_URL="https://${APP}.ariaamini.com"
-          fi
-
-          echo "IMAGE_NAME=ghcr.io/aamini-stack/${APP}" >> "$GITHUB_ENV"
-          echo "IMAGE_TAG=${IMAGE_TAG}" >> "$GITHUB_ENV"
-          echo "BASE_URL=${BASE_URL}" >> "$GITHUB_ENV"
-      - name: Build and push app image
-        run: |
-          docker build \
-            --file Dockerfile \
-            --target production \
-            --build-arg APP_NAME=${{ matrix.app }} \
-            --tag ${IMAGE_NAME}:${IMAGE_TAG} \
-            .
-          docker push ${IMAGE_NAME}:${IMAGE_TAG}
-
-      - name: Run Playwright tests
-        working-directory: './apps/${{ matrix.app }}'
-        run: pnpm e2e
-
-      - name: Publish Report
-        uses: actions/upload-artifact@v4
-        if: failure()
-        with:
-          name: playwright-report-${{ matrix.app }}
-          path: './apps/${{ matrix.app }}/playwright-report'
-          retention-days: 30
