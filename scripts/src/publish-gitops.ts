@@ -5,6 +5,7 @@ import { renderGitopsBundle } from '../../packages/infra/src/gitops/render.ts'
 import { getRepoRoot } from './helpers/repo.ts'
 
 interface RenderCommandOptions {
+	deployRevision?: string
 	outputRoot: string
 }
 
@@ -12,7 +13,9 @@ function parseArgs(args: string[]): {
 	command: string | undefined
 	options: RenderCommandOptions
 } {
-	let outputRoot = '.tmp/gitops-bundle'
+	const options: RenderCommandOptions = {
+		outputRoot: '.tmp/gitops-bundle',
+	}
 
 	for (let index = 1; index < args.length; index += 1) {
 		const arg = args[index]
@@ -22,7 +25,17 @@ function parseArgs(args: string[]): {
 				throw new Error('Missing value for --output-root')
 			}
 
-			outputRoot = value
+			options.outputRoot = value
+			index += 1
+			continue
+		}
+		if (arg === '--deploy-revision') {
+			const value = args[index + 1]
+			if (!value) {
+				throw new Error('Missing value for --deploy-revision')
+			}
+
+			options.deployRevision = value
 			index += 1
 			continue
 		}
@@ -32,9 +45,7 @@ function parseArgs(args: string[]): {
 
 	return {
 		command: args[0],
-		options: {
-			outputRoot,
-		},
+		options,
 	}
 }
 
@@ -48,6 +59,9 @@ async function renderCommand(options: RenderCommandOptions): Promise<void> {
 		sourceRoot,
 		outputRoot,
 		appManifestRoot: repoRoot,
+		...(options.deployRevision
+			? { deployRevision: options.deployRevision }
+			: {}),
 	})
 	console.log(outputRoot)
 }
@@ -60,7 +74,9 @@ async function main(): Promise<void> {
 		return
 	}
 
-	throw new Error('Usage: publish-gitops.ts render [--output-root <path>]')
+	throw new Error(
+		'Usage: publish-gitops.ts render [--output-root <path>] [--deploy-revision <sha>]',
+	)
 }
 
 if (process.argv[1] === import.meta.url.replace('file://', '')) {

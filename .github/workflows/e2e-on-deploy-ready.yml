@@ -1,0 +1,260 @@
+name: E2E On Deploy Ready
+
+on:
+  repository_dispatch:
+  workflow_dispatch:
+    inputs:
+      app:
+        description: App to test
+        required: true
+        type: choice
+        options:
+          - dota-visualizer
+          - imdbgraph
+          - pc-tune-ups
+          - portfolio
+      environment:
+        description: Deployment environment
+        required: true
+        default: stable
+        type: choice
+        options:
+          - stable
+          - preview
+      url:
+        description: Public URL to test
+        required: true
+        type: string
+      sha:
+        description: Deployed git SHA
+        required: true
+        type: string
+      pr_number:
+        description: Pull request number for previews
+        required: false
+        type: string
+      image_tag:
+        description: Deployed image tag
+        required: false
+        type: string
+
+concurrency:
+  group:
+    e2e-${{ github.event.client_payload.sha || github.event.inputs.sha ||
+    github.run_id }}-${{ github.event.client_payload.app ||
+    github.event.client_payload.metadata.app || github.event.inputs.app ||
+    github.run_id }}
+  cancel-in-progress: false
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+      statuses: write
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Normalize deploy-ready payload
+        id: payload
+        run: |
+          normalized="$(pnpm node --experimental-strip-types scripts/src/deploy-ready.ts normalize "$GITHUB_EVENT_PATH")"
+          echo "$normalized" > .tmp/deploy-ready.json
+          echo "app=$(jq -r '.app' .tmp/deploy-ready.json)" >> "$GITHUB_OUTPUT"
+          echo "environment=$(jq -r '.environment' .tmp/deploy-ready.json)" >> "$GITHUB_OUTPUT"
+          echo "event_type=$(jq -r '.eventType' .tmp/deploy-ready.json)" >> "$GITHUB_OUTPUT"
+          echo "image_tag=$(jq -r '.imageTag' .tmp/deploy-ready.json)" >> "$GITHUB_OUTPUT"
+          echo "pr_number=$(jq -r '.prNumber // empty' .tmp/deploy-ready.json)" >> "$GITHUB_OUTPUT"
+          echo "sha=$(jq -r '.sha' .tmp/deploy-ready.json)" >> "$GITHUB_OUTPUT"
+          echo "source=$(jq -r '.source' .tmp/deploy-ready.json)" >> "$GITHUB_OUTPUT"
+          echo "url=$(jq -r '.url' .tmp/deploy-ready.json)" >> "$GITHUB_OUTPUT"
+      - name: Validate app directory
+        run: test -d "apps/${{ steps.payload.outputs.app }}"
+      - name: Mark e2e pending
+        env:
+          APP: ${{ steps.payload.outputs.app }}
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ steps.payload.outputs.pr_number }}
+          RUN_URL:
+            ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
+            github.run_id }}
+          SHA: ${{ steps.payload.outputs.sha }}
+        run: |
+          set -euo pipefail
+
+          set_status() {
+            gh api "repos/${GITHUB_REPOSITORY}/statuses/${SHA}" \
+              --method POST \
+              -f state="$1" \
+              -f context="$2" \
+              -f description="$3" \
+              -f target_url="$RUN_URL" >/dev/null
+          }
+
+          required_apps() {
+            if [[ -z "${PR_NUMBER}" ]]; then
+              printf '%s\n' "${APP}"
+              return
+            fi
+
+            mapfile -t all_apps < <(find apps -mindepth 1 -maxdepth 1 -type d -printf '%f\n' | sort)
+            mapfile -t changed_files < <(gh api --paginate "repos/${GITHUB_REPOSITORY}/pulls/${PR_NUMBER}/files" --jq '.[].filename')
+
+            declare -A selected=()
+            local require_all=false
+            for file in "${changed_files[@]}"; do
+              if [[ "$file" =~ ^apps/([^/]+)/ ]]; then
+                selected["${BASH_REMATCH[1]}"]=1
+                continue
+              fi
+              require_all=true
+              break
+            done
+
+            if [[ "$require_all" == true || "${#selected[@]}" -eq 0 ]]; then
+              printf '%s\n' "${all_apps[@]}"
+              return
+            fi
+
+            printf '%s\n' "${!selected[@]}" | sort
+          }
+
+          aggregate_state() {
+            local combined
+            combined="$(gh api "repos/${GITHUB_REPOSITORY}/commits/${SHA}/status")"
+            local has_pending=false
+
+            while IFS= read -r required_app; do
+              local state
+              state="$(jq -r --arg context "e2e/${required_app}" '.statuses | map(select(.context == $context)) | if length == 0 then "missing" else .[0].state end' <<<"$combined")"
+              if [[ "$state" == "failure" || "$state" == "error" ]]; then
+                printf 'failure'
+                return
+              fi
+              if [[ "$state" == "missing" || "$state" == "pending" ]]; then
+                has_pending=true
+              fi
+            done < <(required_apps)
+
+            if [[ "$has_pending" == true ]]; then
+              printf 'pending'
+              return
+            fi
+
+            printf 'success'
+          }
+
+          set_status pending "e2e/${APP}" "Waiting for deployed ${APP} e2e"
+          set_status "$(aggregate_state)" "e2e/all-required" "Waiting for required deployment e2e"
+      - name: Wait for public URL
+        run: |
+          curl --fail --silent --show-error --location \
+            --retry 20 \
+            --retry-delay 10 \
+            --retry-all-errors \
+            "${{ steps.payload.outputs.url }}" >/dev/null
+      - name: Install Playwright browsers
+        run:
+          pnpm --dir "apps/${{ steps.payload.outputs.app }}" exec playwright
+          install --with-deps chromium
+      - name: Run app e2e
+        id: run_e2e
+        continue-on-error: true
+        env:
+          BASE_URL: ${{ steps.payload.outputs.url }}
+          CI: true
+        run:
+          pnpm --dir "apps/${{ steps.payload.outputs.app }}" exec playwright
+          test
+      - name: Update commit statuses
+        if: always()
+        env:
+          APP: ${{ steps.payload.outputs.app }}
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ steps.payload.outputs.pr_number }}
+          RESULT: ${{ steps.run_e2e.outcome }}
+          RUN_URL:
+            ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
+            github.run_id }}
+          SHA: ${{ steps.payload.outputs.sha }}
+        run: |
+          set -euo pipefail
+
+          set_status() {
+            gh api "repos/${GITHUB_REPOSITORY}/statuses/${SHA}" \
+              --method POST \
+              -f state="$1" \
+              -f context="$2" \
+              -f description="$3" \
+              -f target_url="$RUN_URL" >/dev/null
+          }
+
+          required_apps() {
+            if [[ -z "${PR_NUMBER}" ]]; then
+              printf '%s\n' "${APP}"
+              return
+            fi
+
+            mapfile -t all_apps < <(find apps -mindepth 1 -maxdepth 1 -type d -printf '%f\n' | sort)
+            mapfile -t changed_files < <(gh api --paginate "repos/${GITHUB_REPOSITORY}/pulls/${PR_NUMBER}/files" --jq '.[].filename')
+
+            declare -A selected=()
+            local require_all=false
+            for file in "${changed_files[@]}"; do
+              if [[ "$file" =~ ^apps/([^/]+)/ ]]; then
+                selected["${BASH_REMATCH[1]}"]=1
+                continue
+              fi
+              require_all=true
+              break
+            done
+
+            if [[ "$require_all" == true || "${#selected[@]}" -eq 0 ]]; then
+              printf '%s\n' "${all_apps[@]}"
+              return
+            fi
+
+            printf '%s\n' "${!selected[@]}" | sort
+          }
+
+          aggregate_state() {
+            local combined
+            combined="$(gh api "repos/${GITHUB_REPOSITORY}/commits/${SHA}/status")"
+            local has_pending=false
+
+            while IFS= read -r required_app; do
+              local state
+              state="$(jq -r --arg context "e2e/${required_app}" '.statuses | map(select(.context == $context)) | if length == 0 then "missing" else .[0].state end' <<<"$combined")"
+              if [[ "$state" == "failure" || "$state" == "error" ]]; then
+                printf 'failure'
+                return
+              fi
+              if [[ "$state" == "missing" || "$state" == "pending" ]]; then
+                has_pending=true
+              fi
+            done < <(required_apps)
+
+            if [[ "$has_pending" == true ]]; then
+              printf 'pending'
+              return
+            fi
+
+            printf 'success'
+          }
+
+          if [[ "$RESULT" == "success" ]]; then
+            set_status success "e2e/${APP}" "Deployment e2e passed for ${APP}"
+          else
+            set_status failure "e2e/${APP}" "Deployment e2e failed for ${APP}"
+          fi
+
+          set_status "$(aggregate_state)" "e2e/all-required" "Aggregate deployment e2e status"
+      - name: Fail workflow on e2e failure
+        if: steps.run_e2e.outcome != 'success'
+        run: exit 1

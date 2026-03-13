@@ -1,0 +1,87 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: notification-controller-webhook
+  namespace: flux-system
+spec:
+  type: ClusterIP
+  selector:
+    app: notification-controller
+  ports:
+    - name: http-webhook
+      port: 80
+      targetPort: http-webhook
+      protocol: TCP
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: flux-receiver
+  namespace: flux-system
+spec:
+  parentRefs:
+    - name: traefik-gateway
+      namespace: networking
+      sectionName: websecure
+  hostnames:
+    - flux-webhooks.ariaamini.com
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: notification-controller-webhook
+          port: 80
+---
+apiVersion: notification.toolkit.fluxcd.io/v1
+kind: Receiver
+metadata:
+  name: flux-system-webhook
+  namespace: flux-system
+spec:
+  type: generic
+  secretRef:
+    name: flux-receiver-auth
+  resources:
+    - kind: OCIRepository
+      name: flux-system
+      namespace: flux-system
+---
+apiVersion: notification.toolkit.fluxcd.io/v1beta3
+kind: Provider
+metadata:
+  name: github-deploy-ready
+  namespace: flux-system
+spec:
+  type: githubdispatch
+  address: https://github.com/aamini-stack/projects
+  secretRef:
+    name: github-dispatch-auth
+  timeout: 15s
+---
+apiVersion: notification.toolkit.fluxcd.io/v1beta3
+kind: Alert
+metadata:
+  name: github-deploy-ready
+  namespace: flux-system
+spec:
+  providerRef:
+    name: github-deploy-ready
+  eventSeverity: info
+  eventMetadata:
+    cluster: staging
+    source: flux-deploy-ready
+  eventSources:
+    - kind: HelmRelease
+      name: '*'
+      namespace: flux-system
+      matchLabels:
+        aamini.dev/deploy-ready: enabled
+    - kind: HelmRelease
+      name: '*'
+      namespace: app-preview
+      matchLabels:
+        aamini.dev/deploy-ready: enabled
+  inclusionList:
+    - '^Helm (install|upgrade|rollback) succeeded.*$'

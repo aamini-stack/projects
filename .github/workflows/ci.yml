@@ -83,7 +83,7 @@ jobs:
       - name: Render GitOps bundle
         run:
           pnpm node --experimental-strip-types scripts/src/publish-gitops.ts
-          render
+          render --deploy-revision ${{ github.sha }}
       - name: Push app-release chart
         run: |
           mkdir -p .tmp/chart
@@ -94,3 +94,13 @@ jobs:
           tar -C .tmp/gitops-bundle -czf .tmp/projects-gitops.tar.gz .
           oras push ghcr.io/aamini-stack/projects-gitops:latest \
             .tmp/projects-gitops.tar.gz:application/vnd.aamini.gitops.bundle.v1+tar.gz
+      - name: Notify Flux receiver
+        env:
+          FLUX_RECEIVER_URL: https://flux-webhooks.ariaamini.com/hook/0af5b346c6d30495bd41004aa0f5650981e7dc1a54e673da105d04735c788099
+        run: |
+          test -n "$FLUX_RECEIVER_URL"
+          curl --fail --show-error --silent \
+            --request POST \
+            --header 'Content-Type: application/json' \
+            --data '{"source":"github-actions","workflow":"ci","run_id":"${{ github.run_id }}","sha":"${{ github.sha }}"}' \
+            "$FLUX_RECEIVER_URL"
