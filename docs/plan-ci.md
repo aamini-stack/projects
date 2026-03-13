@@ -1,260 +1,101 @@
-# CI: Replace Vercel Deploy With GHCR + Flux MVP
+# Refactor CI Around Turbo + Deployment-Driven E2E
 
 ## Summary
 
-Replace the current Vercel-based deploy step in `.github/workflows/ci.yml` with
-a GHCR publish flow that:
-
-- builds and pushes each changed app image to `ghcr.io/aamini-stack/<app>`
-- tags images as `pr-<PR_NUMBER>` for PRs and `main-<GITHUB_SHA>` for `main`
-- renders and publishes the GitOps OCI bundle consumed by Flux as
-  `ghcr.io/aamini-stack/projects-gitops:latest`
-- publishes the Helm chart OCI artifact
-  `ghcr.io/aamini-stack/app-release:<chart-version>`
-- runs Playwright immediately after push against the Flux-derived URL, with no
-  readiness gate yet
-
-This keeps the existing Flux contract intact:
-
-- stable apps already watch `main-<sha>` tags via `ImagePolicy`
-- preview apps already reference `pr-<id>` tags and preview URLs
-- the cluster already points at `projects-gitops:latest`
+Refactor `.github/workflows/ci.yml` to remove the `find-apps` job and stop
+using a custom app matrix for deploy/e2e orchestration. Keep CI focused on
+repo-local work: install, quality checks, integration tests, and publishing the
+GitOps bundle. Move e2e execution behind a deployment completion signal by
+introducing a separate workflow triggered by `repository_dispatch`, with
+AKS/Flux emitting one event per app when that app is actually serving the
+target PR or commit revision.
 
 ## Implementation Changes
 
-### 1. Rework the E2E job in CI
+- Simplify `ci.yml`:
+  - delete `find-apps` and all `needs.find-apps.outputs.*` usage
+  - keep `quality-checks` and `integration-tests` as straightforward
+    Turbo-based jobs
+  - keep `publish-gitops` as the workflow step that updates the cluster's
+    desired state
+  - remove the current `e2e` job from `ci.yml`; it is coupled to image push
+    timing rather than deployment readiness
+- Add a new workflow, for example `.github/workflows/e2e-on-deploy-ready.yml`:
+  - trigger on `repository_dispatch`
+  - accept a single app per event and run only that app's Playwright suite
+  - reconstruct `BASE_URL` from the dispatch payload instead of guessing from
+    the GitHub event context
+  - validate the payload early and no-op or fail fast if required fields are
+    missing
+- Define a stable dispatch contract from AKS/Flux to GitHub:
+  - `event_type`: `app_deploy_ready`
+  - `client_payload.app`: app name
+  - `client_payload.environment`: `preview` or `stable`
+  - `client_payload.url`: resolved public URL to test
+  - `client_payload.sha`: deployed git SHA
+  - `client_payload.pr_number`: PR number for previews, omitted for `main`
+  - `client_payload.image_tag`: deployed image tag (`pr-<id>` or `main-<sha>`)
+- Add an in-cluster readiness notifier:
+  - run a small watcher or job in AKS that observes the deployed app revision
+    and emits `repository_dispatch` only after the app is reachable and matches
+    the expected SHA or tag
+  - use the deployed workload or `HelmRelease` plus an HTTP readiness probe
+    against the final hostname as the source of truth; do not dispatch merely
+    because GitOps accepted the desired state
+  - deduplicate by app + SHA + environment so repeated reconciliations do not
+    spam GitHub
+  - authenticate to GitHub with a dedicated token or secret scoped to
+    dispatching workflow events
+- Keep Turbo as the change detector:
+  - repo-local CI jobs continue to rely on Turbo task graph or filtering
+  - the deployment-ready workflow does not need `find-apps`; each dispatch
+    already names the single app whose deployment is ready
 
-Update `.github/workflows/ci.yml` so the `e2e` matrix job does this instead of
-`vercel link` / `vercel deploy`:
+## Public Interfaces / Contract Changes
 
-- add `packages: write` permission so GitHub Actions can push to GHCR
-- log in to GHCR with `docker/login-action`
-- compute deployment metadata per matrix app:
-  - PR: `IMAGE_TAG=pr-${{ github.event.pull_request.number }}`
-  - `main`: `IMAGE_TAG=main-${GITHUB_SHA}`
-  - PR `BASE_URL=https://${APP}-pr-${PR_NUMBER}.preview.ariaamini.com`
-  - `main` `BASE_URL=https://${APP}.ariaamini.com`
-- build and push the production image from the repo root `Dockerfile` using
-  `target=production` and `build-arg APP_NAME=<app>`
-- run `pnpm e2e` immediately after the push with `BASE_URL` exported
-
-Representative workflow shape:
-
-```yaml
-permissions:
-  contents: write
-  statuses: write
-  packages: write
-
-jobs:
-  e2e:
-    needs: [find-apps]
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        app: ${{ fromJson(needs.find-apps.outputs.apps) }}
-      fail-fast: false
-    steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v6
-        with:
-          node-version: 22
-          cache: pnpm
-      - run: pnpm i
-      - run: pnpm exec playwright install --with-deps chromium
-
-      - uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Compute deploy metadata
-        run: |
-          APP="${{ matrix.app }}"
-          if [ "${{ github.event_name }}" = "pull_request" ]; then
-            IMAGE_TAG="pr-${{ github.event.pull_request.number }}"
-            BASE_URL="https://${APP}-pr-${{ github.event.pull_request.number }}.preview.ariaamini.com"
-          else
-            IMAGE_TAG="main-${GITHUB_SHA}"
-            BASE_URL="https://${APP}.ariaamini.com"
-          fi
-
-          echo "IMAGE_NAME=ghcr.io/aamini-stack/${APP}" >> "$GITHUB_ENV"
-          echo "IMAGE_TAG=${IMAGE_TAG}" >> "$GITHUB_ENV"
-          echo "BASE_URL=${BASE_URL}" >> "$GITHUB_ENV"
-
-      - name: Build and push app image
-        run: |
-          docker build \
-            --file Dockerfile \
-            --target production \
-            --build-arg APP_NAME=${{ matrix.app }} \
-            --tag ${IMAGE_NAME}:${IMAGE_TAG} \
-            .
-          docker push ${IMAGE_NAME}:${IMAGE_TAG}
-
-      - name: Run Playwright tests
-        working-directory: ./apps/${{ matrix.app }}
-        run: pnpm e2e
-```
-
-### 2. Add a GitOps artifact publish step
-
-Add a separate non-matrix job, after app image pushes and before or alongside
-E2E depending on dependency preference, that publishes the OCI artifacts Flux
-consumes.
-
-Add a small CLI entrypoint rather than embedding render logic inline:
-
-- add a script command under `scripts/src` or `packages/infra/src` that calls
-  `renderGitopsBundle(...)`
-- write rendered output to a temp/dist directory
-- package that directory as an OCI artifact and push
-  `ghcr.io/aamini-stack/projects-gitops:latest`
-- package and push the Helm chart from `packages/infra/charts/app-release`
-
-Expected CLI responsibilities:
-
-- render from `packages/infra/manifests`
-- emit bundle with `bootstrap`, `platform-*`, and `apps/applications.yaml`
-- not mutate tracked files
-
-Representative TypeScript shape:
-
-```ts
-import path from 'node:path'
-import { mkdirSync } from 'node:fs'
-import { renderGitopsBundle } from '../../packages/infra/src/gitops/render'
-
-const repoRoot = process.cwd()
-const outDir = path.join(repoRoot, '.tmp', 'gitops-bundle')
-
-mkdirSync(outDir, { recursive: true })
-
-renderGitopsBundle({
-	sourceRoot: path.join(repoRoot, 'packages/infra/manifests'),
-	outputRoot: outDir,
-})
-```
-
-Representative workflow shape:
-
-```yaml
-publish-gitops:
-  runs-on: ubuntu-latest
-  needs: [find-apps]
-  steps:
-    - uses: actions/checkout@v4
-    - uses: pnpm/action-setup@v4
-    - uses: actions/setup-node@v6
-      with:
-        node-version: 22
-        cache: pnpm
-    - run: pnpm i
-    - uses: docker/login-action@v3
-      with:
-        registry: ghcr.io
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
-
-    - name: Render GitOps bundle
-      run:
-        pnpm node --experimental-strip-types scripts/src/publish-gitops.ts
-        render
-
-    - name: Install Helm
-      uses: azure/setup-helm@v4
-
-    - name: Push app-release chart
-      run: |
-        helm package packages/infra/charts/app-release --destination .tmp/chart
-        helm push .tmp/chart/app-release-0.1.0.tgz oci://ghcr.io/aamini-stack
-
-    - name: Push GitOps OCI bundle
-      run: |
-        tar -C .tmp/gitops-bundle -czf .tmp/projects-gitops.tar.gz .
-        oras push ghcr.io/aamini-stack/projects-gitops:latest \
-          .tmp/projects-gitops.tar.gz:application/vnd.aamini.gitops.bundle.v1+tar.gz
-```
-
-Implementation detail:
-
-- if using `oras`, install it in CI explicitly
-- keep the bundle tag fixed at `latest` for MVP, matching `Pulumi.staging.yaml`
-  and `aks.ts`
-- keep chart version `0.1.0` unless you also choose to version-bump chart
-  releases during this change
-
-### 3. Wire job dependencies for MVP behavior
-
-Use job dependencies that match the current request:
-
-- `quality-checks` and `integration-tests` stay unchanged
-- app image publishing must happen before the matching app's E2E run
-- GitOps OCI publish must happen before E2E if you want the cluster source
-  updated first
-- do not add any polling or readiness check yet
-
-For the MVP, the simplest structure is:
-
-- `publish-gitops` job
-- `e2e` matrix job depends on `find-apps` and `publish-gitops`
-- each matrix leg pushes its own app image, then runs tests immediately
-
-That gives you:
-
-- image available in GHCR
-- GitOps bundle updated in GHCR
-- Playwright starts right away and may race, which is the accepted temporary
-  behavior
-
-## Public Interfaces / Contracts
-
-These contracts stay intentionally unchanged:
-
-- app image repositories remain `ghcr.io/aamini-stack/<app>`
-- stable tag format remains `main-<sha>`
-- preview tag format remains `pr-<pr-number>`
-- preview URL format remains `https://<app>-pr-<pr>.preview.ariaamini.com`
-- main URL remains `https://<app>.ariaamini.com`
-- Flux GitOps source remains `oci://ghcr.io/aamini-stack/projects-gitops:latest`
-- Helm chart source remains `oci://ghcr.io/aamini-stack/app-release`
-
-The only new interface is an internal CLI/script for rendering and publishing
-the GitOps bundle.
+- GitHub Actions interface changes:
+  - `ci.yml` no longer exposes or consumes `find-apps` outputs
+  - add a new external trigger: `repository_dispatch` with
+    `event_type=app_deploy_ready`
+- Cluster-to-GitHub contract:
+  - the AKS or Flux-side notifier must send the exact payload fields above
+  - the notifier is responsible for sending one event per app deployment
+    readiness, not batching apps
+- E2E workflow behavior:
+  - e2e no longer starts immediately after image push
+  - e2e starts only after deployment completion is confirmed for the exact
+    app or revision under test
 
 ## Test Plan
 
-Run non-mutating validation after implementation:
-
-- `pnpm --filter @aamini/infra test`
-- `pnpm --filter @aamini/infra typecheck`
-- `pnpm typecheck`
-- `pnpm lint`
-- inspect the rendered GitOps bundle locally to confirm:
-  - `applications.yaml` still contains preview `HelmRelease` resources
-  - stable manifests still annotate `aamini.dev/image-policy`
-  - chart source still points to `oci://ghcr.io/aamini-stack/app-release`
-- run one CI test on a PR and verify:
-  - app image is pushed as `ghcr.io/aamini-stack/<app>:pr-<number>`
-  - `projects-gitops:latest` is updated
-  - E2E uses the preview hostname
-- run one CI test on `main` and verify:
-  - app image is pushed as `ghcr.io/aamini-stack/<app>:main-<sha>`
-  - E2E uses the stable hostname
+- Workflow validation:
+  - confirm `ci.yml` runs successfully on PR and `main` without `find-apps`
+  - confirm `publish-gitops` still runs after quality or integration jobs as
+    intended
+- Dispatch workflow:
+  - manually trigger with a sample `repository_dispatch` payload for one
+    preview app and verify the workflow computes the right `BASE_URL` and runs
+    only that app's e2e
+  - repeat for a stable or `main` payload
+- Notifier behavior:
+  - verify a ready preview deployment emits exactly one dispatch for a new PR
+    SHA
+  - verify a redeploy with the same SHA does not emit duplicates
+  - verify a failed or unreachable deployment does not dispatch e2e
+- End-to-end acceptance:
+  - PR flow: publish GitOps bundle -> Flux reconciles preview -> app becomes
+    reachable -> dispatch fires -> e2e runs against preview URL
+  - `main` flow: publish GitOps bundle -> stable app reconciles -> dispatch
+    fires -> e2e runs against stable URL only after rollout completes
 
 ## Assumptions
 
-- Use `GHCR_TOKEN` for GHCR pushes when package linkage or org package
-  permissions make `GITHUB_TOKEN` insufficient.
-- Flux already has credentials to pull both `projects-gitops` and app images
-  through the existing `ghcr-auth` secret.
-- No wait gate, rollout status check, or hostname readiness probe is added in
-  this change.
-- Chart publishing can reuse the current `0.1.0` version for MVP unless OCI
-  registry constraints force version bumps; if that happens, add chart
-  versioning as a follow-up instead of changing the deployment contract now.
-- If `find-apps` returns package names with the `apps/` prefix rather than bare
-  app directory names, normalize that in CI before building tags and URLs.
+- The preferred design is `repository_dispatch`, modeled after
+  deployment-driven preview testing rather than in-workflow polling.
+- Dispatches are emitted per app readiness, not batched per PR.
+- The readiness notifier can be implemented in-cluster with access to GitHub
+  credentials and enough cluster or app metadata to map deployment state to
+  app + SHA + URL.
+- Turbo remains the mechanism for local CI task scoping; the explicit app
+  matrix is intentionally removed rather than replaced with another custom
+  discovery job.
