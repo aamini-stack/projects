@@ -164,7 +164,8 @@ jobs:
             "$FLUX_RECEIVER_URL"; do
             exit_code=$?
             if [[ "$attempt" -ge "$max_attempts" ]]; then
-              exit "$exit_code"
+              echo "::warning::Flux receiver remained unavailable after ${max_attempts} attempts. OCI artifacts were published successfully; Flux must pick up the update via its normal polling interval."
+              exit 0
             fi
 
             echo "Flux receiver request failed on attempt ${attempt}/${max_attempts}; retrying in ${delay_seconds}s"
