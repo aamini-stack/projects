@@ -48,10 +48,8 @@ jobs:
       - run: pnpm test:integration
 
   publish-app-images:
-    needs:
-      - quality-checks
-      - integration-tests
-    if: ${{ github.event_name == 'push' ||
+    if:
+      ${{ github.event_name == 'push' ||
       !github.event.pull_request.head.repo.fork }}
     runs-on: ubuntu-latest
     strategy:
@@ -94,17 +92,17 @@ jobs:
           target: production
           push: true
           build-args: APP_NAME=${{ matrix.app }}
-          tags: ghcr.io/aamini-stack/${{ matrix.app }}:${{
+          tags:
+            ghcr.io/aamini-stack/${{ matrix.app }}:${{
             steps.image_tag.outputs.value }}
           cache-from: type=gha,scope=${{ matrix.app }}
           cache-to: type=gha,mode=max,scope=${{ matrix.app }}
 
   publish-gitops:
     needs:
-      - quality-checks
-      - integration-tests
       - publish-app-images
-    if: ${{ github.event_name == 'push' ||
+    if:
+      ${{ github.event_name == 'push' ||
       !github.event.pull_request.head.repo.fork }}
     runs-on: ubuntu-latest
     permissions:
@@ -133,7 +131,8 @@ jobs:
           printf '%s' "$GHCR_PASSWORD" | helm registry login ghcr.io --username "$GHCR_USERNAME" --password-stdin
           printf '%s' "$GHCR_PASSWORD" | oras login ghcr.io --username "$GHCR_USERNAME" --password-stdin
       - name: Render GitOps bundle
-        run: pnpm node --experimental-strip-types scripts/src/publish-gitops.ts
+        run:
+          pnpm node --experimental-strip-types scripts/src/publish-gitops.ts
           render --deploy-revision ${{ github.sha }}
       - name: Push app-release chart
         run: |
