@@ -148,9 +148,27 @@ jobs:
         env:
           FLUX_RECEIVER_URL: ${{ secrets.FLUX_RECEIVER_URL }}
         run: |
+          set -euo pipefail
           test -n "$FLUX_RECEIVER_URL"
-          curl --fail --show-error --silent \
+
+          attempt=1
+          max_attempts=6
+          delay_seconds=10
+
+          until curl --fail --show-error --silent \
+            --connect-timeout 10 \
+            --max-time 30 \
             --request POST \
             --header 'Content-Type: application/json' \
             --data '{"source":"github-actions","workflow":"ci","run_id":"${{ github.run_id }}","sha":"${{ github.sha }}"}' \
-            "$FLUX_RECEIVER_URL"
+            "$FLUX_RECEIVER_URL"; do
+            exit_code=$?
+            if [[ "$attempt" -ge "$max_attempts" ]]; then
+              exit "$exit_code"
+            fi
+
+            echo "Flux receiver request failed on attempt ${attempt}/${max_attempts}; retrying in ${delay_seconds}s"
+            sleep "$delay_seconds"
+            attempt=$((attempt + 1))
+            delay_seconds=$((delay_seconds * 2))
+          done
