@@ -9,6 +9,16 @@ import { sealAll, unsealAll } from './k8secrets.ts'
 import { getRepoRoot } from './helpers/repo.ts'
 
 async function main(): Promise<void> {
+	const scriptDir = path.dirname(fileURLToPath(import.meta.url))
+	const pmScriptPath = path.resolve(scriptDir, 'pm.ts')
+
+	const command = process.argv[2]
+	if (command === 'pm') {
+		const interactive = $({ stdio: 'inherit' })
+		await interactive`node --experimental-strip-types ${pmScriptPath} ${process.argv.slice(3)}`
+		return
+	}
+
 	const cli = cac('aamini')
 	cli.help()
 	cli.version('0.0.1')
@@ -47,14 +57,15 @@ async function main(): Promise<void> {
 		.command('ralph <task-id>', 'Run Ralph workflow for task')
 		.action(async (taskId: string) => {
 			const interactive = $({ stdio: 'inherit' })
-			await interactive`node --experimental-strip-types ${path.resolve(path.dirname(fileURLToPath(import.meta.url)), 'ralph.ts')} ${taskId}`
+			await interactive`node --experimental-strip-types ${path.resolve(scriptDir, 'ralph.ts')} ${taskId}`
 		})
 
 	cli
 		.command('pm [...args]', 'Run task manager commands')
 		.allowUnknownOptions()
 		.action(async () => {
-			await $`node --experimental-strip-types ${path.resolve(path.dirname(fileURLToPath(import.meta.url)), 'pm.ts')} ${getRawCommandArgs()}`
+			const interactive = $({ stdio: 'inherit' })
+			await interactive`node --experimental-strip-types ${pmScriptPath} ${getRawCommandArgs()}`
 		})
 
 	cli.addEventListener('command:*', () => {
