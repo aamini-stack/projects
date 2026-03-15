@@ -35,7 +35,7 @@
 		"description": "Set up least-privilege AWS authentication for operators/agents using IAM Identity Center (SSO) and a staging-scoped role so Pulumi production execution is unblocked without introducing long-lived broad credentials.",
 		"dependencies": ["2.0"],
 		"commitSha": null,
-		"done": false,
+		"done": true,
 		"blocked": false,
 		"acceptance-criteria": [
 			"Create and document an `agent-staging` access path (permission set or role) with explicit production deny guardrails and `us-east-1` region scope.",

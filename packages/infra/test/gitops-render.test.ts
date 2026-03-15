@@ -105,9 +105,20 @@ void test('buildRenderedAppManifests renders stable, image automation, and previ
 	assert.match(rendered.stableApps, /kind: HelmRelease/)
 	assert.match(rendered.stableApps, /name: portfolio/)
 	assert.match(rendered.stableApps, /name: pc-tune-ups/)
+	assert.match(rendered.stableApps, /aamini\.dev\/deploy-ready: enabled/)
+	assert.match(
+		rendered.stableApps,
+		/event\.toolkit\.fluxcd\.io\/environment: stable/,
+	)
+	assert.match(
+		rendered.stableApps,
+		/event\.toolkit\.fluxcd\.io\/url: https:\/\/portfolio\.ariaamini\.com/,
+	)
 	assert.match(rendered.stableApps, /targetNamespace: portfolio/)
 	assert.match(rendered.stableApps, /targetNamespace: pc-tune-ups/)
 	assert.match(rendered.stableApps, /createNamespace: true/)
+	assert.match(rendered.stableApps, /deployRevision: ''/)
+	assert.match(rendered.stableApps, /pullPolicy: Always/)
 	assert.match(rendered.stableApps, /rootHost: ariaamini\.com/)
 	assert.match(rendered.stableApps, /envFromSecret: portfolio-secrets/)
 	assert.match(rendered.stableApps, /rootHost: ''/)
@@ -122,6 +133,11 @@ void test('buildRenderedAppManifests renders stable, image automation, and previ
 	assert.match(rendered.imageAutomation, /name: pc-tune-ups/)
 
 	assert.match(rendered.previews, /name: portfolio-pr-previews/)
+	assert.match(rendered.previews, /aamini\.dev\/deploy-ready: enabled/)
+	assert.match(
+		rendered.previews,
+		/event\.toolkit\.fluxcd\.io\/environment: preview/,
+	)
 	assert.match(
 		rendered.previews,
 		/metadata:\s*\n\s*name: portfolio-pr-previews\s*\n\s*namespace: flux-system/,
@@ -135,6 +151,20 @@ void test('buildRenderedAppManifests renders stable, image automation, and previ
 	assert.doesNotMatch(rendered.previews, /inputs\.headSHA/)
 	assert.match(rendered.previews, /inputs\.id/)
 	assert.match(rendered.previews, /inputs\.sha/)
+	assert.match(
+		rendered.previews,
+		/preview-url: "https:\/\/portfolio-pr-<< inputs\.id >>\.ariaamini\.com"/,
+	)
+	assert.match(rendered.previews, /deployRevision: << inputs\.sha \| quote >>/)
+	assert.match(rendered.previews, /pullPolicy: Always/)
+	assert.match(
+		rendered.previews,
+		/url: "https:\/\/portfolio-pr-<< inputs\.id >>\.ariaamini\.com"/,
+	)
+	assert.match(
+		rendered.previews,
+		/host: portfolio-pr-<< inputs\.id >>\.ariaamini\.com/,
+	)
 	assert.match(
 		rendered.stableApps,
 		/chartRef:\s*\n\s*kind: OCIRepository\s*\n\s*name: app-release/,
@@ -227,6 +257,14 @@ void test('renderGitopsBundle writes staged platform directories and app output'
 		'kind: Namespace\nmetadata:\n  name: app-preview\n',
 	)
 	writeFileSync(
+		path.join(platformDir, 'webhooks.yaml'),
+		'kind: Service\nmetadata:\n  name: notification-controller-webhook\n',
+	)
+	writeFileSync(
+		path.join(platformDir, 'webhooks-sealed-secrets.yaml'),
+		'kind: SealedSecret\nmetadata:\n  name: github-dispatch-auth\n',
+	)
+	writeFileSync(
 		path.join(appsDir, 'portfolio.yaml'),
 		[
 			'name: portfolio',
@@ -309,6 +347,20 @@ void test('renderGitopsBundle writes staged platform directories and app output'
 	)
 	assert.match(
 		readFileSync(
+			path.join(outputRoot, 'platform-config', 'webhooks-sealed-secrets.yaml'),
+			'utf8',
+		),
+		/name: github-dispatch-auth/,
+	)
+	assert.match(
+		readFileSync(
+			path.join(outputRoot, 'platform-config', 'webhooks.yaml'),
+			'utf8',
+		),
+		/name: notification-controller-webhook/,
+	)
+	assert.match(
+		readFileSync(
 			path.join(outputRoot, 'platform-controllers', 'kustomization.yaml'),
 			'utf8',
 		),
@@ -319,7 +371,7 @@ void test('renderGitopsBundle writes staged platform directories and app output'
 			path.join(outputRoot, 'platform-config', 'kustomization.yaml'),
 			'utf8',
 		),
-		/resources:\s*\n\s*- networking.yaml\s*\n\s*- previews.yaml/,
+		/resources:\s*\n\s*- networking.yaml\s*\n\s*- previews.yaml\s*\n\s*- webhooks-sealed-secrets.yaml\s*\n\s*- webhooks.yaml/,
 	)
 	assert.match(
 		readFileSync(

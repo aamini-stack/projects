@@ -13,6 +13,8 @@ spec:
       app: {{ include "app-release.name" . }}
   template:
     metadata:
+      annotations:
+        aamini.dev/deploy-revision: {{ .Values.deployRevision | quote }}
       labels:
         app.kubernetes.io/name: {{ include "app-release.name" . }}
         app.kubernetes.io/instance: {{ include "app-release.name" . }}
@@ -21,6 +23,7 @@ spec:
       containers:
         - name: {{ include "app-release.name" . }}
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - containerPort: {{ .Values.service.targetPort }}
           {{ if .Values.envFromSecret }}

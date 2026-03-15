@@ -64,7 +64,7 @@ importers:
         version: 1.166.7(@tanstack/query-core@5.90.20)(@tanstack/react-query@5.90.21(react@19.2.4))(@tanstack/react-router@1.166.7(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@tanstack/router-core@1.166.7)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@tanstack/react-start':
         specifier: ^1.166.7
-        version: 1.166.7(crossws@0.4.4(srvx@0.10.1))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(vite@7.3.1(@types/node@25.4.0)(jiti@2.6.1)(lightningcss@1.31.1)(tsx@4.21.0)(yaml@2.8.2))
+        version: 1.166.7(crossws@0.4.4(srvx@0.11.9))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(vite@7.3.1(@types/node@25.4.0)(jiti@2.6.1)(lightningcss@1.31.1)(tsx@4.21.0)(yaml@2.8.2))
       '@tanstack/router-plugin':
         specifier: ^1.166.7
         version: 1.166.7(@tanstack/react-router@1.166.7(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(vite@7.3.1(@types/node@25.4.0)(jiti@2.6.1)(lightningcss@1.31.1)(tsx@4.21.0)(yaml@2.8.2))
@@ -328,9 +328,6 @@ importers:
       '@aamini/infra':
         specifier: workspace:*
         version: link:../../../packages/infra
-      '@pulumi/azure-native':
-        specifier: ^3.15.0
-        version: 3.15.0(typescript@5.9.3)
       '@pulumi/command':
         specifier: ^1.2.1
         version: 1.2.1(typescript@5.9.3)
@@ -684,7 +681,7 @@ importers:
         version: 0.5.3(vite@7.3.1(@types/node@25.4.0)(jiti@2.6.1)(lightningcss@1.31.1)(tsx@4.21.0)(yaml@2.8.2))
       '@tanstack/react-start':
         specifier: ^1.166.7
-        version: 1.166.7(crossws@0.4.4(srvx@0.11.9))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(vite@7.3.1(@types/node@25.4.0)(jiti@2.6.1)(lightningcss@1.31.1)(tsx@4.21.0)(yaml@2.8.2))
+        version: 1.166.7(crossws@0.4.4(srvx@0.10.1))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(vite@7.3.1(@types/node@25.4.0)(jiti@2.6.1)(lightningcss@1.31.1)(tsx@4.21.0)(yaml@2.8.2))
       '@vitejs/plugin-react':
         specifier: ^5.1.4
         version: 5.1.4(vite@7.3.1(@types/node@25.4.0)(jiti@2.6.1)(lightningcss@1.31.1)(tsx@4.21.0)(yaml@2.8.2))
@@ -710,6 +707,9 @@ importers:
 
   packages/infra:
     dependencies:
+      '@pulumi/aws':
+        specifier: ^7.12.0
+        version: 7.23.0(typescript@5.9.3)
       '@pulumi/azure-native':
         specifier: ^3.15.0
         version: 3.15.0(typescript@5.9.3)
@@ -723,13 +723,13 @@ importers:
         specifier: ^0.1.6
         version: 0.1.6(typescript@5.9.3)
       '@pulumi/postgresql':
-        specifier: ^3.0.0
+        specifier: ^3.16.2
         version: 3.16.2(typescript@5.9.3)
       '@pulumi/pulumi':
-        specifier: ^3.220.0
+        specifier: ^3.225.1
         version: 3.225.1(typescript@5.9.3)
       '@pulumi/random':
-        specifier: ^4.0.0
+        specifier: ^4.19.1
         version: 4.19.1(typescript@5.9.3)
       '@pulumi/tls':
         specifier: ^5.3.0
@@ -2649,6 +2649,9 @@ packages:
 
   '@protobufjs/utf8@1.1.0':
     resolution: {integrity: sha512-Vvn3zZrhQZkkBE8LSuW3em98c0FwgO4nxzv6OdSxPKJIEKY2bGbHn+mhGIPerzI4twdxaP8/0+06HBpwf345Lw==}
+
+  '@pulumi/aws@7.23.0':
+    resolution: {integrity: sha512-tRyG4cwTQQ+88gb2TwejLWXW4TvuC72zlrNpCm2BBTnBp6YaZRT23xLFTYK8GN37fjzglmoVE9DF4yYMPvt17g==}
 
   '@pulumi/azure-native@3.15.0':
     resolution: {integrity: sha512-u9JQtRPQfoNvXVkM4SBvLP6wBPWcwtBKlfycimpSFzmIPR6WSFoBknA51gbH3nAUdlyZC2Ht8cFsfCv0IvFJ7Q==}
@@ -5313,6 +5316,11 @@ packages:
   mime-types@2.1.35:
     resolution: {integrity: sha512-ZDY+bPm5zTTF+YpCrAU9nK0UgICYPT0QtT1NZWFv4s++TNkcgVaT0g6+4R2uI4MjQjzysHB1zxuWL50hzaeXiw==}
     engines: {node: '>= 0.6'}
+
+  mime@2.6.0:
+    resolution: {integrity: sha512-USPkMeET31rOMiarsBNIHZKLGgvKc/LrjofAnBlOttf5ajRvqiRA8QsenbcooctK6d6Ts6aqZXBA+XbkKthiQg==}
+    engines: {node: '>=4.0.0'}
+    hasBin: true
 
   mimic-fn@2.1.0:
     resolution: {integrity: sha512-OqbOk5oEQeAZ8WXWydlu9HJjz9WVdEIvamMCcXmuqUYjTknH/sqsWvhQ3vgwKFRR1HpjvNBKQ37nbJgYzGqGcg==}
@@ -8147,6 +8155,15 @@ snapshots:
   '@protobufjs/pool@1.1.0': {}
 
   '@protobufjs/utf8@1.1.0': {}
+
+  '@pulumi/aws@7.23.0(typescript@5.9.3)':
+    dependencies:
+      '@pulumi/pulumi': 3.225.1(typescript@5.9.3)
+      mime: 2.6.0
+    transitivePeerDependencies:
+      - supports-color
+      - ts-node
+      - typescript
 
   '@pulumi/azure-native@3.15.0(typescript@5.9.3)':
     dependencies:
@@ -11062,6 +11079,8 @@ snapshots:
   mime-types@2.1.35:
     dependencies:
       mime-db: 1.52.0
+
+  mime@2.6.0: {}
 
   mimic-fn@2.1.0: {}
 

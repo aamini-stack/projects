@@ -1,0 +1,17 @@
+config:
+  aws:region: us-east-1
+  aamini-infra:postgresProvider: aws
+  aamini-infra:postgres:
+    instanceClass: db.t4g.micro
+    allocatedStorage: 20
+    maxAllocatedStorage: 100
+    backupRetentionDays: 7
+    engineVersion: '16.3'
+    storageType: gp3
+    publiclyAccessible: true
+    deletionProtection: false
+    multiAz: false
+    allowedCidrs:
+      - 0.0.0.0/0
+  aamini-infra:postgresAdminPassword:
+    secure: AAABAG2ycsx+ixmezTcs4TC0EBNIs+2AlEqmZB9atv0alq0hfHoomOXkGBVE9w==
