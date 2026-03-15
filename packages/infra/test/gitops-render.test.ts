@@ -155,10 +155,7 @@ void test('buildRenderedAppManifests renders stable, image automation, and previ
 		rendered.previews,
 		/preview-url: "https:\/\/portfolio-pr-<< inputs\.id >>\.ariaamini\.com"/,
 	)
-	assert.match(
-		rendered.previews,
-		/deployRevision: << inputs\.sha \| quote >>/,
-	)
+	assert.match(rendered.previews, /deployRevision: << inputs\.sha \| quote >>/)
 	assert.match(rendered.previews, /pullPolicy: Always/)
 	assert.match(
 		rendered.previews,
