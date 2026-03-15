@@ -1,0 +1,94 @@
+[
+	{
+		"id": "1.0",
+		"title": "Add AWS RDS production foundation in shared infra",
+		"description": "Introduce AWS provider dependencies, production stack config, and shared RDS PostgreSQL resources in `packages/infra` while leaving Azure-based staging resources intact.",
+		"dependencies": [],
+		"commitSha": "72f74880b0510ebd4581fa8c4914fcf010767c8b",
+		"done": true,
+		"blocked": false,
+		"acceptance-criteria": [
+			"Add the AWS provider dependency and the production config shape needed for an RDS PostgreSQL instance, subnet group, and security group in `packages/infra`. Run `cd packages/infra && pnpm typecheck` and verify it exits 0.",
+			"Create a production stack/config for `packages/infra` and run `cd packages/infra && pulumi preview --stack <production-stack>`. Verify the preview includes AWS RDS resources such as `aws:rds/subnetGroup:SubnetGroup`, `aws:ec2/securityGroup:SecurityGroup`, and `aws:rds/instance:Instance`.",
+			"Inspect the same preview and verify it does not require changes to the existing Azure staging AKS/database resources.",
+			"Run `cd packages/infra && pulumi stack output --stack <production-stack> --json` after deployment or against a refreshed stack and verify the exported outputs include the RDS host, port, admin username, and instance identifier needed by app-specific infra."
+		]
+	},
+	{
+		"id": "2.0",
+		"title": "Refactor shared app database provisioning for AWS compatibility",
+		"description": "Remove the Azure-only database creation path from the shared app database component and update `apps/imdbgraph/infra` to create the `imdbgraph` database, user, grants, and `pg_trgm` on RDS while preserving the `databaseUrl` output contract.",
+		"dependencies": ["1.0"],
+		"commitSha": "72f74880b0510ebd4581fa8c4914fcf010767c8b",
+		"done": true,
+		"blocked": false,
+		"acceptance-criteria": [
+			"Update `packages/infra/src/components/AppDatabase.ts` so the logical database, role, grants, and extension are provisioned through AWS-compatible resources. Run `cd packages/infra && pnpm typecheck` and verify it exits 0.",
+			"Update `apps/imdbgraph/infra/index.ts` to consume the new shared outputs and remove the production dependency on Azure resource group/server settings. Run `cd apps/imdbgraph/infra && pnpm typecheck` and verify it exits 0.",
+			"Run `cd apps/imdbgraph/infra && pulumi preview --stack <production-stack>` and verify the plan creates the `imdbgraph` database, app role, grants, and `pg_trgm` extension on the RDS host.",
+			"Inspect the `databaseUrl` stack output and verify it remains in PostgreSQL URL form with `sslmode=require` and points at the AWS RDS host."
+		]
+	},
+	{
+		"id": "2.5",
+		"title": "Establish AWS staging-safe authentication runbook",
+		"description": "Set up least-privilege AWS authentication for operators/agents using IAM Identity Center (SSO) and a staging-scoped role so Pulumi production execution is unblocked without introducing long-lived broad credentials.",
+		"dependencies": ["2.0"],
+		"commitSha": null,
+		"done": false,
+		"blocked": false,
+		"acceptance-criteria": [
+			"Create and document an `agent-staging` access path (permission set or role) with explicit production deny guardrails and `us-east-1` region scope.",
+			"Configure local AWS CLI SSO profile (for example `agent-staging`) and run `aws sso login --profile <profile>` successfully.",
+			"Run `aws sts get-caller-identity` with that profile and verify it exits 0 and returns the expected account/principal.",
+			"Run `cd packages/infra && pulumi preview --stack production` and verify AWS provider authentication succeeds (no `No valid credential sources found` error).",
+			"Document minimal operator steps and required env (`AWS_PROFILE`, `AWS_REGION`) so Task 3.0 execution is repeatable."
+		]
+	},
+	{
+		"id": "3.0",
+		"title": "Execute the database rebuild runbook on AWS",
+		"description": "Deploy the shared and app-specific Pulumi stacks, apply the checked-in Drizzle migration to the new RDS database, and repopulate the schema from the existing IMDb ingestion flow.",
+		"dependencies": ["2.5"],
+		"commitSha": null,
+		"done": false,
+		"blocked": false,
+		"acceptance-criteria": [
+			"Run `pulumi up` in `packages/infra` for the production stack and verify the update exits 0 and the RDS connection outputs are present in `pulumi stack output --json`.",
+			"Run `pulumi up` in `apps/imdbgraph/infra` for the production stack and verify the update exits 0 and `databaseUrl` is exported as a secret output.",
+			"From `apps/imdbgraph`, run the Drizzle migration against the new `DATABASE_URL` with `pnpm exec drizzle-kit migrate --config drizzle.config.ts`. Verify the command exits 0 and applies the checked-in migration in `src/db/migrations`.",
+			"From `apps/imdbgraph`, run `DATABASE_URL=<new-rds-url> pnpm populate` and verify the process exits 0 and logs `DB population completed successfully.`",
+			"Connect to the new database with `psql` or an equivalent SQL client and verify the core tables contain data and `pg_extension` includes `pg_trgm`."
+		]
+	},
+	{
+		"id": "4.0",
+		"title": "Optionally cut Vercel production over to AWS and validate user paths",
+		"description": "When the team decides to switch, replace only the production `DATABASE_URL` value in Vercel, redeploy the app, and verify production search, ratings, and scheduled populate paths against AWS-backed Postgres while preserving Azure rollback readiness.",
+		"dependencies": ["3.0"],
+		"commitSha": null,
+		"done": false,
+		"blocked": false,
+		"acceptance-criteria": [
+			"If/when cutover is approved, update only the production `DATABASE_URL` secret in Vercel and trigger a production redeploy. Verify in the Vercel dashboard or CLI deployment logs that the new deployment reaches a healthy ready state.",
+			"Run `cd apps/imdbgraph && pnpm verify` on the branch before merge/cutover and verify build, tests, typecheck, and e2e complete successfully.",
+			"Load production after the cutover, perform a search, and open at least one ratings page. Verify the responses are successful and the pages render live data instead of database connection failures.",
+			"Trigger the populate route or wait for the next scheduled run and inspect Vercel function logs. Verify the populate job completes without connection, SSL, or authentication errors against the active production database path."
+		]
+	},
+	{
+		"id": "5.0",
+		"title": "Preserve Azure resources while validating long-term AWS readiness",
+		"description": "Keep Azure production database resources intact while confirming AWS-backed infrastructure can be used safely when needed, without impacting staging AKS/Azure resources.",
+		"dependencies": ["4.0"],
+		"commitSha": null,
+		"done": false,
+		"blocked": false,
+		"acceptance-criteria": [
+			"Run production Pulumi previews for `packages/infra` and `apps/imdbgraph/infra` and verify no Azure production resources are targeted for deletion.",
+			"Inspect production configuration and verify rollback to Azure remains possible (documented Azure connection path and credentials ownership are retained).",
+			"Run staging Pulumi previews for both `packages/infra` and `apps/imdbgraph/infra` and verify no staging AKS or Azure resources are unintentionally modified.",
+			"Repeat production smoke checks (search, ratings, populate) on the active path and verify service health remains stable while Azure stays available as fallback."
+		]
+	}
+]
