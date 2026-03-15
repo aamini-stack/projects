@@ -173,3 +173,47 @@ jobs:
             attempt=$((attempt + 1))
             delay_seconds=$((delay_seconds * 2))
           done
+
+  wait-for-deploy-ready:
+    needs:
+      - publish-gitops
+    if:
+      ${{ github.event_name == 'pull_request' &&
+      !github.event.pull_request.head.repo.fork }}
+    runs-on: ubuntu-latest
+    permissions:
+      statuses: read
+    steps:
+      - name: Wait for deploy-ready e2e status
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+
+          deadline=$((SECONDS + 1800))
+          while (( SECONDS < deadline )); do
+            state="$(gh api "repos/${GITHUB_REPOSITORY}/commits/${SHA}/status" --jq '.statuses | map(select(.context == "e2e/all-required")) | if length == 0 then "missing" else .[0].state end')"
+
+            case "$state" in
+              success)
+                echo "Deployment e2e completed successfully."
+                exit 0
+                ;;
+              failure|error)
+                echo "Deployment e2e failed."
+                exit 1
+                ;;
+              pending|missing)
+                echo "Current deploy-ready aggregate status: ${state}. Waiting for Flux deploy and e2e results."
+                sleep 30
+                ;;
+              *)
+                echo "Unexpected deploy-ready aggregate status: ${state}"
+                sleep 30
+                ;;
+            esac
+          done
+
+          echo "Timed out waiting for deploy-ready e2e status."
+          exit 1

@@ -1,9 +1,11 @@
 image:
   repository: ghcr.io/aamini-stack/app
   tag: latest
+  pullPolicy: IfNotPresent
 app:
   name: app-release
   namespace: app-release
+deployRevision: ''
 host: ''
 rootHost: ''
 service:

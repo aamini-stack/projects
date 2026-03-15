@@ -117,6 +117,8 @@ void test('buildRenderedAppManifests renders stable, image automation, and previ
 	assert.match(rendered.stableApps, /targetNamespace: portfolio/)
 	assert.match(rendered.stableApps, /targetNamespace: pc-tune-ups/)
 	assert.match(rendered.stableApps, /createNamespace: true/)
+	assert.match(rendered.stableApps, /deployRevision: ''/)
+	assert.match(rendered.stableApps, /pullPolicy: Always/)
 	assert.match(rendered.stableApps, /rootHost: ariaamini\.com/)
 	assert.match(rendered.stableApps, /envFromSecret: portfolio-secrets/)
 	assert.match(rendered.stableApps, /rootHost: ''/)
@@ -153,6 +155,11 @@ void test('buildRenderedAppManifests renders stable, image automation, and previ
 		rendered.previews,
 		/preview-url: "https:\/\/portfolio-pr-<< inputs\.id >>\.ariaamini\.com"/,
 	)
+	assert.match(
+		rendered.previews,
+		/deployRevision: << inputs\.sha \| quote >>/,
+	)
+	assert.match(rendered.previews, /pullPolicy: Always/)
 	assert.match(
 		rendered.previews,
 		/url: "https:\/\/portfolio-pr-<< inputs\.id >>\.ariaamini\.com"/,

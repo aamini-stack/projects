@@ -287,9 +287,11 @@ function buildStableAppsManifest(
 				'    app:',
 				`      name: ${app.name}`,
 				`      namespace: ${app.namespace}`,
+				`    deployRevision: ${quoteYamlString(deployRevision)}`,
 				'    image:',
 				`      repository: ${app.image.repository}`,
 				'      tag: latest',
+				'      pullPolicy: Always',
 				`    host: ${app.stable.host}`,
 				`    rootHost: ${quoteYamlString(app.stable.rootHost)}`,
 				`    envFromSecret: ${quoteYamlString(app.stable.envFromSecret)}`,
@@ -411,9 +413,11 @@ function buildPreviewManifest(apps: AppDefinition[]): string {
 			'          app:',
 			`            name: ${app.name}-pr-<< inputs.id >>`,
 			'            namespace: app-preview',
+			'          deployRevision: << inputs.sha | quote >>',
 			'          image:',
 			`            repository: ${app.image.repository}`,
 			'            tag: pr-<< inputs.id >>',
+			'            pullPolicy: Always',
 			`          host: ${app.name}-pr-<< inputs.id >>.ariaamini.com`,
 			...(app.stable.envFromSecret
 				? [`          envFromSecret: ${app.stable.envFromSecret}`]
