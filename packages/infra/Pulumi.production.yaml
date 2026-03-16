@@ -22,3 +22,10 @@ config:
   aamini-infra:flux:
     ociRepository: oci://302481198387.dkr.ecr.us-east-1.amazonaws.com/projects-gitops
     ociTag: latest
+  aamini-infra:githubActionsOidc:
+    enabled: true
+    roleName: github-actions-ecr-publish
+    repo: aamini-stack/projects
+    allowedRefs:
+      - refs/heads/main
+      - refs/heads/ci-turbo-docker-publish-e2e
