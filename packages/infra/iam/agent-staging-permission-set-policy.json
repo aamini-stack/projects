@@ -1,0 +1,78 @@
+{
+	"Version": "2012-10-17",
+	"Statement": [
+		{
+			"Sid": "AllowCallerIdentity",
+			"Effect": "Allow",
+			"Action": "sts:GetCallerIdentity",
+			"Resource": "*"
+		},
+		{
+			"Sid": "AllowAssumeStagingRole",
+			"Effect": "Allow",
+			"Action": "sts:AssumeRole",
+			"Resource": "arn:aws:iam::302481198387:role/ai-agent-staging-role"
+		},
+		{
+			"Sid": "AllowReadOnlyDiscoveryInUsEast1",
+			"Effect": "Allow",
+			"Action": [
+				"ec2:Describe*",
+				"rds:Describe*",
+				"logs:Describe*",
+				"logs:Get*",
+				"logs:List*",
+				"s3:ListAllMyBuckets",
+				"s3:GetBucketLocation",
+				"s3:ListBucket"
+			],
+			"Resource": "*",
+			"Condition": {
+				"StringEquals": {
+					"aws:RequestedRegion": "us-east-1"
+				}
+			}
+		},
+		{
+			"Sid": "DenyOutsideUsEast1",
+			"Effect": "Deny",
+			"NotAction": ["sts:*", "iam:*", "organizations:*", "account:*"],
+			"Resource": "*",
+			"Condition": {
+				"StringNotEquals": {
+					"aws:RequestedRegion": "us-east-1"
+				}
+			}
+		},
+		{
+			"Sid": "DenyProdByTag",
+			"Effect": "Deny",
+			"Action": "*",
+			"Resource": "*",
+			"Condition": {
+				"StringEquals": {
+					"aws:ResourceTag/Environment": "prod"
+				}
+			}
+		},
+		{
+			"Sid": "DenyProdByNamePatterns",
+			"Effect": "Deny",
+			"Action": "*",
+			"Resource": [
+				"arn:aws:s3:::prod-*",
+				"arn:aws:s3:::prod-*/*",
+				"arn:aws:lambda:us-east-1:302481198387:function:prod-*",
+				"arn:aws:secretsmanager:us-east-1:302481198387:secret:prod-*",
+				"arn:aws:rds:us-east-1:302481198387:db:prod-*",
+				"arn:aws:logs:us-east-1:302481198387:log-group:*prod*"
+			]
+		},
+		{
+			"Sid": "DenySensitiveControlPlane",
+			"Effect": "Deny",
+			"Action": ["iam:*", "organizations:*", "account:*"],
+			"Resource": "*"
+		}
+	]
+}

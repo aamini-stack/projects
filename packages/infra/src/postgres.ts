@@ -1,84 +1,105 @@
-import * as azure from '@pulumi/azure-native'
+import * as aws from '@pulumi/aws'
 import * as pulumi from '@pulumi/pulumi'
 
-interface PostgresConfig {
-	skuName: string
-	skuTier: string
-	storageSizeGb: number
-	backupRetentionDays: number
-	geoRedundantBackup: string
+interface AwsPostgresConfig {
+	instanceClass: string
+	allocatedStorage: number
+	maxAllocatedStorage?: number
+	backupRetentionDays?: number
+	engineVersion?: string
+	storageType?: string
+	publiclyAccessible?: boolean
+	deletionProtection?: boolean
+	multiAz?: boolean
+	port?: number
+	allowedCidrs?: string[]
 }
 
 const config = new pulumi.Config()
-const pgConfig = config.requireObject<PostgresConfig>('postgres')
 const env = pulumi.getStack()
-const azureConfig = new pulumi.Config('azure-native')
-const location = azureConfig.require('location')
-const resourceGroupName = azureConfig.require('resourceGroup')
 
+const pgConfig = config.requireObject<AwsPostgresConfig>('postgres')
 const adminPassword = config.requireSecret('postgresAdminPassword')
+const adminUser = config.get('postgresAdminUser') ?? 'pgadmin'
+const port = pgConfig.port ?? 5432
+const allowedCidrs = pgConfig.allowedCidrs ?? ['0.0.0.0/0']
+const identifier = `pg-aamini-${env}`
 
-// PostgreSQL Flexible Server
-const serverName = `pg-aamini-${env}`
-const server = new azure.dbforpostgresql.Server(serverName, {
-	serverName,
-	resourceGroupName: resourceGroupName,
-	location: location,
-	version: '16',
-	administratorLogin: 'pgadmin',
-	administratorLoginPassword: adminPassword,
-	sku: {
-		name: pgConfig.skuName,
-		tier: pgConfig.skuTier,
-	},
-	storage: {
-		storageSizeGB: pgConfig.storageSizeGb,
-	},
-	backup: {
-		backupRetentionDays: pgConfig.backupRetentionDays,
-		geoRedundantBackup: pgConfig.geoRedundantBackup,
+const defaultVpc = aws.ec2.getVpcOutput({ default: true })
+const defaultSubnets = aws.ec2.getSubnetsOutput({
+	filters: [{ name: 'vpc-id', values: [defaultVpc.id] }],
+})
+
+const securityGroup = new aws.ec2.SecurityGroup('postgres-sg', {
+	description: 'PostgreSQL access for imdbgraph workloads',
+	vpcId: defaultVpc.id,
+	ingress: [
+		{
+			protocol: 'tcp',
+			fromPort: port,
+			toPort: port,
+			cidrBlocks: allowedCidrs,
+		},
+	],
+	egress: [
+		{
+			protocol: '-1',
+			fromPort: 0,
+			toPort: 0,
+			cidrBlocks: ['0.0.0.0/0'],
+		},
+	],
+})
+
+const subnetGroup = new aws.rds.SubnetGroup('postgres-subnet-group', {
+	subnetIds: defaultSubnets.ids,
+	tags: {
+		Name: `${identifier}-subnets`,
 	},
 })
 
-// Allow Azure services to connect
-const allowAzureServices = new azure.dbforpostgresql.FirewallRule(
-	'allow-azure-services',
-	{
-		resourceGroupName: resourceGroupName,
-		serverName: server.name,
-		startIpAddress: '0.0.0.0',
-		endIpAddress: '0.0.0.0',
-	},
-	{ dependsOn: [server] },
-)
+const instanceArgs: aws.rds.InstanceArgs = {
+	identifier,
+	engine: 'postgres',
+	engineVersion: pgConfig.engineVersion ?? '16.3',
+	instanceClass: pgConfig.instanceClass,
+	allocatedStorage: pgConfig.allocatedStorage,
+	backupRetentionPeriod: pgConfig.backupRetentionDays ?? 7,
+	username: adminUser,
+	password: adminPassword,
+	port,
+	dbSubnetGroupName: subnetGroup.name,
+	vpcSecurityGroupIds: [securityGroup.id],
+	publiclyAccessible: pgConfig.publiclyAccessible ?? true,
+	deletionProtection: pgConfig.deletionProtection ?? false,
+	multiAz: pgConfig.multiAz ?? false,
+	storageEncrypted: true,
+	skipFinalSnapshot: true,
+	applyImmediately: true,
+}
 
-// Allow all public IPs to connect
-const allowAll = new azure.dbforpostgresql.FirewallRule(
-	'allow-all',
-	{
-		resourceGroupName: resourceGroupName,
-		serverName: server.name,
-		startIpAddress: '0.0.0.0',
-		endIpAddress: '255.255.255.255',
-	},
-	{ dependsOn: [allowAzureServices] },
-)
+if (pgConfig.maxAllocatedStorage !== undefined) {
+	instanceArgs.maxAllocatedStorage = pgConfig.maxAllocatedStorage
+}
 
-// Allow-list PostgreSQL extensions after other server-scoped operations settle.
-new azure.dbforpostgresql.Configuration(
-	'pg-extensions',
-	{
-		resourceGroupName: resourceGroupName,
-		serverName: server.name,
-		configurationName: 'azure.extensions',
-		value: 'PG_TRGM',
-		source: 'user-override',
-	},
-	{ dependsOn: [allowAll] },
-)
+if (pgConfig.storageType !== undefined) {
+	instanceArgs.storageType = pgConfig.storageType
+}
 
-// Exports for apps to consume
-export const postgresHost = server.fullyQualifiedDomainName
-export const postgresAdminUser = server.administratorLogin
-export const postgresAdminPassword = adminPassword
-export const postgresServerName = server.name
+const instance = new aws.rds.Instance('postgres', instanceArgs)
+
+const postgresHost = instance.address.apply((host) => host ?? '')
+const postgresPort = instance.port.apply((dbPort) => dbPort ?? port)
+const postgresAdminUser = instance.username.apply((user) => user ?? adminUser)
+const postgresAdminPassword = adminPassword
+const postgresServerName = instance.identifier
+const postgresInstanceIdentifier = instance.identifier
+
+export {
+	postgresHost,
+	postgresPort,
+	postgresAdminUser,
+	postgresAdminPassword,
+	postgresServerName,
+	postgresInstanceIdentifier,
+}

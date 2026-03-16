@@ -1,8 +1,14 @@
 import { AppDatabase } from '@aamini/infra/src/components'
 import * as pulumi from '@pulumi/pulumi'
 
+interface PostgresStackOutput {
+	postgresHost: string
+	postgresPort?: number
+	postgresAdminUser: string
+	postgresAdminPassword: string
+}
+
 const config = new pulumi.Config()
-const azureConfig = new pulumi.Config('azure-native')
 const dbPassword = config.requireSecret('dbPassword')
 
 // Reference the global infrastructure stack using the current stack's environment name
@@ -11,29 +17,20 @@ const globalStack = new pulumi.StackReference(
 	`aamini11/aamini-infra/${currentStack}`,
 )
 
-// Get server details from global stack
-const serverResourceGroup = azureConfig.require('resourceGroup')
-const serverName = globalStack
-	.getOutput('postgres')
-	.apply((pg: any) => pg.postgresServerName)
-const dbHost = globalStack
-	.getOutput('postgres')
-	.apply((pg: any) => pg.postgresHost)
+const postgres = globalStack.getOutput(
+	'postgres',
+) as pulumi.Output<PostgresStackOutput>
+const dbHost = postgres.apply((pg) => pg.postgresHost)
+const dbPort = postgres.apply((pg) => pg.postgresPort ?? 5432)
 
-// Create app database using shared component
 const appDb = new AppDatabase('imdbgraph', {
 	name: 'imdbgraph',
-	serverResourceGroupName: serverResourceGroup,
-	serverName: serverName,
 	serverHost: dbHost,
-	adminUser: globalStack
-		.getOutput('postgres')
-		.apply((pg: any) => pg.postgresAdminUser),
-	adminPassword: globalStack
-		.getOutput('postgres')
-		.apply((pg: any) => pg.postgresAdminPassword),
+	serverPort: dbPort,
+	adminUser: postgres.apply((pg) => pg.postgresAdminUser),
+	adminPassword: postgres.apply((pg) => pg.postgresAdminPassword),
 	userPassword: dbPassword,
 })
 
 // Export connection string for app to use
-export const databaseUrl = pulumi.interpolate`postgresql://${appDb.userName}:${appDb.userPassword}@${dbHost}:5432/${appDb.databaseName}?sslmode=require`
+export const databaseUrl = pulumi.interpolate`postgresql://${appDb.userName}:${appDb.userPassword}@${dbHost}:${dbPort}/${appDb.databaseName}?sslmode=require`

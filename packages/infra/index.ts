@@ -1,2 +1,6 @@
-export * as aks from './src/aks'
+export * as kubernetes from './src/kubernetes'
+export * as ecr from './src/ecr'
+export * as awsIamAgent from './src/aws-iam-agent'
+export * as awsSsoAgent from './src/aws-sso-agent'
+export * as githubActionsOidc from './src/github-actions-oidc'
 export * as postgres from './src/postgres'

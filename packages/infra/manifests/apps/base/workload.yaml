@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
         - name: app
-          image: ghcr.io/aamini-stack/app:latest
+          image: 302481198387.dkr.ecr.us-east-1.amazonaws.com/app:latest
           ports:
             - containerPort: 3000
           resources:
