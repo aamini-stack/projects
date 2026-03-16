@@ -4,7 +4,7 @@ import * as path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { $ } from 'zx'
 import { runE2E } from './e2e.ts'
-import { runBuild } from './build.ts'
+import { runBuild, runPush } from './build.ts'
 import { sealAll, unsealAll } from './k8secrets.ts'
 import { getRepoRoot } from './helpers/repo.ts'
 
@@ -39,6 +39,13 @@ async function main(): Promise<void> {
 		.allowUnknownOptions()
 		.action(async () => {
 			await runBuild(await getRepoRoot(), getRawCommandArgs())
+		})
+
+	cli
+		.command('push [...args]', 'Push Docker image for one app or all')
+		.allowUnknownOptions()
+		.action(async () => {
+			await runPush(await getRepoRoot(), getRawCommandArgs())
 		})
 
 	cli

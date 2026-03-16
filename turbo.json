@@ -48,6 +48,15 @@
 		"e2e:update": {
 			"dependsOn": ["^build", "build"],
 			"cache": false
+		},
+		"docker:build": {
+			"cache": false,
+			"env": ["CI", "DOCKER_PLATFORM", "ECR_REGISTRY", "IMAGE_TAG", "NODE_VERSION", "PORT"]
+		},
+		"docker:push": {
+			"dependsOn": ["docker:build"],
+			"cache": false,
+			"env": ["ECR_REGISTRY", "IMAGE_TAG", "DOCKER_PUSH_LATEST"]
 		}
 	}
 }

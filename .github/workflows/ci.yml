@@ -54,20 +54,17 @@ jobs:
       ${{ github.event_name == 'push' ||
       !github.event.pull_request.head.repo.fork }}
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        app:
-          - dota-visualizer
-          - imdbgraph
-          - pc-tune-ups
-          - portfolio
     permissions:
       contents: read
       id-token: write
     steps:
       - uses: actions/checkout@v6
-      - uses: docker/setup-buildx-action@v3
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
       - uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.AWS_GITHUB_ACTIONS_ROLE_ARN }}
@@ -86,19 +83,14 @@ jobs:
           fi
 
           echo "value=main-${SHA}" >> "$GITHUB_OUTPUT"
-      - name: Build and push app image
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          file: ./Dockerfile
-          target: production
-          push: true
-          build-args: APP_NAME=${{ matrix.app }}
-          tags:
-            ${{ env.ECR_REGISTRY }}/${{ matrix.app }}:${{ steps.image_tag.outputs.value }}
-            ${{ env.ECR_REGISTRY }}/${{ matrix.app }}:latest
-          cache-from: type=gha,scope=${{ matrix.app }}
-          cache-to: type=gha,mode=max,scope=${{ matrix.app }}
+      - name: Build all app images via Turbo
+        env:
+          IMAGE_TAG: ${{ steps.image_tag.outputs.value }}
+        run: pnpm docker:build
+      - name: Push all app images via Turbo
+        env:
+          IMAGE_TAG: ${{ steps.image_tag.outputs.value }}
+        run: pnpm docker:push
 
   publish-gitops:
     needs:
@@ -173,7 +165,7 @@ jobs:
     needs:
       - publish-gitops
     if:
-      ${{ github.event_name == 'pull_request' &&
+      ${{ github.event_name == 'push' ||
       !github.event.pull_request.head.repo.fork }}
     runs-on: ubuntu-latest
     permissions:

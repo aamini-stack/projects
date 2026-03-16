@@ -82,6 +82,7 @@ jobs:
           APP: ${{ steps.payload.outputs.app }}
           GH_TOKEN: ${{ github.token }}
           PR_NUMBER: ${{ steps.payload.outputs.pr_number }}
+          SOURCE: ${{ steps.payload.outputs.source }}
           RUN_URL:
             ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
             github.run_id }}
@@ -99,12 +100,18 @@ jobs:
           }
 
           required_apps() {
+            mapfile -t all_apps < <(find apps -mindepth 1 -maxdepth 1 -type d -printf '%f\n' | sort)
+
             if [[ -z "${PR_NUMBER}" ]]; then
+              if [[ "${SOURCE}" == "flux-deploy-ready" ]]; then
+                printf '%s\n' "${all_apps[@]}"
+                return
+              fi
+
               printf '%s\n' "${APP}"
               return
             fi
 
-            mapfile -t all_apps < <(find apps -mindepth 1 -maxdepth 1 -type d -printf '%f\n' | sort)
             mapfile -t changed_files < <(gh api --paginate "repos/${GITHUB_REPOSITORY}/pulls/${PR_NUMBER}/files" --jq '.[].filename')
 
             declare -A selected=()
@@ -179,6 +186,7 @@ jobs:
           APP: ${{ steps.payload.outputs.app }}
           GH_TOKEN: ${{ github.token }}
           PR_NUMBER: ${{ steps.payload.outputs.pr_number }}
+          SOURCE: ${{ steps.payload.outputs.source }}
           RESULT: ${{ steps.run_e2e.outcome }}
           RUN_URL:
             ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
@@ -197,12 +205,18 @@ jobs:
           }
 
           required_apps() {
+            mapfile -t all_apps < <(find apps -mindepth 1 -maxdepth 1 -type d -printf '%f\n' | sort)
+
             if [[ -z "${PR_NUMBER}" ]]; then
+              if [[ "${SOURCE}" == "flux-deploy-ready" ]]; then
+                printf '%s\n' "${all_apps[@]}"
+                return
+              fi
+
               printf '%s\n' "${APP}"
               return
             fi
 
-            mapfile -t all_apps < <(find apps -mindepth 1 -maxdepth 1 -type d -printf '%f\n' | sort)
             mapfile -t changed_files < <(gh api --paginate "repos/${GITHUB_REPOSITORY}/pulls/${PR_NUMBER}/files" --jq '.[].filename')
 
             declare -A selected=()
