@@ -153,13 +153,14 @@ if (enabled) {
 		},
 	})
 
-	const roleAccessStatements: aws.types.input.iam.GetPolicyDocumentStatement[] = [
-		{
-			effect: 'Allow',
-			actions: discoveryReadActions,
-			resources: ['*'],
-		},
-	]
+	const roleAccessStatements: aws.types.input.iam.GetPolicyDocumentStatement[] =
+		[
+			{
+				effect: 'Allow',
+				actions: discoveryReadActions,
+				resources: ['*'],
+			},
+		]
 
 	if (allowedResourceArns.length > 0) {
 		roleAccessStatements.push({
@@ -217,11 +218,12 @@ if (enabled) {
 		groups: [bootstrapGroup.name],
 	})
 
-	const assumeRolePolicy = new aws.iam.GroupPolicy('ai-agent-bootstrap-assume-role', {
-		name: 'ai-agent-bootstrap-assume-role',
-		group: bootstrapGroup.name,
-		policy: aws.iam
-			.getPolicyDocumentOutput({
+	const assumeRolePolicy = new aws.iam.GroupPolicy(
+		'ai-agent-bootstrap-assume-role',
+		{
+			name: 'ai-agent-bootstrap-assume-role',
+			group: bootstrapGroup.name,
+			policy: aws.iam.getPolicyDocumentOutput({
 				statements: [
 					{
 						effect: 'Allow',
@@ -229,15 +231,16 @@ if (enabled) {
 						resources: [role.arn],
 					},
 				],
-			})
-			.json,
-	})
+			}).json,
+		},
+	)
 
-	const denyDirectPolicy = new aws.iam.GroupPolicy('ai-agent-bootstrap-deny-direct', {
-		name: 'ai-agent-bootstrap-deny-direct',
-		group: bootstrapGroup.name,
-		policy: aws.iam
-			.getPolicyDocumentOutput({
+	const denyDirectPolicy = new aws.iam.GroupPolicy(
+		'ai-agent-bootstrap-deny-direct',
+		{
+			name: 'ai-agent-bootstrap-deny-direct',
+			group: bootstrapGroup.name,
+			policy: aws.iam.getPolicyDocumentOutput({
 				statements: [
 					{
 						effect: 'Deny',
@@ -245,9 +248,9 @@ if (enabled) {
 						resources: ['*'],
 					},
 				],
-			})
-			.json,
-	})
+			}).json,
+		},
+	)
 
 	const accessKey = createAccessKey
 		? new aws.iam.AccessKey(

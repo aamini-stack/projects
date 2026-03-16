@@ -1,7 +1,9 @@
 ---
 name: developer
 title: developer
-description: Implement one ready task end-to-end with aamini pm, including verification, commit, and task closure.
+description:
+  Implement one ready task end-to-end with aamini pm, including verification,
+  commit, and task closure.
 compatibility: opencode
 ---
 

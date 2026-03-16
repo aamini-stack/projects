@@ -43,7 +43,9 @@ if (enabled) {
 	const activeIdentityStoreId = ssoInstances.identityStoreIds.apply((ids) => {
 		const id = ids[0]
 		if (!id) {
-			throw new Error('No identity store ID found for IAM Identity Center instance.')
+			throw new Error(
+				'No identity store ID found for IAM Identity Center instance.',
+			)
 		}
 		return id
 	})
@@ -69,12 +71,15 @@ if (enabled) {
 	)
 	const inlinePolicy = fs.readFileSync(inlinePolicyPath, 'utf8')
 
-	const permissionSet = new aws.ssoadmin.PermissionSet('ai-agent-sso-permission-set', {
-		instanceArn: activeInstanceArn.apply((arn) => arn),
-		name: permissionSetName,
-		description: 'Staging-safe AWS SSO access path for AI agent operations',
-		sessionDuration: sessionDuration,
-	})
+	const permissionSet = new aws.ssoadmin.PermissionSet(
+		'ai-agent-sso-permission-set',
+		{
+			instanceArn: activeInstanceArn.apply((arn) => arn),
+			name: permissionSetName,
+			description: 'Staging-safe AWS SSO access path for AI agent operations',
+			sessionDuration: sessionDuration,
+		},
+	)
 
 	new aws.ssoadmin.PermissionSetInlinePolicy('ai-agent-sso-inline-policy', {
 		instanceArn: activeInstanceArn.apply((arn) => arn),
