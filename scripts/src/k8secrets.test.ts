@@ -5,6 +5,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import {
 	findSealTargets,
 	normalizeSealedSecretYaml,
+	parseTemplateMetadata,
 	sealAll,
 } from './k8secrets.ts'
 
@@ -59,6 +60,62 @@ spec:
 `
 
 		expect(normalizeSealedSecretYaml(yaml, 'portfolio')).toBe(yaml)
+	})
+})
+
+describe('parseTemplateMetadata', () => {
+	it('reads secret name and namespace from spec.template.metadata', () => {
+		const repoRoot = makeRepo()
+		const sealedSecretPath = path.join(
+			repoRoot,
+			'apps',
+			'portfolio',
+			'k8s',
+			'sealed-secret.yaml',
+		)
+		writeFile(
+			sealedSecretPath,
+			`apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: portfolio-secrets
+  namespace: portfolio
+spec:
+  template:
+    metadata:
+      name: portfolio-template-secrets
+      namespace: portfolio-template
+`,
+		)
+
+		expect(parseTemplateMetadata(sealedSecretPath)).toEqual({
+			name: 'portfolio-template-secrets',
+			namespace: 'portfolio-template',
+		})
+	})
+
+	it('returns empty strings when template metadata is missing', () => {
+		const repoRoot = makeRepo()
+		const sealedSecretPath = path.join(
+			repoRoot,
+			'apps',
+			'portfolio',
+			'k8s',
+			'sealed-secret.yaml',
+		)
+		writeFile(
+			sealedSecretPath,
+			`apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: portfolio-secrets
+`,
+		)
+
+		expect(parseTemplateMetadata(sealedSecretPath)).toEqual({
+			name: '',
+			namespace: '',
+		})
 	})
 })
 

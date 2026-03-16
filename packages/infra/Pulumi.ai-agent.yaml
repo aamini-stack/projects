@@ -1,0 +1,27 @@
+config:
+  aws:region: us-east-1
+  aamini-infra:postgresEnabled: false
+  aamini-infra:aiAgent:
+    enabled: true
+    roleName: ai-agent-staging-role
+    userName: ai-agent-bootstrap-staging
+    groupName: ai-agent-bootstrap-staging
+    createAccessKey: true
+    stagingTagKey: Environment
+    stagingTagValue: staging
+    allowedActions:
+      - s3:*
+      - logs:*
+      - lambda:InvokeFunction
+      - secretsmanager:GetSecretValue
+      - rds-db:connect
+      - rds:Describe*
+      - ec2:Describe*
+    allowedResourceArns: []
+  aamini-infra:aiAgentSso:
+    enabled: true
+    permissionSetName: agent-staging
+    userName: ai-agent
+    sessionDuration: PT4H
+    startUrl: https://d-906604ca32.awsapps.com/start
+    region: us-east-1

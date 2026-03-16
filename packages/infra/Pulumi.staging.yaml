@@ -1,22 +1,24 @@
 config:
+  aws:region: us-east-1
   # Azure
   azure-native:resourceGroup: rg-aamini-staging
-  azure-native:nodeResourceGroup: rg-aamini-nodes-staging
   azure-native:location: westus
   azure-native:subscriptionId: 331269d5-143f-4246-b389-9c1f41bb5882
-  aamini-infra:aks:
-    nodeCount: 1
-    vmSize: Standard_D8ds_v5
-    maxSurge: '1'
+  aamini-infra:kubernetes:
+    clusterName: aamini-staging
+    version: '1.31'
+    instanceType: t3.large
+    desiredCapacity: 2
+    minSize: 1
+    maxSize: 3
+    endpointPublicAccess: true
+    endpointPrivateAccess: false
   aamini-infra:flux:
-    ociRepository: oci://ghcr.io/aamini-stack/projects-gitops
+    ociRepository: oci://302481198387.dkr.ecr.us-east-1.amazonaws.com/projects-gitops
     ociTag: latest
   aamini-infra:fluxOperator:
     githubRepository: aamini-stack/projects
     githubSecretName: github-operator-auth
-    registryServer: ghcr.io
-    registryUsername: aamini-stack
-    registrySecretName: ghcr-auth
   # Postgres
   aamini-infra:postgres:
     skuName: Standard_B1ms

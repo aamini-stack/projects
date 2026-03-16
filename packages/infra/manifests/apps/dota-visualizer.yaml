@@ -1,7 +1,7 @@
 name: dota-visualizer
 namespace: dota-visualizer
 image:
-  repository: ghcr.io/aamini-stack/dota-visualizer
+  repository: 302481198387.dkr.ecr.us-east-1.amazonaws.com/dota-visualizer
   policy: dota-visualizer
 stable:
   host: dota-visualizer.ariaamini.com

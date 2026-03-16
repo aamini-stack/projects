@@ -1,0 +1,24 @@
+config:
+  aws:region: us-east-1
+  aamini-infra:postgresProvider: aws
+  aamini-infra:postgres:
+    instanceClass: db.t4g.micro
+    allocatedStorage: 20
+    maxAllocatedStorage: 100
+    backupRetentionDays: 7
+    engineVersion: '16.3'
+    storageType: gp3
+    publiclyAccessible: true
+    deletionProtection: false
+    multiAz: false
+    allowedCidrs:
+      - 0.0.0.0/0
+  aamini-infra:postgresAdminPassword:
+    secure: AAABAG2ycsx+ixmezTcs4TC0EBNIs+2AlEqmZB9atv0alq0hfHoomOXkGBVE9w==
+  github:token:
+    secure: AAABAFSXy8YrM+0jvqDYXrCH+rPruMgMhgL9AX8IlY6M9m53UVy7t7aAQa7KFB9L705OBlOpD4KWibvmYpYi7jBmwUw9SAlE
+  cloudflare:apiToken:
+    secure: AAABABgeHOxh65t+8xMQ0Z6vpa5nWV//DGqpPQqN2JzM+BJ+11yNnwTxNIcuXz5jfM1RBdx/E7DUCUOMRGwaAYJf0wluyJN8
+  aamini-infra:flux:
+    ociRepository: oci://302481198387.dkr.ecr.us-east-1.amazonaws.com/projects-gitops
+    ociTag: latest

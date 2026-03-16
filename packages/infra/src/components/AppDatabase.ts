@@ -5,12 +5,14 @@ import * as pulumi from '@pulumi/pulumi'
 export interface AppDatabaseArgs {
 	/** Database name (e.g., "imdbgraph") */
 	name: pulumi.Input<string>
-	/** Server resource group name */
-	serverResourceGroupName: pulumi.Input<string>
-	/** Server name */
-	serverName: pulumi.Input<string>
+	/** Server resource group name (required for Azure database resource path) */
+	serverResourceGroupName?: pulumi.Input<string>
+	/** Server name (required for Azure database resource path) */
+	serverName?: pulumi.Input<string>
 	/** FQDN of the PostgreSQL server */
 	serverHost: pulumi.Input<string>
+	/** PostgreSQL server port (default: 5432) */
+	serverPort?: pulumi.Input<number>
 	/** Admin username for the PostgreSQL server */
 	adminUser: pulumi.Input<string>
 	/** Admin password for the PostgreSQL server */
@@ -36,15 +38,21 @@ export class AppDatabase extends pulumi.ComponentResource {
 		super('aamini:infra:AppDatabase', name, {}, opts)
 
 		// Create a PostgreSQL provider using admin credentials
+		const providerConfig: postgresql.ProviderArgs = {
+			host: args.serverHost,
+			username: args.adminUser,
+			password: args.adminPassword,
+			sslmode: 'require',
+			superuser: false,
+		}
+
+		if (args.serverPort !== undefined) {
+			providerConfig.port = args.serverPort
+		}
+
 		const pgProvider = new postgresql.Provider(
 			`${name}-pg-provider`,
-			{
-				host: args.serverHost,
-				username: args.adminUser,
-				password: args.adminPassword,
-				sslmode: 'require',
-				superuser: false,
-			},
+			providerConfig,
 			{ parent: this },
 		)
 
@@ -61,29 +69,59 @@ export class AppDatabase extends pulumi.ComponentResource {
 			{ parent: this, provider: pgProvider },
 		)
 
-		// Create the database after the app role so destroy tears down the database first.
-		const database = new azure.dbforpostgresql.Database(
-			`${name}-db`,
-			{
-				resourceGroupName: args.serverResourceGroupName,
-				serverName: args.serverName,
-				databaseName: args.name,
-				charset: args.charset ?? 'UTF8',
-				collation: args.collation ?? 'en_US.utf8',
-			},
-			{ parent: this, dependsOn: [role] },
-		)
+		const useAzureDatabaseResource =
+			args.serverResourceGroupName !== undefined &&
+			args.serverName !== undefined
+
+		let databaseName: pulumi.Output<string>
+		let databaseDependency: pulumi.Resource
+
+		if (useAzureDatabaseResource) {
+			const azureDatabase = new azure.dbforpostgresql.Database(
+				`${name}-db`,
+				{
+					resourceGroupName: args.serverResourceGroupName!,
+					serverName: args.serverName!,
+					databaseName: args.name,
+					charset: args.charset ?? 'UTF8',
+					collation: args.collation ?? 'en_US.utf8',
+				},
+				{ parent: this, dependsOn: [role] },
+			)
+
+			databaseName = azureDatabase.name
+			databaseDependency = azureDatabase
+		} else {
+			const postgresDatabase = new postgresql.Database(
+				`${name}-db`,
+				{
+					name: args.name,
+					owner: role.name,
+					encoding: args.charset ?? 'UTF8',
+					lcCollate: args.collation ?? 'en_US.utf8',
+					lcCtype: args.collation ?? 'en_US.utf8',
+				},
+				{ parent: this, provider: pgProvider, dependsOn: [role] },
+			)
+
+			databaseName = postgresDatabase.name
+			databaseDependency = postgresDatabase
+		}
 
 		// Grant all privileges on the database to the app user
 		new postgresql.Grant(
 			`${name}-db-grant`,
 			{
 				role: role.name,
-				database: database.name,
+				database: databaseName,
 				objectType: 'database',
 				privileges: ['ALL'],
 			},
-			{ parent: this, provider: pgProvider, dependsOn: [role, database] },
+			{
+				parent: this,
+				provider: pgProvider,
+				dependsOn: [role, databaseDependency],
+			},
 		)
 
 		// Grant all privileges on the public schema to the app user
@@ -91,25 +129,35 @@ export class AppDatabase extends pulumi.ComponentResource {
 			`${name}-schema-grant`,
 			{
 				role: role.name,
-				database: database.name,
+				database: databaseName,
 				schema: 'public',
 				objectType: 'schema',
 				privileges: ['ALL'],
 			},
-			{ parent: this, provider: pgProvider, dependsOn: [role, database] },
+			{
+				parent: this,
+				provider: pgProvider,
+				dependsOn: [role, databaseDependency],
+			},
 		)
 
 		// Enable pg_trgm extension (allow-listed at the server level)
+		const dbProviderConfig: postgresql.ProviderArgs = {
+			host: args.serverHost,
+			username: args.adminUser,
+			password: args.adminPassword,
+			database: databaseName,
+			sslmode: 'require',
+			superuser: false,
+		}
+
+		if (args.serverPort !== undefined) {
+			dbProviderConfig.port = args.serverPort
+		}
+
 		const dbProvider = new postgresql.Provider(
 			`${name}-pg-db-provider`,
-			{
-				host: args.serverHost,
-				username: args.adminUser,
-				password: args.adminPassword,
-				database: args.name,
-				sslmode: 'require',
-				superuser: false,
-			},
+			dbProviderConfig,
 			{ parent: this },
 		)
 
@@ -119,11 +167,11 @@ export class AppDatabase extends pulumi.ComponentResource {
 			{
 				parent: this,
 				provider: dbProvider,
-				dependsOn: [database],
+				dependsOn: [databaseDependency],
 			},
 		)
 
-		this.databaseName = database.name
+		this.databaseName = databaseName
 		this.userName = appUserName
 		this.userPassword = pulumi.secret(args.userPassword)
 
