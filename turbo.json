@@ -51,7 +51,14 @@
 		},
 		"docker:build": {
 			"cache": false,
-			"env": ["CI", "DOCKER_PLATFORM", "ECR_REGISTRY", "IMAGE_TAG", "NODE_VERSION", "PORT"]
+			"env": [
+				"CI",
+				"DOCKER_PLATFORM",
+				"ECR_REGISTRY",
+				"IMAGE_TAG",
+				"NODE_VERSION",
+				"PORT"
+			]
 		},
 		"docker:push": {
 			"dependsOn": ["docker:build"],

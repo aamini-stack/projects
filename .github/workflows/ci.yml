@@ -50,9 +50,7 @@ jobs:
       - run: pnpm test:integration
 
   publish-app-images:
-    if:
-      ${{ github.event_name == 'push' ||
-      !github.event.pull_request.head.repo.fork }}
+    if: ${{ github.event_name != 'pull_request' }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -95,9 +93,7 @@ jobs:
   publish-gitops:
     needs:
       - publish-app-images
-    if:
-      ${{ github.event_name == 'push' ||
-      !github.event.pull_request.head.repo.fork }}
+    if: ${{ github.event_name != 'pull_request' }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -164,9 +160,7 @@ jobs:
   wait-for-deploy-ready:
     needs:
       - publish-gitops
-    if:
-      ${{ github.event_name == 'push' ||
-      !github.event.pull_request.head.repo.fork }}
+    if: ${{ github.event_name != 'pull_request' }}
     runs-on: ubuntu-latest
     permissions:
       statuses: read
