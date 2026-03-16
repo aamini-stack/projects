@@ -89,12 +89,12 @@ const cloudflareApiToken =
 
 const fluxConfig = {
 	...defaultFluxConfig,
-	...(config.getObject<Partial<FluxConfig>>('flux') ?? {}),
+	...config.getObject<Partial<FluxConfig>>('flux'),
 }
 
 const fluxOperatorConfig = {
 	...defaultFluxOperatorConfig,
-	...(config.getObject<Partial<FluxOperatorConfig>>('fluxOperator') ?? {}),
+	...config.getObject<Partial<FluxOperatorConfig>>('fluxOperator'),
 }
 
 const k8sProvider = cluster.provider
