@@ -10,21 +10,64 @@ const repositoryNames = [
 	'projects-gitops',
 ] as const
 
-const callerIdentity = aws.getCallerIdentityOutput({})
-const region = aws.getRegionOutput({})
-
-const repositoryUrls = Object.fromEntries(
+const repositories = Object.fromEntries(
 	repositoryNames.map((name) => [
 		name,
-		pulumi.interpolate`${callerIdentity.accountId}.dkr.ecr.${region.name}.amazonaws.com/${name}`,
+		(() => {
+			const repo = new aws.ecr.Repository(name, {
+				name,
+				imageTagMutability: 'MUTABLE',
+				imageScanningConfiguration: {
+					scanOnPush: true,
+				},
+				encryptionConfigurations: [
+					{
+						encryptionType: 'AES256',
+					},
+				],
+			})
+
+			new aws.ecr.LifecyclePolicy(`${name}-lifecycle`, {
+				repository: name,
+				policy: JSON.stringify({
+					rules: [
+						{
+							rulePriority: 1,
+							description: 'Expire untagged images after 14 days',
+							selection: {
+								tagStatus: 'untagged',
+								countType: 'sinceImagePushed',
+								countUnit: 'days',
+								countNumber: 14,
+							},
+							action: { type: 'expire' },
+						},
+						{
+							rulePriority: 2,
+							description: 'Keep only the last 30 tagged images',
+							selection: {
+								tagStatus: 'tagged',
+								tagPrefixList: ['pr-', 'main-'],
+								countType: 'imageCountMoreThan',
+								countNumber: 30,
+							},
+							action: { type: 'expire' },
+						},
+					],
+				}),
+			})
+
+			return repo
+		})(),
 	]),
+) as Record<(typeof repositoryNames)[number], aws.ecr.Repository>
+
+const repositoryUrls = Object.fromEntries(
+	repositoryNames.map((name) => [name, repositories[name].repositoryUrl]),
 ) as Record<(typeof repositoryNames)[number], pulumi.Output<string>>
 
 const repositoryArns = Object.fromEntries(
-	repositoryNames.map((name) => [
-		name,
-		pulumi.interpolate`arn:aws:ecr:${region.name}:${callerIdentity.accountId}:repository/${name}`,
-	]),
+	repositoryNames.map((name) => [name, repositories[name].arn]),
 ) as Record<(typeof repositoryNames)[number], pulumi.Output<string>>
 
 export { repositoryUrls, repositoryArns, repositoryNames }

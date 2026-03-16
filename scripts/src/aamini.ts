@@ -4,11 +4,21 @@ import * as path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { $ } from 'zx'
 import { runE2E } from './e2e.ts'
-import { runBuild } from './build.ts'
+import { runBuild, runPush } from './build.ts'
 import { sealAll, unsealAll } from './k8secrets.ts'
 import { getRepoRoot } from './helpers/repo.ts'
 
 async function main(): Promise<void> {
+	const scriptDir = path.dirname(fileURLToPath(import.meta.url))
+	const pmScriptPath = path.resolve(scriptDir, 'pm.ts')
+
+	const command = process.argv[2]
+	if (command === 'pm') {
+		const interactive = $({ stdio: 'inherit' })
+		await interactive`node --experimental-strip-types ${pmScriptPath} ${process.argv.slice(3)}`
+		return
+	}
+
 	const cli = cac('aamini')
 	cli.help()
 	cli.version('0.0.1')
@@ -32,6 +42,13 @@ async function main(): Promise<void> {
 		})
 
 	cli
+		.command('push [...args]', 'Push Docker image for one app or all')
+		.allowUnknownOptions()
+		.action(async () => {
+			await runPush(await getRepoRoot(), getRawCommandArgs())
+		})
+
+	cli
 		.command('seal', 'Seal Kubernetes secrets for all apps')
 		.action(async () => {
 			await sealAll(await getRepoRoot())
@@ -44,17 +61,11 @@ async function main(): Promise<void> {
 		})
 
 	cli
-		.command('ralph <task-id>', 'Run Ralph workflow for task')
-		.action(async (taskId: string) => {
-			const interactive = $({ stdio: 'inherit' })
-			await interactive`node --experimental-strip-types ${path.resolve(path.dirname(fileURLToPath(import.meta.url)), 'ralph.ts')} ${taskId}`
-		})
-
-	cli
 		.command('pm [...args]', 'Run task manager commands')
 		.allowUnknownOptions()
 		.action(async () => {
-			await $`node --experimental-strip-types ${path.resolve(path.dirname(fileURLToPath(import.meta.url)), 'pm.ts')} ${getRawCommandArgs()}`
+			const interactive = $({ stdio: 'inherit' })
+			await interactive`node --experimental-strip-types ${pmScriptPath} ${getRawCommandArgs()}`
 		})
 
 	cli.addEventListener('command:*', () => {

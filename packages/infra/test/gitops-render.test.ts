@@ -124,13 +124,7 @@ void test('buildRenderedAppManifests renders stable, image automation, and previ
 	assert.match(rendered.stableApps, /rootHost: ''/)
 	assert.match(rendered.stableApps, /envFromSecret: ''/)
 
-	assert.match(rendered.imageAutomation, /kind: ImageRepository/)
-	assert.match(
-		rendered.imageAutomation,
-		/image: 302481198387\.dkr\.ecr\.us-east-1\.amazonaws\.com\/portfolio/,
-	)
-	assert.match(rendered.imageAutomation, /kind: ImagePolicy/)
-	assert.match(rendered.imageAutomation, /name: pc-tune-ups/)
+	assert.match(rendered.imageAutomation, /^$/)
 
 	assert.match(rendered.previews, /name: portfolio-pr-previews/)
 	assert.match(rendered.previews, /aamini\.dev\/deploy-ready: enabled/)

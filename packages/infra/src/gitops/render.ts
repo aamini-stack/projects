@@ -82,7 +82,6 @@ export function buildRenderedAppManifestsWithExtras(input: {
 	previews: string
 } {
 	const stableApps = buildStableAppsManifest(input.apps, input.deployRevision)
-	const imageAutomation = buildImageAutomationManifest(input.apps)
 	const previews = buildPreviewManifest(input.apps)
 
 	return {
@@ -90,12 +89,11 @@ export function buildRenderedAppManifestsWithExtras(input: {
 		applications: [
 			buildAppReleaseChartSourceManifest(),
 			stableApps,
-			imageAutomation,
 			previews,
 			...input.appManifests,
 		].join('\n---\n'),
 		stableApps,
-		imageAutomation,
+		imageAutomation: '',
 		previews,
 	}
 }
@@ -335,37 +333,6 @@ function quoteYamlString(value?: string): string {
 	}
 
 	return value
-}
-
-function buildImageAutomationManifest(apps: AppDefinition[]): string {
-	return apps
-		.flatMap((app) => [
-			'apiVersion: image.toolkit.fluxcd.io/v1beta2',
-			'kind: ImageRepository',
-			'metadata:',
-			`  name: ${app.name}`,
-			'  namespace: flux-system',
-			'spec:',
-			`  image: ${app.image.repository}`,
-			'  interval: 5m',
-			'  provider: aws',
-			'---',
-			'apiVersion: image.toolkit.fluxcd.io/v1beta2',
-			'kind: ImagePolicy',
-			'metadata:',
-			`  name: ${app.image.policy}`,
-			'  namespace: flux-system',
-			'spec:',
-			'  imageRepositoryRef:',
-			`    name: ${app.name}`,
-			'  filterTags:',
-			"    pattern: '^main-[a-f0-9]+$'",
-			'  policy:',
-			'    alphabetical:',
-			'      order: asc',
-			'---',
-		])
-		.join('\n')
 }
 
 function buildPreviewManifest(apps: AppDefinition[]): string {

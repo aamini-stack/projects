@@ -35,7 +35,10 @@ if (enabled) {
 		{
 			url: 'https://token.actions.githubusercontent.com',
 			clientIdLists: allowedAudiences,
-			thumbprintLists: ['6938fd4d98bab03faadb97b34396831e3780aea1'],
+			thumbprintLists: [
+				'6938fd4d98bab03faadb97b34396831e3780aea1',
+				'f9e2a27573f3656520d8d6e5b8f087b2c93407e5',
+			],
 		},
 	)
 

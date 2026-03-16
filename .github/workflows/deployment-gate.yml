@@ -1,0 +1,54 @@
+name: Deployment Preview Gate
+
+on:
+  deployment_status:
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: Pull request number to recompute preview gate for
+        required: true
+        type: string
+      sha:
+        description: Commit SHA to publish gate status for
+        required: true
+        type: string
+
+concurrency:
+  group:
+    deployment-gate-${{ github.event.deployment.sha || github.event.inputs.sha
+    || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      deployments: read
+      pull-requests: read
+      statuses: write
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Compute and publish deployment preview gate
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EVENT_NAME: ${{ github.event_name }}
+          EVENT_PATH: ${{ github.event_path }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          RUN_URL:
+            ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
+            github.run_id }}
+          TIMEOUT_SECONDS: 2700
+        run: |
+          pnpm node --experimental-strip-types scripts/src/actions/preview-gate.ts \
+            --repository "${GITHUB_REPOSITORY}" \
+            --event-name "${EVENT_NAME}" \
+            --event-path "${EVENT_PATH}" \
+            --run-url "${RUN_URL}" \
+            --timeout-seconds "${TIMEOUT_SECONDS}"

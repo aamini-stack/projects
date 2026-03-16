@@ -1,0 +1,214 @@
+name: E2E On Deploy Ready
+run-name:
+  'E2E: ${{ github.event.inputs.url || github.event.client_payload.url ||
+  github.event.deployment_status.environment_url || github.event_name }}'
+
+on:
+  deployment_status:
+  workflow_dispatch:
+    inputs:
+      app:
+        description: App to test
+        required: true
+        type: choice
+        options:
+          - dota-visualizer
+          - imdbgraph
+          - pc-tune-ups
+          - portfolio
+      environment:
+        description: Deployment environment
+        required: true
+        default: stable
+        type: choice
+        options:
+          - stable
+          - preview
+      url:
+        description: Public URL to test
+        required: true
+        type: string
+      sha:
+        description: Deployed git SHA
+        required: true
+        type: string
+      pr_number:
+        description: Pull request number for previews
+        required: false
+        type: string
+      image_tag:
+        description: Deployed image tag
+        required: false
+        type: string
+
+concurrency:
+  group:
+    e2e-${{ github.event.client_payload.sha || github.event.inputs.sha ||
+    github.run_id }}-${{ github.event.client_payload.app ||
+    github.event.client_payload.metadata.app || github.event.inputs.app ||
+    github.run_id }}
+  cancel-in-progress: false
+
+jobs:
+  e2e:
+    if:
+      ${{ github.event_name != 'deployment_status' ||
+      github.event.deployment_status.state == 'success' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      deployments: write
+      pull-requests: read
+      statuses: write
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Normalize deploy-ready payload
+        id: payload
+        run: |
+          pnpm node --experimental-strip-types scripts/src/actions/deploy-ready-outputs.ts \
+            --event-path "${GITHUB_EVENT_PATH}" \
+            --github-output "${GITHUB_OUTPUT}"
+      - name: Validate app directory
+        run: test -d "apps/${{ steps.payload.outputs.app }}"
+      - name: Mark e2e pending
+        env:
+          APP: ${{ steps.payload.outputs.app }}
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ steps.payload.outputs.pr_number }}
+          SOURCE: ${{ steps.payload.outputs.source }}
+          RUN_URL:
+            ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
+            github.run_id }}
+          SHA: ${{ steps.payload.outputs.sha }}
+        run: |
+          pnpm node --experimental-strip-types scripts/src/actions/e2e-commit-status.ts mark-pending \
+            --repository "${GITHUB_REPOSITORY}" \
+            --sha "${SHA}" \
+            --app "${APP}" \
+            --source "${SOURCE}" \
+            --run-url "${RUN_URL}" \
+            --pr-number "${PR_NUMBER}"
+      - name: Mark deployment in progress
+        id: pending_deployment
+        env:
+          APP: ${{ steps.payload.outputs.app }}
+          DEPLOYMENT_ENVIRONMENT:
+            ${{ steps.payload.outputs.deployment_environment }}
+          DEPLOYMENT_ID: ${{ steps.payload.outputs.deployment_id }}
+          ENVIRONMENT_TYPE: ${{ steps.payload.outputs.environment_type }}
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ steps.payload.outputs.pr_number }}
+          RUN_URL:
+            ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
+            github.run_id }}
+          SHA: ${{ steps.payload.outputs.sha }}
+          URL: ${{ steps.payload.outputs.url }}
+        run: |
+          pnpm node --experimental-strip-types scripts/src/actions/preview-deployment-status.ts mark-in-progress \
+            --repository "${GITHUB_REPOSITORY}" \
+            --sha "${SHA}" \
+            --app "${APP}" \
+            --environment-type "${ENVIRONMENT_TYPE}" \
+            --url "${URL}" \
+            --run-url "${RUN_URL}" \
+            --deployment-id "${DEPLOYMENT_ID}" \
+            --pr-number "${PR_NUMBER}" \
+            --deployment-environment "${DEPLOYMENT_ENVIRONMENT}" \
+            --github-output "${GITHUB_OUTPUT}"
+      - name: Wait for public URL
+        run: |
+          curl --fail --silent --show-error --location \
+            --retry 20 \
+            --retry-delay 10 \
+            --retry-all-errors \
+            "${{ steps.payload.outputs.url }}" >/dev/null
+      - name: Install Playwright browsers
+        run:
+          pnpm --dir "apps/${{ steps.payload.outputs.app }}" exec playwright
+          install --with-deps chromium
+      - name: Run app e2e
+        id: run_e2e
+        continue-on-error: true
+        env:
+          BASE_URL: ${{ steps.payload.outputs.url }}
+          CI: true
+        run:
+          pnpm --dir "apps/${{ steps.payload.outputs.app }}" exec playwright
+          test
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-${{ steps.payload.outputs.app }}
+          path: apps/${{ steps.payload.outputs.app }}/playwright-report
+          retention-days: 7
+      - name: Update deployment terminal status
+        if: always() && steps.payload.outcome == 'success'
+        env:
+          APP: ${{ steps.payload.outputs.app }}
+          DEPLOYMENT_ENVIRONMENT:
+            ${{ steps.payload.outputs.deployment_environment }}
+          DEPLOYMENT_ID:
+            ${{ steps.pending_deployment.outputs.deployment_id ||
+            steps.payload.outputs.deployment_id }}
+          ENVIRONMENT_TYPE: ${{ steps.payload.outputs.environment_type }}
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ steps.payload.outputs.pr_number }}
+          RESULT: ${{ steps.run_e2e.outcome }}
+          RUN_URL:
+            ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
+            github.run_id }}
+          SHA: ${{ steps.payload.outputs.sha }}
+          URL: ${{ steps.payload.outputs.url }}
+        run: |
+          RESULT="$RESULT"
+          if [ "$RESULT" = "skipped" ]; then
+            RESULT="failure"
+          fi
+          pnpm node --experimental-strip-types scripts/src/actions/preview-deployment-status.ts mark-terminal \
+            --repository "${GITHUB_REPOSITORY}" \
+            --sha "${SHA}" \
+            --app "${APP}" \
+            --environment-type "${ENVIRONMENT_TYPE}" \
+            --url "${URL}" \
+            --run-url "${RUN_URL}" \
+            --deployment-id "${DEPLOYMENT_ID}" \
+            --pr-number "${PR_NUMBER}" \
+            --deployment-environment "${DEPLOYMENT_ENVIRONMENT}" \
+            --result "${RESULT}"
+      - name: Update commit statuses
+        if: always() && steps.payload.outcome == 'success'
+        env:
+          APP: ${{ steps.payload.outputs.app }}
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ steps.payload.outputs.pr_number }}
+          SOURCE: ${{ steps.payload.outputs.source }}
+          RESULT: ${{ steps.run_e2e.outcome }}
+          RUN_URL:
+            ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
+            github.run_id }}
+          SHA: ${{ steps.payload.outputs.sha }}
+        run: |
+          RESULT="$RESULT"
+          if [ "$RESULT" = "skipped" ]; then
+            RESULT="failure"
+          fi
+          pnpm node --experimental-strip-types scripts/src/actions/e2e-commit-status.ts mark-terminal \
+            --repository "${GITHUB_REPOSITORY}" \
+            --sha "${SHA}" \
+            --app "${APP}" \
+            --source "${SOURCE}" \
+            --run-url "${RUN_URL}" \
+            --pr-number "${PR_NUMBER}" \
+            --result "${RESULT}"
+      - name: Fail workflow on e2e failure
+        if:
+          steps.payload.outcome == 'success' && steps.run_e2e.outcome !=
+          'success'
+        run: exit 1

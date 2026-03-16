@@ -386,7 +386,7 @@ const imdbgraphDatabaseUrl = pulumi
 		([adminUser, adminPassword, host, port]) =>
 			`postgresql://${encodeURIComponent(adminUser)}:${encodeURIComponent(
 				adminPassword,
-			)}@${host}:${port}/${imdbgraphDatabaseName}?sslmode=no-verify`,
+			)}@${host}:${port}/${imdbgraphDatabaseName}?sslmode=require`,
 	)
 
 new k8s.core.v1.Secret(

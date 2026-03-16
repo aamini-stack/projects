@@ -15,6 +15,13 @@ config:
   aamini-infra:fluxOperator:
     githubRepository: aamini-stack/projects
     githubSecretName: github-operator-auth
+  aamini-infra:githubActionsOidc:
+    enabled: true
+    roleName: github-actions-ecr-publish
+    repo: aamini-stack/projects
+    allowPullRequest: true
+    allowedRefs:
+      - refs/heads/main
   aamini-infra:postgresProvider: aws
   aamini-infra:postgres:
     instanceClass: db.t4g.micro
@@ -23,11 +30,11 @@ config:
     backupRetentionDays: 7
     engineVersion: '16.3'
     storageType: gp3
-    publiclyAccessible: true
+    publiclyAccessible: false
     deletionProtection: false
     multiAz: false
     allowedCidrs:
-      - 0.0.0.0/0
+      - 10.0.0.0/8
   github:token:
     secure: AAABAEn5sQBN8aOyIdo5XwUwiG7GJ5Ph+lw1YXhzmkKt6M7iLbNqcSpyBt7IUUQUNTI4qp99/7bhEvgNA+/k4eXcbCUEMirDrzHUmhQdbWwpCUuW+ZgONSohQUBq1d80L2PUjSBdmTWT2sQTg8+ayNs7OWpdm1iveU7ZZro=
   aamini-infra:postgresAdminPassword:

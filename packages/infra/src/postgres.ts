@@ -13,6 +13,7 @@ interface AwsPostgresConfig {
 	multiAz?: boolean
 	port?: number
 	allowedCidrs?: string[]
+	skipFinalSnapshot?: boolean
 }
 
 const config = new pulumi.Config()
@@ -22,7 +23,7 @@ const pgConfig = config.requireObject<AwsPostgresConfig>('postgres')
 const adminPassword = config.requireSecret('postgresAdminPassword')
 const adminUser = config.get('postgresAdminUser') ?? 'pgadmin'
 const port = pgConfig.port ?? 5432
-const allowedCidrs = pgConfig.allowedCidrs ?? ['0.0.0.0/0']
+const allowedCidrs = pgConfig.allowedCidrs ?? []
 const identifier = `pg-aamini-${env}`
 
 const defaultVpc = aws.ec2.getVpcOutput({ default: true })
@@ -70,11 +71,11 @@ const instanceArgs: aws.rds.InstanceArgs = {
 	port,
 	dbSubnetGroupName: subnetGroup.name,
 	vpcSecurityGroupIds: [securityGroup.id],
-	publiclyAccessible: pgConfig.publiclyAccessible ?? true,
+	publiclyAccessible: pgConfig.publiclyAccessible ?? false,
 	deletionProtection: pgConfig.deletionProtection ?? false,
 	multiAz: pgConfig.multiAz ?? false,
 	storageEncrypted: true,
-	skipFinalSnapshot: true,
+	skipFinalSnapshot: pgConfig.skipFinalSnapshot ?? false,
 	applyImmediately: true,
 }
 
