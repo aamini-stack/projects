@@ -7,4 +7,4 @@
 
 vim AI:
 
-- avante, supermaven, cmp-ai
+- avante, supermaven, cmp-ai, opencode.nvim, copilot
