@@ -20,6 +20,8 @@
 		"e2e": "node --experimental-strip-types ../../scripts/src/aamini.ts e2e dota-visualizer",
 		"e2e:staging": "BASE_URL=https://dota-visualizer.ariaamini.com pnpm playwright test",
 		"e2e:update": "node --experimental-strip-types ../../scripts/src/aamini.ts e2e dota-visualizer --update-snapshots",
+		"docker:build": "node --experimental-strip-types ../../scripts/src/aamini.ts build dota-visualizer",
+		"docker:push": "node --experimental-strip-types ../../scripts/src/aamini.ts push dota-visualizer",
 		"report": "playwright show-report",
 		"verify": "turbo run build test typecheck e2e"
 	},

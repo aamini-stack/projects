@@ -20,6 +20,8 @@
 		"e2e": "node --experimental-strip-types ../../scripts/src/aamini.ts e2e portfolio",
 		"e2e:staging": "BASE_URL=https://portfolio.ariaamini.com pnpm playwright test",
 		"e2e:update": "node --experimental-strip-types ../../scripts/src/aamini.ts e2e portfolio --update-snapshots",
+		"docker:build": "node --experimental-strip-types ../../scripts/src/aamini.ts build portfolio",
+		"docker:push": "node --experimental-strip-types ../../scripts/src/aamini.ts push portfolio",
 		"report": "playwright show-report",
 		"verify": "turbo run build test typecheck e2e"
 	},
