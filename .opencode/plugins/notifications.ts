@@ -9,7 +9,7 @@ export const NotificationPlugin = async ({
 
 	const notify = (title: string, body: string) => {
 		const clean = (value: string) =>
-			value.replace(/[\u0000-\u001f\u007f]/g, ' ').replace(/[;:]/g, ',')
+			value.replace(/\p{Cc}/gu, ' ').replace(/[;:]/g, ',')
 		const safeTitle = clean(title)
 		const safeBody = clean(body)
 
