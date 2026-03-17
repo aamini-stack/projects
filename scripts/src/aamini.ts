@@ -6,6 +6,7 @@ import { $ } from 'zx'
 import { runE2E } from './e2e.ts'
 import { runBuild } from './build.ts'
 import { sealAll, unsealAll } from './k8secrets.ts'
+import { updateActionSecrets } from './action-secrets.ts'
 import { getRepoRoot } from './helpers/repo.ts'
 
 async function main(): Promise<void> {
@@ -41,6 +42,16 @@ async function main(): Promise<void> {
 		.command('unseal', 'Unseal Kubernetes secrets for all apps')
 		.action(async () => {
 			await unsealAll(await getRepoRoot())
+		})
+
+	cli
+		.command(
+			'update-action-secrets [...args]',
+			'Sync .env.local values to GitHub Actions secrets',
+		)
+		.allowUnknownOptions()
+		.action(async () => {
+			await updateActionSecrets(await getRepoRoot(), getRawCommandArgs())
 		})
 
 	cli
