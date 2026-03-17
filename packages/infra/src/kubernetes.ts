@@ -105,8 +105,6 @@ const appsConfig = new pulumi.Config('apps')
 const githubToken = githubConfig.getSecret('token') ?? pulumi.secret('')
 const cloudflareApiToken =
 	cloudflareConfig.getSecret('apiToken') ?? pulumi.secret('')
-const imdbgraphCronSecret =
-	appsConfig.getSecret('imdbgraphCronSecret') ?? pulumi.secret('change-me')
 const imdbgraphDatabaseName =
 	appsConfig.get('imdbgraphDatabaseName') ?? 'postgres'
 const dnsAutomationConfig =
@@ -326,20 +324,6 @@ new k8s.core.v1.ServiceAccountPatch(
 )
 
 new k8s.core.v1.Secret(
-	'networking-secrets',
-	{
-		metadata: {
-			name: 'networking-secrets',
-			namespace: fluxNamespace.metadata.name,
-		},
-		stringData: {
-			CLOUDFLARE_API_TOKEN: cloudflareApiToken,
-		},
-	},
-	{ provider: k8sProvider, dependsOn: [fluxNamespace] },
-)
-
-new k8s.core.v1.Secret(
 	'github-operator-auth',
 	{
 		metadata: {
@@ -388,38 +372,6 @@ const imdbgraphDatabaseUrl = pulumi
 				adminPassword,
 			)}@${host}:${port}/${imdbgraphDatabaseName}?sslmode=require`,
 	)
-
-new k8s.core.v1.Secret(
-	'imdbgraph-secrets-stable',
-	{
-		metadata: {
-			name: 'imdbgraph-secrets',
-			namespace: 'imdbgraph',
-		},
-		stringData: {
-			DATABASE_URL: imdbgraphDatabaseUrl,
-			CRON_SECRET: imdbgraphCronSecret,
-			NODE_ENV: 'production',
-		},
-	},
-	{ provider: k8sProvider, dependsOn: [ensureImdbgraphNamespace] },
-)
-
-new k8s.core.v1.Secret(
-	'imdbgraph-secrets-preview',
-	{
-		metadata: {
-			name: 'imdbgraph-secrets',
-			namespace: 'app-preview',
-		},
-		stringData: {
-			DATABASE_URL: imdbgraphDatabaseUrl,
-			CRON_SECRET: imdbgraphCronSecret,
-			NODE_ENV: 'production',
-		},
-	},
-	{ provider: k8sProvider, dependsOn: [ensureAppPreviewNamespace] },
-)
 
 let traefikLoadBalancerHostname: pulumi.Output<string> | undefined
 
