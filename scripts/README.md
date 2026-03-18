@@ -16,7 +16,11 @@ pnpm install
 Manage Kubernetes secrets.
 
 ```
-aamini secrets seal|unseal|update
+aamini secrets seal [app]
+aamini secrets seal --all
+aamini secrets unseal [app]
+aamini secrets unseal --all
+aamini secrets update --all
 ```
 
 ### PM
@@ -44,7 +48,8 @@ aamini ci e2e status ...
 Run end-to-end tests against apps. Defaults to `--local`.
 
 ```
-aamini e2e <app|--all> [--local|--preview <pr>|--staging|--production]
+aamini e2e <app> [--local|--preview <pr>|--staging|--production]
+aamini e2e --all [--local|--preview <pr>|--staging|--production]
 ```
 
 ### Docker

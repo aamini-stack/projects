@@ -4,8 +4,7 @@ import * as path from 'node:path'
 import * as dns from 'node:dns/promises'
 import { randomUUID } from 'node:crypto'
 import { spawn } from 'node:child_process'
-import { $ } from 'zx'
-import { listAppDirectories } from './helpers/repo.ts'
+import { listAppDirectories } from './repo.ts'
 
 type SealTarget = {
 	app: string
@@ -86,6 +85,28 @@ async function runCommandWithZx({
 	})
 }
 
+async function fetchSealingCert(
+	runCommand: (input: RunCommandInput) => Promise<CommandResult>,
+	cwd: string,
+): Promise<string> {
+	const certResult = await runCommand({
+		cwd,
+		command: [
+			'kubeseal',
+			'--fetch-cert',
+			'--controller-name=sealed-secrets',
+			'--controller-namespace=kube-system',
+		],
+	})
+
+	const certPath = path.join(
+		os.tmpdir(),
+		`sealed-secrets-cert-${randomUUID()}.pem`,
+	)
+	fs.writeFileSync(certPath, certResult.stdout)
+	return certPath
+}
+
 async function sealAll(
 	repoRoot: string,
 	{ runCommand = runCommandWithZx }: SealAllOptions = {},
@@ -158,28 +179,6 @@ async function sealAll(
 	}
 }
 
-async function fetchSealingCert(
-	runCommand: (input: RunCommandInput) => Promise<CommandResult>,
-	cwd: string,
-): Promise<string> {
-	const certResult = await runCommand({
-		cwd,
-		command: [
-			'kubeseal',
-			'--fetch-cert',
-			'--controller-name=sealed-secrets',
-			'--controller-namespace=kube-system',
-		],
-	})
-
-	const certPath = path.join(
-		os.tmpdir(),
-		`sealed-secrets-cert-${randomUUID()}.pem`,
-	)
-	fs.writeFileSync(certPath, certResult.stdout)
-	return certPath
-}
-
 function parseTemplateMetadata(
 	sealedSecretFile: string,
 ): SealedSecretTemplateMetadata {
@@ -238,6 +237,7 @@ function parseTemplateMetadata(
 }
 
 async function unsealAll(repoRoot: string): Promise<void> {
+	const { $ } = await import('zx')
 	const contextResult = await $({
 		cwd: repoRoot,
 		nothrow: true,
@@ -325,7 +325,7 @@ async function unsealAll(repoRoot: string): Promise<void> {
 			data?: Record<string, string>
 		}
 
-		const entries = Object.entries(secret.data ?? {})
+		const entries = Object.entries(secret.data ?? [])
 			.sort(([a], [b]) => a.localeCompare(b))
 			.map(
 				([key, value]) =>
@@ -337,10 +337,34 @@ async function unsealAll(repoRoot: string): Promise<void> {
 	}
 }
 
+function parseApps(repoRoot: string, args: string[]): string[] {
+	const runAll = args.includes('--all')
+	const positionalArgs = args.filter((arg) => arg !== '--all')
+
+	if (runAll) {
+		return listAppDirectories(repoRoot)
+	}
+
+	const appName = positionalArgs[0]
+	if (!appName) {
+		throw new Error(
+			'Usage: aamini secrets <seal|unseal> [app-name] | aamini secrets <seal|unseal> --all',
+		)
+	}
+
+	return [appName]
+}
+
+async function updateAll(_repoRoot: string): Promise<void> {
+	console.log('aamini secrets update is a stub - implementation empty for now')
+}
+
 export {
 	findSealTargets,
 	normalizeSealedSecretYaml,
+	parseApps,
 	parseTemplateMetadata,
 	sealAll,
 	unsealAll,
+	updateAll,
 }

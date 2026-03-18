@@ -1,5 +1,5 @@
 import { $ } from 'zx'
-import { assertAppExists, listAppDirectories } from './helpers/repo.ts'
+import { assertAppExists, listAppDirectories } from './repo.ts'
 
 function getImageRefs(appName: string): string[] {
 	const registry = process.env.ECR_REGISTRY ?? 'docker.io/aamini'
@@ -14,10 +14,7 @@ function getImageRefs(appName: string): string[] {
 	return refs
 }
 
-async function buildDockerImage(
-	repoRoot: string,
-	appName: string,
-): Promise<void> {
+async function buildImage(repoRoot: string, appName: string): Promise<void> {
 	assertAppExists(repoRoot, appName)
 
 	const refs = getImageRefs(appName)
@@ -51,10 +48,7 @@ async function buildDockerImage(
 	console.log(`\nBuilt ${refs.join(', ')}\n`)
 }
 
-async function pushDockerImage(
-	repoRoot: string,
-	appName: string,
-): Promise<void> {
+async function pushImage(repoRoot: string, appName: string): Promise<void> {
 	assertAppExists(repoRoot, appName)
 
 	for (const ref of getImageRefs(appName)) {
@@ -74,23 +68,11 @@ function parseApps(repoRoot: string, args: string[]): string[] {
 	const appName = positionalArgs[0]
 	if (!appName) {
 		throw new Error(
-			'Usage: aamini build|push <app-name> | aamini build|push --all',
+			'Usage: aamini docker build <app-name> | aamini docker build --all',
 		)
 	}
 
 	return [appName]
 }
 
-async function runBuild(repoRoot: string, args: string[]): Promise<void> {
-	for (const appName of parseApps(repoRoot, args)) {
-		await buildDockerImage(repoRoot, appName)
-	}
-}
-
-async function runPush(repoRoot: string, args: string[]): Promise<void> {
-	for (const appName of parseApps(repoRoot, args)) {
-		await pushDockerImage(repoRoot, appName)
-	}
-}
-
-export { buildDockerImage, pushDockerImage, runBuild, runPush }
+export { buildImage, getImageRefs, parseApps, pushImage }

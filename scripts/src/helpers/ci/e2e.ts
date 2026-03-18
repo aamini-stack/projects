@@ -1,6 +1,4 @@
-#!/usr/bin/env node
-
-import { getRepoRoot, listAppDirectories } from '../../helpers/repo.ts'
+import { getRepoRoot, listAppDirectories } from '../repo.ts'
 import {
 	createCommitStatus,
 	getCombinedCommitStatus,
@@ -8,10 +6,6 @@ import {
 	parseRepo,
 	parseOptionalInt,
 } from '../../github.ts'
-
-// ============================================================================
-// E2E: Required Apps Selection (uses preview logic)
-// ============================================================================
 
 export type SelectE2ERequiredAppsInput = {
 	allApps: string[]
@@ -53,10 +47,6 @@ export function selectE2ERequiredApps(
 	return [...selected].sort()
 }
 
-// ============================================================================
-// E2E: Commit Status
-// ============================================================================
-
 type StatusOptions = {
 	command: 'mark-pending' | 'mark-terminal'
 	app: string
@@ -68,7 +58,7 @@ type StatusOptions = {
 	result: 'success' | 'failure' | null
 }
 
-function parseStatusArgs(args: string[]): StatusOptions {
+export function parseStatusArgs(args: string[]): StatusOptions {
 	const command = args[0]
 	if (command !== 'mark-pending' && command !== 'mark-terminal') {
 		throw new Error('Usage: e2e status mark-pending|mark-terminal ...')
@@ -210,27 +200,5 @@ export async function updateE2eStatus(rawArgs: string[]): Promise<void> {
 		sha: options.sha,
 		state: aggregate,
 		targetUrl: options.runUrl,
-	})
-}
-
-// ============================================================================
-// CLI Entry Point
-// ============================================================================
-
-async function main(): Promise<void> {
-	const subcommand = process.argv.slice(2)[0]
-	const rawArgs = process.argv.slice(3)
-
-	if (subcommand === 'status') {
-		await updateE2eStatus(rawArgs)
-	} else {
-		throw new Error('Usage: e2e-workflow status ...')
-	}
-}
-
-if (process.argv[1] === import.meta.url.replace('file://', '')) {
-	main().catch((error) => {
-		console.error(error instanceof Error ? error.message : error)
-		process.exit(1)
 	})
 }

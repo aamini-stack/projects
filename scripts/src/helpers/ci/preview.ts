@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 import { readFileSync } from 'node:fs'
 import {
 	createDeployment,
@@ -14,11 +12,7 @@ import {
 	getRepoRoot,
 	type Deployment,
 } from '../../github.ts'
-import { listAppDirectories } from '../../helpers/repo.ts'
-
-// ============================================================================
-// SHARED: App Selection Logic
-// ============================================================================
+import { listAppDirectories } from '../repo.ts'
 
 export type SelectRequiredAppsInput = {
 	allApps: string[]
@@ -48,10 +42,6 @@ export function selectRequiredApps(input: SelectRequiredAppsInput): string[] {
 	return [...selected].sort()
 }
 
-// ============================================================================
-// PREVIEW: Create Deployments
-// ============================================================================
-
 type CreatePreviewOptions = {
 	prNumber: number
 	repository: string
@@ -60,7 +50,7 @@ type CreatePreviewOptions = {
 	workflowRef: string
 }
 
-function parseCreatePreviewArgs(args: string[]): CreatePreviewOptions {
+export function parseCreatePreviewArgs(args: string[]): CreatePreviewOptions {
 	const values: Record<string, string> = {}
 	for (let index = 0; index < args.length; index += 2) {
 		const key = args[index]
@@ -153,10 +143,6 @@ export async function createPreviews(rawArgs: string[]): Promise<void> {
 	}
 }
 
-// ============================================================================
-// PREVIEW: Cleanup (closed PR)
-// ============================================================================
-
 type CleanupOptions = {
 	eventName: string
 	eventPath: string
@@ -164,7 +150,7 @@ type CleanupOptions = {
 	runUrl: string
 }
 
-function parseCleanupArgs(args: string[]): CleanupOptions {
+export function parseCleanupArgs(args: string[]): CleanupOptions {
 	const values: Record<string, string> = {}
 	for (let index = 0; index < args.length; index += 2) {
 		const key = args[index]
@@ -260,10 +246,6 @@ export async function cleanupPreviews(rawArgs: string[]): Promise<void> {
 	console.log(`Cleaned up ${cleaned} deployment(s) for PR #${parsed.prNumber}`)
 }
 
-// ============================================================================
-// PREVIEW: Deployment Status Updates
-// ============================================================================
-
 type StatusOptions = {
 	command: 'mark-in-progress' | 'mark-terminal'
 	app: string
@@ -279,7 +261,7 @@ type StatusOptions = {
 	result: 'success' | 'failure' | null
 }
 
-function parseStatusArgs(args: string[]): StatusOptions {
+export function parseStatusArgs(args: string[]): StatusOptions {
 	const command = args[0]
 	if (command !== 'mark-in-progress' && command !== 'mark-terminal') {
 		throw new Error('Usage: preview status mark-in-progress|mark-terminal ...')
@@ -380,10 +362,6 @@ export async function updatePreviewStatus(rawArgs: string[]): Promise<void> {
 	})
 }
 
-// ============================================================================
-// PREVIEW: Gate (wait for deployments)
-// ============================================================================
-
 type GateOptions = {
 	eventName: string
 	eventPath: string
@@ -392,7 +370,7 @@ type GateOptions = {
 	timeoutSeconds: number
 }
 
-function parseGateArgs(args: string[]): GateOptions {
+export function parseGateArgs(args: string[]): GateOptions {
 	const values: Record<string, string> = {}
 	for (let index = 0; index < args.length; index += 2) {
 		const key = args[index]
@@ -573,32 +551,4 @@ export async function runPreviewGate(rawArgs: string[]): Promise<void> {
 	console.log(
 		`Published deployments/preview-gate=${gateState} for sha ${parsed.sha}.`,
 	)
-}
-
-// ============================================================================
-// CLI Entry Point
-// ============================================================================
-
-async function main(): Promise<void> {
-	const subcommand = process.argv.slice(2)[0]
-	const rawArgs = process.argv.slice(3)
-
-	if (subcommand === 'create') {
-		await createPreviews(rawArgs)
-	} else if (subcommand === 'cleanup') {
-		await cleanupPreviews(rawArgs)
-	} else if (subcommand === 'status') {
-		await updatePreviewStatus(rawArgs)
-	} else if (subcommand === 'gate') {
-		await runPreviewGate(rawArgs)
-	} else {
-		throw new Error('Usage: preview <create|cleanup|status|gate> ...')
-	}
-}
-
-if (process.argv[1] === import.meta.url.replace('file://', '')) {
-	main().catch((error) => {
-		console.error(error instanceof Error ? error.message : error)
-		process.exit(1)
-	})
 }

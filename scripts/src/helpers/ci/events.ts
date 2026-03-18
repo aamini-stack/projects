@@ -1,12 +1,6 @@
-#!/usr/bin/env node
-
 import { appendFileSync } from 'node:fs'
 import { readFile } from 'node:fs/promises'
 import { readFileSync } from 'node:fs'
-
-// ============================================================================
-// Event Types (from deploy-ready.ts)
-// ============================================================================
 
 export type GitHubDispatchEnvelope = {
 	action?: string
@@ -64,10 +58,6 @@ export type NormalizedDeployReadyEvent = {
 	source: string
 	url: string
 }
-
-// ============================================================================
-// Normalization Logic (from deploy-ready.ts)
-// ============================================================================
 
 export function normalizeDeployReadyEvent(
 	event: GitHubDispatchEnvelope,
@@ -251,16 +241,12 @@ function escapeRegex(value: string): string {
 	return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 }
 
-// ============================================================================
-// CLI: Parse Event to Outputs
-// ============================================================================
-
 type OutputsOptions = {
 	eventPath: string
 	outputPath: string
 }
 
-function parseArgs(args: string[]): OutputsOptions {
+export function parseOutputsArgs(args: string[]): OutputsOptions {
 	const values: Record<string, string> = {}
 	for (let index = 0; index < args.length; index += 2) {
 		const key = args[index]
@@ -284,7 +270,7 @@ function parseArgs(args: string[]): OutputsOptions {
 }
 
 export async function writeOutputs(rawArgs: string[]): Promise<void> {
-	const { eventPath, outputPath } = parseArgs(rawArgs)
+	const { eventPath, outputPath } = parseOutputsArgs(rawArgs)
 	const normalized = normalizeDeployReadyEvent(
 		JSON.parse(await readFile(eventPath, 'utf8')) as GitHubDispatchEnvelope,
 	)
@@ -305,33 +291,18 @@ export async function writeOutputs(rawArgs: string[]): Promise<void> {
 	appendFileSync(outputPath, `${lines.join('\n')}\n`, 'utf8')
 }
 
-// ============================================================================
-// CLI: Main
-// ============================================================================
-
-async function main(): Promise<void> {
-	const subcommand = process.argv.slice(2)[0]
-	const rawArgs = process.argv.slice(3)
-
-	if (subcommand === 'outputs') {
-		await writeOutputs(rawArgs)
-	} else if (subcommand === 'normalize') {
-		const eventPath = rawArgs[0]
-		if (!eventPath) {
-			throw new Error('Usage: events normalize <event-file>')
-		}
-		const event = JSON.parse(
-			readFileSync(eventPath, 'utf8'),
-		) as GitHubDispatchEnvelope
-		console.log(JSON.stringify(normalizeDeployReadyEvent(event)))
-	} else {
-		throw new Error('Usage: events <outputs|normalize> ...')
+export function parseNormalizeArgs(args: string[]): string {
+	const eventPath = args[0]
+	if (!eventPath) {
+		throw new Error('Usage: events normalize <event-file>')
 	}
+	return eventPath
 }
 
-if (process.argv[1] === import.meta.url.replace('file://', '')) {
-	main().catch((error) => {
-		console.error(error instanceof Error ? error.message : error)
-		process.exit(1)
-	})
+export function normalizeEvent(rawArgs: string[]): NormalizedDeployReadyEvent {
+	const eventPath = parseNormalizeArgs(rawArgs)
+	const event = JSON.parse(
+		readFileSync(eventPath, 'utf8'),
+	) as GitHubDispatchEnvelope
+	return normalizeDeployReadyEvent(event)
 }
