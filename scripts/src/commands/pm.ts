@@ -15,6 +15,11 @@ import {
 export function createPMCommand(): ReturnType<typeof cac> {
 	const cli = cac('aamini pm')
 	cli.version('0.0.1')
+	cli.help()
+
+	cli.command('').action(() => {
+		cli.outputHelp()
+	})
 
 	cli.command('next', 'Show next available tasks').action(() => {
 		cmdNext()
@@ -90,12 +95,6 @@ export function createPMCommand(): ReturnType<typeof cac> {
 
 	cli.command('ci', 'Run CI checks across all apps').action(async () => {
 		await cmdCi()
-	})
-
-	cli.addEventListener('command:*', () => {
-		console.error(`Error: Unknown command '${cli.args[0] ?? ''}'`)
-		cli.outputHelp()
-		process.exit(1)
 	})
 
 	return cli

@@ -4,18 +4,12 @@ import { runE2E, type E2EOptions } from '../helpers/e2e.ts'
 
 export function createE2ECommand(): ReturnType<typeof cac> {
 	const cli = cac('aamini e2e')
-	cli.help()
 	cli.version('0.0.1')
+	cli.help()
 
-	cli
-		.command('<app>', 'Run e2e for a specific app')
-		.option('-l, --local', 'Run e2e locally with docker compose')
-		.option('-p, --preview <pr>', 'Run e2e against preview deployment')
-		.option('-s, --staging', 'Run e2e against staging')
-		.option('-P, --production', 'Run e2e against production')
-		.action(async (app: string, options: E2EOptions) => {
-			await runE2E(await getRepoRoot(), app, options)
-		})
+	cli.command('').action(() => {
+		cli.outputHelp()
+	})
 
 	cli
 		.command('run <app>', 'Run e2e for a specific app')
@@ -40,12 +34,6 @@ export function createE2ECommand(): ReturnType<typeof cac> {
 				await runE2E(repoRoot, app, options)
 			}
 		})
-
-	cli.addEventListener('command:*', () => {
-		console.error(`Error: Unknown command '${cli.args[0] ?? ''}'`)
-		cli.outputHelp()
-		process.exit(1)
-	})
 
 	return cli
 }
