@@ -8,6 +8,86 @@ import {
 	listAppDirectories,
 } from '../helpers/repo.ts'
 
+export function createDockerCommand(): ReturnType<typeof cac> {
+	const cli = cac('aamini docker')
+	cli.version('0.0.1')
+	cli.help()
+
+	cli
+		.command('build <app>', 'Build Docker image for a specific app')
+		.option('-a, --all', 'Build images for all apps')
+		.action(async (app: string | undefined, options: { all?: boolean }) => {
+			const repoRoot = await getRepoRoot()
+			const apps = options.all
+				? parseApps(repoRoot, ['--all'])
+				: app
+					? [app]
+					: []
+
+			if (apps.length === 0) {
+				console.error('Error: Specify an app name or use --all')
+				process.exit(1)
+			}
+
+			for (const appName of apps) {
+				await buildImage(repoRoot, appName)
+			}
+		})
+
+	cli
+		.command('push <app>', 'Push Docker image for a specific app')
+		.option('-a, --all', 'Push images for all apps')
+		.action(async (app: string | undefined, options: { all?: boolean }) => {
+			const repoRoot = await getRepoRoot()
+			const apps = options.all
+				? parseApps(repoRoot, ['--all'])
+				: app
+					? [app]
+					: []
+
+			if (apps.length === 0) {
+				console.error('Error: Specify an app name or use --all')
+				process.exit(1)
+			}
+
+			for (const appName of apps) {
+				await pushImage(repoRoot, appName)
+			}
+		})
+
+	cli
+		.command('deploy', 'Deploy Docker container')
+		.option('-a, --all', 'Deploy all apps')
+		.option('-r, --deploy-revision <sha>', 'Deploy specific revision')
+		.action(
+			async (
+				app: string | undefined,
+				options: { all?: boolean; deployRevision?: string },
+			) => {
+				const repoRoot = await getRepoRoot()
+
+				if (!app && !options.all) {
+					console.error('Error: Specify an app name or use --all')
+					process.exit(1)
+				}
+
+				await runDeploy(repoRoot, options.deployRevision)
+			},
+		)
+
+	cli.command('').action(() => {
+		cli.outputHelp()
+	})
+
+	cli.addEventListener('command:*', () => {
+		console.error(`Error: Unknown command '${cli.args[0] ?? ''}'`)
+		cli.outputHelp()
+		process.exit(1)
+	})
+
+	return cli
+}
+
 function getImageRefs(appName: string): string[] {
 	const registry = process.env.ECR_REGISTRY ?? 'docker.io/aamini'
 	const imageTag = process.env.IMAGE_TAG ?? 'latest'
@@ -101,137 +181,6 @@ async function runDeploy(
 		...(deployRevision ? { deployRevision } : {}),
 	})
 	console.log(outputRoot)
-}
-
-export function createDockerCommand(): ReturnType<typeof cac> {
-	const cli = cac('aamini docker')
-	cli.version('0.0.1')
-	cli.help()
-
-	cli.command('').action(() => {
-		cli.outputHelp()
-	})
-
-	cli.command('build', 'Build Docker image').action(() => {
-		const dockerBuildCli = createDockerBuildCommand()
-		dockerBuildCli.parse(process.argv.slice(3))
-	})
-
-	cli.command('push', 'Push Docker image').action(() => {
-		const dockerPushCli = createDockerPushCommand()
-		dockerPushCli.parse(process.argv.slice(3))
-	})
-
-	cli.command('deploy', 'Deploy Docker container').action(() => {
-		const dockerDeployCli = createDockerDeployCommand()
-		dockerDeployCli.parse(process.argv.slice(3))
-	})
-
-	return cli
-}
-
-export function createDockerBuildCommand(): ReturnType<typeof cac> {
-	const cli = cac('aamini docker build')
-	cli.help()
-	cli.version('0.0.1')
-
-	cli
-		.command('<app>', 'Build Docker image for a specific app')
-		.option('-a, --all', 'Build images for all apps')
-		.action(async (app: string | undefined, options: { all?: boolean }) => {
-			const repoRoot = await getRepoRoot()
-			const apps = options.all
-				? parseApps(repoRoot, ['--all'])
-				: app
-					? [app]
-					: []
-
-			if (apps.length === 0) {
-				console.error('Error: Specify an app name or use --all')
-				process.exit(1)
-			}
-
-			for (const appName of apps) {
-				await buildImage(repoRoot, appName)
-			}
-		})
-
-	cli.addEventListener('command:*', () => {
-		console.error(`Error: Unknown command '${cli.args[0] ?? ''}'`)
-		cli.outputHelp()
-		process.exit(1)
-	})
-
-	return cli
-}
-
-export function createDockerPushCommand(): ReturnType<typeof cac> {
-	const cli = cac('aamini docker push')
-	cli.help()
-	cli.version('0.0.1')
-
-	cli
-		.command('<app>', 'Push Docker image for a specific app')
-		.option('-a, --all', 'Push images for all apps')
-		.action(async (app: string | undefined, options: { all?: boolean }) => {
-			const repoRoot = await getRepoRoot()
-			const apps = options.all
-				? parseApps(repoRoot, ['--all'])
-				: app
-					? [app]
-					: []
-
-			if (apps.length === 0) {
-				console.error('Error: Specify an app name or use --all')
-				process.exit(1)
-			}
-
-			for (const appName of apps) {
-				await pushImage(repoRoot, appName)
-			}
-		})
-
-	cli.addEventListener('command:*', () => {
-		console.error(`Error: Unknown command '${cli.args[0] ?? ''}'`)
-		cli.outputHelp()
-		process.exit(1)
-	})
-
-	return cli
-}
-
-export function createDockerDeployCommand(): ReturnType<typeof cac> {
-	const cli = cac('aamini docker deploy')
-	cli.help()
-	cli.version('0.0.1')
-
-	cli
-		.command('<app>', 'Deploy a specific app')
-		.option('-a, --all', 'Deploy all apps')
-		.option('-r, --deploy-revision <sha>', 'Deploy specific revision')
-		.action(
-			async (
-				app: string | undefined,
-				options: { all?: boolean; deployRevision?: string },
-			) => {
-				const repoRoot = await getRepoRoot()
-
-				if (!app && !options.all) {
-					console.error('Error: Specify an app name or use --all')
-					process.exit(1)
-				}
-
-				await runDeploy(repoRoot, options.deployRevision)
-			},
-		)
-
-	cli.addEventListener('command:*', () => {
-		console.error(`Error: Unknown command '${cli.args[0] ?? ''}'`)
-		cli.outputHelp()
-		process.exit(1)
-	})
-
-	return cli
 }
 
 export { buildImage, getImageRefs, parseApps, pushImage, runDeploy }

@@ -7,6 +7,33 @@ import { spawn } from 'node:child_process'
 import { cac } from 'cac'
 import { getRepoRoot, listAppDirectories } from '../helpers/repo.ts'
 
+export function createSecretsCommand(): ReturnType<typeof cac> {
+	const cli = cac('aamini secrets')
+	cli.version('0.0.1')
+	cli.help()
+
+	cli.command('').action(() => {
+		cli.outputHelp()
+	})
+
+	cli.command('seal', 'Seal all app secrets').action(async () => {
+		const repoRoot = await getRepoRoot()
+		await sealAll(repoRoot)
+	})
+
+	cli.command('unseal', 'Unseal all app secrets').action(async () => {
+		const repoRoot = await getRepoRoot()
+		await unsealAll(repoRoot)
+	})
+
+	cli.command('update', 'Update all sealed secrets').action(async () => {
+		const repoRoot = await getRepoRoot()
+		await updateAll(repoRoot)
+	})
+
+	return cli
+}
+
 type SealTarget = {
 	app: string
 	appDir: string
@@ -358,33 +385,6 @@ function parseApps(repoRoot: string, args: string[]): string[] {
 
 async function updateAll(_repoRoot: string): Promise<void> {
 	console.log('aamini secrets update is a stub - implementation empty for now')
-}
-
-export function createSecretsCommand(): ReturnType<typeof cac> {
-	const cli = cac('aamini secrets')
-	cli.version('0.0.1')
-	cli.help()
-
-	cli.command('').action(() => {
-		cli.outputHelp()
-	})
-
-	cli.command('seal', 'Seal all app secrets').action(async () => {
-		const repoRoot = await getRepoRoot()
-		await sealAll(repoRoot)
-	})
-
-	cli.command('unseal', 'Unseal all app secrets').action(async () => {
-		const repoRoot = await getRepoRoot()
-		await unsealAll(repoRoot)
-	})
-
-	cli.command('update', 'Update all sealed secrets').action(async () => {
-		const repoRoot = await getRepoRoot()
-		await updateAll(repoRoot)
-	})
-
-	return cli
 }
 
 export {

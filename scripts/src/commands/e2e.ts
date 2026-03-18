@@ -13,6 +13,42 @@ const E2E_COMPOSE_FILE = path.resolve(
 	'e2e.compose.yaml',
 )
 
+export function createE2ECommand(): ReturnType<typeof cac> {
+	const cli = cac('aamini e2e')
+	cli.version('0.0.1')
+	cli.help()
+
+	cli.command('').action(() => {
+		cli.outputHelp()
+	})
+
+	cli
+		.command('run <app>', 'Run e2e for a specific app')
+		.option('-l, --local', 'Run e2e locally with docker compose')
+		.option('-p, --preview <pr>', 'Run e2e against preview deployment')
+		.option('-s, --staging', 'Run e2e against staging')
+		.option('-P, --production', 'Run e2e against production')
+		.action(async (app: string, options: E2EOptions) => {
+			await runE2E(await getRepoRoot(), app, options)
+		})
+
+	cli
+		.command('--all', 'Run e2e for all apps')
+		.option('-l, --local', 'Run e2e locally with docker compose')
+		.option('-p, --preview <pr>', 'Run e2e against preview deployment')
+		.option('-s, --staging', 'Run e2e against staging')
+		.option('-P, --production', 'Run e2e against production')
+		.action(async (options: E2EOptions) => {
+			const repoRoot = await getRepoRoot()
+			const apps = listAppDirectories(repoRoot)
+			for (const app of apps) {
+				await runE2E(repoRoot, app, options)
+			}
+		})
+
+	return cli
+}
+
 export type E2EOptions = {
 	local?: boolean
 	preview?: string
@@ -84,40 +120,4 @@ async function runE2E(
 	} else {
 		throw new Error(`e2e --${mode} not yet implemented`)
 	}
-}
-
-export function createE2ECommand(): ReturnType<typeof cac> {
-	const cli = cac('aamini e2e')
-	cli.version('0.0.1')
-	cli.help()
-
-	cli.command('').action(() => {
-		cli.outputHelp()
-	})
-
-	cli
-		.command('run <app>', 'Run e2e for a specific app')
-		.option('-l, --local', 'Run e2e locally with docker compose')
-		.option('-p, --preview <pr>', 'Run e2e against preview deployment')
-		.option('-s, --staging', 'Run e2e against staging')
-		.option('-P, --production', 'Run e2e against production')
-		.action(async (app: string, options: E2EOptions) => {
-			await runE2E(await getRepoRoot(), app, options)
-		})
-
-	cli
-		.command('--all', 'Run e2e for all apps')
-		.option('-l, --local', 'Run e2e locally with docker compose')
-		.option('-p, --preview <pr>', 'Run e2e against preview deployment')
-		.option('-s, --staging', 'Run e2e against staging')
-		.option('-P, --production', 'Run e2e against production')
-		.action(async (options: E2EOptions) => {
-			const repoRoot = await getRepoRoot()
-			const apps = listAppDirectories(repoRoot)
-			for (const app of apps) {
-				await runE2E(repoRoot, app, options)
-			}
-		})
-
-	return cli
 }
