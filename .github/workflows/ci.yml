@@ -80,6 +80,8 @@ jobs:
           role-to-assume: ${{ secrets.AWS_GITHUB_ACTIONS_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
       - uses: aws-actions/amazon-ecr-login@v2
+      - uses: azure/setup-helm@v4
+      - uses: oras-project/setup-oras@v1
       - name: Compute image tag
         id: image_tag
         env:
@@ -101,6 +103,70 @@ jobs:
         env:
           IMAGE_TAG: ${{ steps.image_tag.outputs.value }}
         run: ./scripts/bin/aamini docker push ${{ matrix.app }}
+      - name: Publish GitOps bundle
+        if: matrix.app == 'portfolio'
+        run: |
+          pnpm node --experimental-strip-types scripts/src/publish-gitops.ts render --deploy-revision ${{ github.sha }}
+      - name: Push app-release chart
+        if: matrix.app == 'portfolio'
+        run: |
+          mkdir -p .tmp/chart
+          helm package packages/infra/charts/app-release --destination .tmp/chart
+          helm push .tmp/chart/app-release-0.1.0.tgz oci://${{ env.ECR_REGISTRY }}
+      - name: Push GitOps OCI bundle
+        if: matrix.app == 'portfolio'
+        run: |
+          tar -C .tmp/gitops-bundle -czf .tmp/projects-gitops.tar.gz .
+          oras push ${{ env.ECR_REGISTRY }}/projects-gitops:latest \
+            .tmp/projects-gitops.tar.gz:application/vnd.aamini.gitops.bundle.v1+tar.gz
+      - name: Notify Flux receiver
+        if: matrix.app == 'portfolio'
+        env:
+          FLUX_RECEIVER_URL: ${{ secrets.FLUX_RECEIVER_URL }}
+        run: |
+          set -euo pipefail
+          test -n "$FLUX_RECEIVER_URL"
+
+          redacted_url="${FLUX_RECEIVER_URL%%\?*}"
+          if [[ "$redacted_url" != *"/hook/"* ]]; then
+            echo "::warning::FLUX_RECEIVER_URL does not include '/hook/' path. Current value may be incorrect."
+          fi
+
+          attempt=1
+          max_attempts=6
+          delay_seconds=10
+
+          while true; do
+            response_code="$(curl --show-error --silent \
+              --output /dev/null \
+              --write-out '%{http_code}' \
+              --connect-timeout 10 \
+              --max-time 30 \
+              --request POST \
+              --header 'Content-Type: application/json' \
+              --data '{"source":"github-actions","workflow":"ci","run_id":"${{ github.run_id }}","sha":"${{ github.sha }}"}' \
+              "$FLUX_RECEIVER_URL" || true)"
+
+            if [[ "$response_code" =~ ^2[0-9]{2}$ ]]; then
+              echo "Flux receiver acknowledged webhook (HTTP ${response_code})."
+              break
+            fi
+
+            if [[ "$response_code" == "404" ]]; then
+              echo "::warning::Flux receiver returned 404. Check FLUX_RECEIVER_URL path/token in Actions secrets. Skipping webhook retries; relying on Flux polling."
+              break
+            fi
+
+            if [[ "$attempt" -ge "$max_attempts" ]]; then
+              echo "::warning::Flux receiver remained unavailable after ${max_attempts} attempts (last HTTP ${response_code}). OCI artifacts were published successfully; Flux must pick up the update via its normal polling interval."
+              break
+            fi
+
+            echo "Flux receiver request failed on attempt ${attempt}/${max_attempts} (HTTP ${response_code}); retrying in ${delay_seconds}s"
+            sleep "$delay_seconds"
+            attempt=$((attempt + 1))
+            delay_seconds=$((delay_seconds * 2))
+          done
       - name: Wait for deployment
         env:
           APP: ${{ matrix.app }}
