@@ -1,0 +1,238 @@
+name: Deploy E2E
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-e2e-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+  TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+  AWS_REGION: us-east-1
+  ECR_REGISTRY: 302481198387.dkr.ecr.us-east-1.amazonaws.com
+
+jobs:
+  deploy-e2e:
+    if:
+      ${{ github.event_name != 'pull_request' ||
+      github.event.pull_request.head.repo.full_name == github.repository }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+      deployments: write
+      pull-requests: read
+      statuses: write
+    strategy:
+      fail-fast: false
+      matrix:
+        app:
+          - dota-visualizer
+          - imdbgraph
+          - pc-tune-ups
+          - portfolio
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - uses: aws-actions/configure-aws-credentials@v5
+        with:
+          role-to-assume: ${{ secrets.AWS_GITHUB_ACTIONS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+      - uses: aws-actions/amazon-ecr-login@v2
+      - name: Compute image tag
+        id: image_tag
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          SHA: ${{ github.sha }}
+        run: |
+          if [[ "$EVENT_NAME" == "pull_request" ]]; then
+            echo "value=pr-${PR_NUMBER}" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "value=main-${SHA}" >> "$GITHUB_OUTPUT"
+      - name: Build app image
+        env:
+          IMAGE_TAG: ${{ steps.image_tag.outputs.value }}
+        run: ./scripts/bin/aamini docker build --app ${{ matrix.app }}
+      - name: Push app image
+        env:
+          IMAGE_TAG: ${{ steps.image_tag.outputs.value }}
+        run: ./scripts/bin/aamini docker push --app ${{ matrix.app }}
+      - name: Publish GitOps bundle
+        uses: azure/setup-helm@v4
+      - uses: oras-project/setup-oras@v1
+      - name: Render GitOps bundle
+        run:
+          pnpm node --experimental-strip-types scripts/src/publish-gitops.ts
+          render --deploy-revision ${{ github.sha }}
+      - name: Push app-release chart
+        run: |
+          mkdir -p .tmp/chart
+          helm package packages/infra/charts/app-release --destination .tmp/chart
+          helm push .tmp/chart/app-release-0.1.0.tgz oci://${{ env.ECR_REGISTRY }}
+      - name: Push GitOps OCI bundle
+        run: |
+          tar -C .tmp/gitops-bundle -czf .tmp/projects-gitops.tar.gz .
+          oras push ${{ env.ECR_REGISTRY }}/projects-gitops:latest \
+            .tmp/projects-gitops.tar.gz:application/vnd.aamini.gitops.bundle.v1+tar.gz
+      - name: Notify Flux receiver
+        env:
+          FLUX_RECEIVER_URL: ${{ secrets.FLUX_RECEIVER_URL }}
+        run: |
+          set -euo pipefail
+          test -n "$FLUX_RECEIVER_URL"
+
+          redacted_url="${FLUX_RECEIVER_URL%%\?*}"
+          if [[ "$redacted_url" != *"/hook/"* ]]; then
+            echo "::warning::FLUX_RECEIVER_URL does not include '/hook/' path. Current value may be incorrect."
+          fi
+
+          attempt=1
+          max_attempts=6
+          delay_seconds=10
+
+          while true; do
+            response_code="$(curl --show-error --silent \
+              --output /dev/null \
+              --write-out '%{http_code}' \
+              --connect-timeout 10 \
+              --max-time 30 \
+              --request POST \
+              --header 'Content-Type: application/json' \
+              --data '{"source":"github-actions","workflow":"deploy-e2e","run_id":"${{ github.run_id }}","sha":"${{ github.sha }}"}' \
+              "$FLUX_RECEIVER_URL" || true)"
+
+            if [[ "$response_code" =~ ^2[0-9]{2}$ ]]; then
+              echo "Flux receiver acknowledged webhook (HTTP ${response_code})."
+              break
+            fi
+
+            if [[ "$response_code" == "404" ]]; then
+              echo "::warning::Flux receiver returned 404. Check FLUX_RECEIVER_URL path/token in Actions secrets. Skipping webhook retries; relying on Flux polling."
+              break
+            fi
+
+            if [[ "$attempt" -ge "$max_attempts" ]]; then
+              echo "::warning::Flux receiver remained unavailable after ${max_attempts} attempts (last HTTP ${response_code}). OCI artifacts were published successfully; Flux must pick up the update via its normal polling interval."
+              break
+            fi
+
+            echo "Flux receiver request failed on attempt ${attempt}/${max_attempts} (HTTP ${response_code}); retrying in ${delay_seconds}s"
+            sleep "$delay_seconds"
+            attempt=$((attempt + 1))
+            delay_seconds=$((delay_seconds * 2))
+          done
+      - name: Wait for deployment
+        env:
+          APP: ${{ matrix.app }}
+          IMAGE_TAG: ${{ steps.image_tag.outputs.value }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          echo "Waiting for ${{ matrix.app }} deployment..."
+          
+          # Build the expected URL based on environment
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            URL="https://${{ matrix.app }}.pr-${PR_NUMBER}.aamini.sh"
+          else
+            URL="https://${{ matrix.app }}.aamini.sh"
+          fi
+          
+          echo "Expected URL: $URL"
+          
+          # Wait for the URL to be available (up to 10 minutes)
+          for i in {1..60}; do
+            if curl --fail --silent --show-error --location \
+              --retry 3 \
+              --retry-delay 2 \
+              --max-time 10 \
+              "$URL" >/dev/null 2>&1; then
+              echo "Deployment is ready at $URL"
+              echo "app_url=$URL" >> "$GITHUB_OUTPUT"
+              break
+            fi
+            
+            if [[ $i -eq 60 ]]; then
+              echo "::error::Timeout waiting for deployment at $URL"
+              exit 1
+            fi
+            
+            echo "Waiting for deployment... ($i/60)"
+            sleep 10
+          done
+      - name: Mark e2e pending
+        env:
+          APP: ${{ matrix.app }}
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          SOURCE: github-actions
+          RUN_URL:
+            ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
+            github.run_id }}
+          SHA: ${{ github.sha }}
+        run: |
+          pnpm node --experimental-strip-types scripts/src/actions/e2e-commit-status.ts mark-pending \
+            --repository "${GITHUB_REPOSITORY}" \
+            --sha "${SHA}" \
+            --app "${APP}" \
+            --source "${SOURCE}" \
+            --run-url "${RUN_URL}" \
+            --pr-number "${PR_NUMBER}"
+      - name: Install Playwright browsers
+        run:
+          pnpm --dir "apps/${{ matrix.app }}" exec playwright install --with-deps chromium
+      - name: Run e2e
+        id: run_e2e
+        env:
+          BASE_URL: ${{ env.app_url }}
+          CI: true
+        run: pnpm --dir "apps/${{ matrix.app }}" exec playwright test
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-${{ matrix.app }}
+          path: apps/${{ matrix.app }}/playwright-report
+          retention-days: 7
+      - name: Update commit status
+        if: always()
+        env:
+          APP: ${{ matrix.app }}
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          SOURCE: github-actions
+          RESULT: ${{ steps.run_e2e.outcome }}
+          RUN_URL:
+            ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
+            github.run_id }}
+          SHA: ${{ github.sha }}
+        run: |
+          RESULT="$RESULT"
+          if [ "$RESULT" = "skipped" ]; then
+            RESULT="failure"
+          fi
+          pnpm node --experimental-strip-types scripts/src/actions/e2e-commit-status.ts mark-terminal \
+            --repository "${GITHUB_REPOSITORY}" \
+            --sha "${SHA}" \
+            --app "${APP}" \
+            --source "${SOURCE}" \
+            --run-url "${RUN_URL}" \
+            --pr-number "${PR_NUMBER}" \
+            --result "${RESULT}"
+      - name: Fail workflow on e2e failure
+        if: steps.run_e2e.outcome != 'success'
+        run: exit 1
