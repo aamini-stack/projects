@@ -49,7 +49,7 @@ jobs:
       - run: pnpm exec playwright install --with-deps chromium
       - run: pnpm test:integration
 
-  publish-app-images:
+  deploy-e2e:
     if:
       ${{ github.event_name != 'pull_request' ||
       github.event.pull_request.head.repo.full_name == github.repository }}
@@ -57,6 +57,16 @@ jobs:
     permissions:
       contents: read
       id-token: write
+      deployments: write
+      pull-requests: read
+    strategy:
+      fail-fast: false
+      matrix:
+        app:
+          - dota-visualizer
+          - imdbgraph
+          - pc-tune-ups
+          - portfolio
     steps:
       - uses: actions/checkout@v6
       - uses: pnpm/action-setup@v4
@@ -83,59 +93,42 @@ jobs:
           fi
 
           echo "value=main-${SHA}" >> "$GITHUB_OUTPUT"
-      - name: Build all app images via aamini CLI
+      - name: Build app image
         env:
           IMAGE_TAG: ${{ steps.image_tag.outputs.value }}
-        run: ./scripts/bin/aamini docker build --build-all
-      - name: Push all app images via aamini CLI
+        run: ./scripts/bin/aamini docker build ${{ matrix.app }}
+      - name: Push app image
         env:
           IMAGE_TAG: ${{ steps.image_tag.outputs.value }}
-        run: ./scripts/bin/aamini docker push --push-all
-
-  publish-gitops:
-    needs:
-      - publish-app-images
-    if:
-      ${{ github.event_name != 'pull_request' ||
-      github.event.pull_request.head.repo.full_name == github.repository }}
-    runs-on: ubuntu-latest
-    permissions:
-      actions: write
-      contents: write
-      deployments: write
-      pull-requests: read
-      id-token: write
-    steps:
-      - uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v6
-        with:
-          node-version: 22
-          cache: pnpm
-      - run: pnpm install --frozen-lockfile
-      - uses: aws-actions/configure-aws-credentials@v5
-        with:
-          role-to-assume: ${{ secrets.AWS_GITHUB_ACTIONS_ROLE_ARN }}
-          aws-region: ${{ env.AWS_REGION }}
-      - uses: aws-actions/amazon-ecr-login@v2
-      - uses: azure/setup-helm@v4
-      - uses: oras-project/setup-oras@v1
-      - name: Render GitOps bundle
-        run:
-          pnpm node --experimental-strip-types scripts/src/publish-gitops.ts
-          render --deploy-revision ${{ github.sha }}
+        run: ./scripts/bin/aamini docker push ${{ matrix.app }}
+      - name: Publish GitOps bundle
+        if: matrix.app == 'portfolio'
+        env:
+          IMAGE_TAG: ${{ steps.image_tag.outputs.value }}
+        run: |
+          # Publish GitOps bundle to trigger Flux deployment
+          # This is done by one job (portfolio) to avoid race conditions
+          pnpm node --experimental-strip-types scripts/src/publish-gitops.ts render --deploy-revision ${{ github.sha }}
       - name: Push app-release chart
+        if: matrix.app == 'portfolio'
+        env:
+          IMAGE_TAG: ${{ steps.image_tag.outputs.value }}
         run: |
           mkdir -p .tmp/chart
           helm package packages/infra/charts/app-release --destination .tmp/chart
           helm push .tmp/chart/app-release-0.1.0.tgz oci://${{ env.ECR_REGISTRY }}
       - name: Push GitOps OCI bundle
+        if: matrix.app == 'portfolio'
+        env:
+          IMAGE_TAG: ${{ steps.image_tag.outputs.value }}
         run: |
           tar -C .tmp/gitops-bundle -czf .tmp/projects-gitops.tar.gz .
           oras push ${{ env.ECR_REGISTRY }}/projects-gitops:latest \
             .tmp/projects-gitops.tar.gz:application/vnd.aamini.gitops.bundle.v1+tar.gz
       - name: Notify Flux receiver
+        if: matrix.app == 'portfolio'
         env:
+          IMAGE_TAG: ${{ steps.image_tag.outputs.value }}
           FLUX_RECEIVER_URL: ${{ secrets.FLUX_RECEIVER_URL }}
         run: |
           set -euo pipefail
@@ -181,21 +174,57 @@ jobs:
             attempt=$((attempt + 1))
             delay_seconds=$((delay_seconds * 2))
           done
-      - name: Create preview deployments for required apps
-        if: ${{ github.event_name == 'pull_request' }}
+      - name: Wait for deployment
         env:
-          GH_TOKEN: ${{ github.token }}
+          APP: ${{ matrix.app }}
+          IMAGE_TAG: ${{ steps.image_tag.outputs.value }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
-          SHA: ${{ github.sha }}
-          WORKFLOW_REF:
-            ${{ github.event.pull_request.head.ref || github.ref_name }}
-          RUN_URL:
-            ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
-            github.run_id }}
         run: |
-          pnpm node --experimental-strip-types scripts/src/actions/preview-deployments.ts \
-            --repository "${GITHUB_REPOSITORY}" \
-            --sha "${SHA}" \
-            --pr-number "${PR_NUMBER}" \
-            --workflow-ref "${WORKFLOW_REF}" \
-            --run-url "${RUN_URL}"
+          echo "Waiting for ${{ matrix.app }} deployment..."
+
+          # Build the expected URL based on environment
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            URL="https://${{ matrix.app }}-pr-${PR_NUMBER}.ariaamini.com"
+          else
+            URL="https://${{ matrix.app }}.ariaamini.com"
+          fi
+
+          echo "Expected URL: $URL"
+
+          # Wait for the URL to be available (up to 10 minutes)
+          for i in {1..60}; do
+            if curl --fail --silent --show-error --location \
+              --retry 3 \
+              --retry-delay 2 \
+              --max-time 10 \
+              "$URL" >/dev/null 2>&1; then
+              echo "Deployment is ready at $URL"
+              echo "app_url=$URL" >> "$GITHUB_OUTPUT"
+              break
+            fi
+
+            if [[ $i -eq 60 ]]; then
+              echo "::error::Timeout waiting for deployment at $URL"
+              exit 1
+            fi
+
+            echo "Waiting for deployment... ($i/60)"
+            sleep 10
+          done
+      - name: Install Playwright browsers
+        run:
+          pnpm --dir "apps/${{ matrix.app }}" exec playwright install
+          --with-deps chromium
+      - name: Run e2e
+        id: run_e2e
+        env:
+          BASE_URL: ${{ env.app_url }}
+          CI: true
+        run: pnpm --dir "apps/${{ matrix.app }}" exec playwright test
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-${{ matrix.app }}
+          path: apps/${{ matrix.app }}/playwright-report
+          retention-days: 7
