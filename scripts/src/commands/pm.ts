@@ -1,6 +1,6 @@
 import * as fs from 'node:fs'
 import * as path from 'node:path'
-import { cac } from 'cac'
+import { Command } from 'commander'
 import { $ } from 'zx'
 import { getRepoRoot, getRepoRootSync } from '../helpers/repo.ts'
 
@@ -34,89 +34,120 @@ export interface CIReturn {
 
 const TASKS_PATH = path.resolve(getRepoRootSync(), 'tasks.json')
 
-export function createPMCommand(): ReturnType<typeof cac> {
-	const cli = cac('aamini pm')
+export function createPMCommand(): Command {
+	const cli = new Command('pm')
+	cli.description('Project management')
 	cli.version('0.0.1')
-	cli.help()
 
-	cli.command('').action(() => {
-		cli.outputHelp()
-	})
+	cli.addCommand(
+		new Command('next').description('Show next available tasks').action(() => {
+			cmdNext()
+		}),
+	)
 
-	cli.command('next', 'Show next available tasks').action(() => {
-		cmdNext()
-	})
+	cli.addCommand(
+		new Command('progress').description('Show task progress').action(() => {
+			cmdProgress()
+		}),
+	)
 
-	cli.command('progress', 'Show task progress').action(() => {
-		cmdProgress()
-	})
+	cli.addCommand(
+		new Command('wipe').description('Wipe all progress fields').action(() => {
+			cmdWipe()
+		}),
+	)
 
-	cli.command('wipe', 'Wipe all progress fields').action(() => {
-		cmdWipe()
-	})
+	cli.addCommand(
+		new Command('show')
+			.description('Show details for a task')
+			.argument('<id>', 'Task ID')
+			.action((id: string) => {
+				cmdShow(id)
+			}),
+	)
 
-	cli.command('show <id>', 'Show details for a task').action((id: string) => {
-		cmdShow(id)
-	})
+	cli.addCommand(
+		new Command('update')
+			.description('Update task field')
+			.argument('<id>', 'Task ID')
+			.argument('<field>', 'Field to update')
+			.argument('[value...]', 'New value(s)')
+			.action((id: string, field: string, value: string[] = []) => {
+				if (value.length === 0) {
+					console.error('Error: Usage: aamini pm update <id> <field> <value>')
+					process.exit(1)
+				}
+				cmdUpdate(id, field, value.join(' '))
+			}),
+	)
 
-	cli
-		.command('update <id> <field> [...value]', 'Update task field')
-		.action((id: string, field: string, value: string[] = []) => {
-			if (value.length === 0) {
-				console.error('Error: Usage: aamini pm update <id> <field> <value>')
-				process.exit(1)
-			}
-			cmdUpdate(id, field, value.join(' '))
-		})
+	cli.addCommand(
+		new Command('done')
+			.description('Mark task done')
+			.argument('[taskOrJson]', 'Task ID or JSON')
+			.argument('[commitSha]', 'Commit SHA')
+			.argument('[notes...]', 'Optional notes')
+			.action(
+				async (
+					taskOrJson: string | undefined,
+					commitSha: string | undefined,
+					notes: string[] = [],
+				) => {
+					if (!taskOrJson) {
+						const jsonStr = await readFromStdin()
+						if (jsonStr) {
+							cmdDoneJson(jsonStr)
+							return
+						}
+						console.error(
+							'Error: Usage: aamini pm done <task-id> <commit-sha> [notes]',
+						)
+						console.error(
+							'       or: aamini pm done \'{"task": 1, "status": "done", "sha": "abc", "notes": "..."}\'',
+						)
+						console.error(
+							'       or: echo \'{"task": 1, ...}\' | aamini pm done',
+						)
+						process.exit(1)
+					}
 
-	cli
-		.command('done [taskOrJson] [commitSha] [...notes]', 'Mark task done')
-		.action(
-			async (
-				taskOrJson: string | undefined,
-				commitSha: string | undefined,
-				notes: string[] = [],
-			) => {
-				if (!taskOrJson) {
-					const jsonStr = await readFromStdin()
-					if (jsonStr) {
-						cmdDoneJson(jsonStr)
+					if (taskOrJson.startsWith('{')) {
+						cmdDoneJson(taskOrJson)
 						return
 					}
-					console.error(
-						'Error: Usage: aamini pm done <task-id> <commit-sha> [notes]',
-					)
-					console.error(
-						'       or: aamini pm done \'{"task": 1, "status": "done", "sha": "abc", "notes": "..."}\'',
-					)
-					console.error('       or: echo \'{"task": 1, ...}\' | aamini pm done')
-					process.exit(1)
-				}
 
-				if (taskOrJson.startsWith('{')) {
-					cmdDoneJson(taskOrJson)
-					return
-				}
+					if (!commitSha) {
+						console.error(
+							'Error: Usage: aamini pm done <task-id> <commit-sha> [notes]',
+						)
+						process.exit(1)
+					}
 
-				if (!commitSha) {
-					console.error(
-						'Error: Usage: aamini pm done <task-id> <commit-sha> [notes]',
-					)
-					process.exit(1)
-				}
+					cmdDone(taskOrJson, commitSha, notes.join(' '))
+				},
+			),
+	)
 
-				cmdDone(taskOrJson, commitSha, notes.join(' '))
-			},
-		)
+	cli.addCommand(
+		new Command('blocked')
+			.description('Mark task blocked')
+			.argument('<id>', 'Task ID')
+			.argument('[notes...]', 'Optional notes')
+			.action((id: string, notes: string[] = []) => {
+				cmdBlocked(id, notes.join(' '))
+			}),
+	)
 
-	cli
-		.command('blocked <id> [...notes]', 'Mark task blocked')
-		.action((id: string, notes: string[] = []) => {
-			cmdBlocked(id, notes.join(' '))
-		})
+	cli.addCommand(
+		new Command('ci')
+			.description('Run CI checks across all apps')
+			.action(async () => {
+				await cmdCi()
+			}),
+	)
 
-	cli.command('ci', 'Run CI checks across all apps').action(async () => {
-		await cmdCi()
+	cli.action(() => {
+		cli.outputHelp()
 	})
 
 	return cli

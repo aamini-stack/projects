@@ -12,69 +12,80 @@ export function createDockerCommand(): Command {
 	const cli = new Command('docker')
 	cli.description('Docker utilities')
 
-	cli
-		.command('build <app>', 'Build Docker image for a specific app')
-		.option('-b, --build-all', 'Build images for all apps')
-		.action(
-			async (app: string | undefined, options: { buildAll?: boolean }) => {
-				const repoRoot = await getRepoRoot()
-				const apps = options.buildAll
-					? parseApps(repoRoot, ['--build-all'])
-					: app
-						? [app]
-						: []
+	cli.addCommand(
+		new Command('build')
+			.description('Build Docker image for a specific app')
+			.argument('<app>', 'App name to build')
+			.option('-b, --build-all', 'Build images for all apps')
+			.action(
+				async (app: string | undefined, options: { buildAll?: boolean }) => {
+					const repoRoot = await getRepoRoot()
+					const apps = options.buildAll
+						? parseApps(repoRoot, ['--build-all'])
+						: app
+							? [app]
+							: []
 
-				if (apps.length === 0) {
-					console.error('Error: Specify an app name or use --build-all')
-					process.exit(1)
-				}
+					if (apps.length === 0) {
+						console.error('Error: Specify an app name or use --build-all')
+						process.exit(1)
+					}
 
-				for (const appName of apps) {
-					await buildImage(repoRoot, appName)
-				}
-			},
-		)
+					for (const appName of apps) {
+						await buildImage(repoRoot, appName)
+					}
+				},
+			),
+	)
 
-	cli
-		.command('push <app>', 'Push Docker image for a specific app')
-		.option('-p, --push-all', 'Push images for all apps')
-		.action(async (app: string | undefined, options: { pushAll?: boolean }) => {
-			const repoRoot = await getRepoRoot()
-			const apps = options.pushAll
-				? parseApps(repoRoot, ['--push-all'])
-				: app
-					? [app]
-					: []
+	cli.addCommand(
+		new Command('push')
+			.description('Push Docker image for a specific app')
+			.argument('<app>', 'App name to push')
+			.option('-p, --push-all', 'Push images for all apps')
+			.action(
+				async (app: string | undefined, options: { pushAll?: boolean }) => {
+					const repoRoot = await getRepoRoot()
+					const apps = options.pushAll
+						? parseApps(repoRoot, ['--push-all'])
+						: app
+							? [app]
+							: []
 
-			if (apps.length === 0) {
-				console.error('Error: Specify an app name or use --push-all')
-				process.exit(1)
-			}
+					if (apps.length === 0) {
+						console.error('Error: Specify an app name or use --push-all')
+						process.exit(1)
+					}
 
-			for (const appName of apps) {
-				await pushImage(repoRoot, appName)
-			}
-		})
+					for (const appName of apps) {
+						await pushImage(repoRoot, appName)
+					}
+				},
+			),
+	)
 
-	cli
-		.command('deploy', 'Deploy Docker container')
-		.option('-d, --deploy-all', 'Deploy all apps')
-		.option('-r, --deploy-revision <sha>', 'Deploy specific revision')
-		.action(
-			async (
-				app: string | undefined,
-				options: { deployAll?: boolean; deployRevision?: string },
-			) => {
-				const repoRoot = await getRepoRoot()
+	cli.addCommand(
+		new Command('deploy')
+			.description('Deploy Docker container')
+			.option('-d, --deploy-all', 'Deploy all apps')
+			.option('-r, --deploy-revision <sha>', 'Deploy specific revision')
+			.action(
+				async (options: { deployAll?: boolean; deployRevision?: string }) => {
+					const repoRoot = await getRepoRoot()
 
-				if (!app && !options.deployAll) {
-					console.error('Error: Specify an app name or use --deploy-all')
-					process.exit(1)
-				}
+					if (!options.deployAll) {
+						console.error('Error: Use --deploy-all to deploy all apps')
+						process.exit(1)
+					}
 
-				await runDeploy(repoRoot, options.deployRevision)
-			},
-		)
+					await runDeploy(repoRoot, options.deployRevision)
+				},
+			),
+	)
+
+	cli.action(() => {
+		cli.outputHelp()
+	})
 
 	return cli
 }

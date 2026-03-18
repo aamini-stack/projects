@@ -52,6 +52,10 @@ export function createSecretsCommand(): Command {
 		await updateAll(repoRoot)
 	})
 
+	cli.action(() => {
+		cli.outputHelp()
+	})
+
 	return cli
 }
 
