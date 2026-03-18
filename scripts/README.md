@@ -16,11 +16,9 @@ pnpm install
 Manage Kubernetes secrets.
 
 ```
-aamini secrets seal [app]
-aamini secrets seal --all
-aamini secrets unseal [app]
-aamini secrets unseal --all
-aamini secrets update --all
+aamini secrets seal
+aamini secrets unseal
+aamini secrets update
 ```
 
 ### PM
@@ -28,7 +26,15 @@ aamini secrets update --all
 Task manager.
 
 ```
-aamini pm next|progress|wipe|show|update|done|blocked|ci
+aamini pm next
+aamini pm progress
+aamini pm wipe
+aamini pm show <id>
+aamini pm update <id> <field> <value>
+aamini pm done [task-id] [commit-sha] [notes]
+aamini pm done '{"task": 1, "status": "done", "sha": "abc", "notes": "..."}'
+aamini pm blocked <id> [notes]
+aamini pm ci
 ```
 
 See `aamini pm --help` for more.
@@ -38,17 +44,21 @@ See `aamini pm --help` for more.
 GitHub Actions entrypoints.
 
 ```
-aamini ci preview create|cleanup|status|gate ...
-aamini ci events outputs|normalize ...
-aamini ci e2e status ...
+aamini ci preview create
+aamini ci preview cleanup
+aamini ci preview status
+aamini ci preview gate
+aamini ci events outputs
+aamini ci events normalize
+aamini ci e2e status
 ```
 
 ### E2E
 
-Run end-to-end tests against apps. Defaults to `--local`.
+Run end-to-end tests against apps.
 
 ```
-aamini e2e <app> [--local|--preview <pr>|--staging|--production]
+aamini e2e run <app> [--local|--preview <pr>|--staging|--production]
 aamini e2e --all [--local|--preview <pr>|--staging|--production]
 ```
 
@@ -57,9 +67,9 @@ aamini e2e --all [--local|--preview <pr>|--staging|--production]
 Build, push, and deploy Docker images and k8 manifests into OCI.
 
 ```
-aamini docker build <app|--all>
-aamini docker push <app|--all>
-aamini docker deploy <app|--all> [--deploy-revision <sha>]
+aamini docker build <app> [--all]
+aamini docker push <app> [--all]
+aamini docker deploy [--all] [--deploy-revision <sha>]
 ```
 
 ## Environment Variables

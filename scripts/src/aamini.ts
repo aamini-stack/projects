@@ -1,46 +1,65 @@
 #!/usr/bin/env node
 import { cac } from 'cac'
+import * as path from 'node:path'
+import { fileURLToPath } from 'node:url'
+import { $ } from 'zx'
 import { createE2ECommand } from './commands/e2e.ts'
 import { createSecretsCommand } from './commands/secrets.ts'
 import { createDockerCommand } from './commands/docker.ts'
-import { createPMCommand } from './commands/pm.ts'
 import { createCICommand } from './commands/ci.ts'
 
 async function main(): Promise<void> {
+	const scriptDir = path.dirname(fileURLToPath(import.meta.url))
+	const pmScriptPath = path.resolve(scriptDir, 'commands', 'pm.ts')
+
 	const cli = cac('aamini')
-	cli.version('0.0.1')
 	cli.help()
+	cli.version('0.0.1')
 
-	cli.command('').action(() => {
+	const subcommand = process.argv[2]
+
+	if (
+		subcommand === '--help' ||
+		subcommand === '-h' ||
+		subcommand === undefined
+	) {
 		cli.outputHelp()
-	})
+		process.exit(subcommand === undefined ? 0 : 0)
+	}
 
-	cli.command('e2e', 'Run e2e tests').action(() => {
+	if (subcommand === 'e2e') {
 		const e2eCli = createE2ECommand()
-		e2eCli.parse(process.argv.slice(2))
-	})
+		e2eCli.parse(process.argv.slice(3))
+		return
+	}
 
-	cli.command('secrets', 'Manage secrets').action(() => {
+	if (subcommand === 'secrets') {
 		const secretsCli = createSecretsCommand()
-		secretsCli.parse(process.argv.slice(2))
-	})
+		secretsCli.parse(process.argv.slice(3))
+		return
+	}
 
-	cli.command('docker', 'Docker commands').action(() => {
+	if (subcommand === 'docker') {
 		const dockerCli = createDockerCommand()
-		dockerCli.parse(process.argv.slice(2))
-	})
+		dockerCli.parse(process.argv.slice(3))
+		return
+	}
 
-	cli.command('pm', 'Project management commands').action(() => {
-		const pmCli = createPMCommand()
-		pmCli.parse(process.argv.slice(2))
-	})
+	if (subcommand === 'pm') {
+		const interactive = $({ stdio: 'inherit' })
+		await interactive`node --experimental-strip-types ${pmScriptPath} ${process.argv.slice(3)}`
+		return
+	}
 
-	cli.command('ci', 'CI commands').action(() => {
+	if (subcommand === 'ci') {
 		const ciCli = createCICommand()
-		ciCli.parse(process.argv.slice(2))
-	})
+		ciCli.parse(process.argv.slice(3))
+		return
+	}
 
-	cli.parse(process.argv)
+	console.error(`Error: Unknown command '${subcommand ?? ''}'`)
+	cli.outputHelp()
+	process.exit(1)
 }
 
 void main()

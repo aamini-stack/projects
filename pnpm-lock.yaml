@@ -909,9 +909,6 @@ importers:
         specifier: ^8.8.5
         version: 8.8.5
     devDependencies:
-      '@aamini/config-testing':
-        specifier: workspace:*
-        version: link:../packages/config-testing
       '@aamini/config-typescript':
         specifier: workspace:*
         version: link:../packages/config-typescript
