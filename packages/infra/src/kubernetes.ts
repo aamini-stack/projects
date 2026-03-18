@@ -338,7 +338,7 @@ new k8s.core.v1.Secret(
 	{ provider: k8sProvider, dependsOn: [fluxNamespace] },
 )
 
-const ensureImdbgraphNamespace = new command.local.Command(
+new command.local.Command(
 	'ensure-imdbgraph-namespace',
 	{
 		create:
@@ -351,7 +351,7 @@ const ensureImdbgraphNamespace = new command.local.Command(
 	{ dependsOn: [fluxInstance] },
 )
 
-const ensureAppPreviewNamespace = new command.local.Command(
+new command.local.Command(
 	'ensure-app-preview-namespace',
 	{
 		create:
@@ -363,15 +363,6 @@ const ensureAppPreviewNamespace = new command.local.Command(
 	},
 	{ dependsOn: [fluxInstance] },
 )
-
-const imdbgraphDatabaseUrl = pulumi
-	.all([postgresAdminUser, postgresAdminPassword, postgresHost, postgresPort])
-	.apply(
-		([adminUser, adminPassword, host, port]) =>
-			`postgresql://${encodeURIComponent(adminUser)}:${encodeURIComponent(
-				adminPassword,
-			)}@${host}:${port}/${imdbgraphDatabaseName}?sslmode=require`,
-	)
 
 let traefikLoadBalancerHostname: pulumi.Output<string> | undefined
 
