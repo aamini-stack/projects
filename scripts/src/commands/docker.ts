@@ -15,7 +15,7 @@ export function createDockerCommand(): Command {
 	cli.addCommand(
 		new Command('build')
 			.description('Build Docker image for a specific app')
-			.argument('<app>', 'App name to build')
+			.argument('[app]', 'App name to build')
 			.option('-b, --build-all', 'Build images for all apps')
 			.action(
 				async (app: string | undefined, options: { buildAll?: boolean }) => {
@@ -41,7 +41,7 @@ export function createDockerCommand(): Command {
 	cli.addCommand(
 		new Command('push')
 			.description('Push Docker image for a specific app')
-			.argument('<app>', 'App name to push')
+			.argument('[app]', 'App name to push')
 			.option('-p, --push-all', 'Push images for all apps')
 			.action(
 				async (app: string | undefined, options: { pushAll?: boolean }) => {
