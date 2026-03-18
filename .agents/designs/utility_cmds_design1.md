@@ -50,7 +50,8 @@ global) -g, --global Use global config --json Output as JSON --file <path> Use
 specific config file **Examples:** $ aamini config list # List all config values
 $ aamini config get turbo.cache # Get specific value $ aamini config set
 turbo.cache.enabled true --app imdbgraph $ aamini config edit # Open in $EDITOR
-$ aamini config validate # Check config for errors
+$
+aamini config validate # Check config for errors
 
 ---
 
