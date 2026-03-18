@@ -113,6 +113,7 @@ export function renderGitopsBundle(input: {
 	outputRoot: string
 	appManifestRoot?: string
 	deployRevision?: string
+	prNumber?: string
 }): void {
 	const appsSource = path.join(input.sourceRoot, 'apps')
 	const apps = loadAppDefinitions(appsSource)

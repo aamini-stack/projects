@@ -5,6 +5,7 @@ import { createSecretsCommand } from './commands/secrets.ts'
 import { createDockerCommand } from './commands/docker.ts'
 import { createCICommand } from './commands/ci.ts'
 import { createPMCommand } from './commands/pm.ts'
+import { createDeployCommand } from './commands/deploy.ts'
 
 async function main(): Promise<void> {
 	const program = new Command()
@@ -17,6 +18,7 @@ async function main(): Promise<void> {
 	program.addCommand(createDockerCommand())
 	program.addCommand(createCICommand())
 	program.addCommand(createPMCommand())
+	program.addCommand(createDeployCommand())
 
 	void program.parseAsync(process.argv)
 }
