@@ -6,12 +6,6 @@ import * as k8s from '@pulumi/kubernetes'
 import * as pulumi from '@pulumi/pulumi'
 
 import { repositoryArns } from './ecr'
-import {
-	postgresAdminPassword,
-	postgresAdminUser,
-	postgresHost,
-	postgresPort,
-} from './postgres'
 
 interface KubernetesConfig {
 	clusterName?: string
@@ -101,12 +95,9 @@ const cluster = new eks.Cluster('kubernetes', {
 
 const githubConfig = new pulumi.Config('github')
 const cloudflareConfig = new pulumi.Config('cloudflare')
-const appsConfig = new pulumi.Config('apps')
 const githubToken = githubConfig.getSecret('token') ?? pulumi.secret('')
 const cloudflareApiToken =
 	cloudflareConfig.getSecret('apiToken') ?? pulumi.secret('')
-const imdbgraphDatabaseName =
-	appsConfig.get('imdbgraphDatabaseName') ?? 'postgres'
 const dnsAutomationConfig =
 	cloudflareConfig.getObject<DnsAutomationConfig>('dnsAutomation') ?? {}
 
