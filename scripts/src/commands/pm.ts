@@ -1,21 +1,19 @@
-#!/usr/bin/env node
 import { cac } from 'cac'
 import {
-	cmdBlocked,
 	cmdCi,
+	cmdBlocked,
 	cmdDone,
 	cmdDoneJson,
 	cmdNext,
 	cmdProgress,
-	cmdShow,
 	cmdUpdate,
+	cmdShow,
 	cmdWipe,
 	readFromStdin,
 } from '../helpers/pm.ts'
 
-async function main(): Promise<void> {
+export function createPMCommand(): ReturnType<typeof cac> {
 	const cli = cac('aamini pm')
-	cli.help()
 	cli.version('0.0.1')
 
 	cli.command('next', 'Show next available tasks').action(() => {
@@ -100,9 +98,5 @@ async function main(): Promise<void> {
 		process.exit(1)
 	})
 
-	cli.parse()
-}
-
-if (process.argv[1] === import.meta.url.replace('file://', '')) {
-	void main()
+	return cli
 }
