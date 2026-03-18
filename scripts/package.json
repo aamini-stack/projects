@@ -9,7 +9,6 @@
 		"test:watch": "vitest --watch"
 	},
 	"devDependencies": {
-		"@aamini/config-testing": "workspace:*",
 		"@aamini/config-typescript": "workspace:*",
 		"typescript": "5.9.3",
 		"vitest": "^4.0.18"
