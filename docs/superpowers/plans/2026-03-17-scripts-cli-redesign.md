@@ -7,6 +7,7 @@ Redesign the aamini CLI with better command grouping and cleaner interfaces.
 ## New CLI Structure
 
 ### Current (6 flat commands)
+
 ```
 aamini e2e [...]
 aamini build [...]
@@ -98,20 +99,20 @@ scripts/src/
 - App from positional arg or --all
 - Call appropriate docker compose or deployment target
 
-### Task 7: Create commands/docker/*.ts
+### Task 7: Create commands/docker/\*.ts
 
 - build.ts: parse args → call helpers/docker.ts
-- push.ts: parse args → call helpers/docker.ts  
+- push.ts: parse args → call helpers/docker.ts
 - deploy.ts: parse args → call publish-gitops
 
 ### Task 8: Move commands/pm.ts
 
 - Keep as-is, just move to commands/
 
-### Task 9: Create commands/ci/*.ts
+### Task 9: Create commands/ci/\*.ts
 
 - Move logic from actions/preview → helpers/ci/preview.ts
-- Move logic from actions/events → helpers/ci/events.ts  
+- Move logic from actions/events → helpers/ci/events.ts
 - Move logic from actions/e2e-workflow → helpers/ci/e2e.ts
 - Create thin CLI wrappers in commands/ci/
 
@@ -136,7 +137,8 @@ scripts/src/
 ## Notes
 
 - `aamini secrets update` is a stub - implementation empty for now
-- `e2e --preview $PR` - takes PR number, looks up preview URL from GitHub deployment
+- `e2e --preview $PR` - takes PR number, looks up preview URL from GitHub
+  deployment
 - `docker deploy` - keeps `--deploy-revision` flag
 - `aamini ci` commands for GitHub Actions:
   - `aamini ci preview create|cleanup|status|gate`

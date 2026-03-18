@@ -1,6 +1,9 @@
 ---
 name: obsidian-vault
-description: Search, create, and manage notes in the Obsidian vault with wikilinks and index notes. Use when user wants to find, create, or organize notes in Obsidian.
+description:
+  Search, create, and manage notes in the Obsidian vault with wikilinks and
+  index notes. Use when user wants to find, create, or organize notes in
+  Obsidian.
 ---
 
 # Obsidian Vault
@@ -13,7 +16,8 @@ Mostly flat at root level.
 
 ## Naming conventions
 
-- **Index notes**: aggregate related topics (e.g., `Ralph Wiggum Index.md`, `Skills Index.md`, `RAG Index.md`)
+- **Index notes**: aggregate related topics (e.g., `Ralph Wiggum Index.md`,
+  `Skills Index.md`, `RAG Index.md`)
 - **Title case** for all note names
 - No folders for organization - use links and index notes instead
 

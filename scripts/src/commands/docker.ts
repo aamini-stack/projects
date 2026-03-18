@@ -21,7 +21,7 @@ export function createDockerCommand(): Command {
 				async (app: string | undefined, options: { buildAll?: boolean }) => {
 					const repoRoot = await getRepoRoot()
 					const apps = options.buildAll
-						? parseApps(repoRoot, ['--build-all'])
+						? listAppDirectories(repoRoot)
 						: app
 							? [app]
 							: []
@@ -47,7 +47,7 @@ export function createDockerCommand(): Command {
 				async (app: string | undefined, options: { pushAll?: boolean }) => {
 					const repoRoot = await getRepoRoot()
 					const apps = options.pushAll
-						? parseApps(repoRoot, ['--push-all'])
+						? listAppDirectories(repoRoot)
 						: app
 							? [app]
 							: []

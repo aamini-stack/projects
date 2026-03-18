@@ -182,8 +182,7 @@ jobs:
             delay_seconds=$((delay_seconds * 2))
           done
       - name: Create preview deployments for required apps
-        if:
-          ${{ github.event_name == 'pull_request' }}
+        if: ${{ github.event_name == 'pull_request' }}
         env:
           GH_TOKEN: ${{ github.token }}
           PR_NUMBER: ${{ github.event.pull_request.number }}

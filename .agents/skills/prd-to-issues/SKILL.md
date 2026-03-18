@@ -1,11 +1,15 @@
 ---
 name: prd-to-issues
-description: Break a PRD into independently-grabbable GitHub issues using tracer-bullet vertical slices. Use when user wants to convert a PRD to issues, create implementation tickets, or break down a PRD into work items.
+description:
+  Break a PRD into independently-grabbable GitHub issues using tracer-bullet
+  vertical slices. Use when user wants to convert a PRD to issues, create
+  implementation tickets, or break down a PRD into work items.
 ---
 
 # PRD to Issues
 
-Break a PRD into independently-grabbable GitHub issues using vertical slices (tracer bullets).
+Break a PRD into independently-grabbable GitHub issues using vertical slices
+(tracer bullets).
 
 ## Process
 
@@ -13,17 +17,23 @@ Break a PRD into independently-grabbable GitHub issues using vertical slices (tr
 
 Ask the user for the PRD GitHub issue number (or URL).
 
-If the PRD is not already in your context window, fetch it with `gh issue view <number>` (with comments).
+If the PRD is not already in your context window, fetch it with
+`gh issue view <number>` (with comments).
 
 ### 2. Explore the codebase (optional)
 
-If you have not already explored the codebase, do so to understand the current state of the code.
+If you have not already explored the codebase, do so to understand the current
+state of the code.
 
 ### 3. Draft vertical slices
 
-Break the PRD into **tracer bullet** issues. Each issue is a thin vertical slice that cuts through ALL integration layers end-to-end, NOT a horizontal slice of one layer.
+Break the PRD into **tracer bullet** issues. Each issue is a thin vertical slice
+that cuts through ALL integration layers end-to-end, NOT a horizontal slice of
+one layer.
 
-Slices may be 'HITL' or 'AFK'. HITL slices require human interaction, such as an architectural decision or a design review. AFK slices can be implemented and merged without human interaction. Prefer AFK over HITL where possible.
+Slices may be 'HITL' or 'AFK'. HITL slices require human interaction, such as an
+architectural decision or a design review. AFK slices can be implemented and
+merged without human interaction. Prefer AFK over HITL where possible.
 
 <vertical-slice-rules>
 - Each slice delivers a narrow but COMPLETE path through every layer (schema, API, UI, tests)
@@ -51,9 +61,11 @@ Iterate until the user approves the breakdown.
 
 ### 5. Create the GitHub issues
 
-For each approved slice, create a GitHub issue using `gh issue create`. Use the issue body template below.
+For each approved slice, create a GitHub issue using `gh issue create`. Use the
+issue body template below.
 
-Create issues in dependency order (blockers first) so you can reference real issue numbers in the "Blocked by" field.
+Create issues in dependency order (blockers first) so you can reference real
+issue numbers in the "Blocked by" field.
 
 <issue-template>
 ## Parent PRD
@@ -62,7 +74,9 @@ Create issues in dependency order (blockers first) so you can reference real iss
 
 ## What to build
 
-A concise description of this vertical slice. Describe the end-to-end behavior, not layer-by-layer implementation. Reference specific sections of the parent PRD rather than duplicating content.
+A concise description of this vertical slice. Describe the end-to-end behavior,
+not layer-by-layer implementation. Reference specific sections of the parent PRD
+rather than duplicating content.
 
 ## Acceptance criteria
 

@@ -91,8 +91,8 @@ test('aamini docker', () => {
 		  -h, --help             display help for command
 
 		Commands:
-		  build [options] <app>  Build Docker image for a specific app
-		  push [options] <app>   Push Docker image for a specific app
+		  build [options] [app]  Build Docker image for a specific app
+		  push [options] [app]   Push Docker image for a specific app
 		  deploy [options]       Deploy Docker container
 		"
 	`)
