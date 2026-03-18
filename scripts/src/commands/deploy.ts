@@ -26,7 +26,7 @@ export function createDeployCommand(): Command {
 			'Pull request number (required for preview)',
 		)
 		.requiredOption('--sha <sha>', 'Git commit SHA')
-		.option('--app <app>', 'App name (defaults to portfolio)')
+		.option('--app <app>', 'App name (optional, for logging only)')
 		.action(async (options: DeployOptions) => {
 			if (!options.production && !options.preview) {
 				console.error('Error: Must specify either --production or --preview')
@@ -43,7 +43,7 @@ export function createDeployCommand(): Command {
 				process.exit(1)
 			}
 
-			const app = options.app ?? 'portfolio'
+			const app = options.app ?? 'all-apps'
 			const repoRoot = await getRepoRoot()
 
 			if (options.production) {

@@ -37,6 +37,7 @@ test('aamini', () => {
 		  docker          Docker utilities
 		  ci              CI utilities
 		  pm [options]    Project management
+		  deploy          Deploy apps to Kubernetes via GitOps
 		  help [command]  display help for command
 		"
 	`)

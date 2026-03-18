@@ -19,6 +19,7 @@ export type E2EOptions = {
 	staging?: boolean
 	production?: boolean
 	all?: boolean
+	wait?: boolean
 }
 
 export function createE2ECommand(): Command {
@@ -34,6 +35,7 @@ export function createE2ECommand(): Command {
 			.option('-s, --staging', 'Run e2e against staging')
 			.option('-P, --production', 'Run e2e against production')
 			.option('-a, --all', 'Run e2e for all apps')
+			.option('--wait', 'Wait for deployment to be ready before running tests')
 			.action(
 				async (
 					app: string | undefined,
@@ -106,6 +108,12 @@ export async function runE2E(
 
 	assertAppExists(repoRoot, app)
 
+	// Wait for deployment if requested
+	if (options.wait && targetUrl) {
+		console.log(`Waiting for ${app} deployment at ${targetUrl}...`)
+		await waitForDeployment(targetUrl)
+	}
+
 	const interactive = $({
 		cwd: repoRoot,
 		stdio: 'inherit',
@@ -120,7 +128,39 @@ export async function runE2E(
 	if (mode === 'local') {
 		await interactive`docker compose -f ${E2E_COMPOSE_FILE} run --build --rm e2e`
 	} else {
-		throw new Error(`e2e --${mode} not yet implemented`)
+		// Run e2e against deployed environment
+		await interactive`pnpm --dir ${path.join('apps', app)} exec playwright install --with-deps chromium`
+		await interactive`pnpm --dir ${path.join('apps', app)} exec playwright test`
+	}
+}
+
+async function waitForDeployment(url: string): Promise<void> {
+	const maxAttempts = 60
+	const delaySeconds = 10
+
+	for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+		try {
+			const response = await fetch(url, {
+				method: 'GET',
+				redirect: 'follow',
+			})
+
+			if (response.ok) {
+				console.log(`✅ Deployment ready at ${url}`)
+				return
+			}
+		} catch {
+			// Connection failed, keep waiting
+		}
+
+		if (attempt >= maxAttempts) {
+			throw new Error(
+				`Timeout waiting for deployment at ${url} after ${maxAttempts} attempts`,
+			)
+		}
+
+		console.log(`Waiting... (${attempt}/${maxAttempts})`)
+		await new Promise((resolve) => setTimeout(resolve, delaySeconds * 1000))
 	}
 }
 

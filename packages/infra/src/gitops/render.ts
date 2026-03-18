@@ -114,6 +114,7 @@ export function renderGitopsBundle(input: {
 	appManifestRoot?: string
 	deployRevision?: string
 	prNumber?: string
+	appFilter?: string[] // Filter to only render specific apps
 }): void {
 	const appsSource = path.join(input.sourceRoot, 'apps')
 	const apps = loadAppDefinitions(appsSource)
