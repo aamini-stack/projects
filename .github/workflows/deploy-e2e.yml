@@ -108,16 +108,16 @@ jobs:
           PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
           echo "Waiting for ${{ matrix.app }} deployment..."
-          
+
           # Build the expected URL based on environment
           if [[ "${{ github.event_name }}" == "pull_request" ]]; then
             URL="https://${{ matrix.app }}.pr-${PR_NUMBER}.aamini.sh"
           else
             URL="https://${{ matrix.app }}.aamini.sh"
           fi
-          
+
           echo "Expected URL: $URL"
-          
+
           # Wait for the URL to be available (up to 10 minutes)
           for i in {1..60}; do
             if curl --fail --silent --show-error --location \
@@ -140,7 +140,8 @@ jobs:
           done
       - name: Install Playwright browsers
         run:
-          pnpm --dir "apps/${{ matrix.app }}" exec playwright install --with-deps chromium
+          pnpm --dir "apps/${{ matrix.app }}" exec playwright install
+          --with-deps chromium
       - name: Run e2e
         id: run_e2e
         env:
