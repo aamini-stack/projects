@@ -2,9 +2,9 @@
 import { cac } from 'cac'
 import { createE2ECommand } from './commands/e2e.ts'
 import { createSecretsCommand } from './commands/secrets.ts'
-import { createDockerCommand } from './commands/docker/index.ts'
+import { createDockerCommand } from './commands/docker.ts'
 import { createPMCommand } from './commands/pm.ts'
-import { createCICommand } from './commands/ci/index.ts'
+import { createCICommand } from './commands/ci.ts'
 
 async function main(): Promise<void> {
 	const cli = cac('aamini')
