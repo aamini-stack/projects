@@ -1,4 +1,6 @@
 import { $ } from 'zx'
+import * as path from 'node:path'
+import { mkdirSync } from 'node:fs'
 import { assertAppExists, listAppDirectories } from './repo.ts'
 
 function getImageRefs(appName: string): string[] {
@@ -76,3 +78,24 @@ function parseApps(repoRoot: string, args: string[]): string[] {
 }
 
 export { buildImage, getImageRefs, parseApps, pushImage }
+
+export async function runDeploy(
+	repoRoot: string,
+	deployRevision?: string,
+): Promise<void> {
+	const { renderGitopsBundle } = await import(
+		// @ts-ignore - external package import
+		'../../../../packages/infra/src/gitops/render.ts'
+	)
+	const sourceRoot = path.join(repoRoot, 'packages', 'infra', 'manifests')
+	const outputRoot = path.join(repoRoot, '.tmp/gitops-bundle')
+
+	mkdirSync(path.dirname(outputRoot), { recursive: true })
+	renderGitopsBundle({
+		sourceRoot,
+		outputRoot,
+		appManifestRoot: repoRoot,
+		...(deployRevision ? { deployRevision } : {}),
+	})
+	console.log(outputRoot)
+}

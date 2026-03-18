@@ -1,8 +1,5 @@
 #!/usr/bin/env node
 import { cac } from 'cac'
-import * as path from 'node:path'
-import { fileURLToPath } from 'node:url'
-import { $ } from 'zx'
 import { getRepoRoot } from './helpers/repo.ts'
 import { createE2ECommand } from './commands/e2e.ts'
 import {
@@ -15,11 +12,20 @@ import {
 	createCIEventsCommand,
 	createCIE2ECommand,
 } from './commands/ci/index.ts'
+import {
+	cmdCi,
+	cmdBlocked,
+	cmdDone,
+	cmdDoneJson,
+	cmdNext,
+	cmdProgress,
+	cmdShow,
+	cmdUpdate,
+	cmdWipe,
+	readFromStdin,
+} from './helpers/pm.ts'
 
 async function main(): Promise<void> {
-	const scriptDir = path.dirname(fileURLToPath(import.meta.url))
-	const pmScriptPath = path.resolve(scriptDir, 'commands', 'pm.ts')
-
 	const cli = cac('aamini')
 	cli.help()
 	cli.version('0.0.1')
@@ -78,8 +84,97 @@ async function main(): Promise<void> {
 	}
 
 	if (subcommand === 'pm') {
-		const interactive = $({ stdio: 'inherit' })
-		await interactive`node --experimental-strip-types ${pmScriptPath} ${process.argv.slice(3)}`
+		const pmCli = cac('aamini pm')
+		pmCli.help()
+		pmCli.version('0.0.1')
+
+		pmCli.command('next', 'Show next available tasks').action(() => {
+			cmdNext()
+		})
+
+		pmCli.command('progress', 'Show task progress').action(() => {
+			cmdProgress()
+		})
+
+		pmCli.command('wipe', 'Wipe all progress fields').action(() => {
+			cmdWipe()
+		})
+
+		pmCli
+			.command('show <id>', 'Show details for a task')
+			.action((id: string) => {
+				cmdShow(id)
+			})
+
+		pmCli
+			.command('update <id> <field> [...value]', 'Update task field')
+			.action((id: string, field: string, value: string[] = []) => {
+				if (value.length === 0) {
+					console.error('Error: Usage: aamini pm update <id> <field> <value>')
+					process.exit(1)
+				}
+				cmdUpdate(id, field, value.join(' '))
+			})
+
+		pmCli
+			.command('done [taskOrJson] [commitSha] [...notes]', 'Mark task done')
+			.action(
+				async (
+					taskOrJson: string | undefined,
+					commitSha: string | undefined,
+					notes: string[] = [],
+				) => {
+					if (!taskOrJson) {
+						const jsonStr = await readFromStdin()
+						if (jsonStr) {
+							cmdDoneJson(jsonStr)
+							return
+						}
+						console.error(
+							'Error: Usage: aamini pm done <task-id> <commit-sha> [notes]',
+						)
+						console.error(
+							'       or: aamini pm done \'{"task": 1, "status": "done", "sha": "abc", "notes": "..."}\'',
+						)
+						console.error(
+							'       or: echo \'{"task": 1, ...}\' | aamini pm done',
+						)
+						process.exit(1)
+					}
+
+					if (taskOrJson.startsWith('{')) {
+						cmdDoneJson(taskOrJson)
+						return
+					}
+
+					if (!commitSha) {
+						console.error(
+							'Error: Usage: aamini pm done <task-id> <commit-sha> [notes]',
+						)
+						process.exit(1)
+					}
+
+					cmdDone(taskOrJson, commitSha, notes.join(' '))
+				},
+			)
+
+		pmCli
+			.command('blocked <id> [...notes]', 'Mark task blocked')
+			.action((id: string, notes: string[] = []) => {
+				cmdBlocked(id, notes.join(' '))
+			})
+
+		pmCli.command('ci', 'Run CI checks across all apps').action(async () => {
+			await cmdCi()
+		})
+
+		pmCli.addEventListener('command:*', () => {
+			console.error(`Error: Unknown command '${pmCli.args[0] ?? ''}'`)
+			pmCli.outputHelp()
+			process.exit(1)
+		})
+
+		pmCli.parse(process.argv.slice(2))
 		return
 	}
 

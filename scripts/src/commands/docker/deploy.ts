@@ -1,8 +1,6 @@
 import { cac } from 'cac'
-import path from 'node:path'
-import { mkdirSync } from 'node:fs'
-import { renderGitopsBundle } from '../../../../packages/infra/src/gitops/render.ts'
 import { getRepoRoot } from '../../helpers/repo.ts'
+import { runDeploy } from '../../helpers/docker.ts'
 
 export function createDockerDeployCommand(): ReturnType<typeof cac> {
 	const cli = cac('aamini docker deploy')
@@ -36,21 +34,4 @@ export function createDockerDeployCommand(): ReturnType<typeof cac> {
 	})
 
 	return cli
-}
-
-async function runDeploy(
-	repoRoot: string,
-	deployRevision?: string,
-): Promise<void> {
-	const sourceRoot = path.join(repoRoot, 'packages', 'infra', 'manifests')
-	const outputRoot = path.join(repoRoot, '.tmp/gitops-bundle')
-
-	mkdirSync(path.dirname(outputRoot), { recursive: true })
-	renderGitopsBundle({
-		sourceRoot,
-		outputRoot,
-		appManifestRoot: repoRoot,
-		...(deployRevision ? { deployRevision } : {}),
-	})
-	console.log(outputRoot)
 }
