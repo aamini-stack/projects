@@ -68,11 +68,11 @@ jobs:
       - name: Build app image
         env:
           IMAGE_TAG: ${{ steps.image_tag.outputs.value }}
-        run: ./scripts/bin/aamini docker build --app ${{ matrix.app }}
+        run: ./scripts/bin/aamini docker build ${{ matrix.app }}
       - name: Push app image
         env:
           IMAGE_TAG: ${{ steps.image_tag.outputs.value }}
-        run: ./scripts/bin/aamini docker push --app ${{ matrix.app }}
+        run: ./scripts/bin/aamini docker push ${{ matrix.app }}
       - name: Publish GitOps bundle
         uses: azure/setup-helm@v4
       - uses: oras-project/setup-oras@v1
