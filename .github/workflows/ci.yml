@@ -83,14 +83,14 @@ jobs:
           fi
 
           echo "value=main-${SHA}" >> "$GITHUB_OUTPUT"
-      - name: Build all app images via Turbo
+      - name: Build all app images via aamini CLI
         env:
           IMAGE_TAG: ${{ steps.image_tag.outputs.value }}
-        run: pnpm docker:build
-      - name: Push all app images via Turbo
+        run: ./scripts/bin/aamini docker build --build-all
+      - name: Push all app images via aamini CLI
         env:
           IMAGE_TAG: ${{ steps.image_tag.outputs.value }}
-        run: pnpm docker:push
+        run: ./scripts/bin/aamini docker push --push-all
 
   publish-gitops:
     needs:
