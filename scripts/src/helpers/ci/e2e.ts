@@ -5,7 +5,7 @@ import {
 	listPullRequestFiles,
 	parseRepo,
 	parseOptionalInt,
-} from '../../github.ts'
+} from '../../commands/github.ts'
 
 export type SelectE2ERequiredAppsInput = {
 	allApps: string[]

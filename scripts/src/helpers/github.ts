@@ -1,4 +1,4 @@
-import { getRepoRoot } from './helpers/repo.ts'
+import { getRepoRoot } from '../helpers/repo.ts'
 
 export type RepoRef = {
 	owner: string

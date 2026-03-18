@@ -11,7 +11,7 @@ import {
 	parseOptionalInt,
 	getRepoRoot,
 	type Deployment,
-} from '../../github.ts'
+} from '../../commands/github.ts'
 import { listAppDirectories } from '../repo.ts'
 
 export type SelectRequiredAppsInput = {
