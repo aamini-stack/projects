@@ -4,7 +4,7 @@ import * as path from 'node:path'
 import * as dns from 'node:dns/promises'
 import { randomUUID } from 'node:crypto'
 import { spawn } from 'node:child_process'
-import { cac } from 'cac'
+import { Command } from 'commander'
 import { getRepoRoot, listAppDirectories } from '../helpers/repo.ts'
 
 type SealTarget = {
@@ -33,14 +33,9 @@ type SealedSecretTemplateMetadata = {
 	namespace: string
 }
 
-export function createSecretsCommand(): ReturnType<typeof cac> {
-	const cli = cac('aamini secrets')
-	cli.version('0.0.1')
-	cli.help()
-
-	cli.command('').action(() => {
-		cli.outputHelp()
-	})
+export function createSecretsCommand(): Command {
+	const cli = new Command('secrets')
+	cli.description('Manage secrets')
 
 	cli.command('seal', 'Seal all app secrets').action(async () => {
 		const repoRoot = await getRepoRoot()

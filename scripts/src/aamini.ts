@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { cac } from 'cac'
+import { Command } from 'commander'
 import * as path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { $ } from 'zx'
@@ -12,54 +12,22 @@ async function main(): Promise<void> {
 	const scriptDir = path.dirname(fileURLToPath(import.meta.url))
 	const pmScriptPath = path.resolve(scriptDir, 'commands', 'pm.ts')
 
-	const cli = cac('aamini')
-	cli.help()
-	cli.version('0.0.1')
+	const program = new Command()
+	program.name('aamini')
+	program.description('@aamini-stack CLI tool')
+	program.version('0.0.1')
 
-	const subcommand = process.argv[2]
+	program.addCommand(createE2ECommand())
+	program.addCommand(createSecretsCommand())
+	program.addCommand(createDockerCommand())
+	program.addCommand(createCICommand())
 
-	if (
-		subcommand === '--help' ||
-		subcommand === '-h' ||
-		subcommand === undefined
-	) {
-		cli.outputHelp()
-		process.exit(subcommand === undefined ? 0 : 0)
-	}
-
-	if (subcommand === 'e2e') {
-		const e2eCli = createE2ECommand()
-		e2eCli.parse(process.argv.slice(3))
-		return
-	}
-
-	if (subcommand === 'secrets') {
-		const secretsCli = createSecretsCommand()
-		secretsCli.parse(process.argv.slice(3))
-		return
-	}
-
-	if (subcommand === 'docker') {
-		const dockerCli = createDockerCommand()
-		dockerCli.parse(process.argv.slice(3))
-		return
-	}
-
-	if (subcommand === 'pm') {
+	program.command('pm', 'Project management').action(async () => {
 		const interactive = $({ stdio: 'inherit' })
-		await interactive`node --experimental-strip-types ${pmScriptPath} ${process.argv.slice(3)}`
-		return
-	}
+		await interactive`node --experimental-strip-types ${pmScriptPath} ${process.argv.slice(2)}`
+	})
 
-	if (subcommand === 'ci') {
-		const ciCli = createCICommand()
-		ciCli.parse(process.argv.slice(3))
-		return
-	}
-
-	console.error(`Error: Unknown command '${subcommand ?? ''}'`)
-	cli.outputHelp()
-	process.exit(1)
+	program.parseAsync(process.argv)
 }
 
 void main()

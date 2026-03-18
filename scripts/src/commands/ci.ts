@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs'
 import { readFile } from 'node:fs/promises'
 import { appendFileSync } from 'node:fs'
-import { cac } from 'cac'
+import { Command } from 'commander'
 import { getRepoRoot, listAppDirectories } from '../helpers/repo.ts'
 import {
 	createCommitStatus,
@@ -17,68 +17,65 @@ import {
 	type Deployment,
 } from '../helpers/github.ts'
 
-export function createCICommand(): ReturnType<typeof cac> {
-	const cli = cac('aamini ci')
-	cli.version('0.0.1')
-	cli.help()
+export function createCICommand(): Command {
+	const cli = new Command('ci')
+	cli.description('CI utilities')
 
-	cli
-		.command('preview create', 'Create preview deployments')
+	const previewCmd = new Command('preview')
+	previewCmd.description('Preview deployment operations')
+	previewCmd
+		.command('create', 'Create preview deployments')
 		.action(async () => {
 			const options = parseCreatePreviewArgs(process.argv.slice(4))
 			await createPreviews(options)
 		})
 
-	cli
-		.command('preview cleanup', 'Cleanup preview deployments')
+	previewCmd
+		.command('cleanup', 'Cleanup preview deployments')
 		.action(async () => {
 			const options = parseCleanupArgs(process.argv.slice(4))
 			await cleanupPreviews(options)
 		})
 
-	cli
-		.command('preview status', 'Update preview deployment status')
+	previewCmd
+		.command('status', 'Update preview deployment status')
 		.action(async () => {
 			const options = parseStatusArgs(process.argv.slice(4))
 			await updatePreviewStatus(options)
 		})
 
-	cli
-		.command('preview gate', 'Wait for preview deployments')
+	previewCmd
+		.command('gate', 'Wait for preview deployments')
 		.action(async () => {
 			const options = parseGateArgs(process.argv.slice(4))
 			await runPreviewGate(options)
 		})
 
-	cli
-		.command('events outputs', 'Write event outputs to GitHub Actions')
+	const eventsCmd = new Command('events')
+	eventsCmd.description('Event operations')
+	eventsCmd
+		.command('outputs', 'Write event outputs to GitHub Actions')
 		.action(async () => {
 			const options = parseOutputsArgs(process.argv.slice(5))
 			await writeOutputs(options)
 		})
 
-	cli
-		.command('events normalize', 'Normalize an event file')
-		.action(async () => {
-			const eventPath = parseNormalizeArgs(process.argv.slice(5))
-			const normalized = normalizeEvent(eventPath)
-			console.log(JSON.stringify(normalized))
-		})
+	eventsCmd.command('normalize', 'Normalize an event file').action(async () => {
+		const eventPath = parseNormalizeArgs(process.argv.slice(5))
+		const normalized = normalizeEvent(eventPath)
+		console.log(JSON.stringify(normalized))
+	})
 
-	cli.command('e2e status', 'Update e2e status').action(async () => {
+	const e2eCmd = new Command('e2e')
+	e2eCmd.description('E2E operations')
+	e2eCmd.command('status', 'Update e2e status').action(async () => {
 		const options = parseE2EStatusArgs(process.argv.slice(5))
 		await updateE2eStatus(options)
 	})
 
-	cli.command('').action(() => {
-		cli.outputHelp()
-	})
-
-	cli.addEventListener('command:*', () => {
-		console.error(`Error: Unknown command '${cli.args[0] ?? ''}'`)
-		cli.outputHelp()
-		process.exit(1)
-	})
+	cli.addCommand(previewCmd)
+	cli.addCommand(eventsCmd)
+	cli.addCommand(e2eCmd)
 
 	return cli
 }

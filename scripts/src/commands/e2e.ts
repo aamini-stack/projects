@@ -1,5 +1,5 @@
 import * as path from 'node:path'
-import { cac } from 'cac'
+import { Command } from 'commander'
 import { $ } from 'zx'
 import {
 	assertAppExists,
@@ -21,38 +21,37 @@ export type E2EOptions = {
 	all?: boolean
 }
 
-export function createE2ECommand(): ReturnType<typeof cac> {
-	const cli = cac('aamini e2e')
-	cli.version('0.0.1')
-	cli.help()
-
-	cli.command('').action(() => {
-		cli.outputHelp()
-	})
+export function createE2ECommand(): Command {
+	const cli = new Command('e2e')
+	cli.description('Run e2e tests')
 
 	cli
-		.command('run <app>', 'Run e2e for a specific app')
+		.command('run [app]', 'Run e2e for a specific app or all apps')
 		.option('-l, --local', 'Run e2e locally with docker compose')
 		.option('-p, --preview <pr>', 'Run e2e against preview deployment')
 		.option('-s, --staging', 'Run e2e against staging')
 		.option('-P, --production', 'Run e2e against production')
-		.action(async (app: string, options: E2EOptions) => {
-			await runE2E(await getRepoRoot(), app, options)
-		})
-
-	cli
-		.command('--all', 'Run e2e for all apps')
-		.option('-l, --local', 'Run e2e locally with docker compose')
-		.option('-p, --preview <pr>', 'Run e2e against preview deployment')
-		.option('-s, --staging', 'Run e2e against staging')
-		.option('-P, --production', 'Run e2e against production')
-		.action(async (options: E2EOptions) => {
-			const repoRoot = await getRepoRoot()
-			const apps = listAppDirectories(repoRoot)
-			for (const app of apps) {
-				await runE2E(repoRoot, app, options)
-			}
-		})
+		.option('-a, --all', 'Run e2e for all apps')
+		.action(
+			async (
+				app: string | undefined,
+				options: E2EOptions & { all?: boolean },
+			) => {
+				const repoRoot = await getRepoRoot()
+				const apps = options.all
+					? listAppDirectories(repoRoot)
+					: app
+						? [app]
+						: []
+				if (apps.length === 0) {
+					console.error('Error: Specify an app name or use --all')
+					process.exit(1)
+				}
+				for (const appName of apps) {
+					await runE2E(repoRoot, appName, options)
+				}
+			},
+		)
 
 	return cli
 }

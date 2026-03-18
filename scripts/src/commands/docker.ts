@@ -1,52 +1,53 @@
 import { $ } from 'zx'
 import * as path from 'node:path'
 import { mkdirSync } from 'node:fs'
-import { cac } from 'cac'
+import { Command } from 'commander'
 import {
 	assertAppExists,
 	getRepoRoot,
 	listAppDirectories,
 } from '../helpers/repo.ts'
 
-export function createDockerCommand(): ReturnType<typeof cac> {
-	const cli = cac('aamini docker')
-	cli.version('0.0.1')
-	cli.help()
+export function createDockerCommand(): Command {
+	const cli = new Command('docker')
+	cli.description('Docker utilities')
 
 	cli
 		.command('build <app>', 'Build Docker image for a specific app')
-		.option('-a, --all', 'Build images for all apps')
-		.action(async (app: string | undefined, options: { all?: boolean }) => {
-			const repoRoot = await getRepoRoot()
-			const apps = options.all
-				? parseApps(repoRoot, ['--all'])
-				: app
-					? [app]
-					: []
+		.option('-b, --build-all', 'Build images for all apps')
+		.action(
+			async (app: string | undefined, options: { buildAll?: boolean }) => {
+				const repoRoot = await getRepoRoot()
+				const apps = options.buildAll
+					? parseApps(repoRoot, ['--build-all'])
+					: app
+						? [app]
+						: []
 
-			if (apps.length === 0) {
-				console.error('Error: Specify an app name or use --all')
-				process.exit(1)
-			}
+				if (apps.length === 0) {
+					console.error('Error: Specify an app name or use --build-all')
+					process.exit(1)
+				}
 
-			for (const appName of apps) {
-				await buildImage(repoRoot, appName)
-			}
-		})
+				for (const appName of apps) {
+					await buildImage(repoRoot, appName)
+				}
+			},
+		)
 
 	cli
 		.command('push <app>', 'Push Docker image for a specific app')
-		.option('-a, --all', 'Push images for all apps')
-		.action(async (app: string | undefined, options: { all?: boolean }) => {
+		.option('-p, --push-all', 'Push images for all apps')
+		.action(async (app: string | undefined, options: { pushAll?: boolean }) => {
 			const repoRoot = await getRepoRoot()
-			const apps = options.all
-				? parseApps(repoRoot, ['--all'])
+			const apps = options.pushAll
+				? parseApps(repoRoot, ['--push-all'])
 				: app
 					? [app]
 					: []
 
 			if (apps.length === 0) {
-				console.error('Error: Specify an app name or use --all')
+				console.error('Error: Specify an app name or use --push-all')
 				process.exit(1)
 			}
 
@@ -57,33 +58,23 @@ export function createDockerCommand(): ReturnType<typeof cac> {
 
 	cli
 		.command('deploy', 'Deploy Docker container')
-		.option('-a, --all', 'Deploy all apps')
+		.option('-d, --deploy-all', 'Deploy all apps')
 		.option('-r, --deploy-revision <sha>', 'Deploy specific revision')
 		.action(
 			async (
 				app: string | undefined,
-				options: { all?: boolean; deployRevision?: string },
+				options: { deployAll?: boolean; deployRevision?: string },
 			) => {
 				const repoRoot = await getRepoRoot()
 
-				if (!app && !options.all) {
-					console.error('Error: Specify an app name or use --all')
+				if (!app && !options.deployAll) {
+					console.error('Error: Specify an app name or use --deploy-all')
 					process.exit(1)
 				}
 
 				await runDeploy(repoRoot, options.deployRevision)
 			},
 		)
-
-	cli.command('').action(() => {
-		cli.outputHelp()
-	})
-
-	cli.addEventListener('command:*', () => {
-		console.error(`Error: Unknown command '${cli.args[0] ?? ''}'`)
-		cli.outputHelp()
-		process.exit(1)
-	})
 
 	return cli
 }
@@ -145,8 +136,8 @@ async function pushImage(repoRoot: string, appName: string): Promise<void> {
 }
 
 function parseApps(repoRoot: string, args: string[]): string[] {
-	const runAll = args.includes('--all')
-	const positionalArgs = args.filter((arg) => arg !== '--all')
+	const runAll = args.includes('--build-all')
+	const positionalArgs = args.filter((arg) => arg !== '--build-all')
 
 	if (runAll) {
 		return listAppDirectories(repoRoot)
@@ -155,7 +146,7 @@ function parseApps(repoRoot: string, args: string[]): string[] {
 	const appName = positionalArgs[0]
 	if (!appName) {
 		throw new Error(
-			'Usage: aamini docker build <app-name> | aamini docker build --all',
+			'Usage: aamini docker build <app-name> | aamini docker build --build-all',
 		)
 	}
 
