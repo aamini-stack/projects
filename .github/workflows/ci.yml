@@ -100,7 +100,10 @@ jobs:
       github.event.pull_request.head.repo.full_name == github.repository }}
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      actions: write
+      contents: write
+      deployments: write
+      pull-requests: read
       id-token: write
     steps:
       - uses: actions/checkout@v6
@@ -178,28 +181,9 @@ jobs:
             attempt=$((attempt + 1))
             delay_seconds=$((delay_seconds * 2))
           done
-
-  create-preview-deployments:
-    needs:
-      - publish-gitops
-    if:
-      ${{ github.event_name == 'pull_request' &&
-      github.event.pull_request.head.repo.full_name == github.repository }}
-    runs-on: ubuntu-latest
-    permissions:
-      actions: write
-      contents: write
-      deployments: write
-      pull-requests: read
-    steps:
-      - uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v6
-        with:
-          node-version: 22
-          cache: pnpm
-      - run: pnpm install --frozen-lockfile
       - name: Create preview deployments for required apps
+        if:
+          ${{ github.event_name == 'pull_request' }}
         env:
           GH_TOKEN: ${{ github.token }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
