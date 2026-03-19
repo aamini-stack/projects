@@ -3,6 +3,11 @@ import * as path from 'node:path'
 import { mkdirSync } from 'node:fs'
 import { Command } from 'commander'
 import { getRepoRoot } from '../helpers/repo.ts'
+import {
+	buildFluxPayload,
+	buildManifestTag,
+	type DeployEnvironment,
+} from './deploy.helpers.ts'
 
 interface DeployOptions {
 	production?: boolean
@@ -92,6 +97,7 @@ async function deployProduction(
 		outputRoot,
 		appManifestRoot: repoRoot,
 		deployRevision: sha,
+		...(app === 'all-apps' ? {} : { appFilter: [app] }),
 	})
 	console.log(`   Bundle rendered to: ${outputRoot}`)
 
@@ -110,15 +116,23 @@ async function deployProduction(
 	// Step 3: Push GitOps OCI bundle
 	console.log('📤 Pushing GitOps OCI bundle...')
 	const bundlePath = path.join(repoRoot, '.tmp/projects-gitops.tar.gz')
+	const manifestTag = buildManifestTag({ app, sha })
 	await $({ cwd: repoRoot })`tar -C ${outputRoot} -czf ${bundlePath} .`
 	await $({
 		cwd: repoRoot,
-	})`oras push ${ecrRegistry}/projects-gitops:main-${sha} ${bundlePath}:application/vnd.aamini.gitops.bundle.v1+tar.gz`
+	})`oras push ${ecrRegistry}/${manifestTag} ${bundlePath}:application/vnd.aamini.gitops.bundle.v1+tar.gz`
 	console.log('   Bundle pushed successfully')
 
 	// Step 4: Notify Flux receiver
 	console.log('🔔 Notifying Flux receiver...')
-	await notifyFluxReceiver(fluxReceiverUrl, sha)
+	await notifyFluxReceiver(
+		fluxReceiverUrl,
+		buildFluxPayload({
+			app,
+			sha,
+			environment: 'production',
+		}),
+	)
 	console.log('   Flux notified successfully')
 
 	console.log(`✅ Production deployment complete for ${app}`)
@@ -158,6 +172,7 @@ async function deployPreview(
 		appManifestRoot: repoRoot,
 		deployRevision: sha,
 		prNumber: prNumber,
+		...(app === 'all-apps' ? {} : { appFilter: [app] }),
 	})
 	console.log(`   Bundle rendered to: ${outputRoot}`)
 
@@ -176,15 +191,24 @@ async function deployPreview(
 	// Step 3: Push GitOps OCI bundle with PR-specific tag
 	console.log('📤 Pushing GitOps OCI bundle...')
 	const bundlePath = path.join(repoRoot, '.tmp/projects-gitops.tar.gz')
+	const manifestTag = buildManifestTag({ app, sha, prNumber })
 	await $({ cwd: repoRoot })`tar -C ${outputRoot} -czf ${bundlePath} .`
 	await $({
 		cwd: repoRoot,
-	})`oras push ${ecrRegistry}/projects-gitops:pr-${prNumber} ${bundlePath}:application/vnd.aamini.gitops.bundle.v1+tar.gz`
+	})`oras push ${ecrRegistry}/${manifestTag} ${bundlePath}:application/vnd.aamini.gitops.bundle.v1+tar.gz`
 	console.log('   Bundle pushed successfully')
 
 	// Step 4: Notify Flux receiver
 	console.log('🔔 Notifying Flux receiver...')
-	await notifyFluxReceiver(fluxReceiverUrl, sha, prNumber)
+	await notifyFluxReceiver(
+		fluxReceiverUrl,
+		buildFluxPayload({
+			app,
+			sha,
+			environment: 'preview',
+			prNumber,
+		}),
+	)
 	console.log('   Flux notified successfully')
 
 	console.log(`✅ Preview deployment complete for ${app} (PR #${prNumber})`)
@@ -192,19 +216,18 @@ async function deployPreview(
 
 async function notifyFluxReceiver(
 	fluxReceiverUrl: string,
-	sha: string,
-	prNumber?: string,
+	payload: {
+		source: 'github-actions'
+		workflow: 'deploy'
+		run_id: string
+		app: string
+		sha: string
+		environment: DeployEnvironment
+		pr_number?: string
+	},
 ): Promise<void> {
 	const maxAttempts = 6
 	let delaySeconds = 10
-
-	const payload = {
-		source: 'github-actions',
-		workflow: 'deploy',
-		run_id: process.env.GITHUB_RUN_ID ?? 'unknown',
-		sha: sha,
-		...(prNumber ? { pr_number: prNumber } : {}),
-	}
 
 	for (let attempt = 1; attempt <= maxAttempts; attempt++) {
 		try {

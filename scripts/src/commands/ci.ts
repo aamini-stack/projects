@@ -3,6 +3,7 @@ import { readFile } from 'node:fs/promises'
 import { appendFileSync } from 'node:fs'
 import { Command } from 'commander'
 import { getRepoRoot, listAppDirectories } from '../helpers/repo.ts'
+import { createCIDeployCommand } from './ci-deploy.ts'
 import {
 	createCommitStatus,
 	createDeployment,
@@ -73,9 +74,12 @@ export function createCICommand(): Command {
 		await updateE2eStatus(options)
 	})
 
+	const deployCmd = createCIDeployCommand()
+
 	cli.addCommand(previewCmd)
 	cli.addCommand(eventsCmd)
 	cli.addCommand(e2eCmd)
+	cli.addCommand(deployCmd)
 
 	return cli
 }
@@ -825,6 +829,7 @@ function derivePreviewImageTag(
 
 function normalizeEnvironment(value: string): 'preview' | 'stable' {
 	if (value === 'preview' || value === 'stable') return value
+	if (value === 'production') return 'stable'
 	throw new Error(`Unsupported deploy-ready environment: ${value}`)
 }
 

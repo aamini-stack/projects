@@ -114,6 +114,7 @@ test('aamini ci', () => {
 		  preview         Preview deployment operations
 		  events          Event operations
 		  e2e             E2E operations
+		  deploy          Deploy workflow utilities
 		  help [command]  display help for command
 		"
 	`)

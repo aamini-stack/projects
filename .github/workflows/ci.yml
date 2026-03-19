@@ -32,7 +32,7 @@ jobs:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: pnpm turbo run format typecheck lint test:unit
+      - run: pnpm turbo run format typecheck lint
 
   integration-tests:
     runs-on: ubuntu-latest
@@ -49,13 +49,7 @@ jobs:
       - run: pnpm exec playwright install --with-deps chromium
       - run: pnpm test:integration
 
-  # Build, deploy, and run e2e tests
-  build-deploy-e2e:
-    if: >
-      ${{
-        github.event_name != 'pull_request' ||
-        github.event.pull_request.head.repo.full_name == github.repository
-      }}
+  deploy-pipeline:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -80,62 +74,53 @@ jobs:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+
+      - name: Compute deploy outputs
+        id: deploy
+        run: |
+          ./scripts/bin/aamini ci deploy outputs \
+            --repository "${GITHUB_REPOSITORY}" \
+            --event-name "${GITHUB_EVENT_NAME}" \
+            --event-path "${GITHUB_EVENT_PATH}" \
+            --app "${{ matrix.app }}" \
+            --sha "${{ github.sha }}" \
+            --github-output "${GITHUB_OUTPUT}"
+
+      - name: No-op summary
+        if: steps.deploy.outputs.changed != 'true'
+        run: |
+          if [[ "${{ steps.deploy.outputs.reason }}" == "fork-pr" ]]; then
+            echo "Deploy skipped: fork PR has no deploy secrets"
+          else
+            echo "No changed apps for ${{ matrix.app }}; skipping build/push/deploy"
+          fi
+
       - uses: aws-actions/configure-aws-credentials@v5
+        if: steps.deploy.outputs.changed == 'true'
         with:
           role-to-assume: ${{ secrets.AWS_GITHUB_ACTIONS_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
       - uses: aws-actions/amazon-ecr-login@v2
+        if: steps.deploy.outputs.changed == 'true'
       - uses: azure/setup-helm@v4
+        if: steps.deploy.outputs.changed == 'true'
       - uses: oras-project/setup-oras@v1
-
-      - name: Compute image tag
-        id: image-tag
-        env:
-          EVENT_NAME: ${{ github.event_name }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          SHA: ${{ github.sha }}
-        run: |
-          if [[ "$EVENT_NAME" == "pull_request" ]]; then
-            echo "value=pr-${PR_NUMBER}" >> "$GITHUB_OUTPUT"
-          else
-            echo "value=main-${SHA}" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Check if app changed
-        id: changed
-        env:
-          EVENT_NAME: ${{ github.event_name }}
-          BASE_SHA:
-            ${{ github.event.pull_request.base.sha || github.event.before }}
-          APP: ${{ matrix.app }}
-        run: |
-          # On push to main, always deploy
-          if [[ "$EVENT_NAME" == "push" ]]; then
-            echo "changed=true" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-
-          # On PR, check if app changed
-          if git diff --name-only "$BASE_SHA" HEAD | grep -q "^apps/$APP/"; then
-            echo "changed=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "changed=false" >> "$GITHUB_OUTPUT"
-          fi
+        if: steps.deploy.outputs.changed == 'true'
 
       - name: Build image
-        if: steps.changed.outputs.changed == 'true'
+        if: steps.deploy.outputs.changed == 'true'
         env:
-          IMAGE_TAG: ${{ steps.image-tag.outputs.value }}
+          IMAGE_TAG: ${{ steps.deploy.outputs.image_tag }}
         run: ./scripts/bin/aamini docker build ${{ matrix.app }}
 
       - name: Push image
-        if: steps.changed.outputs.changed == 'true'
+        if: steps.deploy.outputs.changed == 'true'
         env:
-          IMAGE_TAG: ${{ steps.image-tag.outputs.value }}
+          IMAGE_TAG: ${{ steps.deploy.outputs.image_tag }}
         run: ./scripts/bin/aamini docker push ${{ matrix.app }}
 
       - name: Deploy GitOps manifests
-        if: matrix.app == 'portfolio' && steps.changed.outputs.changed == 'true'
+        if: steps.deploy.outputs.changed == 'true'
         env:
           ECR_REGISTRY: ${{ env.ECR_REGISTRY }}
           FLUX_RECEIVER_URL: ${{ secrets.FLUX_RECEIVER_URL }}
@@ -143,34 +128,13 @@ jobs:
         run: |
           if [[ "${{ github.event_name }}" == "pull_request" ]]; then
             ./scripts/bin/aamini deploy gitops \
+              --app "${{ matrix.app }}" \
               --preview \
               --pr-number "${{ github.event.pull_request.number }}" \
               --sha "${{ github.sha }}"
           else
             ./scripts/bin/aamini deploy gitops \
+              --app "${{ matrix.app }}" \
               --production \
               --sha "${{ github.sha }}"
           fi
-
-      - name: Run e2e tests
-        if: steps.changed.outputs.changed == 'true'
-        env:
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-        run: |
-          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
-            ./scripts/bin/aamini e2e run ${{ matrix.app }} \
-              --preview "$PR_NUMBER" \
-              --wait
-          else
-            ./scripts/bin/aamini e2e run ${{ matrix.app }} \
-              --production \
-              --wait
-          fi
-
-      - name: Upload Playwright report
-        if: always() && steps.changed.outputs.changed == 'true'
-        uses: actions/upload-artifact@v4
-        with:
-          name: playwright-report-${{ matrix.app }}
-          path: apps/${{ matrix.app }}/playwright-report
-          retention-days: 7

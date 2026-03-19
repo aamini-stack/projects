@@ -4,7 +4,8 @@ run-name:
   github.event.deployment_status.environment_url || github.event_name }}'
 
 on:
-  deployment_status:
+  repository_dispatch:
+    types: [deploy_ready]
   workflow_dispatch:
     inputs:
       app:
@@ -71,9 +72,18 @@ jobs:
       - name: Normalize deploy-ready payload
         id: payload
         run: |
-          pnpm node --experimental-strip-types scripts/src/actions/deploy-ready-outputs.ts \
+          ./scripts/bin/aamini ci events outputs \
             --event-path "${GITHUB_EVENT_PATH}" \
             --github-output "${GITHUB_OUTPUT}"
+      - name: Validate deploy_ready payload
+        run: |
+          test -n "${{ steps.payload.outputs.app }}"
+          test -n "${{ steps.payload.outputs.sha }}"
+          test -n "${{ steps.payload.outputs.environment_type }}"
+          test -n "${{ steps.payload.outputs.url }}"
+          if [ "${{ steps.payload.outputs.environment_type }}" = "preview" ]; then
+            test -n "${{ steps.payload.outputs.pr_number }}"
+          fi
       - name: Validate app directory
         run: test -d "apps/${{ steps.payload.outputs.app }}"
       - name: Mark e2e pending
@@ -87,7 +97,7 @@ jobs:
             github.run_id }}
           SHA: ${{ steps.payload.outputs.sha }}
         run: |
-          pnpm node --experimental-strip-types scripts/src/actions/e2e-commit-status.ts mark-pending \
+          ./scripts/bin/aamini ci e2e status mark-pending \
             --repository "${GITHUB_REPOSITORY}" \
             --sha "${SHA}" \
             --app "${APP}" \
@@ -110,7 +120,7 @@ jobs:
           SHA: ${{ steps.payload.outputs.sha }}
           URL: ${{ steps.payload.outputs.url }}
         run: |
-          pnpm node --experimental-strip-types scripts/src/actions/preview-deployment-status.ts mark-in-progress \
+          ./scripts/bin/aamini ci preview status mark-in-progress \
             --repository "${GITHUB_REPOSITORY}" \
             --sha "${SHA}" \
             --app "${APP}" \
@@ -171,7 +181,7 @@ jobs:
           if [ "$RESULT" = "skipped" ]; then
             RESULT="failure"
           fi
-          pnpm node --experimental-strip-types scripts/src/actions/preview-deployment-status.ts mark-terminal \
+          ./scripts/bin/aamini ci preview status mark-terminal \
             --repository "${GITHUB_REPOSITORY}" \
             --sha "${SHA}" \
             --app "${APP}" \
@@ -199,7 +209,7 @@ jobs:
           if [ "$RESULT" = "skipped" ]; then
             RESULT="failure"
           fi
-          pnpm node --experimental-strip-types scripts/src/actions/e2e-commit-status.ts mark-terminal \
+          ./scripts/bin/aamini ci e2e status mark-terminal \
             --repository "${GITHUB_REPOSITORY}" \
             --sha "${SHA}" \
             --app "${APP}" \

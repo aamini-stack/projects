@@ -374,6 +374,133 @@ void test('renderGitopsBundle writes staged platform directories and app output'
 	)
 })
 
+void test('renderGitopsBundle appFilter renders selected app and selected app extras only', () => {
+	const root = mkdtempSync(path.join(tmpdir(), 'gitops-render-filter-'))
+	const sourceRoot = path.join(root, 'source')
+	const appManifestRoot = path.join(root, 'repo')
+	const outputRoot = path.join(root, 'rendered')
+	const appsDir = path.join(sourceRoot, 'apps')
+	const portfolioManifestDir = path.join(
+		appManifestRoot,
+		'apps',
+		'portfolio',
+		'k8s',
+	)
+	const pcTuneUpsManifestDir = path.join(
+		appManifestRoot,
+		'apps',
+		'pc-tune-ups',
+		'k8s',
+	)
+	const platformDir = path.join(sourceRoot, 'platform')
+
+	mkdirSync(appsDir, { recursive: true })
+	mkdirSync(portfolioManifestDir, { recursive: true })
+	mkdirSync(pcTuneUpsManifestDir, { recursive: true })
+	mkdirSync(platformDir, { recursive: true })
+	writeFileSync(
+		path.join(platformDir, 'controllers.yaml'),
+		'kind: Namespace\nmetadata:\n  name: platform-controllers\n',
+	)
+	writeFileSync(
+		path.join(platformDir, 'networking.yaml'),
+		'kind: Namespace\nmetadata:\n  name: flux-system\n',
+	)
+	writeFileSync(
+		path.join(platformDir, 'previews.yaml'),
+		'kind: Namespace\nmetadata:\n  name: app-preview\n',
+	)
+	writeFileSync(
+		path.join(platformDir, 'webhooks.yaml'),
+		'kind: Service\nmetadata:\n  name: notification-controller-webhook\n',
+	)
+	writeFileSync(
+		path.join(platformDir, 'webhooks-sealed-secrets.yaml'),
+		'kind: SealedSecret\nmetadata:\n  name: github-dispatch-auth\n',
+	)
+	writeFileSync(
+		path.join(appsDir, 'portfolio.yaml'),
+		[
+			'name: portfolio',
+			'namespace: portfolio',
+			'image:',
+			'  repository: 302481198387.dkr.ecr.us-east-1.amazonaws.com/portfolio',
+			'  policy: portfolio',
+			'stable:',
+			'  host: portfolio.ariaamini.com',
+			'preview:',
+			'  enabled: true',
+			'',
+		].join('\n'),
+	)
+	writeFileSync(
+		path.join(appsDir, 'pc-tune-ups.yaml'),
+		[
+			'name: pc-tune-ups',
+			'namespace: pc-tune-ups',
+			'image:',
+			'  repository: 302481198387.dkr.ecr.us-east-1.amazonaws.com/pc-tune-ups',
+			'  policy: pc-tune-ups',
+			'stable:',
+			'  host: pc-tune-ups.ariaamini.com',
+			'preview:',
+			'  enabled: false',
+			'',
+		].join('\n'),
+	)
+	writeFileSync(
+		path.join(portfolioManifestDir, 'sealed-secret.yaml'),
+		[
+			'apiVersion: bitnami.com/v1alpha1',
+			'kind: SealedSecret',
+			'metadata:',
+			'  name: portfolio-secrets',
+			'  namespace: portfolio',
+			'spec:',
+			'  encryptedData:',
+			'    TOKEN: encrypted',
+			'',
+		].join('\n'),
+	)
+	writeFileSync(
+		path.join(pcTuneUpsManifestDir, 'sealed-secret.yaml'),
+		[
+			'apiVersion: bitnami.com/v1alpha1',
+			'kind: SealedSecret',
+			'metadata:',
+			'  name: pc-tune-ups-secrets',
+			'  namespace: pc-tune-ups',
+			'spec:',
+			'  encryptedData:',
+			'    TOKEN: encrypted',
+			'',
+		].join('\n'),
+	)
+
+	renderGitopsBundle({
+		sourceRoot,
+		outputRoot,
+		appManifestRoot,
+		appFilter: ['portfolio'],
+	})
+
+	const applicationsManifest = readFileSync(
+		path.join(outputRoot, 'apps', 'applications.yaml'),
+		'utf8',
+	)
+
+	assert.match(applicationsManifest, /name: portfolio/)
+	assert.doesNotMatch(applicationsManifest, /name: pc-tune-ups/)
+	assert.match(
+		applicationsManifest,
+		/kind: SealedSecret[\s\S]*name: portfolio-secrets/,
+	)
+	assert.doesNotMatch(
+		applicationsManifest,
+		/kind: SealedSecret[\s\S]*name: pc-tune-ups-secrets/,
+	)
+})
+
 void test('preview namespace RBAC grants app-preview access to the flux-system reconciler service account', () => {
 	const previewsManifest = readFileSync(
 		path.join(testDir, '..', 'manifests', 'platform', 'previews.yaml'),
