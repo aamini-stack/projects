@@ -91,6 +91,8 @@ jobs:
         run: |
           if [[ "${{ steps.deploy.outputs.reason }}" == "fork-pr" ]]; then
             echo "Deploy skipped: fork PR has no deploy secrets"
+          elif [[ "${{ steps.deploy.outputs.reason }}" == "unsupported-event" ]]; then
+            echo "Deploy skipped: event '${{ github.event_name }}' is not a deploy trigger"
           else
             echo "No changed apps for ${{ matrix.app }}; skipping build/push/deploy"
           fi

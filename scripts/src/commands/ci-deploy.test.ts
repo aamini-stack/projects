@@ -87,4 +87,19 @@ describe('deriveDeployDecision', () => {
 			imageTag: 'pr-12',
 		})
 	})
+
+	it('skips deploy for unsupported events', () => {
+		const result = deriveDeployDecision({
+			eventName: 'workflow_dispatch',
+			repository: 'owner/repo',
+			app: 'imdbgraph',
+			sha: 'abc123',
+		})
+
+		expect(result).toEqual({
+			changed: false,
+			reason: 'unsupported-event',
+			imageTag: 'main-abc123',
+		})
+	})
 })

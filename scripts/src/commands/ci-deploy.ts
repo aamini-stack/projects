@@ -27,6 +27,7 @@ export type DeployDecision = {
 	reason:
 		| 'fork-pr'
 		| 'push-main'
+		| 'unsupported-event'
 		| 'turbo-detect-fallback'
 		| 'no-changed-apps'
 		| 'app-changed'
@@ -52,6 +53,10 @@ export function deriveDeployDecision(
 
 	if (input.eventName === 'push') {
 		return { changed: true, reason: 'push-main', imageTag }
+	}
+
+	if (input.eventName !== 'pull_request') {
+		return { changed: false, reason: 'unsupported-event', imageTag }
 	}
 
 	if (input.turboExitCode !== 0 || !input.turboPackages) {
