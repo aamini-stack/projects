@@ -68,3 +68,7 @@ export function extractManifestRepository(manifestTag: string): string {
 
 	return repository
 }
+
+export function isFluxNotifySuccessStatus(status: number): boolean {
+	return status >= 200 && status < 300
+}

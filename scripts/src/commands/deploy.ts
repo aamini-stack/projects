@@ -8,6 +8,7 @@ import {
 	buildBundleArchivePath,
 	buildManifestTag,
 	buildRenderModuleSpecifier,
+	isFluxNotifySuccessStatus,
 	type DeployEnvironment,
 } from './deploy.helpers.ts'
 
@@ -237,21 +238,15 @@ async function notifyFluxReceiver(
 				body: JSON.stringify(payload),
 			})
 
-			if (response.ok) {
+			if (isFluxNotifySuccessStatus(response.status)) {
 				console.log(`   Flux receiver acknowledged (HTTP ${response.status})`)
 				return
 			}
 
-			if (response.status === 404) {
-				console.log('   Warning: Flux receiver returned 404, skipping retries')
-				return
-			}
-
 			if (attempt >= maxAttempts) {
-				console.log(
-					`   Warning: Flux receiver unavailable after ${maxAttempts} attempts`,
+				throw new Error(
+					`Flux receiver returned HTTP ${response.status} after ${maxAttempts} attempts`,
 				)
-				return
 			}
 
 			console.log(
@@ -261,10 +256,9 @@ async function notifyFluxReceiver(
 			delaySeconds *= 2
 		} catch (error) {
 			if (attempt >= maxAttempts) {
-				console.log(
-					`   Warning: Flux receiver error after ${maxAttempts} attempts: ${error instanceof Error ? error.message : String(error)}`,
+				throw new Error(
+					`Flux receiver error after ${maxAttempts} attempts: ${error instanceof Error ? error.message : String(error)}`,
 				)
-				return
 			}
 			console.log(
 				`   Attempt ${attempt}/${maxAttempts} error, retrying in ${delaySeconds}s...`,

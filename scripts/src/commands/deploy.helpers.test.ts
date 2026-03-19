@@ -3,6 +3,7 @@ import {
 	buildFluxPayload,
 	buildBundleArchivePath,
 	buildManifestTag,
+	isFluxNotifySuccessStatus,
 	extractManifestRepository,
 	buildRenderModuleSpecifier,
 } from './deploy.helpers.ts'
@@ -74,5 +75,17 @@ describe('extractManifestRepository', () => {
 				'projects-gitops:portfolio-manifests-pr-145-abc123',
 			),
 		).toBe('projects-gitops')
+	})
+})
+
+describe('isFluxNotifySuccessStatus', () => {
+	it('returns true for successful HTTP status codes', () => {
+		expect(isFluxNotifySuccessStatus(200)).toBe(true)
+		expect(isFluxNotifySuccessStatus(204)).toBe(true)
+	})
+
+	it('returns false for non-success HTTP status codes', () => {
+		expect(isFluxNotifySuccessStatus(404)).toBe(false)
+		expect(isFluxNotifySuccessStatus(500)).toBe(false)
 	})
 })
