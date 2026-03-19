@@ -86,46 +86,35 @@ export function createCIDeployCommand(): Command {
 	deployCmd.description('Deploy workflow utilities')
 	const outputsCmd = new Command('outputs')
 	outputsCmd.description('Write deploy outputs to GitHub Actions')
-	outputsCmd.action(async () => {
-		const options = parseDeployOutputsArgs(process.argv.slice(5))
-		await writeDeployOutputs(options)
+	outputsCmd
+		.requiredOption('--repository <repository>', 'Repository owner/name')
+		.requiredOption('--event-name <eventName>', 'GitHub event name')
+		.requiredOption('--event-path <eventPath>', 'Path to GitHub event payload')
+		.requiredOption('--app <app>', 'App name for matrix leg')
+		.requiredOption('--sha <sha>', 'Commit SHA')
+		.requiredOption('--github-output <outputPath>', 'GitHub output file path')
+	outputsCmd.action(async (options: Record<string, string | undefined>) => {
+		if (
+			!options.eventName ||
+			!options.eventPath ||
+			!options.repository ||
+			!options.app ||
+			!options.sha ||
+			!options.githubOutput
+		) {
+			throw new Error('Missing required arguments')
+		}
+		await writeDeployOutputs({
+			eventName: options.eventName,
+			eventPath: options.eventPath,
+			repository: options.repository,
+			app: options.app,
+			sha: options.sha,
+			outputPath: options.githubOutput,
+		})
 	})
 	deployCmd.addCommand(outputsCmd)
 	return deployCmd
-}
-
-function parseDeployOutputsArgs(args: string[]): DeployOutputsOptions {
-	const values: Record<string, string> = {}
-	for (let index = 0; index < args.length; index += 2) {
-		const key = args[index]
-		const value = args[index + 1]
-		if (!key?.startsWith('--') || value === undefined) {
-			throw new Error(
-				'Usage: deploy outputs --repository <owner/repo> --event-name <name> --event-path <path> --app <app> --sha <sha> --github-output <path>',
-			)
-		}
-		values[key.slice(2)] = value
-	}
-
-	if (
-		!values.repository ||
-		!values['event-name'] ||
-		!values['event-path'] ||
-		!values.app ||
-		!values.sha ||
-		!values['github-output']
-	) {
-		throw new Error('Missing required arguments')
-	}
-
-	return {
-		eventName: values['event-name'],
-		eventPath: values['event-path'],
-		repository: values.repository,
-		app: values.app,
-		sha: values.sha,
-		outputPath: values['github-output'],
-	}
 }
 
 async function writeDeployOutputs(
