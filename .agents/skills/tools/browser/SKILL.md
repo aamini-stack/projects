@@ -1,5 +1,5 @@
 ---
-name: playwriter
+name: browser
 description:
   Control the user own Chrome browser via Playwriter extension with Playwright
   code snippets in a stateful local js sandbox via playwriter cli. Automate web
