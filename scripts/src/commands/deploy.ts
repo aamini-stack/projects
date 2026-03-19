@@ -5,6 +5,7 @@ import { Command } from 'commander'
 import { getRepoRoot } from '../helpers/repo.ts'
 import {
 	buildFluxPayload,
+	buildBundleArchivePath,
 	buildManifestTag,
 	buildRenderModuleSpecifier,
 	type DeployEnvironment,
@@ -115,7 +116,7 @@ async function deployProduction(
 
 	// Step 3: Push GitOps OCI bundle
 	console.log('📤 Pushing GitOps OCI bundle...')
-	const bundlePath = path.join(repoRoot, '.tmp/projects-gitops.tar.gz')
+	const bundlePath = buildBundleArchivePath()
 	const manifestTag = buildManifestTag({ app, sha })
 	await $({ cwd: repoRoot })`tar -C ${outputRoot} -czf ${bundlePath} .`
 	await $({
@@ -189,7 +190,7 @@ async function deployPreview(
 
 	// Step 3: Push GitOps OCI bundle with PR-specific tag
 	console.log('📤 Pushing GitOps OCI bundle...')
-	const bundlePath = path.join(repoRoot, '.tmp/projects-gitops.tar.gz')
+	const bundlePath = buildBundleArchivePath()
 	const manifestTag = buildManifestTag({ app, sha, prNumber })
 	await $({ cwd: repoRoot })`tar -C ${outputRoot} -czf ${bundlePath} .`
 	await $({

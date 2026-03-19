@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import {
 	buildFluxPayload,
+	buildBundleArchivePath,
 	buildManifestTag,
 	buildRenderModuleSpecifier,
 } from './deploy.helpers.ts'
@@ -56,5 +57,11 @@ describe('buildRenderModuleSpecifier', () => {
 		expect(buildRenderModuleSpecifier('/repo/root')).toBe(
 			'file:///repo/root/packages/infra/src/gitops/render.ts',
 		)
+	})
+})
+
+describe('buildBundleArchivePath', () => {
+	it('returns a repo-relative tar path for oras push', () => {
+		expect(buildBundleArchivePath()).toBe('.tmp/projects-gitops.tar.gz')
 	})
 })

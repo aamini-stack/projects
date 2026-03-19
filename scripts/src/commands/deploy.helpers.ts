@@ -55,3 +55,7 @@ export function buildRenderModuleSpecifier(repoRoot: string): string {
 	)
 	return pathToFileURL(modulePath).href
 }
+
+export function buildBundleArchivePath(): string {
+	return '.tmp/projects-gitops.tar.gz'
+}
