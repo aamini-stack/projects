@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest'
-import { buildFluxPayload, buildManifestTag } from './deploy.helpers.ts'
+import {
+	buildFluxPayload,
+	buildManifestTag,
+	buildRenderModuleSpecifier,
+} from './deploy.helpers.ts'
 
 describe('buildManifestTag', () => {
 	it('builds preview tag as <app>-manifests:pr-<pr>-<sha>', () => {
@@ -44,5 +48,13 @@ describe('buildFluxPayload', () => {
 			sha: 'def',
 			environment: 'production',
 		})
+	})
+})
+
+describe('buildRenderModuleSpecifier', () => {
+	it('builds an absolute file URL for infra render module', () => {
+		expect(buildRenderModuleSpecifier('/repo/root')).toBe(
+			'file:///repo/root/packages/infra/src/gitops/render.ts',
+		)
 	})
 })

@@ -6,6 +6,7 @@ import { getRepoRoot } from '../helpers/repo.ts'
 import {
 	buildFluxPayload,
 	buildManifestTag,
+	buildRenderModuleSpecifier,
 	type DeployEnvironment,
 } from './deploy.helpers.ts'
 
@@ -85,8 +86,7 @@ async function deployProduction(
 	// Step 1: Render GitOps bundle
 	console.log('📦 Rendering GitOps bundle...')
 	const { renderGitopsBundle } = await import(
-		// @ts-ignore - external package import
-		'../../../../packages/infra/src/gitops/render.ts'
+		buildRenderModuleSpecifier(repoRoot)
 	)
 	const sourceRoot = path.join(repoRoot, 'packages', 'infra', 'manifests')
 	const outputRoot = path.join(repoRoot, '.tmp/gitops-bundle')
@@ -159,8 +159,7 @@ async function deployPreview(
 	// Step 1: Render GitOps bundle with preview-specific configuration
 	console.log('📦 Rendering GitOps bundle for preview...')
 	const { renderGitopsBundle } = await import(
-		// @ts-ignore - external package import
-		'../../../../packages/infra/src/gitops/render.ts'
+		buildRenderModuleSpecifier(repoRoot)
 	)
 	const sourceRoot = path.join(repoRoot, 'packages', 'infra', 'manifests')
 	const outputRoot = path.join(repoRoot, '.tmp/gitops-bundle')

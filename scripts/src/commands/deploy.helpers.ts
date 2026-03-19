@@ -1,3 +1,6 @@
+import { pathToFileURL } from 'node:url'
+import path from 'node:path'
+
 export type DeployEnvironment = 'preview' | 'production'
 
 type BuildManifestTagInput = {
@@ -39,4 +42,16 @@ export function buildFluxPayload(input: BuildFluxPayloadInput): {
 		environment: input.environment,
 		...(input.prNumber ? { pr_number: input.prNumber } : {}),
 	}
+}
+
+export function buildRenderModuleSpecifier(repoRoot: string): string {
+	const modulePath = path.join(
+		repoRoot,
+		'packages',
+		'infra',
+		'src',
+		'gitops',
+		'render.ts',
+	)
+	return pathToFileURL(modulePath).href
 }
