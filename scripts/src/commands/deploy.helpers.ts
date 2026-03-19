@@ -59,3 +59,12 @@ export function buildRenderModuleSpecifier(repoRoot: string): string {
 export function buildBundleArchivePath(): string {
 	return '.tmp/projects-gitops.tar.gz'
 }
+
+export function extractManifestRepository(manifestTag: string): string {
+	const [repository] = manifestTag.split(':', 1)
+	if (!repository) {
+		throw new Error(`Invalid manifest tag: ${manifestTag}`)
+	}
+
+	return repository
+}

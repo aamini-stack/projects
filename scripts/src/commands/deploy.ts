@@ -8,6 +8,7 @@ import {
 	buildBundleArchivePath,
 	buildManifestTag,
 	buildRenderModuleSpecifier,
+	extractManifestRepository,
 	type DeployEnvironment,
 } from './deploy.helpers.ts'
 
@@ -118,6 +119,7 @@ async function deployProduction(
 	console.log('📤 Pushing GitOps OCI bundle...')
 	const bundlePath = buildBundleArchivePath()
 	const manifestTag = buildManifestTag({ app, sha })
+	await ensureEcrRepositoryExists(repoRoot, manifestTag)
 	await $({ cwd: repoRoot })`tar -C ${outputRoot} -czf ${bundlePath} .`
 	await $({
 		cwd: repoRoot,
@@ -192,6 +194,7 @@ async function deployPreview(
 	console.log('📤 Pushing GitOps OCI bundle...')
 	const bundlePath = buildBundleArchivePath()
 	const manifestTag = buildManifestTag({ app, sha, prNumber })
+	await ensureEcrRepositoryExists(repoRoot, manifestTag)
 	await $({ cwd: repoRoot })`tar -C ${outputRoot} -czf ${bundlePath} .`
 	await $({
 		cwd: repoRoot,
@@ -212,6 +215,25 @@ async function deployPreview(
 	console.log('   Flux notified successfully')
 
 	console.log(`✅ Preview deployment complete for ${app} (PR #${prNumber})`)
+}
+
+async function ensureEcrRepositoryExists(
+	repoRoot: string,
+	manifestTag: string,
+): Promise<void> {
+	const repositoryName = extractManifestRepository(manifestTag)
+	const describe = await $({
+		cwd: repoRoot,
+		nothrow: true,
+	})`aws ecr describe-repositories --repository-names ${repositoryName}`
+	if (describe.exitCode === 0) {
+		return
+	}
+
+	console.log(`   Creating ECR repository: ${repositoryName}`)
+	await $({
+		cwd: repoRoot,
+	})`aws ecr create-repository --repository-name ${repositoryName}`
 }
 
 async function notifyFluxReceiver(

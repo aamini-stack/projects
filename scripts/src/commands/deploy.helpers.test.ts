@@ -3,6 +3,7 @@ import {
 	buildFluxPayload,
 	buildBundleArchivePath,
 	buildManifestTag,
+	extractManifestRepository,
 	buildRenderModuleSpecifier,
 } from './deploy.helpers.ts'
 
@@ -63,5 +64,13 @@ describe('buildRenderModuleSpecifier', () => {
 describe('buildBundleArchivePath', () => {
 	it('returns a repo-relative tar path for oras push', () => {
 		expect(buildBundleArchivePath()).toBe('.tmp/projects-gitops.tar.gz')
+	})
+})
+
+describe('extractManifestRepository', () => {
+	it('returns repository name from manifest tag', () => {
+		expect(extractManifestRepository('portfolio-manifests:pr-145-abc123')).toBe(
+			'portfolio-manifests',
+		)
 	})
 })
