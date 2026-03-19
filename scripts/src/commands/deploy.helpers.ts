@@ -11,10 +11,10 @@ type BuildManifestTagInput = {
 
 export function buildManifestTag(input: BuildManifestTagInput): string {
 	if (input.prNumber) {
-		return `${input.app}-manifests:pr-${input.prNumber}-${input.sha}`
+		return `projects-gitops:${input.app}-manifests-pr-${input.prNumber}-${input.sha}`
 	}
 
-	return `${input.app}-manifests:main-${input.sha}`
+	return `projects-gitops:${input.app}-manifests-main-${input.sha}`
 }
 
 type BuildFluxPayloadInput = {

@@ -11,12 +11,12 @@ describe('buildManifestTag', () => {
 	it('builds preview tag as <app>-manifests:pr-<pr>-<sha>', () => {
 		expect(
 			buildManifestTag({ app: 'imdbgraph', sha: 'abc123', prNumber: '42' }),
-		).toBe('imdbgraph-manifests:pr-42-abc123')
+		).toBe('projects-gitops:imdbgraph-manifests-pr-42-abc123')
 	})
 
 	it('builds production tag as <app>-manifests:main-<sha>', () => {
 		expect(buildManifestTag({ app: 'portfolio', sha: 'def456' })).toBe(
-			'portfolio-manifests:main-def456',
+			'projects-gitops:portfolio-manifests-main-def456',
 		)
 	})
 })
@@ -69,8 +69,10 @@ describe('buildBundleArchivePath', () => {
 
 describe('extractManifestRepository', () => {
 	it('returns repository name from manifest tag', () => {
-		expect(extractManifestRepository('portfolio-manifests:pr-145-abc123')).toBe(
-			'portfolio-manifests',
-		)
+		expect(
+			extractManifestRepository(
+				'projects-gitops:portfolio-manifests-pr-145-abc123',
+			),
+		).toBe('projects-gitops')
 	})
 })
