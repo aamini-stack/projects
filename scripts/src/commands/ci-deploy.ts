@@ -84,12 +84,13 @@ type DeployOutputsOptions = {
 export function createCIDeployCommand(): Command {
 	const deployCmd = new Command('deploy')
 	deployCmd.description('Deploy workflow utilities')
-	deployCmd
-		.command('outputs', 'Write deploy outputs to GitHub Actions')
-		.action(async () => {
-			const options = parseDeployOutputsArgs(process.argv.slice(5))
-			await writeDeployOutputs(options)
-		})
+	const outputsCmd = new Command('outputs')
+	outputsCmd.description('Write deploy outputs to GitHub Actions')
+	outputsCmd.action(async () => {
+		const options = parseDeployOutputsArgs(process.argv.slice(5))
+		await writeDeployOutputs(options)
+	})
+	deployCmd.addCommand(outputsCmd)
 	return deployCmd
 }
 
