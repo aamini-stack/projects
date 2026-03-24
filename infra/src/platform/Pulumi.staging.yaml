@@ -5,16 +5,16 @@ config:
   platform:assumeRoleName: OrganizationAccountAccessRole
   platform:region: us-east-1
   platform:workloadBucketName: aamini-staging-workloads
-  platform:ciCdPrincipalArn: arn:aws:iam::302481198387:role/AWSReservedSSO_AWSAdministratorAccess_20d64ce49a7ea5f7
+  platform:ciCdPrincipalArn: arn:aws:iam::302481198387:role/PulumiOperatorRole
   aws:region: us-east-1
   platform:deployerTrustedPrincipalArn: arn:aws:sts::302481198387:assumed-role/AWSReservedSSO_AWSAdministratorAccess_20d64ce49a7ea5f7/aamini1024@gmail.com
   platform:kubernetes: '{"version":"1.35","instanceType":"t3.medium","desiredCapacity":2,"minSize":2,"maxSize":2}'
   platform:postgres: '{"instanceClass":"db.t4g.micro","allocatedStorage":20,"maxAllocatedStorage":100,"backupRetentionDays":7,"engineVersion":"16.3","storageType":"gp3","publiclyAccessible":false,"deletionProtection":false,"multiAz":false,"allowedCidrs":["172.31.0.0/16"]}'
   platform:repo: aamini-stack/projects
   github:token:
-    secure: AAABAGEJKZGfw8KhjQZvfmOeHmPepiGSLfDTGJWqFw1bDLyVRquBb73yUrwlBbwrlYijFYBOnfjNN/0=
+    secure: AAABAFp5tkb6IXJLFoR5TOFd4kX2qzno3HC8ENeetyOELj6vai6fxmTDIVe2x7BS6JC39mpShe4lQuE=
   platform:postgresAdminPassword:
-    secure: AAABADArrZ7NgiErF8TWnbzIwffPLo5WNeXRlCqqDqV6LokuwuARnOBS9hhuRXfhz42O9FTXH4pOBUonqi3biQ==
+    secure: AAABAEbjqihsvxGQWuVJdDDe057XtLQkPoXUaD/TM72yNkd0vk4pTveuXTKdzV2dsE5OiSn7C3UZnnxwtT/apg==
   platform:cloudflareOriginHostname: origin.ariaamini.com
   cloudflare:apiToken:
     secure: AAABAOpPSlXe21OQIlbdCQXw91jvxAOXQ7AiIcOWC88FayjEvcnuaMEixatbqtk9ZI6IRFSmN/m5hep3hB3wLu610X8wFd60

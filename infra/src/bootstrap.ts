@@ -1,7 +1,9 @@
 import { randomBytes } from 'node:crypto'
 import { execFileSync } from 'node:child_process'
+import { mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { dirname, resolve } from 'node:path'
+import { tmpdir } from 'node:os'
 import { parseArgs } from 'node:util'
 import * as auto from '@pulumi/pulumi/automation/index.js'
 
@@ -64,8 +66,13 @@ const DEFAULT_BILLING_ALERT_EMAIL = 'platform-alerts@example.com'
 const DEFAULT_STAGING_BUDGET_USD = '150'
 const DEFAULT_PRODUCTION_BUDGET_USD = '500'
 const DEFAULT_CLOUDFLARE_ORIGIN_HOSTNAME = 'origin.ariaamini.com'
+const DEFAULT_STACK_OPERATION_TIMEOUT_MINUTES = 45
+const DEFAULT_STACK_OPERATION_RETRIES = 2
+const RETRY_BASE_DELAY_MS = 5_000
 
 let awsNonInteractiveMode = false
+
+type StackOperation = 'preview' | 'up' | 'preview-destroy' | 'destroy'
 
 function resolveProfile(cliProfile: string | undefined): string {
 	const profile =
@@ -516,11 +523,225 @@ function requireProfile(profile: string | undefined): string {
 function getWorkspaceEnv(
 	profile: string,
 	region: string,
+	dockerConfigDir?: string,
 ): Record<string, string> {
 	return {
 		AWS_PROFILE: profile,
 		AWS_REGION: region,
 		AWS_DEFAULT_REGION: region,
+		...(dockerConfigDir ? { DOCKER_CONFIG: dockerConfigDir } : {}),
+	}
+}
+
+function createEphemeralDockerConfig(): string {
+	const dockerConfigDir = mkdtempSync(
+		resolve(tmpdir(), 'bootstrap-docker-config-'),
+	)
+	const dockerConfigPath = resolve(dockerConfigDir, 'config.json')
+	writeFileSync(dockerConfigPath, JSON.stringify({ auths: {} }))
+	return dockerConfigDir
+}
+
+function nowIso(): string {
+	return new Date().toISOString()
+}
+
+function formatDurationMs(durationMs: number): string {
+	const seconds = Math.round(durationMs / 1_000)
+	return `${seconds}s`
+}
+
+function sleep(ms: number): Promise<void> {
+	return new Promise((resolveSleep) => {
+		setTimeout(resolveSleep, ms)
+	})
+}
+
+function isTimeoutError(error: unknown): boolean {
+	if (!(error instanceof Error)) {
+		return false
+	}
+
+	return error.message.toLowerCase().includes('timed out')
+}
+
+function isTransientStackError(error: unknown): boolean {
+	if (!(error instanceof Error)) {
+		return false
+	}
+
+	const message = error.message.toLowerCase()
+	return (
+		message.includes('throttl') ||
+		message.includes('rate exceeded') ||
+		message.includes('too many requests') ||
+		message.includes('timeout') ||
+		message.includes('connection reset') ||
+		message.includes('connection refused') ||
+		message.includes('temporarily unavailable') ||
+		message.includes('request limit exceeded') ||
+		message.includes('internal error')
+	)
+}
+
+async function runWithTimeout<T>(
+	stackLabel: string,
+	operation: StackOperation,
+	timeoutMs: number,
+	operationFn: () => Promise<T>,
+): Promise<T> {
+	let timeoutHandle: NodeJS.Timeout | undefined
+
+	const timeoutPromise = new Promise<never>((_, reject) => {
+		timeoutHandle = setTimeout(() => {
+			reject(
+				new Error(
+					`${operation} timed out after ${formatDurationMs(timeoutMs)} for ${stackLabel}`,
+				),
+			)
+		}, timeoutMs)
+	})
+
+	try {
+		return await Promise.race([operationFn(), timeoutPromise])
+	} finally {
+		if (timeoutHandle) {
+			clearTimeout(timeoutHandle)
+		}
+	}
+}
+
+async function runStackOperationWithRetry(
+	stackLabel: string,
+	operation: StackOperation,
+	timeoutMs: number,
+	retries: number,
+	operationFn: () => Promise<void>,
+): Promise<void> {
+	const attempts = retries + 1
+
+	for (let attempt = 1; attempt <= attempts; attempt += 1) {
+		const startedAt = Date.now()
+		console.log(
+			`[${nowIso()}] ${operation} start: ${stackLabel} (attempt ${attempt}/${attempts})`,
+		)
+
+		try {
+			await runWithTimeout(stackLabel, operation, timeoutMs, operationFn)
+			console.log(
+				`[${nowIso()}] ${operation} complete: ${stackLabel} (${formatDurationMs(
+					Date.now() - startedAt,
+				)})`,
+			)
+			return
+		} catch (error: unknown) {
+			const canRetry =
+				attempt < attempts &&
+				(isTransientStackError(error) || isTimeoutError(error))
+			if (!canRetry) {
+				throw error
+			}
+
+			const waitMs = RETRY_BASE_DELAY_MS * attempt
+			const message = error instanceof Error ? error.message : String(error)
+			console.log(
+				`[${nowIso()}] ${operation} retry: ${stackLabel} in ${Math.round(
+					waitMs / 1_000,
+				)}s (${message})`,
+			)
+			await sleep(waitMs)
+		}
+	}
+}
+
+function runCommand(
+	command: string,
+	args: string[],
+	env: NodeJS.ProcessEnv,
+): void {
+	execFileSync(command, args, {
+		encoding: 'utf8',
+		env,
+		stdio: ['ignore', 'pipe', 'pipe'],
+	})
+}
+
+function runBestEffortCommand(
+	command: string,
+	args: string[],
+	env: NodeJS.ProcessEnv,
+): void {
+	try {
+		runCommand(command, args, env)
+	} catch (error: unknown) {
+		const message = error instanceof Error ? error.message : String(error)
+		console.log(
+			`- warning: ${command} ${args.join(' ')} failed during cleanup (${message})`,
+		)
+	}
+}
+
+async function runFluxPreDestroyCleanup(
+	stack: auto.Stack,
+	stackDef: StackDefinition,
+	profile: string,
+	region: string,
+): Promise<void> {
+	const outputs = await stack.outputs()
+	const kubeconfigOutput = outputs.kubeconfig?.value
+	if (typeof kubeconfigOutput !== 'string' || kubeconfigOutput.length === 0) {
+		console.log(
+			`- flux pre-destroy: skipped for ${stackDef.key} (missing kubeconfig output)`,
+		)
+		return
+	}
+
+	const tempDir = mkdtempSync(resolve(tmpdir(), 'flux-cleanup-'))
+	const kubeconfigPath = resolve(tempDir, 'kubeconfig')
+	writeFileSync(kubeconfigPath, kubeconfigOutput, { mode: 0o600 })
+
+	const commandEnv: NodeJS.ProcessEnv = {
+		...process.env,
+		AWS_PROFILE: profile,
+		AWS_REGION: region,
+		AWS_DEFAULT_REGION: region,
+		KUBECONFIG: kubeconfigPath,
+	}
+
+	try {
+		console.log(
+			`- flux pre-destroy: uninstalling Flux resources for ${stackDef.key}`,
+		)
+		runBestEffortCommand(
+			'helm',
+			['uninstall', 'flux-instance', '-n', 'flux-system'],
+			commandEnv,
+		)
+		runBestEffortCommand(
+			'helm',
+			['uninstall', 'flux-operator', '-n', 'flux-system'],
+			commandEnv,
+		)
+		runBestEffortCommand(
+			'kubectl',
+			['delete', 'namespace', 'flux-system', '--wait=false'],
+			commandEnv,
+		)
+		runBestEffortCommand(
+			'kubectl',
+			[
+				'patch',
+				'namespace',
+				'flux-system',
+				'--type',
+				'merge',
+				'-p',
+				'{"spec":{"finalizers":[]}}',
+			],
+			commandEnv,
+		)
+	} finally {
+		rmSync(tempDir, { force: true, recursive: true })
 	}
 }
 
@@ -530,33 +751,51 @@ async function upOrPreviewStack(
 	previewOnly: boolean,
 	profile: string,
 	region: string,
+	stackOperationTimeoutMs: number,
+	stackOperationRetries: number,
+	dockerConfigDir?: string,
 ): Promise<void> {
 	const stackName = `${org}/${stackDef.stack}`
+	const stackLabel = `${stackDef.key} (${stackName})`
 	const stack = await auto.LocalWorkspace.createOrSelectStack(
 		{
 			stackName,
 			workDir: stackDef.workDir,
 		},
 		{
-			envVars: getWorkspaceEnv(profile, region),
+			envVars: getWorkspaceEnv(profile, region, dockerConfigDir),
 		},
 	)
 
 	await stack.setAllConfig(toConfigMap(stackDef.config))
-	console.log(`Configured ${stackDef.key} (${stackName})`)
+	console.log(`Configured ${stackLabel}`)
 
 	if (previewOnly) {
-		console.log(`Previewing ${stackDef.key}...`)
-		await stack.preview({
-			onOutput: (line: string) => process.stdout.write(`${line}\n`),
-		})
+		await runStackOperationWithRetry(
+			stackLabel,
+			'preview',
+			stackOperationTimeoutMs,
+			stackOperationRetries,
+			async () => {
+				await stack.preview({
+					onOutput: (line: string) => process.stdout.write(`${line}\n`),
+				})
+			},
+		)
 		return
 	}
 
-	console.log(`Applying ${stackDef.key}...`)
-	await stack.up({
-		onOutput: (line: string) => process.stdout.write(`${line}\n`),
-	})
+	await runStackOperationWithRetry(
+		stackLabel,
+		'up',
+		stackOperationTimeoutMs,
+		stackOperationRetries,
+		async () => {
+			await stack.up({
+				onOutput: (line: string) => process.stdout.write(`${line}\n`),
+			})
+		},
+	)
 }
 
 async function destroyOrPreviewDestroyStack(
@@ -566,8 +805,12 @@ async function destroyOrPreviewDestroyStack(
 	removeStacks: boolean,
 	profile: string,
 	region: string,
+	stackOperationTimeoutMs: number,
+	stackOperationRetries: number,
+	dockerConfigDir?: string,
 ): Promise<void> {
 	const stackName = `${org}/${stackDef.stack}`
+	const stackLabel = `${stackDef.key} (${stackName})`
 	let stack: auto.Stack
 
 	try {
@@ -577,12 +820,12 @@ async function destroyOrPreviewDestroyStack(
 				workDir: stackDef.workDir,
 			},
 			{
-				envVars: getWorkspaceEnv(profile, region),
+				envVars: getWorkspaceEnv(profile, region, dockerConfigDir),
 			},
 		)
 	} catch (error: unknown) {
 		if (isStackNotFoundError(error)) {
-			console.log(`Skipping missing stack ${stackDef.key} (${stackName})`)
+			console.log(`Skipping missing stack ${stackLabel}`)
 			return
 		}
 
@@ -592,18 +835,36 @@ async function destroyOrPreviewDestroyStack(
 	await stack.setAllConfig(toConfigMap(stackDef.config))
 
 	if (previewOnly) {
-		console.log(`Previewing destroy for ${stackDef.key}...`)
-		await stack.previewDestroy({
-			onOutput: (line: string) => process.stdout.write(`${line}\n`),
-		})
+		await runStackOperationWithRetry(
+			stackLabel,
+			'preview-destroy',
+			stackOperationTimeoutMs,
+			stackOperationRetries,
+			async () => {
+				await stack.previewDestroy({
+					onOutput: (line: string) => process.stdout.write(`${line}\n`),
+				})
+			},
+		)
 		return
 	}
 
-	console.log(`Destroying ${stackDef.key}...`)
-	await stack.destroy({
-		remove: removeStacks,
-		onOutput: (line: string) => process.stdout.write(`${line}\n`),
-	})
+	if (stackDef.project === 'platform') {
+		await runFluxPreDestroyCleanup(stack, stackDef, profile, region)
+	}
+
+	await runStackOperationWithRetry(
+		stackLabel,
+		'destroy',
+		stackOperationTimeoutMs,
+		stackOperationRetries,
+		async () => {
+			await stack.destroy({
+				remove: removeStacks,
+				onOutput: (line: string) => process.stdout.write(`${line}\n`),
+			})
+		},
+	)
 
 	if (removeStacks) {
 		console.log(`Destroyed and removed stack ${stackDef.key}`)
@@ -625,6 +886,9 @@ function printUsage(): void {
 	console.log('  pnpm bootstrap -- up --check --project organization')
 	console.log(
 		'  pnpm bootstrap -- destroy --environment staging --remove-stacks',
+	)
+	console.log(
+		'  pnpm bootstrap -- up --stack-timeout-minutes 60 --stack-retries 3',
 	)
 	console.log('')
 	console.log('Profile resolution order:')
@@ -671,6 +935,8 @@ async function main(): Promise<void> {
 			'postgres-admin-password': { type: 'string' },
 			'cloudflare-origin-hostname': { type: 'string' },
 			'cloudflare-api-token': { type: 'string' },
+			'stack-timeout-minutes': { type: 'string' },
+			'stack-retries': { type: 'string' },
 		},
 	})
 
@@ -681,7 +947,7 @@ async function main(): Promise<void> {
 
 	const command = parseCommand(positionals[0])
 	const currentFilePath = fileURLToPath(import.meta.url)
-	const infraDir = dirname(currentFilePath)
+	const infraDir = resolve(dirname(currentFilePath), '..')
 	const check = values.check ?? false
 	const nonInteractive = values.nonInteractive ?? false
 	awsNonInteractiveMode = nonInteractive
@@ -717,10 +983,18 @@ async function main(): Promise<void> {
 		values['postgres-admin-password'] ?? process.env.POSTGRES_ADMIN_PASSWORD
 	const cloudflareOriginHostname =
 		values['cloudflare-origin-hostname'] ?? DEFAULT_CLOUDFLARE_ORIGIN_HOSTNAME
+	const stackTimeoutMinutesInput = values['stack-timeout-minutes']
+	const stackRetriesInput = values['stack-retries']
 	const cloudflareApiTokenInput =
 		values['cloudflare-api-token'] ??
 		process.env.CLOUDFLARE_API_TOKEN ??
 		process.env.CLOUDFLARE_TOKEN
+	const stackOperationTimeoutMinutes = stackTimeoutMinutesInput
+		? Number.parseInt(stackTimeoutMinutesInput, 10)
+		: DEFAULT_STACK_OPERATION_TIMEOUT_MINUTES
+	const stackOperationRetries = stackRetriesInput
+		? Number.parseInt(stackRetriesInput, 10)
+		: DEFAULT_STACK_OPERATION_RETRIES
 	const cloudflareEmailInput = process.env.CLOUDFLARE_EMAIL
 	const cloudflareApiKeyInput = process.env.CLOUDFLARE_API_KEY
 	const hasCloudflareApiToken = Boolean(cloudflareApiTokenInput)
@@ -735,6 +1009,19 @@ async function main(): Promise<void> {
 	if (dryRun && preview) {
 		throw new Error('Dry run cannot be combined with --preview.')
 	}
+
+	if (
+		!Number.isFinite(stackOperationTimeoutMinutes) ||
+		stackOperationTimeoutMinutes <= 0
+	) {
+		throw new Error('--stack-timeout-minutes must be a positive integer.')
+	}
+
+	if (!Number.isFinite(stackOperationRetries) || stackOperationRetries < 0) {
+		throw new Error('--stack-retries must be a non-negative integer.')
+	}
+
+	const stackOperationTimeoutMs = stackOperationTimeoutMinutes * 60 * 1_000
 
 	const managementAccountName =
 		values['management-account-name'] ?? DEFAULT_MANAGEMENT_ACCOUNT_NAME
@@ -1068,6 +1355,8 @@ async function main(): Promise<void> {
 	console.log(`- production assume role: ${productionAssumeRoleName}`)
 	console.log(`- repo: ${repo}`)
 	console.log(`- trusted principal arn: ${trustedPrincipalArn}`)
+	console.log(`- stack timeout: ${stackOperationTimeoutMinutes} minute(s)`)
+	console.log(`- stack retries: ${stackOperationRetries}`)
 
 	if (includesPlatform(executionPlan)) {
 		if (!githubTokenInput) {
@@ -1115,20 +1404,42 @@ async function main(): Promise<void> {
 		return
 	}
 
-	for (const stack of executionPlan) {
-		if (command === 'destroy') {
-			await destroyOrPreviewDestroyStack(
+	const dockerConfigDir = includesPlatform(executionPlan)
+		? createEphemeralDockerConfig()
+		: undefined
+
+	try {
+		for (const stack of executionPlan) {
+			if (command === 'destroy') {
+				await destroyOrPreviewDestroyStack(
+					org,
+					stack,
+					preview,
+					removeStacks,
+					profile,
+					region,
+					stackOperationTimeoutMs,
+					stackOperationRetries,
+					dockerConfigDir,
+				)
+				continue
+			}
+
+			await upOrPreviewStack(
 				org,
 				stack,
 				preview,
-				removeStacks,
 				profile,
 				region,
+				stackOperationTimeoutMs,
+				stackOperationRetries,
+				dockerConfigDir,
 			)
-			continue
 		}
-
-		await upOrPreviewStack(org, stack, preview, profile, region)
+	} finally {
+		if (dockerConfigDir) {
+			rmSync(dockerConfigDir, { force: true, recursive: true })
+		}
 	}
 
 	console.log('Bootstrap complete.')

@@ -46,7 +46,6 @@ const dnsRecords = cloudflareHostnames.map((hostname) => {
 		ttl: cloudflareTtl,
 		proxied: cloudflareProxied,
 		comment: `Managed by Pulumi platform/${stack}`,
-		tags: ['managed-by:pulumi', `environment:${stack}`, 'scope:dns'],
 	})
 })
 

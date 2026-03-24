@@ -6,4 +6,4 @@ config:
   landing-zone:region: us-east-1
   landing-zone:budgetLimitUsd: "150"
   landing-zone:billingAlertEmail: platform-alerts@example.com
-  landing-zone:ciCdPrincipalArn: arn:aws:iam::302481198387:role/AWSReservedSSO_AWSAdministratorAccess_20d64ce49a7ea5f7
+  landing-zone:ciCdPrincipalArn: arn:aws:iam::302481198387:role/PulumiOperatorRole

@@ -5,7 +5,10 @@
 	"type": "module",
 	"scripts": {
 		"typecheck": "tsc --noEmit",
-		"bootstrap": "tsx bootstrap.ts"
+		"bootstrap": "tsx src/bootstrap.ts",
+		"recover:platform:staging": "tsx src/platform-recovery.ts --environment staging",
+		"recover:platform:production": "tsx src/platform-recovery.ts --environment production",
+		"verify:destroy": "tsx src/verify-destroy.ts"
 	},
 	"dependencies": {
 		"@lbrlabs/pulumi-awscontroltower": "^0.0.2",

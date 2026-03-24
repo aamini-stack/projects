@@ -8,12 +8,12 @@ config:
   platform:ciCdPrincipalArn: arn:aws:iam::302481198387:role/AWSReservedSSO_AWSAdministratorAccess_20d64ce49a7ea5f7
   aws:region: us-east-1
   github:token:
-    secure: AAABAG/FoKFVHLvqLTydFEnY7BOho1S3RLIH0KGTayGN/UdwNIWhgF+Ry7Qr4tf69ypGRb0uXyCjUbs=
+    secure: AAABAI2qrf96RZ1VSEEYj6pt3YtXAyPZHoszq8wMGu/UMSMXNzYYQm9evp4aHWyzNGX/HT5j9usvvSY=
   platform:deployerTrustedPrincipalArn: arn:aws:sts::302481198387:assumed-role/AWSReservedSSO_AWSAdministratorAccess_20d64ce49a7ea5f7/aamini1024@gmail.com
   platform:kubernetes: '{"version":"1.35","instanceType":"t3.medium","desiredCapacity":2,"minSize":2,"maxSize":2}'
   platform:postgres: '{"instanceClass":"db.t4g.micro","allocatedStorage":20,"maxAllocatedStorage":100,"backupRetentionDays":7,"engineVersion":"16.3","storageType":"gp3","publiclyAccessible":false,"deletionProtection":false,"multiAz":false,"allowedCidrs":["172.31.0.0/16"]}'
   platform:postgresAdminPassword:
-    secure: AAABALCWbJ1aM5KJmpyC1E/fluO/qenl1Fur1lQhDBO3p+AZfI6bT2tPar5Tu7Oon2Wj2rFCiqcshTYjE+xYNw==
+    secure: AAABABoSA7MXGmW4cYg68OGlASa4ambHRqAC1nr5xcmgdcNuVLIA6SIv2F+3pSOv15ZuRWNRHjY1c0GvVRMMsw==
   platform:repo: aamini-stack/projects
   platform:cloudflareOriginHostname: origin.ariaamini.com
   cloudflare:apiToken:
