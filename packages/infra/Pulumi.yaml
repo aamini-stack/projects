@@ -1,7 +1,0 @@
-name: aamini-infra
-runtime: nodejs
-description: Infrastructure as Code for @aamini monorepo using Pulumi
-config:
-  pulumi:autonaming:
-    value:
-      pattern: ${name}-${stack}

@@ -1,0 +1,13 @@
+{
+	"extends": "@aamini/config-typescript/lib",
+	"compilerOptions": {
+		"allowImportingTsExtensions": true,
+		"types": ["node"]
+	},
+	"include": [
+		"bootstrap.ts",
+		"src/organization/**/*.ts",
+		"src/landing-zone/**/*.ts",
+		"src/platform/**/*.ts"
+	]
+}

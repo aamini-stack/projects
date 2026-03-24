@@ -1,0 +1,40 @@
+name: Preview Cleanup
+
+on:
+  pull_request:
+    types: [closed]
+
+concurrency:
+  group: preview-cleanup-${{ github.event.pull_request.number }}
+  cancel-in-progress: false
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      deployments: write
+      pull-requests: read
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Clean up preview deployments
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EVENT_NAME: ${{ github.event_name }}
+          EVENT_PATH: ${{ github.event_path }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          RUN_URL:
+            ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
+            github.run_id }}
+        run: |
+          pnpm node --experimental-strip-types scripts/src/actions/preview-cleanup.ts \
+            --repository "${GITHUB_REPOSITORY}" \
+            --event-name "${EVENT_NAME}" \
+            --event-path "${EVENT_PATH}" \
+            --run-url "${RUN_URL}"

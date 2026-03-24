@@ -1,0 +1,10 @@
+config:
+  organization:region: us-east-1
+  organization:managementAccountId: "302481198387"
+  organization:stagingAccountId: "135133927765"
+  organization:productionAccountId: "324793866424"
+  organization:identityAssumeRoleName: none
+  organization:adminsGroupId: "b4b86408-e0d1-7003-ad26-1c66785c7f91"
+  organization:developersGroupId: "8478f4c8-f011-706d-b199-73c569c9766f"
+  organization:readOnlyGroupId: "9468c488-8091-7075-395f-8dcc10388575"
+  organization:requestedAccounts: '[]'
