@@ -5,7 +5,7 @@
 	"type": "module",
 	"scripts": {
 		"typecheck": "tsc --noEmit",
-		"bootstrap": "tsx src/commands/bootstrap.ts"
+		"bootstrap": "tsx src/lib/bootstrap/main.ts"
 	},
 	"dependencies": {
 		"@lbrlabs/pulumi-awscontroltower": "^0.0.2",

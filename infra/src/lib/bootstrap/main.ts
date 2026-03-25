@@ -1,8 +1,8 @@
-import { buildBootstrapPlan } from '../lib/bootstrap/build-plan.ts'
-import { parseBootstrapCli } from '../lib/bootstrap/parse-cli.ts'
-import { printBootstrapPlan } from '../lib/bootstrap/print-plan.ts'
-import { resolveBootstrapContext } from '../lib/bootstrap/resolve-context.ts'
-import { runBootstrapPlan } from '../lib/bootstrap/run-plan.ts'
+import { buildBootstrapPlan } from './build-plan.ts'
+import { parseBootstrapCli } from './parse-cli.ts'
+import { printBootstrapPlan } from './print-plan.ts'
+import { resolveBootstrapContext } from './resolve-context.ts'
+import { runBootstrapPlan } from './run-plan.ts'
 
 async function main(): Promise<void> {
 	const options = parseBootstrapCli(process.argv)
