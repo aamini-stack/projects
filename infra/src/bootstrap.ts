@@ -1,306 +1,66 @@
 import { randomBytes } from 'node:crypto'
 import { execFileSync } from 'node:child_process'
-import { mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { dirname, resolve } from 'node:path'
-import { tmpdir } from 'node:os'
 import { parseArgs } from 'node:util'
-import * as auto from '@pulumi/pulumi/automation/index.js'
+import { rmSync } from 'node:fs'
 
-type AwsAccount = {
-	Id: string
-	Name: string
-	Status: string
-}
-
-type OrganizationInventory = {
-	rootId?: string
-	organizationalUnits?: Array<{
-		id: string
-		name: string
-		parentId: string
-		path?: string
-	}>
-	accounts?: Array<{
-		id: string
-		name: string
-		email?: string
-		parentId?: string
-	}>
-	policies?: Array<{
-		id: string
-		name: string
-		targetIds?: string[]
-	}>
-}
-
-type CallerIdentity = {
-	Account: string
-	Arn: string
-	UserId: string
-}
-
-type SsoInstance = {
-	InstanceArn: string
-	IdentityStoreId: string
-}
-
-type IdentityGroup = {
-	DisplayName: string
-	GroupId: string
-}
-
-type AwsIamGetRoleResponse = {
-	Role: {
-		Arn: string
-		RoleName: string
-	}
-}
-
-type BootstrapAccountSelection = {
-	name: string
-	id?: string
-}
-
-type BootstrapOrganizationSelection = {
-	management: BootstrapAccountSelection
-	staging: BootstrapAccountSelection
-	production: BootstrapAccountSelection
-}
-
-type StackProject = 'organization' | 'account-baseline' | 'platform'
-type StackEnvironment = 'global' | 'staging' | 'production'
-type ProjectTarget = StackProject | 'all'
-type EnvironmentTarget = StackEnvironment | 'all'
-type Command = 'up' | 'destroy'
-
-type StackDefinition = {
-	key: string
-	project: StackProject
-	environment: StackEnvironment
-	workDir: string
-	stack: string
-	config: Record<string, { value: string; secret?: boolean }>
-}
-
-const DEFAULT_REGION = 'us-east-1'
-const DEFAULT_ASSUME_ROLE_NAME = 'AWSControlTowerExecution'
-const DEFAULT_CICD_ROLE_NAME = 'PulumiOperatorRole'
-const DEFAULT_REQUESTED_ACCOUNTS = '[]'
-const DEFAULT_MANAGEMENT_ACCOUNT_NAME = 'aamini-root'
-const DEFAULT_STAGING_ACCOUNT_NAME = 'aamini-staging'
-const DEFAULT_PRODUCTION_ACCOUNT_NAME = 'aamini-production'
-const DEFAULT_ADMINS_GROUP_NAME = 'Admins'
-const DEFAULT_DEVELOPERS_GROUP_NAME = 'Developers'
-const DEFAULT_READONLY_GROUP_NAME = 'ReadOnly'
-const DEFAULT_REPO = 'aamini-stack/projects'
-const DEFAULT_BILLING_ALERT_EMAIL = 'platform-alerts@example.com'
-const DEFAULT_STAGING_BUDGET_USD = '150'
-const DEFAULT_PRODUCTION_BUDGET_USD = '500'
-const DEFAULT_CLOUDFLARE_ORIGIN_HOSTNAME = 'origin.ariaamini.com'
-const PLATFORM_PROJECT_ENABLED = false
-const DEFAULT_STACK_OPERATION_TIMEOUT_MINUTES = 45
-const DEFAULT_STACK_OPERATION_RETRIES = 2
-const RETRY_BASE_DELAY_MS = 5_000
-
-let awsNonInteractiveMode = false
-
-type StackOperation = 'preview' | 'up' | 'preview-destroy' | 'destroy'
-
-function resolveProfile(cliProfile: string | undefined): string {
-	const profile =
-		cliProfile ?? process.env.AWS_PROFILE ?? process.env.AWS_DEFAULT_PROFILE
-
-	if (!profile) {
-		throw new Error(
-			'No AWS profile resolved. Pass --profile or set AWS_PROFILE/AWS_DEFAULT_PROFILE.',
-		)
-	}
-
-	return profile
-}
-
-function runAwsJson<T>(args: string[], profile?: string): T {
-	const env = { ...process.env }
-	const resolvedRegion =
-		process.env.AWS_REGION ?? process.env.AWS_DEFAULT_REGION ?? DEFAULT_REGION
-	env.AWS_REGION = resolvedRegion
-	env.AWS_DEFAULT_REGION = resolvedRegion
-	if (profile) {
-		env.AWS_PROFILE = profile
-	}
-
-	const execute = (): string =>
-		execFileSync('aws', [...args, '--output', 'json'], {
-			encoding: 'utf8',
-			env,
-			stdio: ['ignore', 'pipe', 'pipe'],
-		})
-
-	try {
-		const output = execute()
-		return JSON.parse(output) as T
-	} catch (error: unknown) {
-		if (profile && awsNonInteractiveMode && isAwsSsoTokenExpiredError(error)) {
-			throw new Error(
-				`AWS SSO token expired for profile '${profile}' while --non-interactive is enabled. Run 'aws sso login --profile ${profile}' and retry.`,
-			)
-		}
-
-		if (profile && isAwsSsoTokenExpiredError(error)) {
-			console.log(
-				`AWS SSO token expired for profile '${profile}', running aws sso login...`,
-			)
-			execFileSync('aws', ['sso', 'login', '--profile', profile], {
-				encoding: 'utf8',
-				env,
-				stdio: 'inherit',
-			})
-
-			const output = execute()
-			return JSON.parse(output) as T
-		}
-
-		throw error
-	}
-}
-
-function isAwsSsoTokenExpiredError(error: unknown): boolean {
-	if (!(error instanceof Error)) {
-		return false
-	}
-
-	const message = error.message.toLowerCase()
-	return (
-		message.includes('token has expired') ||
-		message.includes('error when retrieving token from sso') ||
-		message.includes('sso login')
-	)
-}
-
-function canAssumeRole(
-	accountId: string,
-	roleName: string,
-	profile: string,
-): boolean {
-	try {
-		runAwsJson(
-			[
-				'sts',
-				'assume-role',
-				'--role-arn',
-				`arn:aws:iam::${accountId}:role/${roleName}`,
-				'--role-session-name',
-				`bootstrap-probe-${randomBytes(4).toString('hex')}`,
-				'--duration-seconds',
-				'900',
-			],
-			profile,
-		)
-		return true
-	} catch {
-		return false
-	}
-}
-
-function resolveAssumeRoleNameForAccount(
-	accountId: string,
-	accountName: string,
-	preferredRoleName: string,
-	profile: string,
-): string {
-	const candidates = Array.from(
-		new Set([
-			preferredRoleName,
-			'OrganizationAccountAccessRole',
-			'AWSControlTowerExecution',
-		]),
-	)
-
-	for (const candidate of candidates) {
-		if (canAssumeRole(accountId, candidate, profile)) {
-			if (candidate !== preferredRoleName) {
-				console.log(
-					`- account ${accountName}: using fallback assume role '${candidate}' (preferred '${preferredRoleName}' is not assumable)`,
-				)
-			}
-			return candidate
-		}
-	}
-
-	throw new Error(
-		`Unable to assume any bootstrap role in account '${accountName}' (${accountId}). Tried: ${candidates.join(', ')}. Grant sts:AssumeRole and trust to your management principal, or pass --assume-role-name with a valid role.`,
-	)
-}
-
-function resolveManagementIdentityAssumeRoleName(
-	accountId: string,
-	accountName: string,
-	preferredRoleName: string,
-	profile: string,
-): string {
-	if (canAssumeRole(accountId, preferredRoleName, profile)) {
-		return preferredRoleName
-	}
-
-	console.log(
-		`- management account ${accountName}: identity assume role '${preferredRoleName}' is not assumable; using caller credentials instead`,
-	)
-	return 'none'
-}
-
-function roleExistsInAccount(roleName: string, profile: string): boolean {
-	try {
-		runAwsJson<AwsIamGetRoleResponse>(
-			['iam', 'get-role', '--role-name', roleName],
-			profile,
-		)
-		return true
-	} catch {
-		return false
-	}
-}
-
-function toIamRoleArnFromAssumedRoleArn(arn: string): string | undefined {
-	const match = /^arn:aws:sts::(\d+):assumed-role\/([^/]+)\/.+$/.exec(arn)
-	if (!match) {
-		return undefined
-	}
-
-	const accountId = match[1]
-	const roleName = match[2]
-	if (!accountId || !roleName) {
-		return undefined
-	}
-
-	return `arn:aws:iam::${accountId}:role/${roleName}`
-}
-
-function resolveCiCdPrincipalArn(
-	managementAccountId: string,
-	ciCdRoleName: string,
-	callerArn: string,
-	profile: string,
-): string {
-	const preferredRoleArn = `arn:aws:iam::${managementAccountId}:role/${ciCdRoleName}`
-	if (roleExistsInAccount(ciCdRoleName, profile)) {
-		return preferredRoleArn
-	}
-
-	const callerRoleArn = toIamRoleArnFromAssumedRoleArn(callerArn)
-	if (callerRoleArn?.startsWith(`arn:aws:iam::${managementAccountId}:role/`)) {
-		console.log(
-			`- CI/CD role '${ciCdRoleName}' not found in management account; falling back to caller role principal ${callerRoleArn}`,
-		)
-		return callerRoleArn
-	}
-
-	const rootArn = `arn:aws:iam::${managementAccountId}:root`
-	console.log(
-		`- CI/CD role '${ciCdRoleName}' not found in management account; falling back to management root principal ${rootArn}`,
-	)
-	return rootArn
-}
+import {
+	buildDefaultOrganizationSelection,
+	buildOrganizationImportsConfig,
+	getCallerIdentity,
+	getOrCreateIdentityGroup,
+	getSsoInstance,
+	listIdentityStoreGroups,
+	listOrganizationAccounts,
+	loadOrganizationInventory,
+	parseJsonOption,
+	resolveAssumeRoleNameForAccount,
+	resolveCiCdPrincipalArn,
+	resolveManagementIdentityAssumeRoleName,
+	resolveProfile,
+	resolveSelectedOrganizationAccount,
+	setAwsNonInteractiveMode,
+} from './bootstrap/aws.ts'
+import {
+	DEFAULT_ADMINS_GROUP_NAME,
+	DEFAULT_ASSUME_ROLE_NAME,
+	DEFAULT_BILLING_ALERT_EMAIL,
+	DEFAULT_CICD_ROLE_NAME,
+	DEFAULT_CLOUDFLARE_ORIGIN_HOSTNAME,
+	DEFAULT_DEVELOPERS_GROUP_NAME,
+	DEFAULT_MANAGEMENT_ACCOUNT_NAME,
+	DEFAULT_PRODUCTION_ACCOUNT_NAME,
+	DEFAULT_PRODUCTION_BUDGET_USD,
+	DEFAULT_READONLY_GROUP_NAME,
+	DEFAULT_REGION,
+	DEFAULT_REPO,
+	DEFAULT_REQUESTED_ACCOUNTS,
+	DEFAULT_STACK_OPERATION_RETRIES,
+	DEFAULT_STACK_OPERATION_TIMEOUT_MINUTES,
+	DEFAULT_STAGING_ACCOUNT_NAME,
+	DEFAULT_STAGING_BUDGET_USD,
+} from './bootstrap/constants.ts'
+import {
+	createEphemeralDockerConfig,
+	destroyOrPreviewDestroyStack,
+	includesPlatform,
+	upOrPreviewStack,
+} from './bootstrap/execution.ts'
+import {
+	buildStackDefinitions,
+	formatStackLabel,
+	resolveStackSelection,
+	sortStacksForDestroy,
+	sortStacksForUp,
+} from './bootstrap/stacks.ts'
+import type {
+	BootstrapOrganizationSelection,
+	Command,
+	EnvironmentTarget,
+	OrganizationInventory,
+	ProjectTarget,
+} from './bootstrap/types.ts'
 
 function runPulumiWhoAmI(): string {
 	const output = execFileSync('pulumi', ['whoami'], {
@@ -324,22 +84,12 @@ function parseCommand(value: string | undefined): Command {
 }
 
 function parseProjectTarget(value: string): ProjectTarget {
-	if (
-		value === 'all' ||
-		value === 'organization' ||
-		value === 'landing-zone' ||
-		value === 'account-baseline' ||
-		value === 'platform'
-	) {
-		if (value === 'landing-zone') {
-			return 'account-baseline'
-		}
-
+	if (value === 'all' || value === 'organization' || value === 'platform') {
 		return value
 	}
 
 	throw new Error(
-		`Invalid --project '${value}'. Expected one of: all, organization, account-baseline, platform.`,
+		`Invalid --project '${value}'. Expected one of: all, organization, platform.`,
 	)
 }
 
@@ -358,731 +108,6 @@ function parseEnvironmentTarget(value: string): EnvironmentTarget {
 	)
 }
 
-function isStackNotFoundError(error: unknown): boolean {
-	if (!(error instanceof Error)) {
-		return false
-	}
-
-	const message = error.message.toLowerCase()
-	return (
-		message.includes('stack') &&
-		(message.includes('not found') ||
-			message.includes('does not exist') ||
-			message.includes('no stack named'))
-	)
-}
-
-function findActiveAccountByName(
-	accounts: AwsAccount[],
-	name: string,
-): AwsAccount {
-	const account = accounts.find((item) => item.Name === name)
-	if (!account) {
-		throw new Error(`AWS account '${name}' was not found in AWS Organizations`)
-	}
-
-	if (account.Status !== 'ACTIVE') {
-		throw new Error(
-			`AWS account '${name}' is not ACTIVE (status=${account.Status})`,
-		)
-	}
-
-	return account
-}
-
-function findActiveAccountById(accounts: AwsAccount[], id: string): AwsAccount {
-	const account = accounts.find((item) => item.Id === id)
-	if (!account) {
-		throw new Error(`AWS account '${id}' was not found in AWS Organizations`)
-	}
-
-	if (account.Status !== 'ACTIVE') {
-		throw new Error(
-			`AWS account '${account.Name}' (${account.Id}) is not ACTIVE (status=${account.Status})`,
-		)
-	}
-
-	return account
-}
-
-function listOrganizationAccounts(profile: string): AwsAccount[] {
-	const accounts: AwsAccount[] = []
-	let nextToken: string | undefined
-
-	do {
-		const response = runAwsJson<{
-			Accounts: AwsAccount[]
-			NextToken?: string
-		}>(
-			[
-				'organizations',
-				'list-accounts',
-				...(nextToken ? ['--next-token', nextToken] : []),
-			],
-			profile,
-		)
-		accounts.push(...response.Accounts)
-		nextToken = response.NextToken
-	} while (nextToken)
-
-	return accounts
-}
-
-function listIdentityStoreGroups(
-	identityStoreId: string,
-	profile: string,
-): IdentityGroup[] {
-	const groups: IdentityGroup[] = []
-	let nextToken: string | undefined
-
-	do {
-		const response = runAwsJson<{
-			Groups: IdentityGroup[]
-			NextToken?: string
-		}>(
-			[
-				'identitystore',
-				'list-groups',
-				'--identity-store-id',
-				identityStoreId,
-				...(nextToken ? ['--next-token', nextToken] : []),
-			],
-			profile,
-		)
-
-		groups.push(...response.Groups)
-		nextToken = response.NextToken
-	} while (nextToken)
-
-	return groups
-}
-
-function parseJsonOption<T>(
-	value: string | undefined,
-	label: string,
-): T | undefined {
-	if (!value) {
-		return undefined
-	}
-
-	try {
-		return JSON.parse(value) as T
-	} catch (error: unknown) {
-		const message = error instanceof Error ? error.message : String(error)
-		throw new Error(`Invalid ${label} JSON: ${message}`)
-	}
-}
-
-function resolveSelectedOrganizationAccount(
-	accounts: AwsAccount[],
-	requested: BootstrapAccountSelection,
-): AwsAccount {
-	if (requested.id) {
-		const account = findActiveAccountById(accounts, requested.id)
-		if (account.Name !== requested.name) {
-			throw new Error(
-				`Explicit organization account '${requested.name}' expected id ${requested.id}, but AWS returned '${account.Name}'.`,
-			)
-		}
-
-		return account
-	}
-
-	return findActiveAccountByName(accounts, requested.name)
-}
-
-function buildDefaultOrganizationSelection(input: {
-	managementAccountName: string
-	stagingAccountName: string
-	productionAccountName: string
-}): BootstrapOrganizationSelection {
-	return {
-		management: { name: input.managementAccountName },
-		staging: { name: input.stagingAccountName },
-		production: { name: input.productionAccountName },
-	}
-}
-
-function loadOrganizationInventory(input: {
-	infraDir: string
-	profile: string
-	region: string
-}): OrganizationInventory {
-	return JSON.parse(
-		execFileSync(
-			'pnpm',
-			[
-				'--silent',
-				'inventory:organization',
-				'--profile',
-				input.profile,
-				'--region',
-				input.region,
-			],
-			{
-				cwd: input.infraDir,
-				encoding: 'utf8',
-				stdio: ['ignore', 'pipe', 'pipe'],
-				env: process.env,
-			},
-		).trim(),
-	) as OrganizationInventory
-}
-
-function buildOrganizationImportsConfig(input: {
-	inventory: OrganizationInventory
-	managementAccountId: string
-	stagingAccountId: string
-	productionAccountId: string
-}): { importedAccounts: string; importedPolicies: string } {
-	const ouKeyById = new Map<string, string>()
-	for (const unit of input.inventory.organizationalUnits ?? []) {
-		const path = unit.path ?? unit.name
-		if (path === 'Security') {
-			ouKeyById.set(unit.id, 'security')
-		} else if (path === 'Workloads') {
-			ouKeyById.set(unit.id, 'workloads')
-		} else if (path === 'Workloads/Staging') {
-			ouKeyById.set(unit.id, 'workloads-staging')
-		} else if (path === 'Workloads/Production') {
-			ouKeyById.set(unit.id, 'workloads-production')
-		}
-	}
-
-	const importedAccounts = (input.inventory.accounts ?? [])
-		.filter(
-			(account) =>
-				account.id !== input.managementAccountId &&
-				account.id !== input.stagingAccountId &&
-				account.id !== input.productionAccountId,
-		)
-		.map((account) => {
-			const parentKey = ouKeyById.get(account.parentId ?? '')
-			if (!parentKey) {
-				throw new Error(
-					`Imported account '${account.name}' has unsupported parent '${account.parentId ?? 'unknown'}'.`,
-				)
-			}
-
-			return {
-				key: toConfigKey(`${account.name}-${account.id.slice(-4)}`),
-				name: account.name,
-				id: account.id,
-				parentKey,
-			}
-		})
-
-	const importedPolicies = (input.inventory.policies ?? [])
-		.filter((policy) => policy.name !== 'FullAWSAccess')
-		.map((policy) => {
-			const attachToKey = (policy.targetIds ?? [])
-				.map((targetId) => ouKeyById.get(targetId))
-				.find((targetKey): targetKey is string => Boolean(targetKey))
-
-			return {
-				key: toConfigKey(`${policy.name}-${policy.id}`),
-				name: policy.name,
-				id: policy.id,
-				...(attachToKey ? { attachToKey } : {}),
-			}
-		})
-
-	return {
-		importedAccounts: JSON.stringify(importedAccounts),
-		importedPolicies: JSON.stringify(importedPolicies),
-	}
-}
-
-function toConfigKey(value: string): string {
-	return value
-		.toLowerCase()
-		.replace(/[^a-z0-9]+/g, '-')
-		.replace(/^-+|-+$/g, '')
-}
-
-function getOrCreateIdentityGroup(
-	groups: IdentityGroup[],
-	name: string,
-	identityStoreId: string,
-	profile: string,
-	createMissingGroups: boolean,
-	dryRun: boolean,
-): IdentityGroup {
-	const existing = groups.find((item) => item.DisplayName === name)
-	if (existing) {
-		return existing
-	}
-
-	if (!createMissingGroups) {
-		throw new Error(
-			`Identity Center group '${name}' was not found. Re-run with --create-missing-groups.`,
-		)
-	}
-
-	if (dryRun) {
-		const dryRunGroup: IdentityGroup = {
-			DisplayName: name,
-			GroupId: `dryrun-create-${name}`,
-		}
-		console.log(
-			`Dry run: would create Identity Center group '${name}' in ${identityStoreId}`,
-		)
-		return dryRunGroup
-	}
-
-	const created = runAwsJson<{ GroupId: string; DisplayName: string }>(
-		[
-			'identitystore',
-			'create-group',
-			'--identity-store-id',
-			identityStoreId,
-			'--display-name',
-			name,
-			'--description',
-			'Managed by infra bootstrap',
-		],
-		profile,
-	)
-
-	const group: IdentityGroup = {
-		DisplayName: created.DisplayName || name,
-		GroupId: created.GroupId,
-	}
-	groups.push(group)
-
-	console.log(`Created Identity Center group '${name}' (${group.GroupId})`)
-
-	return group
-}
-
-function toConfigMap(
-	config: Record<string, { value: string; secret?: boolean }>,
-): auto.ConfigMap {
-	return Object.fromEntries(Object.entries(config))
-}
-
-function resolveStackSelection(
-	stacks: StackDefinition[],
-	projectTarget: ProjectTarget,
-	environmentTarget: EnvironmentTarget,
-): StackDefinition[] {
-	if (!PLATFORM_PROJECT_ENABLED && projectTarget === 'platform') {
-		throw new Error(
-			"The 'platform' project is temporarily disabled during organization/account-baseline rollout.",
-		)
-	}
-
-	return stacks.filter((stack) => {
-		if (!PLATFORM_PROJECT_ENABLED && stack.project === 'platform') {
-			return false
-		}
-
-		if (projectTarget !== 'all' && stack.project !== projectTarget) {
-			return false
-		}
-
-		if (
-			environmentTarget !== 'all' &&
-			stack.environment !== environmentTarget
-		) {
-			return false
-		}
-
-		return true
-	})
-}
-
-function sortStacksForUp(stacks: StackDefinition[]): StackDefinition[] {
-	const keyOrder = [
-		'organization/global',
-		'account-baseline/staging',
-		'account-baseline/production',
-		'platform/staging',
-		'platform/production',
-	]
-
-	const order = new Map(keyOrder.map((key, index) => [key, index]))
-
-	return [...stacks].sort((left, right) => {
-		const leftIndex = order.get(left.key) ?? Number.MAX_SAFE_INTEGER
-		const rightIndex = order.get(right.key) ?? Number.MAX_SAFE_INTEGER
-		return leftIndex - rightIndex
-	})
-}
-
-function sortStacksForDestroy(stacks: StackDefinition[]): StackDefinition[] {
-	return sortStacksForUp(stacks).reverse()
-}
-
-function includesPlatform(stacks: StackDefinition[]): boolean {
-	return stacks.some((stack) => stack.project === 'platform')
-}
-
-function requireProfile(profile: string | undefined): string {
-	if (!profile) {
-		throw new Error('AWS profile is required. Pass --profile or set a default.')
-	}
-
-	return profile
-}
-
-function getWorkspaceEnv(
-	profile: string,
-	region: string,
-	dockerConfigDir?: string,
-): Record<string, string> {
-	return {
-		AWS_PROFILE: profile,
-		AWS_REGION: region,
-		AWS_DEFAULT_REGION: region,
-		...(dockerConfigDir ? { DOCKER_CONFIG: dockerConfigDir } : {}),
-	}
-}
-
-function createEphemeralDockerConfig(): string {
-	const dockerConfigDir = mkdtempSync(
-		resolve(tmpdir(), 'bootstrap-docker-config-'),
-	)
-	const dockerConfigPath = resolve(dockerConfigDir, 'config.json')
-	writeFileSync(dockerConfigPath, JSON.stringify({ auths: {} }))
-	return dockerConfigDir
-}
-
-function nowIso(): string {
-	return new Date().toISOString()
-}
-
-function formatDurationMs(durationMs: number): string {
-	const seconds = Math.round(durationMs / 1_000)
-	return `${seconds}s`
-}
-
-function sleep(ms: number): Promise<void> {
-	return new Promise((resolveSleep) => {
-		setTimeout(resolveSleep, ms)
-	})
-}
-
-function isTimeoutError(error: unknown): boolean {
-	if (!(error instanceof Error)) {
-		return false
-	}
-
-	return error.message.toLowerCase().includes('timed out')
-}
-
-function isTransientStackError(error: unknown): boolean {
-	if (!(error instanceof Error)) {
-		return false
-	}
-
-	const message = error.message.toLowerCase()
-	return (
-		message.includes('throttl') ||
-		message.includes('rate exceeded') ||
-		message.includes('too many requests') ||
-		message.includes('timeout') ||
-		message.includes('connection reset') ||
-		message.includes('connection refused') ||
-		message.includes('temporarily unavailable') ||
-		message.includes('request limit exceeded') ||
-		message.includes('internal error')
-	)
-}
-
-async function runWithTimeout<T>(
-	stackLabel: string,
-	operation: StackOperation,
-	timeoutMs: number,
-	operationFn: () => Promise<T>,
-): Promise<T> {
-	let timeoutHandle: NodeJS.Timeout | undefined
-
-	const timeoutPromise = new Promise<never>((_, reject) => {
-		timeoutHandle = setTimeout(() => {
-			reject(
-				new Error(
-					`${operation} timed out after ${formatDurationMs(timeoutMs)} for ${stackLabel}`,
-				),
-			)
-		}, timeoutMs)
-	})
-
-	try {
-		return await Promise.race([operationFn(), timeoutPromise])
-	} finally {
-		if (timeoutHandle) {
-			clearTimeout(timeoutHandle)
-		}
-	}
-}
-
-async function runStackOperationWithRetry(
-	stackLabel: string,
-	operation: StackOperation,
-	timeoutMs: number,
-	retries: number,
-	operationFn: () => Promise<void>,
-): Promise<void> {
-	const attempts = retries + 1
-
-	for (let attempt = 1; attempt <= attempts; attempt += 1) {
-		const startedAt = Date.now()
-		console.log(
-			`[${nowIso()}] ${operation} start: ${stackLabel} (attempt ${attempt}/${attempts})`,
-		)
-
-		try {
-			await runWithTimeout(stackLabel, operation, timeoutMs, operationFn)
-			console.log(
-				`[${nowIso()}] ${operation} complete: ${stackLabel} (${formatDurationMs(
-					Date.now() - startedAt,
-				)})`,
-			)
-			return
-		} catch (error: unknown) {
-			const canRetry =
-				attempt < attempts &&
-				(isTransientStackError(error) || isTimeoutError(error))
-			if (!canRetry) {
-				throw error
-			}
-
-			const waitMs = RETRY_BASE_DELAY_MS * attempt
-			const message = error instanceof Error ? error.message : String(error)
-			console.log(
-				`[${nowIso()}] ${operation} retry: ${stackLabel} in ${Math.round(
-					waitMs / 1_000,
-				)}s (${message})`,
-			)
-			await sleep(waitMs)
-		}
-	}
-}
-
-function runCommand(
-	command: string,
-	args: string[],
-	env: NodeJS.ProcessEnv,
-): void {
-	execFileSync(command, args, {
-		encoding: 'utf8',
-		env,
-		stdio: ['ignore', 'pipe', 'pipe'],
-	})
-}
-
-function runBestEffortCommand(
-	command: string,
-	args: string[],
-	env: NodeJS.ProcessEnv,
-): void {
-	try {
-		runCommand(command, args, env)
-	} catch (error: unknown) {
-		const message = error instanceof Error ? error.message : String(error)
-		console.log(
-			`- warning: ${command} ${args.join(' ')} failed during cleanup (${message})`,
-		)
-	}
-}
-
-async function runFluxPreDestroyCleanup(
-	stack: auto.Stack,
-	stackDef: StackDefinition,
-	profile: string,
-	region: string,
-): Promise<void> {
-	const outputs = await stack.outputs()
-	const kubeconfigOutput = outputs.kubeconfig?.value
-	if (typeof kubeconfigOutput !== 'string' || kubeconfigOutput.length === 0) {
-		console.log(
-			`- flux pre-destroy: skipped for ${stackDef.key} (missing kubeconfig output)`,
-		)
-		return
-	}
-
-	const tempDir = mkdtempSync(resolve(tmpdir(), 'flux-cleanup-'))
-	const kubeconfigPath = resolve(tempDir, 'kubeconfig')
-	writeFileSync(kubeconfigPath, kubeconfigOutput, { mode: 0o600 })
-
-	const commandEnv: NodeJS.ProcessEnv = {
-		...process.env,
-		AWS_PROFILE: profile,
-		AWS_REGION: region,
-		AWS_DEFAULT_REGION: region,
-		KUBECONFIG: kubeconfigPath,
-	}
-
-	try {
-		console.log(
-			`- flux pre-destroy: uninstalling Flux resources for ${stackDef.key}`,
-		)
-		runBestEffortCommand(
-			'helm',
-			['uninstall', 'flux-instance', '-n', 'flux-system'],
-			commandEnv,
-		)
-		runBestEffortCommand(
-			'helm',
-			['uninstall', 'flux-operator', '-n', 'flux-system'],
-			commandEnv,
-		)
-		runBestEffortCommand(
-			'kubectl',
-			['delete', 'namespace', 'flux-system', '--wait=false'],
-			commandEnv,
-		)
-		runBestEffortCommand(
-			'kubectl',
-			[
-				'patch',
-				'namespace',
-				'flux-system',
-				'--type',
-				'merge',
-				'-p',
-				'{"spec":{"finalizers":[]}}',
-			],
-			commandEnv,
-		)
-	} finally {
-		rmSync(tempDir, { force: true, recursive: true })
-	}
-}
-
-async function upOrPreviewStack(
-	org: string,
-	stackDef: StackDefinition,
-	previewOnly: boolean,
-	profile: string,
-	region: string,
-	stackOperationTimeoutMs: number,
-	stackOperationRetries: number,
-	dockerConfigDir?: string,
-): Promise<void> {
-	const stackName = `${org}/${stackDef.stack}`
-	const stackLabel = `${stackDef.key} (${stackName})`
-	const stack = await auto.LocalWorkspace.createOrSelectStack(
-		{
-			stackName,
-			workDir: stackDef.workDir,
-		},
-		{
-			envVars: getWorkspaceEnv(profile, region, dockerConfigDir),
-		},
-	)
-
-	await stack.setAllConfig(toConfigMap(stackDef.config))
-	console.log(`Configured ${stackLabel}`)
-
-	if (previewOnly) {
-		await runStackOperationWithRetry(
-			stackLabel,
-			'preview',
-			stackOperationTimeoutMs,
-			stackOperationRetries,
-			async () => {
-				await stack.preview({
-					onOutput: (line: string) => process.stdout.write(`${line}\n`),
-				})
-			},
-		)
-		return
-	}
-
-	await runStackOperationWithRetry(
-		stackLabel,
-		'up',
-		stackOperationTimeoutMs,
-		stackOperationRetries,
-		async () => {
-			await stack.up({
-				onOutput: (line: string) => process.stdout.write(`${line}\n`),
-			})
-		},
-	)
-}
-
-async function destroyOrPreviewDestroyStack(
-	org: string,
-	stackDef: StackDefinition,
-	previewOnly: boolean,
-	removeStacks: boolean,
-	profile: string,
-	region: string,
-	stackOperationTimeoutMs: number,
-	stackOperationRetries: number,
-	dockerConfigDir?: string,
-): Promise<void> {
-	const stackName = `${org}/${stackDef.stack}`
-	const stackLabel = `${stackDef.key} (${stackName})`
-	let stack: auto.Stack
-
-	try {
-		stack = await auto.LocalWorkspace.selectStack(
-			{
-				stackName,
-				workDir: stackDef.workDir,
-			},
-			{
-				envVars: getWorkspaceEnv(profile, region, dockerConfigDir),
-			},
-		)
-	} catch (error: unknown) {
-		if (isStackNotFoundError(error)) {
-			console.log(`Skipping missing stack ${stackLabel}`)
-			return
-		}
-
-		throw error
-	}
-
-	await stack.setAllConfig(toConfigMap(stackDef.config))
-
-	if (previewOnly) {
-		await runStackOperationWithRetry(
-			stackLabel,
-			'preview-destroy',
-			stackOperationTimeoutMs,
-			stackOperationRetries,
-			async () => {
-				await stack.previewDestroy({
-					onOutput: (line: string) => process.stdout.write(`${line}\n`),
-				})
-			},
-		)
-		return
-	}
-
-	if (stackDef.project === 'platform') {
-		await runFluxPreDestroyCleanup(stack, stackDef, profile, region)
-	}
-
-	await runStackOperationWithRetry(
-		stackLabel,
-		'destroy',
-		stackOperationTimeoutMs,
-		stackOperationRetries,
-		async () => {
-			await stack.destroy({
-				remove: removeStacks,
-				onOutput: (line: string) => process.stdout.write(`${line}\n`),
-			})
-		},
-	)
-
-	if (removeStacks) {
-		console.log(`Destroyed and removed stack ${stackDef.key}`)
-	} else {
-		console.log(`Destroyed resources for stack ${stackDef.key}`)
-	}
-}
-
-function formatStackLabel(stack: StackDefinition, org: string): string {
-	return `${stack.key} (${org}/${stack.stack})`
-}
-
 function printUsage(): void {
 	console.log('Usage: pnpm bootstrap -- [up|destroy] [options]')
 	console.log('')
@@ -1091,7 +116,7 @@ function printUsage(): void {
 	console.log('  pnpm bootstrap -- up --preview')
 	console.log('  pnpm bootstrap -- up --check --project organization')
 	console.log(
-		'  pnpm bootstrap -- destroy --project account-baseline --environment staging --remove-stacks',
+		'  pnpm bootstrap -- destroy --project platform --environment staging --remove-stacks',
 	)
 	console.log(
 		'  pnpm bootstrap -- up --stack-timeout-minutes 60 --stack-retries 3',
@@ -1158,9 +183,9 @@ async function main(): Promise<void> {
 	const infraDir = resolve(dirname(currentFilePath), '..')
 	const check = values.check ?? false
 	const nonInteractive = values.nonInteractive ?? false
-	awsNonInteractiveMode = nonInteractive
+	setAwsNonInteractiveMode(nonInteractive)
 
-	const profile = requireProfile(resolveProfile(values.profile))
+	const profile = resolveProfile(values.profile)
 	const region =
 		values.region ??
 		process.env.AWS_REGION ??
@@ -1259,10 +284,7 @@ async function main(): Promise<void> {
 	console.log(`- pulumi org: ${org}`)
 	console.log(`- mode: ${nonInteractive ? 'non-interactive' : 'interactive'}`)
 
-	const caller = runAwsJson<CallerIdentity>(
-		['sts', 'get-caller-identity'],
-		profile,
-	)
+	const caller = getCallerIdentity(profile)
 	if (caller.Arn.endsWith(':root')) {
 		throw new Error(
 			`Refusing to continue with root credentials (${caller.Arn}). Use IAM Identity Center or an IAM role session.`,
@@ -1295,17 +317,7 @@ async function main(): Promise<void> {
 		organizationSelection.production,
 	)
 
-	const instances = runAwsJson<{ Instances: SsoInstance[] }>(
-		['sso-admin', 'list-instances'],
-		profile,
-	)
-	const ssoInstance = instances.Instances[0]
-	if (!ssoInstance) {
-		throw new Error(
-			'No IAM Identity Center instance found in this organization.',
-		)
-	}
-
+	const ssoInstance = getSsoInstance(profile)
 	const groups = listIdentityStoreGroups(ssoInstance.IdentityStoreId, profile)
 	const adminsGroup = getOrCreateIdentityGroup(
 		groups,
@@ -1402,164 +414,35 @@ async function main(): Promise<void> {
 		allowedCidrs: ['172.31.0.0/16'],
 	})
 
-	const stackDefs: StackDefinition[] = [
-		{
-			key: 'organization/global',
-			project: 'organization',
-			environment: 'global',
-			workDir: resolve(infraDir, 'src/organization'),
-			stack: 'global',
-			config: {
-				'organization:managementAccountId': { value: managementAccountId },
-				'organization:stagingAccountId': { value: stagingAccountId },
-				'organization:productionAccountId': { value: productionAccountId },
-				'organization:identityAssumeRoleName': {
-					value: identityAssumeRoleName,
-				},
-				'organization:region': { value: region },
-				'organization:adminsGroupId': { value: adminsGroup.GroupId },
-				'organization:developersGroupId': { value: developersGroup.GroupId },
-				'organization:readOnlyGroupId': { value: readOnlyGroup.GroupId },
-				'organization:requestedAccounts': { value: requestedAccounts },
-				'organization:importedAccounts': {
-					value: organizationImportsConfig.importedAccounts,
-				},
-				'organization:importedPolicies': {
-					value: organizationImportsConfig.importedPolicies,
-				},
-			},
-		},
-		{
-			key: 'account-baseline/staging',
-			project: 'account-baseline',
-			environment: 'staging',
-			workDir: resolve(infraDir, 'src/account-baseline'),
-			stack: 'staging',
-			config: {
-				'account-baseline:accountId': { value: stagingAccountId },
-				'account-baseline:environment': { value: 'staging' },
-				'account-baseline:managementAccountId': { value: managementAccountId },
-				'account-baseline:assumeRoleName': { value: stagingAssumeRoleName },
-				'account-baseline:region': { value: region },
-				'account-baseline:budgetLimitUsd': { value: stagingBudgetUsd },
-				'account-baseline:billingAlertEmail': { value: billingAlertEmail },
-				'account-baseline:ciCdPrincipalArn': { value: ciCdPrincipalArn },
-			},
-		},
-		{
-			key: 'account-baseline/production',
-			project: 'account-baseline',
-			environment: 'production',
-			workDir: resolve(infraDir, 'src/account-baseline'),
-			stack: 'production',
-			config: {
-				'account-baseline:accountId': { value: productionAccountId },
-				'account-baseline:environment': { value: 'production' },
-				'account-baseline:managementAccountId': { value: managementAccountId },
-				'account-baseline:assumeRoleName': { value: productionAssumeRoleName },
-				'account-baseline:region': { value: region },
-				'account-baseline:budgetLimitUsd': { value: productionBudgetUsd },
-				'account-baseline:billingAlertEmail': { value: billingAlertEmail },
-				'account-baseline:ciCdPrincipalArn': { value: ciCdPrincipalArn },
-			},
-		},
-		{
-			key: 'platform/staging',
-			project: 'platform',
-			environment: 'staging',
-			workDir: resolve(infraDir, 'src/platform'),
-			stack: 'staging',
-			config: {
-				'platform:accountId': { value: stagingAccountId },
-				'platform:environment': { value: 'staging' },
-				'platform:managementAccountId': { value: managementAccountId },
-				'platform:assumeRoleName': { value: stagingAssumeRoleName },
-				'platform:region': { value: region },
-				'aws:region': { value: region },
-				'platform:workloadBucketName': { value: 'aamini-staging-workloads' },
-				'platform:ciCdPrincipalArn': { value: ciCdPrincipalArn },
-				'platform:repo': { value: repo },
-				'platform:deployerTrustedPrincipalArn': {
-					value: trustedPrincipalArn,
-				},
-				'platform:kubernetes': { value: sharedKubernetesConfig },
-				'platform:postgres': { value: sharedPostgresConfig },
-				'platform:cloudflareOriginHostname': {
-					value: cloudflareOriginHostname,
-				},
-				'github:token': { value: githubToken, secret: true },
-				...(cloudflareApiTokenInput
-					? {
-							'cloudflare:apiToken': {
-								value: cloudflareApiTokenInput,
-								secret: true,
-							},
-						}
-					: cloudflareEmailInput && cloudflareApiKeyInput
-						? {
-								'cloudflare:email': { value: cloudflareEmailInput },
-								'cloudflare:apiKey': {
-									value: cloudflareApiKeyInput,
-									secret: true,
-								},
-							}
-						: {}),
-				'platform:postgresAdminPassword': {
-					value: postgresAdminPassword,
-					secret: true,
-				},
-			},
-		},
-		{
-			key: 'platform/production',
-			project: 'platform',
-			environment: 'production',
-			workDir: resolve(infraDir, 'src/platform'),
-			stack: 'production',
-			config: {
-				'platform:accountId': { value: productionAccountId },
-				'platform:environment': { value: 'production' },
-				'platform:managementAccountId': { value: managementAccountId },
-				'platform:assumeRoleName': { value: productionAssumeRoleName },
-				'platform:region': { value: region },
-				'aws:region': { value: region },
-				'platform:workloadBucketName': {
-					value: 'aamini-production-workloads',
-				},
-				'platform:ciCdPrincipalArn': { value: ciCdPrincipalArn },
-				'platform:repo': { value: repo },
-				'platform:deployerTrustedPrincipalArn': {
-					value: trustedPrincipalArn,
-				},
-				'platform:kubernetes': { value: sharedKubernetesConfig },
-				'platform:postgres': { value: sharedPostgresConfig },
-				'platform:cloudflareOriginHostname': {
-					value: cloudflareOriginHostname,
-				},
-				'github:token': { value: githubToken, secret: true },
-				...(cloudflareApiTokenInput
-					? {
-							'cloudflare:apiToken': {
-								value: cloudflareApiTokenInput,
-								secret: true,
-							},
-						}
-					: cloudflareEmailInput && cloudflareApiKeyInput
-						? {
-								'cloudflare:email': { value: cloudflareEmailInput },
-								'cloudflare:apiKey': {
-									value: cloudflareApiKeyInput,
-									secret: true,
-								},
-							}
-						: {}),
-				'platform:postgresAdminPassword': {
-					value: postgresAdminPassword,
-					secret: true,
-				},
-			},
-		},
-	]
+	const stackDefs = buildStackDefinitions({
+		infraDir,
+		managementAccountId,
+		stagingAccountId,
+		productionAccountId,
+		identityAssumeRoleName,
+		stagingAssumeRoleName,
+		productionAssumeRoleName,
+		region,
+		adminsGroupId: adminsGroup.GroupId,
+		developersGroupId: developersGroup.GroupId,
+		readOnlyGroupId: readOnlyGroup.GroupId,
+		requestedAccounts,
+		organizationImportsConfig,
+		billingAlertEmail,
+		stagingBudgetUsd,
+		productionBudgetUsd,
+		ciCdPrincipalArn,
+		repo,
+		trustedPrincipalArn,
+		sharedKubernetesConfig,
+		sharedPostgresConfig,
+		cloudflareOriginHostname,
+		githubToken,
+		cloudflareApiTokenInput,
+		cloudflareEmailInput,
+		cloudflareApiKeyInput,
+		postgresAdminPassword,
+	})
 
 	const selected = resolveStackSelection(
 		stackDefs,

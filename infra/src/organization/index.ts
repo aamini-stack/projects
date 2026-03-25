@@ -1,31 +1,26 @@
 import * as aws from '@pulumi/aws'
-import * as pulumi from '@pulumi/pulumi'
 
-import { createRequestedAccounts } from './src/account-factory.ts'
 import { loadOrganizationConfig } from './src/config.ts'
+import { createAccountGuardrails } from './src/guardrails.ts'
 import { createIdentityCenterAccess } from './src/identity.ts'
+import { createOrganizationTopology } from './src/topology.ts'
 
 const config = loadOrganizationConfig()
 
 const {
-	region,
-	managementAccountId,
-	stagingAccountId,
-	productionAccountId,
-	identityAssumeRoleName,
-	adminsGroupId,
-	developersGroupId,
-	readOnlyGroupId,
-	requestedAccounts,
-	importedAccounts,
-	importedPolicies,
+	organization: organizationConfig,
+	identity: identityConfig,
+	accounts,
+	guardrails,
 } = config
 
-const managementProviderArgs: aws.ProviderArgs = { region }
-if (identityAssumeRoleName !== 'none') {
+const managementProviderArgs: aws.ProviderArgs = {
+	region: organizationConfig.region,
+}
+if (identityConfig.assumeRoleName !== 'none') {
 	managementProviderArgs.assumeRoles = [
 		{
-			roleArn: `arn:aws:iam::${managementAccountId}:role/${identityAssumeRoleName}`,
+			roleArn: `arn:aws:iam::${organizationConfig.managementAccountId}:role/${identityConfig.assumeRoleName}`,
 			sessionName: 'pulumi-organization-identity',
 		},
 	]
@@ -54,229 +49,91 @@ const identityCenterArn = identityCenterInstances.arns.apply((arns) => {
 const identity = createIdentityCenterAccess({
 	provider: managementProvider,
 	identityCenterArn,
-	adminsGroupId,
-	developersGroupId,
-	readOnlyGroupId,
-	stagingAccountId,
-	productionAccountId,
-	managementAccountId,
+	adminsGroupId: identityConfig.adminsGroupId,
+	developersGroupId: identityConfig.developersGroupId,
+	readOnlyGroupId: identityConfig.readOnlyGroupId,
+	stagingAccountId: accounts.staging.accountId,
+	productionAccountId: accounts.production.accountId,
+	managementAccountId: organizationConfig.managementAccountId,
 })
 
-const liveOrganization = aws.organizations.getOrganizationOutput(
-	{},
-	{ provider: managementProvider },
-)
-const root = liveOrganization.roots.apply((roots) => {
-	const discoveredRoot = roots[0]
-	if (!discoveredRoot) {
-		throw new Error(
-			'No AWS Organizations root found in the current organization.',
-		)
-	}
-
-	return discoveredRoot
+const topology = createOrganizationTopology({
+	provider: managementProvider,
+	managementAccountId: organizationConfig.managementAccountId,
+	stagingAccountId: accounts.staging.accountId,
+	productionAccountId: accounts.production.accountId,
+	requestedAccounts: accounts.requested,
+	importedAccounts: config.imports.accounts,
+	importedPolicies: config.imports.policies,
 })
-const rootId = root.apply((value) => value.id)
 
-const securityOu = new aws.organizations.OrganizationalUnit(
-	'ou-security',
+const stagingGuardrailsProvider = new aws.Provider(
+	'guardrails-staging-provider',
 	{
-		name: 'Security',
-		parentId: rootId,
-		tags: organizationTags('Security'),
-	},
-	{ provider: managementProvider },
-)
-
-const workloadsOu = new aws.organizations.OrganizationalUnit(
-	'ou-workloads',
-	{
-		name: 'Workloads',
-		parentId: rootId,
-		tags: organizationTags('Workloads'),
-	},
-	{ provider: managementProvider },
-)
-
-const workloadsStagingOu = new aws.organizations.OrganizationalUnit(
-	'ou-workloads-staging',
-	{
-		name: 'Staging',
-		parentId: workloadsOu.id,
-		tags: organizationTags('Workloads/Staging'),
-	},
-	{ provider: managementProvider },
-)
-
-const workloadsProductionOu = new aws.organizations.OrganizationalUnit(
-	'ou-workloads-production',
-	{
-		name: 'Production',
-		parentId: workloadsOu.id,
-		tags: organizationTags('Workloads/Production'),
-	},
-	{ provider: managementProvider },
-)
-
-const organizationalUnits = {
-	security: securityOu,
-	workloads: workloadsOu,
-	'workloads-staging': workloadsStagingOu,
-	'workloads-production': workloadsProductionOu,
-} as const
-
-const stagingAccount = aws.organizations.Account.get(
-	'account-staging',
-	stagingAccountId,
-	undefined,
-	{ provider: managementProvider },
-)
-
-const productionAccount = aws.organizations.Account.get(
-	'account-production',
-	productionAccountId,
-	undefined,
-	{ provider: managementProvider },
-)
-
-const managedImportedAccounts = Object.fromEntries(
-	importedAccounts.map((account) => [
-		account.key,
-		aws.organizations.Account.get(
-			`account-${account.key}`,
-			account.id,
-			undefined,
-			{ provider: managementProvider },
-		),
-	]),
-)
-
-const importedPoliciesByKey = Object.fromEntries(
-	importedPolicies.map((policy) => [
-		policy.key,
-		aws.organizations.Policy.get(`scp-${policy.key}`, policy.id, undefined, {
-			provider: managementProvider,
-		}),
-	]),
-)
-
-for (const policy of importedPolicies) {
-	if (!policy.attachToKey) {
-		continue
-	}
-
-	const importedPolicy = importedPoliciesByKey[policy.key]
-	if (!importedPolicy) {
-		throw new Error(`Missing imported policy '${policy.key}'.`)
-	}
-
-	const target = organizationalUnits[policy.attachToKey]
-	new aws.organizations.PolicyAttachment(
-		`scp-${policy.key}-attachment-ou:${policy.attachToKey}`,
-		{
-			policyId: importedPolicy.id,
-			targetId: target.id,
+		region: organizationConfig.region,
+		assumeRoles: [
+			{
+				roleArn: `arn:aws:iam::${guardrails.staging.accountId}:role/${guardrails.staging.assumeRoleName}`,
+				sessionName: 'pulumi-organization-guardrails-staging',
+			},
+		],
+		defaultTags: {
+			tags: {
+				Environment: guardrails.staging.environment,
+				ManagedBy: 'Pulumi',
+				Project: 'aamini-stack',
+				Scope: 'guardrails',
+			},
 		},
-		{ provider: managementProvider },
-	)
+	},
+)
+
+const productionGuardrailsProvider = new aws.Provider(
+	'guardrails-production-provider',
+	{
+		region: organizationConfig.region,
+		assumeRoles: [
+			{
+				roleArn: `arn:aws:iam::${guardrails.production.accountId}:role/${guardrails.production.assumeRoleName}`,
+				sessionName: 'pulumi-organization-guardrails-production',
+			},
+		],
+		defaultTags: {
+			tags: {
+				Environment: guardrails.production.environment,
+				ManagedBy: 'Pulumi',
+				Project: 'aamini-stack',
+				Scope: 'guardrails',
+			},
+		},
+	},
+)
+
+const accountGuardrails = {
+	staging: createAccountGuardrails({
+		provider: stagingGuardrailsProvider,
+		managementAccountId: organizationConfig.managementAccountId,
+		ciCdPrincipalArn: guardrails.ciCdPrincipalArn,
+		billingAlertEmail: guardrails.billingAlertEmail,
+		account: guardrails.staging,
+	}),
+	production: createAccountGuardrails({
+		provider: productionGuardrailsProvider,
+		managementAccountId: organizationConfig.managementAccountId,
+		ciCdPrincipalArn: guardrails.ciCdPrincipalArn,
+		billingAlertEmail: guardrails.billingAlertEmail,
+		account: guardrails.production,
+	}),
 }
 
-const createdAccounts = createRequestedAccounts(requestedAccounts)
-
-export const organization = {
-	organizationId: liveOrganization.id,
-	rootId,
-	managementAccountId,
-	stagingAccountId,
-	productionAccountId,
-}
+export const organization = topology.organization
 
 export { identity }
 
-export const organizationStructure = {
-	organizationalUnits: {
-		security: describeOrganizationalUnit(securityOu, rootId, 'Security'),
-		workloads: describeOrganizationalUnit(workloadsOu, rootId, 'Workloads'),
-		'workloads-staging': describeOrganizationalUnit(
-			workloadsStagingOu,
-			workloadsOu.id,
-			'Workloads/Staging',
-		),
-		'workloads-production': describeOrganizationalUnit(
-			workloadsProductionOu,
-			workloadsOu.id,
-			'Workloads/Production',
-		),
-	},
-	accounts: {
-		management: pulumi.output({
-			id: managementAccountId,
-			parentId: rootId,
-		}),
-		staging: pulumi.output({
-			id: stagingAccount.id,
-			parentId: rootId,
-		}),
-		production: pulumi.output({
-			id: productionAccount.id,
-			parentId: rootId,
-		}),
-		...Object.fromEntries(
-			Object.entries(managedImportedAccounts).map(([key, account]) => [
-				key,
-				pulumi.output({
-					id: account.id,
-					parentKey: importedAccounts.find((candidate) => candidate.key === key)
-						?.parentKey,
-				}),
-			]),
-		),
-	},
-	controlTowerManagedOus: ['workloads-staging', 'workloads-production'],
-}
+export const organizationStructure = topology.organizationStructure
 
-export const serviceControlPolicies = {
-	configuredPolicyCount: importedPolicies.length,
-	policies: Object.fromEntries(
-		Object.entries(importedPoliciesByKey).map(([key, policy]) => [
-			key,
-			{
-				id: policy.id,
-				arn: policy.arn,
-				name: policy.name,
-				type: policy.type,
-			},
-		]),
-	),
-}
+export const serviceControlPolicies = topology.serviceControlPolicies
 
-export const controltowerOutputs = {
-	configuredRegion: region,
-	requestedAccountCount: requestedAccounts.length,
-	createdAccountIds: createdAccounts.map((account) => account.accountId),
-}
+export const controltowerOutputs = topology.controltowerOutputs
 
-function organizationTags(path: string) {
-	return {
-		ManagedBy: 'Pulumi',
-		Project: 'aamini-stack',
-		Scope: 'organization-topology',
-		Path: path,
-	}
-}
-
-function describeOrganizationalUnit(
-	resource: aws.organizations.OrganizationalUnit,
-	parentId: pulumi.Input<string>,
-	path: string,
-) {
-	return pulumi
-		.all([resource.id, resource.arn, pulumi.output(parentId)])
-		.apply(([id, arn, resolvedParentId]) => ({
-			id,
-			arn,
-			name: resource.name,
-			path,
-			parentId: resolvedParentId,
-		}))
-}
+export const guardrailsOutputs = accountGuardrails
