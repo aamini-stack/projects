@@ -1,0 +1,9 @@
+config:
+  account-baseline:accountId: "135133927765"
+  account-baseline:environment: staging
+  account-baseline:managementAccountId: "302481198387"
+  account-baseline:assumeRoleName: OrganizationAccountAccessRole
+  account-baseline:region: us-east-1
+  account-baseline:budgetLimitUsd: "150"
+  account-baseline:billingAlertEmail: platform-alerts@example.com
+  account-baseline:ciCdPrincipalArn: arn:aws:iam::302481198387:role/PulumiOperatorRole

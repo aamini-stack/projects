@@ -1,9 +1,0 @@
-config:
-  landing-zone:accountId: "324793866424"
-  landing-zone:environment: production
-  landing-zone:managementAccountId: "302481198387"
-  landing-zone:assumeRoleName: OrganizationAccountAccessRole
-  landing-zone:region: us-east-1
-  landing-zone:budgetLimitUsd: "500"
-  landing-zone:billingAlertEmail: platform-alerts@example.com
-  landing-zone:ciCdPrincipalArn: arn:aws:iam::302481198387:role/AWSReservedSSO_AWSAdministratorAccess_20d64ce49a7ea5f7

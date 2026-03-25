@@ -13,6 +13,16 @@ type AwsAccount = {
 	Status: string
 }
 
+type AwsOrganizationsRoot = {
+	Id: string
+	Name: string
+}
+
+type AwsOrganizationsParent = {
+	Id: string
+	Type: string
+}
+
 type CallerIdentity = {
 	Account: string
 	Arn: string
@@ -36,7 +46,25 @@ type AwsIamGetRoleResponse = {
 	}
 }
 
-type StackProject = 'organization' | 'landing-zone' | 'platform'
+type BootstrapTopologyAccount = {
+	name: string
+	id?: string
+	currentParentId?: string
+}
+
+type BootstrapTopology = {
+	management: BootstrapTopologyAccount
+	staging: BootstrapTopologyAccount
+	production: BootstrapTopologyAccount
+	organizationalUnits: {
+		staging: string
+		core: string
+		workloads: string
+		production: string
+	}
+}
+
+type StackProject = 'organization' | 'account-baseline' | 'platform'
 type StackEnvironment = 'global' | 'staging' | 'production'
 type ProjectTarget = StackProject | 'all'
 type EnvironmentTarget = StackEnvironment | 'all'
@@ -66,6 +94,7 @@ const DEFAULT_BILLING_ALERT_EMAIL = 'platform-alerts@example.com'
 const DEFAULT_STAGING_BUDGET_USD = '150'
 const DEFAULT_PRODUCTION_BUDGET_USD = '500'
 const DEFAULT_CLOUDFLARE_ORIGIN_HOSTNAME = 'origin.ariaamini.com'
+const PLATFORM_PROJECT_ENABLED = false
 const DEFAULT_STACK_OPERATION_TIMEOUT_MINUTES = 45
 const DEFAULT_STACK_OPERATION_RETRIES = 2
 const RETRY_BASE_DELAY_MS = 5_000
@@ -295,13 +324,18 @@ function parseProjectTarget(value: string): ProjectTarget {
 		value === 'all' ||
 		value === 'organization' ||
 		value === 'landing-zone' ||
+		value === 'account-baseline' ||
 		value === 'platform'
 	) {
+		if (value === 'landing-zone') {
+			return 'account-baseline'
+		}
+
 		return value
 	}
 
 	throw new Error(
-		`Invalid --project '${value}'. Expected one of: all, organization, landing-zone, platform.`,
+		`Invalid --project '${value}'. Expected one of: all, organization, account-baseline, platform.`,
 	)
 }
 
@@ -346,6 +380,21 @@ function findActiveAccountByName(
 	if (account.Status !== 'ACTIVE') {
 		throw new Error(
 			`AWS account '${name}' is not ACTIVE (status=${account.Status})`,
+		)
+	}
+
+	return account
+}
+
+function findActiveAccountById(accounts: AwsAccount[], id: string): AwsAccount {
+	const account = accounts.find((item) => item.Id === id)
+	if (!account) {
+		throw new Error(`AWS account '${id}' was not found in AWS Organizations`)
+	}
+
+	if (account.Status !== 'ACTIVE') {
+		throw new Error(
+			`AWS account '${account.Name}' (${account.Id}) is not ACTIVE (status=${account.Status})`,
 		)
 	}
 
@@ -402,6 +451,158 @@ function listIdentityStoreGroups(
 	} while (nextToken)
 
 	return groups
+}
+
+function listOrganizationRoots(profile: string): AwsOrganizationsRoot[] {
+	const response = runAwsJson<{ Roots: AwsOrganizationsRoot[] }>(
+		['organizations', 'list-roots'],
+		profile,
+	)
+
+	return response.Roots
+}
+
+function getParentIdForChild(
+	childId: string,
+	profile: string,
+): string | undefined {
+	const response = runAwsJson<{ Parents: AwsOrganizationsParent[] }>(
+		['organizations', 'list-parents', '--child-id', childId],
+		profile,
+	)
+
+	return response.Parents[0]?.Id
+}
+
+function parseJsonOption<T>(
+	value: string | undefined,
+	label: string,
+): T | undefined {
+	if (!value) {
+		return undefined
+	}
+
+	try {
+		return JSON.parse(value) as T
+	} catch (error: unknown) {
+		const message = error instanceof Error ? error.message : String(error)
+		throw new Error(`Invalid ${label} JSON: ${message}`)
+	}
+}
+
+function resolveTopologyAccount(
+	accounts: AwsAccount[],
+	requested: BootstrapTopologyAccount,
+): AwsAccount {
+	if (requested.id) {
+		const account = findActiveAccountById(accounts, requested.id)
+		if (account.Name !== requested.name) {
+			throw new Error(
+				`Explicit topology account '${requested.name}' expected id ${requested.id}, but AWS returned '${account.Name}'.`,
+			)
+		}
+
+		return account
+	}
+
+	return findActiveAccountByName(accounts, requested.name)
+}
+
+function buildDefaultTopology(input: {
+	managementAccountName: string
+	stagingAccountName: string
+	productionAccountName: string
+}): BootstrapTopology {
+	return {
+		management: { name: input.managementAccountName },
+		staging: { name: input.stagingAccountName },
+		production: { name: input.productionAccountName },
+		organizationalUnits: {
+			core: 'Core',
+			workloads: 'Workloads',
+			production: 'Production',
+			staging: 'Staging',
+		},
+	}
+}
+
+function buildOrganizationInventoryConfig(input: {
+	infraDir: string
+	profile: string
+	region: string
+}): string {
+	return execFileSync(
+		'pnpm',
+		[
+			'--silent',
+			'inventory:organization',
+			'--profile',
+			input.profile,
+			'--region',
+			input.region,
+		],
+		{
+			cwd: input.infraDir,
+			encoding: 'utf8',
+			stdio: ['ignore', 'pipe', 'pipe'],
+			env: process.env,
+		},
+	).trim()
+}
+
+function buildOrganizationTopologyConfig(input: {
+	topology: BootstrapTopology
+	stagingAccountId: string
+	productionAccountId: string
+	requestedAccounts: string
+}): string {
+	const requestedAccounts = JSON.parse(input.requestedAccounts) as unknown[]
+
+	return JSON.stringify({
+		organizationalUnits: [
+			{
+				key: 'core',
+				name: input.topology.organizationalUnits.core,
+				parentKey: 'root',
+			},
+			{
+				key: 'workloads',
+				name: input.topology.organizationalUnits.workloads,
+				parentKey: 'root',
+			},
+			{
+				key: 'workloads-staging',
+				name: input.topology.organizationalUnits.staging,
+				parentKey: 'workloads',
+			},
+			{
+				key: 'workloads-production',
+				name: input.topology.organizationalUnits.production,
+				parentKey: 'workloads',
+			},
+		],
+		existingAccounts: [
+			{
+				key: 'staging',
+				name: input.topology.staging.name,
+				id: input.stagingAccountId,
+				desiredParentKey: 'workloads-staging',
+				currentParentId: input.topology.staging.currentParentId,
+				adoptToDesiredParent: false,
+			},
+			{
+				key: 'production',
+				name: input.topology.production.name,
+				id: input.productionAccountId,
+				desiredParentKey: 'workloads-production',
+				currentParentId: input.topology.production.currentParentId,
+				adoptToDesiredParent: false,
+			},
+		],
+		requestedAccounts,
+		serviceControlPolicies: [],
+		controlTowerGovernedOuKeys: ['workloads-staging', 'workloads-production'],
+	})
 }
 
 function getOrCreateIdentityGroup(
@@ -470,7 +671,17 @@ function resolveStackSelection(
 	projectTarget: ProjectTarget,
 	environmentTarget: EnvironmentTarget,
 ): StackDefinition[] {
+	if (!PLATFORM_PROJECT_ENABLED && projectTarget === 'platform') {
+		throw new Error(
+			"The 'platform' project is temporarily disabled during organization/account-baseline rollout.",
+		)
+	}
+
 	return stacks.filter((stack) => {
+		if (!PLATFORM_PROJECT_ENABLED && stack.project === 'platform') {
+			return false
+		}
+
 		if (projectTarget !== 'all' && stack.project !== projectTarget) {
 			return false
 		}
@@ -489,8 +700,8 @@ function resolveStackSelection(
 function sortStacksForUp(stacks: StackDefinition[]): StackDefinition[] {
 	const keyOrder = [
 		'organization/global',
-		'landing-zone/staging',
-		'landing-zone/production',
+		'account-baseline/staging',
+		'account-baseline/production',
 		'platform/staging',
 		'platform/production',
 	]
@@ -885,7 +1096,7 @@ function printUsage(): void {
 	console.log('  pnpm bootstrap -- up --preview')
 	console.log('  pnpm bootstrap -- up --check --project organization')
 	console.log(
-		'  pnpm bootstrap -- destroy --environment staging --remove-stacks',
+		'  pnpm bootstrap -- destroy --project account-baseline --environment staging --remove-stacks',
 	)
 	console.log(
 		'  pnpm bootstrap -- up --stack-timeout-minutes 60 --stack-retries 3',
@@ -919,6 +1130,8 @@ async function main(): Promise<void> {
 			'identity-assume-role-name': { type: 'string' },
 			'cicd-role-name': { type: 'string' },
 			'requested-accounts': { type: 'string' },
+			'organization-topology': { type: 'string' },
+			'organization-inventory': { type: 'string' },
 			'management-account-name': { type: 'string' },
 			'staging-account-name': { type: 'string' },
 			'production-account-name': { type: 'string' },
@@ -1035,6 +1248,14 @@ async function main(): Promise<void> {
 		values['developers-group-name'] ?? DEFAULT_DEVELOPERS_GROUP_NAME
 	const readonlyGroupName =
 		values['readonly-group-name'] ?? DEFAULT_READONLY_GROUP_NAME
+	const providedTopology = parseJsonOption<BootstrapTopology>(
+		values['organization-topology'],
+		'--organization-topology',
+	)
+	const providedInventory = parseJsonOption<Record<string, unknown>>(
+		values['organization-inventory'],
+		'--organization-inventory',
+	)
 
 	console.log('Bootstrap preflight:')
 	console.log(`- profile: ${profile}`)
@@ -1053,19 +1274,29 @@ async function main(): Promise<void> {
 	}
 
 	const accounts = listOrganizationAccounts(profile)
-	const managementAccount = findActiveAccountByName(
+	const desiredTopology =
+		providedTopology ??
+		buildDefaultTopology({
+			managementAccountName,
+			stagingAccountName,
+			productionAccountName,
+		})
+	const managementAccount = resolveTopologyAccount(
 		accounts,
-		managementAccountName,
+		desiredTopology.management,
 	)
 	if (caller.Account !== managementAccount.Id) {
 		throw new Error(
 			`Resolved caller account (${caller.Account}) does not match management account '${managementAccount.Name}' (${managementAccount.Id}). Re-authenticate with the management account profile or override --management-account-name.`,
 		)
 	}
-	const stagingAccount = findActiveAccountByName(accounts, stagingAccountName)
-	const productionAccount = findActiveAccountByName(
+	const stagingAccount = resolveTopologyAccount(
 		accounts,
-		productionAccountName,
+		desiredTopology.staging,
+	)
+	const productionAccount = resolveTopologyAccount(
+		accounts,
+		desiredTopology.production,
 	)
 
 	const instances = runAwsJson<{ Instances: SsoInstance[] }>(
@@ -1113,6 +1344,48 @@ async function main(): Promise<void> {
 	const managementAccountId = managementAccount.Id
 	const stagingAccountId = stagingAccount.Id
 	const productionAccountId = productionAccount.Id
+	const roots = listOrganizationRoots(profile)
+	const root = roots[0]
+	if (!root) {
+		throw new Error(
+			'No AWS Organizations root found in the current organization.',
+		)
+	}
+	const stagingParentId =
+		desiredTopology.staging.currentParentId ??
+		getParentIdForChild(stagingAccountId, profile)
+	const productionParentId =
+		desiredTopology.production.currentParentId ??
+		getParentIdForChild(productionAccountId, profile)
+	const organizationTopologyConfig = buildOrganizationTopologyConfig({
+		topology: {
+			...desiredTopology,
+			management: {
+				...desiredTopology.management,
+				id: managementAccountId,
+			},
+			staging: {
+				...desiredTopology.staging,
+				id: stagingAccountId,
+				...(stagingParentId ? { currentParentId: stagingParentId } : {}),
+			},
+			production: {
+				...desiredTopology.production,
+				id: productionAccountId,
+				...(productionParentId ? { currentParentId: productionParentId } : {}),
+			},
+		},
+		stagingAccountId,
+		productionAccountId,
+		requestedAccounts,
+	})
+	const organizationInventoryConfig = providedInventory
+		? JSON.stringify(providedInventory)
+		: buildOrganizationInventoryConfig({
+				infraDir,
+				profile,
+				region,
+			})
 	const stagingAssumeRoleName = resolveAssumeRoleNameForAccount(
 		stagingAccountId,
 		stagingAccount.Name,
@@ -1181,40 +1454,42 @@ async function main(): Promise<void> {
 				'organization:developersGroupId': { value: developersGroup.GroupId },
 				'organization:readOnlyGroupId': { value: readOnlyGroup.GroupId },
 				'organization:requestedAccounts': { value: requestedAccounts },
+				'organization:topology': { value: organizationTopologyConfig },
+				'organization:inventory': { value: organizationInventoryConfig },
 			},
 		},
 		{
-			key: 'landing-zone/staging',
-			project: 'landing-zone',
+			key: 'account-baseline/staging',
+			project: 'account-baseline',
 			environment: 'staging',
-			workDir: resolve(infraDir, 'src/landing-zone'),
+			workDir: resolve(infraDir, 'src/account-baseline'),
 			stack: 'staging',
 			config: {
-				'landing-zone:accountId': { value: stagingAccountId },
-				'landing-zone:environment': { value: 'staging' },
-				'landing-zone:managementAccountId': { value: managementAccountId },
-				'landing-zone:assumeRoleName': { value: stagingAssumeRoleName },
-				'landing-zone:region': { value: region },
-				'landing-zone:budgetLimitUsd': { value: stagingBudgetUsd },
-				'landing-zone:billingAlertEmail': { value: billingAlertEmail },
-				'landing-zone:ciCdPrincipalArn': { value: ciCdPrincipalArn },
+				'account-baseline:accountId': { value: stagingAccountId },
+				'account-baseline:environment': { value: 'staging' },
+				'account-baseline:managementAccountId': { value: managementAccountId },
+				'account-baseline:assumeRoleName': { value: stagingAssumeRoleName },
+				'account-baseline:region': { value: region },
+				'account-baseline:budgetLimitUsd': { value: stagingBudgetUsd },
+				'account-baseline:billingAlertEmail': { value: billingAlertEmail },
+				'account-baseline:ciCdPrincipalArn': { value: ciCdPrincipalArn },
 			},
 		},
 		{
-			key: 'landing-zone/production',
-			project: 'landing-zone',
+			key: 'account-baseline/production',
+			project: 'account-baseline',
 			environment: 'production',
-			workDir: resolve(infraDir, 'src/landing-zone'),
+			workDir: resolve(infraDir, 'src/account-baseline'),
 			stack: 'production',
 			config: {
-				'landing-zone:accountId': { value: productionAccountId },
-				'landing-zone:environment': { value: 'production' },
-				'landing-zone:managementAccountId': { value: managementAccountId },
-				'landing-zone:assumeRoleName': { value: productionAssumeRoleName },
-				'landing-zone:region': { value: region },
-				'landing-zone:budgetLimitUsd': { value: productionBudgetUsd },
-				'landing-zone:billingAlertEmail': { value: billingAlertEmail },
-				'landing-zone:ciCdPrincipalArn': { value: ciCdPrincipalArn },
+				'account-baseline:accountId': { value: productionAccountId },
+				'account-baseline:environment': { value: 'production' },
+				'account-baseline:managementAccountId': { value: managementAccountId },
+				'account-baseline:assumeRoleName': { value: productionAssumeRoleName },
+				'account-baseline:region': { value: region },
+				'account-baseline:budgetLimitUsd': { value: productionBudgetUsd },
+				'account-baseline:billingAlertEmail': { value: billingAlertEmail },
+				'account-baseline:ciCdPrincipalArn': { value: ciCdPrincipalArn },
 			},
 		},
 		{

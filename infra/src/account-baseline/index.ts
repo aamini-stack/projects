@@ -18,7 +18,7 @@ const provider = new aws.Provider(`${environment}-provider`, {
 	assumeRoles: [
 		{
 			roleArn: `arn:aws:iam::${accountId}:role/${assumeRoleName}`,
-			sessionName: `pulumi-landing-zone-${environment}`,
+			sessionName: `pulumi-account-baseline-${environment}`,
 		},
 	],
 	defaultTags: {
@@ -26,7 +26,7 @@ const provider = new aws.Provider(`${environment}-provider`, {
 			Environment: environment,
 			ManagedBy: 'Pulumi',
 			Project: 'aamini-stack',
-			Scope: 'landing-zone',
+			Scope: 'account-baseline',
 		},
 	},
 })
