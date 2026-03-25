@@ -1,6 +1,5 @@
-import { buildBootstrapPlan } from './build-plan.ts'
+import { buildBootstrapPlan, printBootstrapPlan } from './build-plan.ts'
 import { parseBootstrapCli } from './parse-cli.ts'
-import { printBootstrapPlan } from './print-plan.ts'
 import { resolveBootstrapContext } from './resolve-context.ts'
 import { runBootstrapPlan } from './run-plan.ts'
 

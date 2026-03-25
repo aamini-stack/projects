@@ -2,27 +2,27 @@ import { randomBytes } from 'node:crypto'
 import { fileURLToPath } from 'node:url'
 import { dirname, resolve } from 'node:path'
 
-import { setAwsNonInteractiveMode } from '../aws/cli.ts'
-import { resolveCiCdPrincipalArn } from '../aws/iam.ts'
-import { listOrganizationAccounts } from '../aws/organizations.ts'
 import {
+	accountById,
+	accountByName,
 	getCallerIdentity,
-	resolveAssumeRoleNameForAccount,
-	resolveManagementIdentityAssumeRoleName,
-} from '../aws/sts.ts'
-import { execText } from '../process/exec.ts'
-import type { BootstrapContext, BootstrapOptions } from './types.ts'
-
-import {
 	getOrCreateIdentityGroup,
 	getSsoInstance,
 	listIdentityStoreGroups,
-} from './support/aws-identity.ts'
-import {
-	buildDefaultOrganizationSelection,
-	resolveProfile,
-	resolveSelectedOrganizationAccount,
-} from './support/discovery.ts'
+	listOrganizationAccounts,
+	resolveCiCdPrincipalArn,
+	resolveAssumeRoleNameForAccount,
+	resolveManagementIdentityAssumeRoleName,
+	setAwsNonInteractiveMode,
+	type AwsAccount,
+} from '../aws.ts'
+import { execText } from '../runtime.ts'
+import type {
+	BootstrapAccountSelection,
+	BootstrapContext,
+	BootstrapOptions,
+	BootstrapOrganizationSelection,
+} from './types.ts'
 
 const DEFAULT_REGION = 'us-east-1'
 const DEFAULT_ASSUME_ROLE_NAME = 'AWSControlTowerExecution'
@@ -47,6 +47,49 @@ function runPulumiWhoAmI(): string {
 		cmd: 'pulumi',
 		args: ['whoami'],
 	}).trim()
+}
+
+function resolveProfile(cliProfile: string | undefined): string {
+	const profile =
+		cliProfile ?? process.env.AWS_PROFILE ?? process.env.AWS_DEFAULT_PROFILE
+
+	if (!profile) {
+		throw new Error(
+			'No AWS profile resolved. Pass --profile or set AWS_PROFILE/AWS_DEFAULT_PROFILE.',
+		)
+	}
+
+	return profile
+}
+
+function buildDefaultOrganizationSelection(input: {
+	managementAccountName: string
+	stagingAccountName: string
+	productionAccountName: string
+}): BootstrapOrganizationSelection {
+	return {
+		management: { name: input.managementAccountName },
+		staging: { name: input.stagingAccountName },
+		production: { name: input.productionAccountName },
+	}
+}
+
+function resolveSelectedOrganizationAccount(
+	accounts: AwsAccount[],
+	requested: BootstrapAccountSelection,
+): AwsAccount {
+	if (requested.id) {
+		const account = accountById(accounts, requested.id)
+		if (account.Name !== requested.name) {
+			throw new Error(
+				`Explicit organization account '${requested.name}' expected id ${requested.id}, but AWS returned '${account.Name}'.`,
+			)
+		}
+
+		return account
+	}
+
+	return accountByName(accounts, requested.name)
 }
 
 export async function resolveBootstrapContext(

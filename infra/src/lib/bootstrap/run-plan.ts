@@ -1,7 +1,6 @@
 import * as auto from '@pulumi/pulumi/automation/index.js'
 
-import { execText } from '../process/exec.ts'
-import { withTempKubeconfig } from '../temp/kubeconfig.ts'
+import { execText, withTempKubeconfig } from '../runtime.ts'
 const RETRY_BASE_DELAY_MS = 5_000
 import type { BootstrapPlan, StackDefinition, StackOperation } from './types.ts'
 

@@ -3,7 +3,7 @@ import type {
 	CallerIdentity,
 	IdentityGroup,
 	SsoInstance,
-} from '../aws/types.ts'
+} from '../aws.ts'
 
 export type BootstrapAccountSelection = {
 	name: string
