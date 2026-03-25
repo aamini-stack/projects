@@ -7,3 +7,4 @@ config:
   account-baseline:budgetLimitUsd: "150"
   account-baseline:billingAlertEmail: platform-alerts@example.com
   account-baseline:ciCdPrincipalArn: arn:aws:iam::302481198387:role/PulumiOperatorRole
+  aws:region: us-east-1
