@@ -5,11 +5,10 @@
 	"type": "module",
 	"scripts": {
 		"typecheck": "tsc --noEmit",
-		"bootstrap": "tsx src/bootstrap.ts",
-		"inventory:organization": "tsx src/organization-inventory.ts",
-		"recover:platform:staging": "tsx src/platform-recovery.ts --environment staging",
-		"recover:platform:production": "tsx src/platform-recovery.ts --environment production",
-		"verify:destroy": "tsx src/verify-destroy.ts"
+		"bootstrap": "tsx src/commands/bootstrap.ts",
+		"recover:platform:staging": "tsx src/commands/platform-recovery.ts --environment staging",
+		"recover:platform:production": "tsx src/commands/platform-recovery.ts --environment production",
+		"verify:destroy": "tsx src/commands/verify-destroy.ts"
 	},
 	"dependencies": {
 		"@lbrlabs/pulumi-awscontroltower": "^0.0.2",

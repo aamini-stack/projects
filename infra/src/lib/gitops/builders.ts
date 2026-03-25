@@ -1,29 +1,4 @@
-import {
-	mkdirSync,
-	readFileSync,
-	readdirSync,
-	rmSync,
-	writeFileSync,
-} from 'node:fs'
-import path from 'node:path'
-import { parse } from 'yaml'
-
-export interface AppDefinition {
-	name: string
-	namespace: string
-	image: {
-		repository: string
-		policy: string
-	}
-	stable: {
-		host: string
-		rootHost?: string
-		envFromSecret?: string
-	}
-	preview: {
-		enabled: boolean
-	}
-}
+import type { AppDefinition } from './app-definition.ts'
 
 export function buildBootstrapSyncManifest(): string {
 	return [
@@ -57,19 +32,6 @@ export function buildBootstrapSyncManifest(): string {
 	].join('\n')
 }
 
-export function buildRenderedAppManifests(apps: AppDefinition[]): {
-	chartSource: string
-	applications: string
-	stableApps: string
-	imageAutomation: string
-	previews: string
-} {
-	return buildRenderedAppManifestsWithExtras({
-		apps,
-		appManifests: [],
-	})
-}
-
 export function buildRenderedAppManifestsWithExtras(input: {
 	apps: AppDefinition[]
 	appManifests: string[]
@@ -99,85 +61,13 @@ export function buildRenderedAppManifestsWithExtras(input: {
 	}
 }
 
-export function loadAppDefinitions(appsDir: string): AppDefinition[] {
-	return readdirSync(appsDir)
-		.filter((file) => file.endsWith('.yaml'))
-		.sort()
-		.map(
-			(file) =>
-				parse(readFileSync(path.join(appsDir, file), 'utf8')) as AppDefinition,
-		)
-}
-
-export function renderGitopsBundle(input: {
-	sourceRoot: string
-	outputRoot: string
-	appManifestRoot?: string
-}): void {
-	const appsSource = path.join(input.sourceRoot, 'apps')
-	const apps = loadAppDefinitions(appsSource)
-	const appManifests = loadAppManifestDocuments(
-		input.appManifestRoot ?? input.sourceRoot,
-		apps,
-	)
-	const bootstrapOutput = path.join(input.outputRoot, 'bootstrap')
-	const platformCrdsOutput = path.join(input.outputRoot, 'platform-crds')
-	const platformControllersOutput = path.join(
-		input.outputRoot,
-		'platform-controllers',
-	)
-	const platformConfigOutput = path.join(input.outputRoot, 'platform-config')
-	const appsOutput = path.join(input.outputRoot, 'apps')
-	const renderedApps = buildRenderedAppManifestsWithExtras({
-		apps,
-		appManifests,
-	})
-
-	rmSync(input.outputRoot, { force: true, recursive: true })
-	mkdirSync(bootstrapOutput, { recursive: true })
-	mkdirSync(platformCrdsOutput, { recursive: true })
-	mkdirSync(platformControllersOutput, { recursive: true })
-	mkdirSync(platformConfigOutput, { recursive: true })
-	mkdirSync(appsOutput, { recursive: true })
-	writeFileSync(
-		path.join(platformCrdsOutput, 'kustomization.yaml'),
-		buildKustomizationManifest([
-			'https://github.com/kubernetes-sigs/gateway-api/config/crd?ref=v1.3.0',
-		]),
-	)
-	copyFileSyncInto(
-		path.join(input.sourceRoot, 'platform', 'controllers.yaml'),
-		path.join(platformControllersOutput, 'controllers.yaml'),
-	)
-	writeFileSync(
-		path.join(platformControllersOutput, 'kustomization.yaml'),
-		buildKustomizationManifest(['controllers.yaml']),
-	)
-	copyFileSyncInto(
-		path.join(input.sourceRoot, 'platform', 'networking.yaml'),
-		path.join(platformConfigOutput, 'networking.yaml'),
-	)
-	copyFileSyncInto(
-		path.join(input.sourceRoot, 'platform', 'previews.yaml'),
-		path.join(platformConfigOutput, 'previews.yaml'),
-	)
-	writeFileSync(
-		path.join(platformConfigOutput, 'kustomization.yaml'),
-		buildKustomizationManifest(['networking.yaml', 'previews.yaml']),
-	)
-
-	writeFileSync(
-		path.join(bootstrapOutput, 'sync.yaml'),
-		buildBootstrapSyncManifest(),
-	)
-	writeFileSync(
-		path.join(appsOutput, 'kustomization.yaml'),
-		buildKustomizationManifest(['applications.yaml']),
-	)
-	writeFileSync(
-		path.join(appsOutput, 'applications.yaml'),
-		renderedApps.applications,
-	)
+export function buildKustomizationManifest(resources: string[]): string {
+	return [
+		'apiVersion: kustomize.config.k8s.io/v1beta1',
+		'kind: Kustomization',
+		'resources:',
+		...resources.map((resource) => `  - ${resource}`),
+	].join('\n')
 }
 
 function buildFluxKustomization(input: {
@@ -214,30 +104,6 @@ function buildFluxKustomization(input: {
 				]
 			: []),
 	].join('\n')
-}
-
-function copyFileSyncInto(source: string, destination: string): void {
-	writeFileSync(destination, readFileSync(source, 'utf8'))
-}
-
-function loadAppManifestDocuments(
-	appManifestRoot: string,
-	apps: AppDefinition[],
-): string[] {
-	return apps.flatMap((app) => {
-		const manifestDir = path.join(appManifestRoot, 'apps', app.name, 'k8s')
-		try {
-			return readdirSync(manifestDir)
-				.filter((file) => file.endsWith('.yaml'))
-				.sort()
-				.map((file) =>
-					readFileSync(path.join(manifestDir, file), 'utf8').trim(),
-				)
-				.filter(Boolean)
-		} catch {
-			return []
-		}
-	})
 }
 
 function buildStableAppsManifest(apps: AppDefinition[]): string {
@@ -296,15 +162,6 @@ function buildAppReleaseChartSourceManifest(): string {
 	].join('\n')
 }
 
-function buildKustomizationManifest(resources: string[]): string {
-	return [
-		'apiVersion: kustomize.config.k8s.io/v1beta1',
-		'kind: Kustomization',
-		'resources:',
-		...resources.map((resource) => `  - ${resource}`),
-	].join('\n')
-}
-
 function quoteYamlString(value?: string): string {
 	if (!value) {
 		return "''"
@@ -349,8 +206,6 @@ function buildPreviewManifest(apps: AppDefinition[]): string {
 	return apps
 		.filter((app) => app.preview.enabled)
 		.flatMap((app) => [
-			// TODO: Reconcile orphan preview resources when a PR disappears or its image tags are gone.
-			// pr-134 left HTTPRoutes pointing at missing services, so the preview lifecycle needs a stale-state cleanup path.
 			'apiVersion: fluxcd.controlplane.io/v1',
 			'kind: ResourceSet',
 			'metadata:',

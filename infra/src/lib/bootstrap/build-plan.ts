@@ -2,102 +2,85 @@ import { resolve } from 'node:path'
 
 import { STACK_KEY_ORDER } from './constants.ts'
 import type {
+	BootstrapContext,
+	BootstrapPlan,
 	EnvironmentTarget,
 	ProjectTarget,
 	StackDefinition,
 } from './types.ts'
 
-type BuildStackDefinitionsInput = {
-	infraDir: string
-	managementAccountId: string
-	stagingAccountId: string
-	productionAccountId: string
-	identityAssumeRoleName: string
-	stagingAssumeRoleName: string
-	productionAssumeRoleName: string
-	region: string
-	adminsGroupId: string
-	developersGroupId: string
-	readOnlyGroupId: string
-	requestedAccounts: string
-	organizationImportsConfig: {
-		importedAccounts: string
-		importedPolicies: string
+export function buildBootstrapPlan(context: BootstrapContext): BootstrapPlan {
+	const stackDefs = buildStackDefinitions(context)
+	const selectedStacks = resolveStackSelection(
+		stackDefs,
+		context.projectTarget,
+		context.environmentTarget,
+	)
+
+	if (selectedStacks.length === 0) {
+		throw new Error(
+			`No stacks matched --project ${context.projectTarget} and --environment ${context.environmentTarget}.`,
+		)
 	}
-	billingAlertEmail: string
-	stagingBudgetUsd: string
-	productionBudgetUsd: string
-	ciCdPrincipalArn: string
-	repo: string
-	trustedPrincipalArn: string
-	sharedKubernetesConfig: string
-	sharedPostgresConfig: string
-	cloudflareOriginHostname: string
-	githubToken: string
-	cloudflareApiTokenInput: string | undefined
-	cloudflareEmailInput: string | undefined
-	cloudflareApiKeyInput: string | undefined
-	postgresAdminPassword: string
+
+	const executionPlan =
+		context.command === 'destroy'
+			? sortStacksForDestroy(selectedStacks)
+			: sortStacksForUp(selectedStacks)
+
+	return {
+		context,
+		selectedStacks,
+		executionPlan,
+	}
 }
 
-export function buildStackDefinitions(
-	input: BuildStackDefinitionsInput,
-): StackDefinition[] {
+function buildStackDefinitions(context: BootstrapContext): StackDefinition[] {
 	return [
 		{
 			key: 'organization/global',
 			project: 'organization',
 			environment: 'global',
-			workDir: resolve(input.infraDir, 'src/organization'),
+			workDir: resolve(context.infraDir, 'src/programs/organization'),
 			stack: 'global',
 			config: {
 				'organization:organization': {
 					value: JSON.stringify({
-						region: input.region,
-						managementAccountId: input.managementAccountId,
+						region: context.region,
+						managementAccountId: context.managementAccount.Id,
 					}),
 				},
 				'organization:identity': {
 					value: JSON.stringify({
-						assumeRoleName: input.identityAssumeRoleName,
-						adminsGroupId: input.adminsGroupId,
-						developersGroupId: input.developersGroupId,
-						readOnlyGroupId: input.readOnlyGroupId,
+						assumeRoleName: context.identityAssumeRoleName,
+						adminsGroupId: context.adminsGroup.GroupId,
+						developersGroupId: context.developersGroup.GroupId,
+						readOnlyGroupId: context.readOnlyGroup.GroupId,
 					}),
 				},
 				'organization:accounts': {
 					value: JSON.stringify({
 						staging: {
-							accountId: input.stagingAccountId,
-							assumeRoleName: input.stagingAssumeRoleName,
+							accountId: context.stagingAccount.Id,
+							assumeRoleName: context.stagingAssumeRoleName,
 						},
 						production: {
-							accountId: input.productionAccountId,
-							assumeRoleName: input.productionAssumeRoleName,
+							accountId: context.productionAccount.Id,
+							assumeRoleName: context.productionAssumeRoleName,
 						},
-						requested: JSON.parse(input.requestedAccounts),
+						requested: JSON.parse(context.requestedAccounts),
 					}),
 				},
 				'organization:guardrails': {
 					value: JSON.stringify({
-						billingAlertEmail: input.billingAlertEmail,
-						ciCdPrincipalArn: input.ciCdPrincipalArn,
+						billingAlertEmail: context.billingAlertEmail,
+						ciCdPrincipalArn: context.ciCdPrincipalArn,
 						staging: {
-							budgetLimitUsd: Number(input.stagingBudgetUsd),
+							budgetLimitUsd: Number(context.stagingBudgetUsd),
 						},
 						production: {
-							budgetLimitUsd: Number(input.productionBudgetUsd),
+							budgetLimitUsd: Number(context.productionBudgetUsd),
 						},
-					}),
-				},
-				'organization:imports': {
-					value: JSON.stringify({
-						accounts: JSON.parse(
-							input.organizationImportsConfig.importedAccounts,
-						),
-						policies: JSON.parse(
-							input.organizationImportsConfig.importedPolicies,
-						),
 					}),
 				},
 			},
@@ -106,52 +89,52 @@ export function buildStackDefinitions(
 			key: 'platform/staging',
 			project: 'platform',
 			environment: 'staging',
-			workDir: resolve(input.infraDir, 'src/platform'),
+			workDir: resolve(context.infraDir, 'src/programs/platform'),
 			stack: 'staging',
 			config: buildPlatformConfig({
-				accountId: input.stagingAccountId,
+				accountId: context.stagingAccount.Id,
 				environment: 'staging',
-				assumeRoleName: input.stagingAssumeRoleName,
-				managementAccountId: input.managementAccountId,
-				region: input.region,
+				assumeRoleName: context.stagingAssumeRoleName,
+				managementAccountId: context.managementAccount.Id,
+				region: context.region,
 				workloadBucketName: 'aamini-staging-workloads',
-				ciCdPrincipalArn: input.ciCdPrincipalArn,
-				repo: input.repo,
-				trustedPrincipalArn: input.trustedPrincipalArn,
-				sharedKubernetesConfig: input.sharedKubernetesConfig,
-				sharedPostgresConfig: input.sharedPostgresConfig,
-				cloudflareOriginHostname: input.cloudflareOriginHostname,
-				githubToken: input.githubToken,
-				cloudflareApiTokenInput: input.cloudflareApiTokenInput,
-				cloudflareEmailInput: input.cloudflareEmailInput,
-				cloudflareApiKeyInput: input.cloudflareApiKeyInput,
-				postgresAdminPassword: input.postgresAdminPassword,
+				ciCdPrincipalArn: context.ciCdPrincipalArn,
+				repo: context.repo,
+				trustedPrincipalArn: context.trustedPrincipalArn,
+				sharedKubernetesConfig: context.sharedKubernetesConfig,
+				sharedPostgresConfig: context.sharedPostgresConfig,
+				cloudflareOriginHostname: context.cloudflareOriginHostname,
+				githubToken: context.githubToken,
+				cloudflareApiTokenInput: context.cloudflareApiTokenInput,
+				cloudflareEmailInput: context.cloudflareEmailInput,
+				cloudflareApiKeyInput: context.cloudflareApiKeyInput,
+				postgresAdminPassword: context.postgresAdminPassword,
 			}),
 		},
 		{
 			key: 'platform/production',
 			project: 'platform',
 			environment: 'production',
-			workDir: resolve(input.infraDir, 'src/platform'),
+			workDir: resolve(context.infraDir, 'src/programs/platform'),
 			stack: 'production',
 			config: buildPlatformConfig({
-				accountId: input.productionAccountId,
+				accountId: context.productionAccount.Id,
 				environment: 'production',
-				assumeRoleName: input.productionAssumeRoleName,
-				managementAccountId: input.managementAccountId,
-				region: input.region,
+				assumeRoleName: context.productionAssumeRoleName,
+				managementAccountId: context.managementAccount.Id,
+				region: context.region,
 				workloadBucketName: 'aamini-production-workloads',
-				ciCdPrincipalArn: input.ciCdPrincipalArn,
-				repo: input.repo,
-				trustedPrincipalArn: input.trustedPrincipalArn,
-				sharedKubernetesConfig: input.sharedKubernetesConfig,
-				sharedPostgresConfig: input.sharedPostgresConfig,
-				cloudflareOriginHostname: input.cloudflareOriginHostname,
-				githubToken: input.githubToken,
-				cloudflareApiTokenInput: input.cloudflareApiTokenInput,
-				cloudflareEmailInput: input.cloudflareEmailInput,
-				cloudflareApiKeyInput: input.cloudflareApiKeyInput,
-				postgresAdminPassword: input.postgresAdminPassword,
+				ciCdPrincipalArn: context.ciCdPrincipalArn,
+				repo: context.repo,
+				trustedPrincipalArn: context.trustedPrincipalArn,
+				sharedKubernetesConfig: context.sharedKubernetesConfig,
+				sharedPostgresConfig: context.sharedPostgresConfig,
+				cloudflareOriginHostname: context.cloudflareOriginHostname,
+				githubToken: context.githubToken,
+				cloudflareApiTokenInput: context.cloudflareApiTokenInput,
+				cloudflareEmailInput: context.cloudflareEmailInput,
+				cloudflareApiKeyInput: context.cloudflareApiKeyInput,
+				postgresAdminPassword: context.postgresAdminPassword,
 			}),
 		},
 	]
@@ -218,7 +201,7 @@ function buildPlatformConfig(input: {
 	}
 }
 
-export function resolveStackSelection(
+function resolveStackSelection(
 	stacks: StackDefinition[],
 	projectTarget: ProjectTarget,
 	environmentTarget: EnvironmentTarget,
@@ -239,7 +222,7 @@ export function resolveStackSelection(
 	})
 }
 
-export function sortStacksForUp(stacks: StackDefinition[]): StackDefinition[] {
+function sortStacksForUp(stacks: StackDefinition[]): StackDefinition[] {
 	const order = new Map<string, number>(
 		STACK_KEY_ORDER.map((key, index) => [key, index]),
 	)
@@ -251,9 +234,7 @@ export function sortStacksForUp(stacks: StackDefinition[]): StackDefinition[] {
 	})
 }
 
-export function sortStacksForDestroy(
-	stacks: StackDefinition[],
-): StackDefinition[] {
+function sortStacksForDestroy(stacks: StackDefinition[]): StackDefinition[] {
 	return sortStacksForUp(stacks).reverse()
 }
 

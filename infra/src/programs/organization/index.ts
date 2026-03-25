@@ -3,6 +3,7 @@ import * as aws from '@pulumi/aws'
 import { loadOrganizationConfig } from './src/config.ts'
 import { createAccountGuardrails } from './src/guardrails.ts'
 import { createIdentityCenterAccess } from './src/identity.ts'
+import { importedAccounts, importedPolicies } from './src/imports.ts'
 import { createOrganizationTopology } from './src/topology.ts'
 
 const config = loadOrganizationConfig()
@@ -63,8 +64,8 @@ const topology = createOrganizationTopology({
 	stagingAccountId: accounts.staging.accountId,
 	productionAccountId: accounts.production.accountId,
 	requestedAccounts: accounts.requested,
-	importedAccounts: config.imports.accounts,
-	importedPolicies: config.imports.policies,
+	importedAccounts,
+	importedPolicies,
 })
 
 const stagingGuardrailsProvider = new aws.Provider(

@@ -74,17 +74,11 @@ export type GuardrailsConfig = {
 	production: GuardrailsAccountConfig
 }
 
-export type ImportsConfig = {
-	accounts: ImportedAccount[]
-	policies: ImportedPolicy[]
-}
-
 export type OrganizationStackConfig = {
 	organization: OrganizationConfig
 	identity: IdentityConfig
 	accounts: AccountsConfig
 	guardrails: GuardrailsConfig
-	imports: ImportsConfig
 }
 
 const DEFAULT_REGION = 'us-east-1'
@@ -112,8 +106,6 @@ export function loadOrganizationConfig(): OrganizationStackConfig {
 			production: Partial<Pick<GuardrailsAccountConfig, 'budgetLimitUsd'>>
 		}>
 	>('guardrails')
-	const groupedImports = config.getObject<Partial<ImportsConfig>>('imports')
-
 	const region =
 		groupedOrganization?.region ?? config.get('region') ?? DEFAULT_REGION
 	const managementAccountId =
@@ -145,14 +137,6 @@ export function loadOrganizationConfig(): OrganizationStackConfig {
 	const requestedAccounts =
 		groupedAccounts?.requested ??
 		config.getObject<RequestedAccount[]>('requestedAccounts') ??
-		[]
-	const importedAccounts =
-		groupedImports?.accounts ??
-		config.getObject<ImportedAccount[]>('importedAccounts') ??
-		[]
-	const importedPolicies =
-		groupedImports?.policies ??
-		config.getObject<ImportedPolicy[]>('importedPolicies') ??
 		[]
 	const billingAlertEmail =
 		groupedGuardrails?.billingAlertEmail ?? config.get('billingAlertEmail')
@@ -204,10 +188,6 @@ export function loadOrganizationConfig(): OrganizationStackConfig {
 				assumeRoleName: productionAssumeRoleName,
 				budgetLimitUsd: productionBudgetLimitUsd,
 			},
-		},
-		imports: {
-			accounts: importedAccounts,
-			policies: importedPolicies,
 		},
 	}
 }

@@ -2,376 +2,475 @@
 
 ## Goal
 
-Simplify the infra architecture by collapsing the standalone `account-baseline`
- Pulumi project into the `organization` stack while preserving `platform` as a
- separate deployable unit.
+Reorganize `infra/src` so the Pulumi programs, operator-facing commands, and
+shared support code have clear boundaries.
 
-The refactor should reduce orchestration/configuration slop, make the stack
- boundaries easier to understand, and keep the mental model small:
+The intended result is:
 
-- `organization` owns account setup and governance
-- `platform` owns workload/runtime infrastructure inside workload accounts
-- `guardrails` becomes an internal concept/module, not its own Pulumi project
+- easier to navigate
+- safer to extend
+- less script sprawl at the top level of `infra/src`
+- cleaner orchestration around `bootstrap`, GitOps rendering, and destroy
+  verification
+
+This design does not change the high-level deployable model. The Pulumi program
+structure stays the same, with `organization` and `platform` remaining the two
+program areas.
 
 ## Current State
 
-### Deployable projects
+Today `infra/src` mixes three different concerns at the same level:
 
-- `organization`
-  - AWS Organizations topology
-  - IAM Identity Center permission sets and assignments
-  - account vending for requested accounts
-  - imported account/policy handling
-- `account-baseline`
-  - per-account budgets and billing alarms
-  - SNS alerting topic/subscription
-  - per-account CloudWatch log group for platform events
-  - bootstrap IAM roles like `CICDDeployRole`, `ReadOnlyAuditRole`, and
-    `BreakGlassRole`
-  - exported provider/bootstrap values consumed as account-local setup outputs
-- `platform`
-  - EKS, Flux, ECR, Postgres, Cloudflare
-  - runtime/shared environment infrastructure inside workload accounts
+- Pulumi programs: `organization/`, `platform/`
+- command entrypoints: `bootstrap.ts`, `organization-inventory.ts`,
+  `platform-recovery.ts`, `render.ts`, `verify-destroy.ts`
+- reusable implementation details: `bootstrap/aws.ts`, `bootstrap/execution.ts`,
+  `bootstrap/stacks.ts`, and helpers embedded inside one-off scripts
 
-### Main problems
+This creates a few recurring problems:
 
-- `infra/src/bootstrap.ts` has absorbed too much business logic:
-  discovery, identity/group creation, account selection, config assembly,
-  execution ordering, retries, timeout handling, and destroy cleanup.
-- The `account-baseline` project is too small and too coupled to foundational
-  org/account setup to justify a separate project boundary.
-- The architecture has a reasonable high-level split, but the implementation
-  makes it feel more complex than it really is.
-- Naming is muddy: `account-baseline` is both generic and weaker than the job it
-  actually performs.
+- `infra/src/bootstrap.ts` is too broad and acts as parser, resolver, planner,
+  reporter, and executor
+- `infra/src/render.ts` mixes domain modeling, manifest discovery, YAML
+  generation, and filesystem rendering in one file
+- `infra/src/verify-destroy.ts` duplicates AWS/process/temp-kubeconfig patterns
+  instead of sharing infrastructure utilities
+- top-level `infra/src` feels like both a programs directory and a scripts bin
 
 ## Decision
 
-Adopt a two-project model:
+Adopt a three-zone structure under `infra/src`:
 
-- `organization`
-- `platform`
+- `commands/` for thin executable entrypoints
+- `lib/` for reusable orchestration and infrastructure helpers
+- `programs/` for Pulumi programs
 
-Rename the internal concept currently called `account-baseline` to
-`guardrails` and move it into the `organization` stack as an internal module or
-component.
+Target layout:
+
+```text
+infra/src/
+  commands/
+    bootstrap.ts
+    render-gitops.ts
+    verify-destroy.ts
+    organization-inventory.ts
+    platform-recovery.ts
+  lib/
+    aws/
+    bootstrap/
+    gitops/
+    verification/
+    process/
+    temp/
+  programs/
+    organization/
+    platform/
+```
 
 ## Approaches Considered
 
-### 1. Collapse to two projects (chosen)
+### 1. Commands + domain libs + programs (chosen)
 
-Keep `organization` and `platform`, and move `account-baseline` into
-`organization`.
+Move entrypoints into `commands/`, reusable logic into `lib/`, and Pulumi
+programs into `programs/`.
 
 Pros:
 
-- removes the least valuable deployable boundary
-- reduces execution plan/config file sprawl
-- aligns all foundation-layer concerns into one stack
-- keeps `platform` separate, which still has a distinct lifecycle and blast
-  radius
+- creates clear boundaries without changing the deployment model
+- makes top-level code easier to scan
+- supports incremental refactoring instead of a big-bang rewrite
+- gives `bootstrap`, `render`, and `verify-destroy` a natural home
 
 Cons:
 
-- `organization` becomes broader
-- previews/updates for foundation changes cover more resources at once
+- requires some path churn
+- temporarily adds wrapper files while code is being redistributed
 
-### 2. Keep three projects but refactor orchestration
+### 2. Minimal split without a directory reshape
 
-Retain `account-baseline` as a separate stack and clean up `bootstrap.ts`.
+Keep the current top-level layout and only break large files into smaller ones.
 
 Pros:
 
-- strongest state isolation
 - lowest migration risk
+- smallest path changes
 
 Cons:
 
-- preserves the boundary the user already dislikes
-- likely still feels over-engineered even after cleanup
+- preserves the messy mental model at `infra/src`
+- scripts and Pulumi programs still appear intermingled
 
-### 3. Redesign around account-centric stacks
+### 3. Unified CLI redesign
 
-Use one management/foundation stack plus separate per-account stacks that own
-baseline and platform concerns together.
+Build one root CLI with subcommands for bootstrap, render, verification, and
+inventory.
 
 Pros:
 
-- strong ownership model long term
-- clean account-oriented mental model
+- best long-term command UX
+- centralizes argument parsing and output conventions
 
 Cons:
 
 - larger redesign than needed right now
-- higher migration and operational complexity
+- couples structural cleanup with CLI product design
 
-## Target Architecture
+## Module Boundaries
 
-### Stack boundaries
+### `programs/`
 
-#### `organization`
+`infra/src/programs/organization` and `infra/src/programs/platform` contain only
+Pulumi program code and closely related program-local modules.
 
-Owns foundational control-plane concerns:
+Rules:
 
-- AWS Organizations topology and OU structure
-- SCP import/attachment management
-- IAM Identity Center permission sets and assignments
-- requested account creation/import handling
-- per-account guardrails for staging and production
+- these directories define infrastructure state
+- they should not become general command utilities
+- they can have local helper modules when those helpers are specific to the
+  program
 
-#### `platform`
+### `commands/`
 
-Owns runtime/workload concerns inside selected workload accounts:
+`infra/src/commands/*` contains only operator-facing entrypoints.
 
-- EKS and Flux
-- ECR repositories
-- Postgres
-- Cloudflare and related runtime integration
+Rules:
 
-### Internal capability naming
+- parse args
+- call a library orchestrator
+- print user-facing output
+- set exit code on failure
 
-Rename `account-baseline` to `guardrails`.
+Each command should be thin. It should not contain the majority of the domain
+logic.
 
-This is an internal capability name, not a new deployable stack name.
+### `lib/`
 
-Resulting model:
+`infra/src/lib/*` contains reusable implementation code shared by commands and,
+where appropriate, by programs.
 
-- `organization` stack
-- `guardrails` module inside `organization`
-- `platform` stack
+Rules:
 
-## Code Structure Design
+- no top-level CLI behavior
+- no mixed concerns across parsing, domain logic, and filesystem/process access
+- prefer focused modules with one clear job
 
-### `organization` composition root
+## File Mapping
 
-`infra/src/organization/index.ts` should become a thin composition root that:
+### Pulumi programs
 
-- loads normalized config
-- creates the management-account provider
-- creates per-account assumed-role providers for staging and production
-- composes topology, identity, account vending, and guardrails
-- exports concise stack outputs
+- `infra/src/organization` -> `infra/src/programs/organization`
+- `infra/src/platform` -> `infra/src/programs/platform`
 
-It should not hold all detailed resource declarations inline once the refactor is
- complete.
+The program structure stays the same as it is today; this is a relocation for
+clarity, not a redesign of the program internals.
 
-### New `guardrails` module
+### Commands
 
-Add a reusable module/component under `organization`, for example:
+- `infra/src/bootstrap.ts` -> `infra/src/commands/bootstrap.ts`
+- `infra/src/render.ts` -> `infra/src/commands/render-gitops.ts`
+- `infra/src/verify-destroy.ts` -> `infra/src/commands/verify-destroy.ts`
+- `infra/src/organization-inventory.ts` ->
+  `infra/src/commands/organization-inventory.ts`
+- `infra/src/platform-recovery.ts` -> `infra/src/commands/platform-recovery.ts`
 
-- `infra/src/organization/src/guardrails.ts`
+### Libraries
 
-Possible public API:
+The current `infra/src/bootstrap/*` modules get redistributed according to what
+they actually do:
 
-- `createAccountGuardrails(...)`
-- `createGuardrailsForAccount(...)`
+- bootstrap-specific planning and orchestration stays under
+  `infra/src/lib/bootstrap/*`
+- bootstrap constants stay in `infra/src/lib/bootstrap/constants.ts`
+- bootstrap-specific types stay in `infra/src/lib/bootstrap/types.ts`
+- generic AWS helpers move to `infra/src/lib/aws/*`
+- generic process execution moves to `infra/src/lib/process/*`
+- temp kubeconfig and similar lifecycle helpers move to `infra/src/lib/temp/*`
 
-This module owns the logic currently implemented in
-`infra/src/account-baseline/index.ts`, including:
+## Bootstrap Design
 
-- budget topic/subscription
-- monthly budget
-- billing alarm
-- platform log group
-- bootstrap IAM roles and policy attachments
+`bootstrap` is the largest source of orchestration slop today, so it gets the
+clearest internal pipeline.
 
-The module should be reusable for both staging and production accounts.
+Target files:
 
-Provider model:
+- `infra/src/lib/bootstrap/parse-cli.ts`
+- `infra/src/lib/bootstrap/resolve-context.ts`
+- `infra/src/lib/bootstrap/build-plan.ts`
+- `infra/src/lib/bootstrap/print-plan.ts`
+- `infra/src/lib/bootstrap/run-plan.ts`
 
-- `organization` continues to use a management-account provider for org-wide
-  resources like AWS Organizations and IAM Identity Center
-- `guardrails` creates account-local resources by receiving or constructing an
-  assumed-role AWS provider per managed account
-- the likely interface is a small account descriptor that includes
-  `accountId`, `environment`, `assumeRoleName`, and an account-scoped provider
+### Responsibilities
 
-### Config shape
+#### `parse-cli.ts`
 
-`infra/src/organization/src/config.ts` should evolve from a flat config bag into
- a grouped model with explicit domains such as:
+- parse raw argv
+- validate CLI-level option shapes
+- return a typed `BootstrapOptions`
 
-- `organization`
-- `identity`
-- `accounts`
-- `guardrails`
-- `imports`
+#### `resolve-context.ts`
 
-Pulumi config keys should remain under the `organization:*` stack namespace,
-since `guardrails` is no longer a separate stack.
+- resolve profile, region, org, caller identity
+- load organization inventory
+- resolve selected accounts
+- resolve SSO groups and role assumptions
+- compute defaults and generated values
+- return a typed `BootstrapContext`
 
-### `bootstrap.ts`
+This is the place where imperative discovery belongs.
 
-`infra/src/bootstrap.ts` should be reduced to orchestration concerns only.
+#### `build-plan.ts`
 
-Target responsibilities:
+- convert `BootstrapContext` into stack definitions and execution plan
+- apply project/environment filtering
+- compute stack order for `up` vs `destroy`
 
-- preflight/auth/discovery
-- inventory loading and account selection
-- config assembly for each deployable stack
-- execution planning and invocation
+This is the planning layer, not the execution layer.
 
-Responsibilities that should become smaller helpers/modules over time:
+#### `print-plan.ts`
 
-- AWS discovery helpers
-- organization config builder
-- platform config builder
-- stack execution engine
-- destroy cleanup helpers
+- print preflight details
+- print resolved plan
+- print important warnings around secrets/auth modes/placeholders
 
-The execution plan should shrink to:
+This keeps reporting separate from decision-making.
 
-- `organization/global`
-- `platform/staging`
-- `platform/production`
+#### `run-plan.ts`
 
-## Boundaries and Responsibilities
+- create/select Pulumi stacks
+- set config
+- execute preview/up/destroy flows
+- handle retry/timeout behavior
+- perform targeted cleanup hooks such as Flux pre-destroy cleanup
 
-### What belongs in `organization`
+This keeps the Automation API runtime behavior in one place.
 
-Put a concern in `organization` if it answers one of these questions:
+### Intended command shape
 
-- how is the org structured?
-- who can access which account?
-- what protections/bootstrap roles must every managed account have?
-- how are new accounts created and brought under management?
+`infra/src/commands/bootstrap.ts` should eventually read like this:
 
-### What belongs in `platform`
+```ts
+const options = parseBootstrapCli(process.argv)
+const context = await resolveBootstrapContext(options)
+const plan = buildBootstrapPlan(context)
+printBootstrapPlan(plan)
+await runBootstrapPlan(plan)
+```
 
-Put a concern in `platform` if it answers one of these questions:
+That is the main deslopification target for orchestration.
 
-- what shared runtime services exist in staging/production?
-- how do workloads run or deploy?
-- what cluster/database/repository/DNS primitives exist for apps?
+## Shared AWS / Process / Temp Utilities
 
-This keeps governance/setup separate from runtime operations without over-slicing
- foundational code into extra projects.
+Both `bootstrap` and `verify-destroy` currently need similar imperative support
+code. That support should live in shared libraries instead of being redefined in
+each command.
 
-## Operational Model Changes
+Target areas:
 
-Moving guardrails into `organization/global` changes the operational boundary.
+- `infra/src/lib/aws/cli.ts`
+- `infra/src/lib/aws/organizations.ts`
+- `infra/src/lib/aws/sts.ts`
+- `infra/src/lib/aws/iam.ts`
+- `infra/src/lib/aws/eks.ts`
+- `infra/src/lib/process/exec.ts`
+- `infra/src/lib/temp/kubeconfig.ts`
 
-What changes:
+### Design intent
 
-- there is no longer a standalone `account-baseline/staging` or
-  `account-baseline/production` stack to target directly
-- previews for foundation changes are centralized in `organization/global`
-- destroy risk for foundation resources becomes concentrated in the global stack
+- one consistent `runAwsJson` boundary
+- one consistent command execution boundary
+- one consistent temp kubeconfig lifecycle helper
+- no duplicate logic for assuming roles, listing org accounts, checking IAM
+  roles, or wiring short-lived kubeconfig files
 
-How to keep this manageable:
+These helpers should be small and boring. The point is reuse and consistency,
+not clever abstraction.
 
-- structure guardrails in code as two explicit account units, one for staging and
-  one for production
-- allow bootstrap/config assembly to support narrowing inputs during migration so
-  previews can focus on one account's guardrails at a time when needed
-- treat destroy on `organization/global` as a highly constrained/admin-only
-  operation and avoid using it as a routine cleanup tool
+## GitOps Rendering Design
 
-Rollback expectation:
+`render.ts` should become a command plus a small GitOps rendering library.
 
-- until both account migrations are verified, keep the old account-baseline
-  project files available in git history and preserve a documented state export
-- if one account cannot be migrated safely, stop after the successful account,
-  leave the other on the old stack temporarily, and revise the rollout rather
-  than forcing a broad cutover
+Target files:
+
+- `infra/src/commands/render-gitops.ts`
+- `infra/src/lib/gitops/app-definition.ts`
+- `infra/src/lib/gitops/discover-manifests.ts`
+- `infra/src/lib/gitops/builders.ts`
+- `infra/src/lib/gitops/render-bundle.ts`
+
+### Command naming
+
+The canonical internal name is `render-gitops`, because it is more specific than
+`render`. If script compatibility is important, keep the package-level command
+name stable by either:
+
+- pointing the existing script to `infra/src/commands/render-gitops.ts`, or
+- adding a tiny compatibility wrapper at `infra/src/commands/render.ts`
+
+The implementation should preserve the operator experience even if the file name
+becomes more explicit.
+
+### Responsibilities
+
+#### `app-definition.ts`
+
+- define `AppDefinition`
+- load and parse app YAML files
+
+#### `discover-manifests.ts`
+
+- load `apps/*/k8s/*.yaml`
+- keep manifest discovery separate from rendering
+
+#### `builders.ts`
+
+- build Flux/Kustomization/Helm/ImageAutomation/Preview manifests
+- stay pure where possible: inputs in, documents out
+
+#### `render-bundle.ts`
+
+- create output directories
+- copy static source manifests
+- write rendered files to disk
+
+### YAML strategy
+
+The current implementation hand-builds YAML strings in many places. The first
+split can preserve behavior, but the preferred follow-up cleanup is to move
+toward object-based manifest building and YAML serialization.
+
+Reasoning:
+
+- less brittle escaping
+- fewer ad hoc helpers like manual string quoting
+- easier testability of generated structures
+
+This YAML cleanup is valuable, but it is secondary to the directory and boundary
+refactor.
+
+## Destroy Verification Design
+
+`verify-destroy.ts` should become a thin command on top of reusable checks.
+
+Target files:
+
+- `infra/src/commands/verify-destroy.ts`
+- `infra/src/lib/verification/check-destroy.ts`
+- `infra/src/lib/verification/report.ts`
+
+### Responsibilities
+
+#### `check-destroy.ts`
+
+- assume into target accounts
+- verify EKS cluster absence
+- verify Flux namespace absence when the cluster still exists
+- verify IAM role absence
+- return structured results instead of printing everything inline
+
+#### `report.ts`
+
+- render pass/fail output consistently
+- compute final failure count / failure summary
+
+This keeps verification logic testable and lets command output evolve without
+rewriting the checks themselves.
 
 ## Migration Plan
 
-### Phase 1: prepare the new organization-owned guardrails shape
+### Phase 1: create destination directories
 
-- move the logic from `infra/src/account-baseline/index.ts` into
-  `infra/src/organization/src/guardrails.ts`
-- keep resource names stable where possible
-- instantiate guardrails for staging and production from
-  `infra/src/organization/index.ts`
-- ensure guardrails use per-account assumed-role providers inside the
-  `organization/global` program
+- add `infra/src/commands`
+- add `infra/src/lib`
+- add `infra/src/programs`
 
-### Phase 2: migrate staging baseline state into `organization/global`
+### Phase 2: move Pulumi programs
 
-- target the staging account guardrails first
-- import or state-move existing staging baseline resources from
-  `account-baseline/staging` into `organization/global`
-- preview until the migration is effectively no-op for the already-existing AWS
-  resources
-- verify no unintended replacement of budgets, SNS topics, log groups, or IAM
-  roles
+- move `infra/src/organization` to `infra/src/programs/organization`
+- move `infra/src/platform` to `infra/src/programs/platform`
+- audit and update all path consumers to point at `programs/...`
 
-### Phase 3: migrate production baseline state into `organization/global`
+Known consumers include:
 
-- repeat the same process for `account-baseline/production`
-- only continue once production also previews cleanly
+- bootstrap stack workdirs
+- `platform-recovery`
+- package scripts
+- docs and any tests or fixtures that reference `src/organization` or
+  `src/platform`
 
-### Phase 4: simplify orchestration
+This should happen early because it establishes the new mental model.
 
-- remove `account-baseline` from the bootstrap execution plan
-- remove account-baseline-specific config assembly in favor of organization-owned
-  guardrails inputs
-- reduce stack definitions from five logical entries to three
+### Phase 3: add thin command wrappers
 
-### Phase 5: remove old project shell
+- create new `commands/*` entrypoints
+- keep CLI behavior stable
+- update `infra/package.json` scripts to point at the new command paths
 
-- delete `infra/src/account-baseline/Pulumi.yaml`
-- delete `infra/src/account-baseline/Pulumi.*.yaml`
-- delete now-unused references in scripts/docs
+The goal is for users to keep running the same package scripts even though the
+internal layout changes.
 
-Do this only after state migration and preview verification are clean.
+### Phase 4: split bootstrap internals
 
-## State Migration Strategy
+- move parser/context/planning/reporting/execution concerns into
+  `infra/src/lib/bootstrap/*`
+- keep behavior stable while shrinking `commands/bootstrap.ts`
 
-This refactor should preserve existing AWS resources rather than recreate them.
+### Phase 5: split render and verification internals
 
-Preferred strategy:
+- extract GitOps rendering logic into `infra/src/lib/gitops/*`
+- extract destroy verification checks/reporting into
+  `infra/src/lib/verification/*`
 
-- keep resource logical names stable where possible, but do not assume aliases
-  alone solve the migration
-- explicitly handle cross-stack migration from `account-baseline/staging` and
-  `account-baseline/production` into `organization/global` with imports and/or
-  state moves
-- migrate one account at a time so preview noise and rollback scope stay small
-- verify previews do not show destructive replacement of budgets, SNS topics, or
-  IAM roles unless explicitly intended
-- capture state backups/exports before each migration step
+### Phase 6: deduplicate shared imperative helpers
 
-Non-goal:
+- consolidate AWS/process/temp helpers under `infra/src/lib/*`
+- remove duplicated one-off implementations from command modules
 
-- delete and recreate foundational resources just to make the code look cleaner
+### Phase 7: optional quality pass
 
-## Error Handling Design
+- improve YAML generation strategy in GitOps rendering
+- add focused tests around pure builders/checks
 
-- `bootstrap.ts` should fail early on auth, discovery, and inventory problems
-- stack code should assume validated inputs and focus on declarative resource
-  composition
-- live AWS discovery inside stack programs should be minimized unless the stack
-  truly owns that lookup
+## Error Handling
 
-This keeps imperative orchestration logic out of the stack definitions as much as
- possible.
+The design favors errors surfacing at the correct layer.
 
-## Verification Strategy
+- `commands/*` should convert thrown errors into concise operator-facing output
+- `lib/bootstrap/resolve-context.ts` should fail fast on auth/discovery/input
+  issues
+- `lib/bootstrap/run-plan.ts` should own retry/timeout behavior for stack
+  operations
+- verification and rendering libraries should return structured results where
+  that improves reporting clarity
 
-After implementation:
+This keeps imperative failures close to the boundary where they occur.
 
-- run `pnpm typecheck` in `infra`
-- run targeted Pulumi previews for `organization/global`
-- run targeted Pulumi previews for `platform/staging` and optionally
-  `platform/production`
-- confirm guardrail resources are retained and not unexpectedly replaced
-- confirm bootstrap now operates over only the two intended projects
+## Testing Strategy
+
+After implementation, validate the refactor with:
+
+- `pnpm --dir infra typecheck`
+- smoke tests for command argument parsing and script entrypoints
+- one `bootstrap --check` run to verify orchestration wiring
+- one GitOps render smoke test to verify output shape remains correct
+- focused tests or snapshots for pure manifest builders where practical
+- destroy verification smoke tests where credentials/environment are available
 
 ## Success Criteria
 
-- infra has two deployable Pulumi projects instead of three
-- `account-baseline` no longer exists as a standalone project
-- `guardrails` exists as an internal organization capability/module
-- `organization` clearly owns foundational setup/governance concerns
-- `platform` clearly owns runtime/workload concerns
-- `bootstrap.ts` is materially easier to understand and reason about
-- previews show a safe migration path for existing resources
+- `infra/src` clearly separates programs, commands, and shared libraries
+- `organization` and `platform` live under `infra/src/programs/`
+- top-level orchestration commands live under `infra/src/commands/`
+- `bootstrap` is easier to read because parsing, context resolution, planning,
+  reporting, and execution are split
+- `render-gitops` and `verify-destroy` stop feeling like random standalone
+  scripts
+- shared AWS/process/temp logic exists in one place instead of being duplicated
+- `infra/package.json` scripts still provide a clean operator experience
 
 ## Out of Scope
 
-- redesigning the system into fully account-centric stacks
-- changing the `platform` boundary beyond what is necessary for the new inputs
-- unrelated refactors to runtime infrastructure resources
-- broad stylistic rewrites that do not improve the selected architecture
+- redesigning the Pulumi program model itself
+- merging commands into a single unified CLI in this pass
+- unrelated refactors inside the `organization` or `platform` resource graphs
+- changing deployment semantics beyond what is required for path updates and
+  internal code movement

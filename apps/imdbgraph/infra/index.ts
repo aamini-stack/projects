@@ -1,4 +1,4 @@
-import { AppDatabase } from '@aamini/infra/src/platform/src/components'
+import { AppDatabase } from '@aamini/infra/src/programs/platform/src/components'
 import * as pulumi from '@pulumi/pulumi'
 
 interface PostgresStackOutput {

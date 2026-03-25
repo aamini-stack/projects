@@ -1,7 +1,8 @@
-import { execFileSync } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
 import { dirname, resolve } from 'node:path'
 import { parseArgs } from 'node:util'
+
+import { execPassthrough } from '../lib/process/exec.ts'
 
 type Environment = 'staging' | 'production'
 
@@ -11,15 +12,6 @@ function parseEnvironment(value: string | undefined): Environment {
 	}
 
 	throw new Error('Pass --environment with one of: staging, production')
-}
-
-function run(command: string, args: string[], cwd: string): void {
-	execFileSync(command, args, {
-		cwd,
-		encoding: 'utf8',
-		stdio: 'inherit',
-		env: process.env,
-	})
 }
 
 function main(): void {
@@ -42,17 +34,18 @@ function main(): void {
 	}
 
 	const currentFilePath = fileURLToPath(import.meta.url)
-	const infraDir = resolve(dirname(currentFilePath), '..')
-	const platformDir = resolve(infraDir, 'src/platform')
+	const infraDir = resolve(dirname(currentFilePath), '..', '..')
+	const platformDir = resolve(infraDir, 'src/programs/platform')
 	const org = values.org ?? process.env.PULUMI_ORG
 
 	if (org) {
 		console.log(`Cancelling in-flight update for ${org}/${environment}...`)
-		run(
-			'pulumi',
-			['cancel', '--yes', '--stack', `${org}/${environment}`],
-			platformDir,
-		)
+		execPassthrough({
+			cmd: 'pulumi',
+			args: ['cancel', '--yes', '--stack', `${org}/${environment}`],
+			cwd: platformDir,
+			env: process.env,
+		})
 	} else {
 		console.log('PULUMI_ORG/--org not set, skipping pulumi cancel pre-step.')
 	}
@@ -86,7 +79,12 @@ function main(): void {
 	}
 
 	console.log(`Running targeted platform destroy for ${environment}...`)
-	run('pnpm', bootstrapArgs, infraDir)
+	execPassthrough({
+		cmd: 'pnpm',
+		args: bootstrapArgs,
+		cwd: infraDir,
+		env: process.env,
+	})
 }
 
 try {

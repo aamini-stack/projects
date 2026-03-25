@@ -1,21 +1,14 @@
-import { execFileSync } from 'node:child_process'
-import { mkdtempSync, rmSync, writeFileSync } from 'node:fs'
-import { tmpdir } from 'node:os'
-import { resolve } from 'node:path'
-
 import * as auto from '@pulumi/pulumi/automation/index.js'
 
+import { execText } from '../process/exec.ts'
+import { withTempKubeconfig } from '../temp/kubeconfig.ts'
 import { RETRY_BASE_DELAY_MS } from './constants.ts'
-import type { StackDefinition, StackOperation } from './types.ts'
+import type { BootstrapPlan, StackDefinition, StackOperation } from './types.ts'
 
 function toConfigMap(
 	config: Record<string, { value: string; secret?: boolean }>,
 ): auto.ConfigMap {
 	return Object.fromEntries(Object.entries(config))
-}
-
-export function includesPlatform(stacks: StackDefinition[]): boolean {
-	return stacks.some((stack) => stack.project === 'platform')
 }
 
 function getWorkspaceEnv(
@@ -29,15 +22,6 @@ function getWorkspaceEnv(
 		AWS_DEFAULT_REGION: region,
 		...(dockerConfigDir ? { DOCKER_CONFIG: dockerConfigDir } : {}),
 	}
-}
-
-export function createEphemeralDockerConfig(): string {
-	const dockerConfigDir = mkdtempSync(
-		resolve(tmpdir(), 'bootstrap-docker-config-'),
-	)
-	const dockerConfigPath = resolve(dockerConfigDir, 'config.json')
-	writeFileSync(dockerConfigPath, JSON.stringify({ auths: {} }))
-	return dockerConfigDir
 }
 
 function nowIso(): string {
@@ -70,11 +54,9 @@ function isStackNotFoundError(error: unknown): boolean {
 }
 
 function isTimeoutError(error: unknown): boolean {
-	if (!(error instanceof Error)) {
-		return false
-	}
-
-	return error.message.toLowerCase().includes('timed out')
+	return (
+		error instanceof Error && error.message.toLowerCase().includes('timed out')
+	)
 }
 
 function isTransientStackError(error: unknown): boolean {
@@ -166,25 +148,13 @@ async function runStackOperationWithRetry(
 	}
 }
 
-function runCommand(
-	command: string,
-	args: string[],
-	env: NodeJS.ProcessEnv,
-): void {
-	execFileSync(command, args, {
-		encoding: 'utf8',
-		env,
-		stdio: ['ignore', 'pipe', 'pipe'],
-	})
-}
-
 function runBestEffortCommand(
 	command: string,
 	args: string[],
 	env: NodeJS.ProcessEnv,
 ): void {
 	try {
-		runCommand(command, args, env)
+		execText({ cmd: command, args, env })
 	} catch (error: unknown) {
 		const message = error instanceof Error ? error.message : String(error)
 		console.log(
@@ -208,19 +178,15 @@ async function runFluxPreDestroyCleanup(
 		return
 	}
 
-	const tempDir = mkdtempSync(resolve(tmpdir(), 'flux-cleanup-'))
-	const kubeconfigPath = resolve(tempDir, 'kubeconfig')
-	writeFileSync(kubeconfigPath, kubeconfigOutput, { mode: 0o600 })
+	withTempKubeconfig(kubeconfigOutput, (kubeconfigPath) => {
+		const commandEnv: NodeJS.ProcessEnv = {
+			...process.env,
+			AWS_PROFILE: profile,
+			AWS_REGION: region,
+			AWS_DEFAULT_REGION: region,
+			KUBECONFIG: kubeconfigPath,
+		}
 
-	const commandEnv: NodeJS.ProcessEnv = {
-		...process.env,
-		AWS_PROFILE: profile,
-		AWS_REGION: region,
-		AWS_DEFAULT_REGION: region,
-		KUBECONFIG: kubeconfigPath,
-	}
-
-	try {
 		console.log(
 			`- flux pre-destroy: uninstalling Flux resources for ${stackDef.key}`,
 		)
@@ -252,12 +218,14 @@ async function runFluxPreDestroyCleanup(
 			],
 			commandEnv,
 		)
-	} finally {
-		rmSync(tempDir, { force: true, recursive: true })
-	}
+	})
 }
 
-export async function upOrPreviewStack(
+function includesPlatform(stacks: StackDefinition[]): boolean {
+	return stacks.some((stack) => stack.project === 'platform')
+}
+
+async function upOrPreviewStack(
 	org: string,
 	stackDef: StackDefinition,
 	previewOnly: boolean,
@@ -310,7 +278,7 @@ export async function upOrPreviewStack(
 	)
 }
 
-export async function destroyOrPreviewDestroyStack(
+async function destroyOrPreviewDestroyStack(
 	org: string,
 	stackDef: StackDefinition,
 	previewOnly: boolean,
@@ -378,9 +346,97 @@ export async function destroyOrPreviewDestroyStack(
 		},
 	)
 
-	if (removeStacks) {
-		console.log(`Destroyed and removed stack ${stackDef.key}`)
-	} else {
-		console.log(`Destroyed resources for stack ${stackDef.key}`)
+	console.log(
+		removeStacks
+			? `Destroyed and removed stack ${stackDef.key}`
+			: `Destroyed resources for stack ${stackDef.key}`,
+	)
+}
+
+export async function runBootstrapPlan(plan: BootstrapPlan): Promise<void> {
+	const { context, executionPlan } = plan
+
+	if (context.dryRun) {
+		if (context.check) {
+			console.log(
+				'Check mode enabled. Preflight completed; no Pulumi operations were run.',
+			)
+			return
+		}
+
+		console.log('Dry run enabled. Skipping all Pulumi operations.')
+		return
 	}
+
+	let dockerConfigDir: string | undefined
+	if (includesPlatform(executionPlan)) {
+		const { mkdtempSync, writeFileSync, rmSync } = await import('node:fs')
+		const { tmpdir } = await import('node:os')
+		const { resolve } = await import('node:path')
+		dockerConfigDir = mkdtempSync(resolve(tmpdir(), 'bootstrap-docker-config-'))
+		writeFileSync(
+			resolve(dockerConfigDir, 'config.json'),
+			JSON.stringify({ auths: {} }),
+		)
+
+		try {
+			for (const stack of executionPlan) {
+				if (context.command === 'destroy') {
+					await destroyOrPreviewDestroyStack(
+						context.org,
+						stack,
+						context.preview,
+						context.removeStacks,
+						context.profile,
+						context.region,
+						context.stackOperationTimeoutMs,
+						context.stackOperationRetries,
+						dockerConfigDir,
+					)
+					continue
+				}
+
+				await upOrPreviewStack(
+					context.org,
+					stack,
+					context.preview,
+					context.profile,
+					context.region,
+					context.stackOperationTimeoutMs,
+					context.stackOperationRetries,
+					dockerConfigDir,
+				)
+			}
+		} finally {
+			rmSync(dockerConfigDir, { force: true, recursive: true })
+		}
+	} else {
+		for (const stack of executionPlan) {
+			if (context.command === 'destroy') {
+				await destroyOrPreviewDestroyStack(
+					context.org,
+					stack,
+					context.preview,
+					context.removeStacks,
+					context.profile,
+					context.region,
+					context.stackOperationTimeoutMs,
+					context.stackOperationRetries,
+				)
+				continue
+			}
+
+			await upOrPreviewStack(
+				context.org,
+				stack,
+				context.preview,
+				context.profile,
+				context.region,
+				context.stackOperationTimeoutMs,
+				context.stackOperationRetries,
+			)
+		}
+	}
+
+	console.log('Bootstrap complete.')
 }
