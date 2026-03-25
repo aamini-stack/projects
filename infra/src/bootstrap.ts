@@ -13,14 +13,25 @@ type AwsAccount = {
 	Status: string
 }
 
-type AwsOrganizationsRoot = {
-	Id: string
-	Name: string
-}
-
-type AwsOrganizationsParent = {
-	Id: string
-	Type: string
+type OrganizationInventory = {
+	rootId?: string
+	organizationalUnits?: Array<{
+		id: string
+		name: string
+		parentId: string
+		path?: string
+	}>
+	accounts?: Array<{
+		id: string
+		name: string
+		email?: string
+		parentId?: string
+	}>
+	policies?: Array<{
+		id: string
+		name: string
+		targetIds?: string[]
+	}>
 }
 
 type CallerIdentity = {
@@ -46,22 +57,15 @@ type AwsIamGetRoleResponse = {
 	}
 }
 
-type BootstrapTopologyAccount = {
+type BootstrapAccountSelection = {
 	name: string
 	id?: string
-	currentParentId?: string
 }
 
-type BootstrapTopology = {
-	management: BootstrapTopologyAccount
-	staging: BootstrapTopologyAccount
-	production: BootstrapTopologyAccount
-	organizationalUnits: {
-		staging: string
-		core: string
-		workloads: string
-		production: string
-	}
+type BootstrapOrganizationSelection = {
+	management: BootstrapAccountSelection
+	staging: BootstrapAccountSelection
+	production: BootstrapAccountSelection
 }
 
 type StackProject = 'organization' | 'account-baseline' | 'platform'
@@ -453,27 +457,6 @@ function listIdentityStoreGroups(
 	return groups
 }
 
-function listOrganizationRoots(profile: string): AwsOrganizationsRoot[] {
-	const response = runAwsJson<{ Roots: AwsOrganizationsRoot[] }>(
-		['organizations', 'list-roots'],
-		profile,
-	)
-
-	return response.Roots
-}
-
-function getParentIdForChild(
-	childId: string,
-	profile: string,
-): string | undefined {
-	const response = runAwsJson<{ Parents: AwsOrganizationsParent[] }>(
-		['organizations', 'list-parents', '--child-id', childId],
-		profile,
-	)
-
-	return response.Parents[0]?.Id
-}
-
 function parseJsonOption<T>(
 	value: string | undefined,
 	label: string,
@@ -490,15 +473,15 @@ function parseJsonOption<T>(
 	}
 }
 
-function resolveTopologyAccount(
+function resolveSelectedOrganizationAccount(
 	accounts: AwsAccount[],
-	requested: BootstrapTopologyAccount,
+	requested: BootstrapAccountSelection,
 ): AwsAccount {
 	if (requested.id) {
 		const account = findActiveAccountById(accounts, requested.id)
 		if (account.Name !== requested.name) {
 			throw new Error(
-				`Explicit topology account '${requested.name}' expected id ${requested.id}, but AWS returned '${account.Name}'.`,
+				`Explicit organization account '${requested.name}' expected id ${requested.id}, but AWS returned '${account.Name}'.`,
 			)
 		}
 
@@ -508,101 +491,113 @@ function resolveTopologyAccount(
 	return findActiveAccountByName(accounts, requested.name)
 }
 
-function buildDefaultTopology(input: {
+function buildDefaultOrganizationSelection(input: {
 	managementAccountName: string
 	stagingAccountName: string
 	productionAccountName: string
-}): BootstrapTopology {
+}): BootstrapOrganizationSelection {
 	return {
 		management: { name: input.managementAccountName },
 		staging: { name: input.stagingAccountName },
 		production: { name: input.productionAccountName },
-		organizationalUnits: {
-			core: 'Core',
-			workloads: 'Workloads',
-			production: 'Production',
-			staging: 'Staging',
-		},
 	}
 }
 
-function buildOrganizationInventoryConfig(input: {
+function loadOrganizationInventory(input: {
 	infraDir: string
 	profile: string
 	region: string
-}): string {
-	return execFileSync(
-		'pnpm',
-		[
-			'--silent',
-			'inventory:organization',
-			'--profile',
-			input.profile,
-			'--region',
-			input.region,
-		],
-		{
-			cwd: input.infraDir,
-			encoding: 'utf8',
-			stdio: ['ignore', 'pipe', 'pipe'],
-			env: process.env,
-		},
-	).trim()
+}): OrganizationInventory {
+	return JSON.parse(
+		execFileSync(
+			'pnpm',
+			[
+				'--silent',
+				'inventory:organization',
+				'--profile',
+				input.profile,
+				'--region',
+				input.region,
+			],
+			{
+				cwd: input.infraDir,
+				encoding: 'utf8',
+				stdio: ['ignore', 'pipe', 'pipe'],
+				env: process.env,
+			},
+		).trim(),
+	) as OrganizationInventory
 }
 
-function buildOrganizationTopologyConfig(input: {
-	topology: BootstrapTopology
+function buildOrganizationImportsConfig(input: {
+	inventory: OrganizationInventory
+	managementAccountId: string
 	stagingAccountId: string
 	productionAccountId: string
-	requestedAccounts: string
-}): string {
-	const requestedAccounts = JSON.parse(input.requestedAccounts) as unknown[]
+}): { importedAccounts: string; importedPolicies: string } {
+	const ouKeyById = new Map<string, string>()
+	for (const unit of input.inventory.organizationalUnits ?? []) {
+		const path = unit.path ?? unit.name
+		if (path === 'Security') {
+			ouKeyById.set(unit.id, 'security')
+		} else if (path === 'Workloads') {
+			ouKeyById.set(unit.id, 'workloads')
+		} else if (path === 'Workloads/Staging') {
+			ouKeyById.set(unit.id, 'workloads-staging')
+		} else if (path === 'Workloads/Production') {
+			ouKeyById.set(unit.id, 'workloads-production')
+		}
+	}
 
-	return JSON.stringify({
-		organizationalUnits: [
-			{
-				key: 'core',
-				name: input.topology.organizationalUnits.core,
-				parentKey: 'root',
-			},
-			{
-				key: 'workloads',
-				name: input.topology.organizationalUnits.workloads,
-				parentKey: 'root',
-			},
-			{
-				key: 'workloads-staging',
-				name: input.topology.organizationalUnits.staging,
-				parentKey: 'workloads',
-			},
-			{
-				key: 'workloads-production',
-				name: input.topology.organizationalUnits.production,
-				parentKey: 'workloads',
-			},
-		],
-		existingAccounts: [
-			{
-				key: 'staging',
-				name: input.topology.staging.name,
-				id: input.stagingAccountId,
-				desiredParentKey: 'workloads-staging',
-				currentParentId: input.topology.staging.currentParentId,
-				adoptToDesiredParent: false,
-			},
-			{
-				key: 'production',
-				name: input.topology.production.name,
-				id: input.productionAccountId,
-				desiredParentKey: 'workloads-production',
-				currentParentId: input.topology.production.currentParentId,
-				adoptToDesiredParent: false,
-			},
-		],
-		requestedAccounts,
-		serviceControlPolicies: [],
-		controlTowerGovernedOuKeys: ['workloads-staging', 'workloads-production'],
-	})
+	const importedAccounts = (input.inventory.accounts ?? [])
+		.filter(
+			(account) =>
+				account.id !== input.managementAccountId &&
+				account.id !== input.stagingAccountId &&
+				account.id !== input.productionAccountId,
+		)
+		.map((account) => {
+			const parentKey = ouKeyById.get(account.parentId ?? '')
+			if (!parentKey) {
+				throw new Error(
+					`Imported account '${account.name}' has unsupported parent '${account.parentId ?? 'unknown'}'.`,
+				)
+			}
+
+			return {
+				key: toConfigKey(`${account.name}-${account.id.slice(-4)}`),
+				name: account.name,
+				id: account.id,
+				parentKey,
+			}
+		})
+
+	const importedPolicies = (input.inventory.policies ?? [])
+		.filter((policy) => policy.name !== 'FullAWSAccess')
+		.map((policy) => {
+			const attachToKey = (policy.targetIds ?? [])
+				.map((targetId) => ouKeyById.get(targetId))
+				.find((targetKey): targetKey is string => Boolean(targetKey))
+
+			return {
+				key: toConfigKey(`${policy.name}-${policy.id}`),
+				name: policy.name,
+				id: policy.id,
+				...(attachToKey ? { attachToKey } : {}),
+			}
+		})
+
+	return {
+		importedAccounts: JSON.stringify(importedAccounts),
+		importedPolicies: JSON.stringify(importedPolicies),
+	}
+}
+
+function toConfigKey(value: string): string {
+	return value
+		.toLowerCase()
+		.replace(/[^a-z0-9]+/g, '-')
+		.replace(/^-+|-+$/g, '')
 }
 
 function getOrCreateIdentityGroup(
@@ -1248,11 +1243,12 @@ async function main(): Promise<void> {
 		values['developers-group-name'] ?? DEFAULT_DEVELOPERS_GROUP_NAME
 	const readonlyGroupName =
 		values['readonly-group-name'] ?? DEFAULT_READONLY_GROUP_NAME
-	const providedTopology = parseJsonOption<BootstrapTopology>(
-		values['organization-topology'],
-		'--organization-topology',
-	)
-	const providedInventory = parseJsonOption<Record<string, unknown>>(
+	const providedOrganizationSelection =
+		parseJsonOption<BootstrapOrganizationSelection>(
+			values['organization-topology'],
+			'--organization-topology',
+		)
+	const providedInventory = parseJsonOption<OrganizationInventory>(
 		values['organization-inventory'],
 		'--organization-inventory',
 	)
@@ -1274,29 +1270,29 @@ async function main(): Promise<void> {
 	}
 
 	const accounts = listOrganizationAccounts(profile)
-	const desiredTopology =
-		providedTopology ??
-		buildDefaultTopology({
+	const organizationSelection =
+		providedOrganizationSelection ??
+		buildDefaultOrganizationSelection({
 			managementAccountName,
 			stagingAccountName,
 			productionAccountName,
 		})
-	const managementAccount = resolveTopologyAccount(
+	const managementAccount = resolveSelectedOrganizationAccount(
 		accounts,
-		desiredTopology.management,
+		organizationSelection.management,
 	)
 	if (caller.Account !== managementAccount.Id) {
 		throw new Error(
 			`Resolved caller account (${caller.Account}) does not match management account '${managementAccount.Name}' (${managementAccount.Id}). Re-authenticate with the management account profile or override --management-account-name.`,
 		)
 	}
-	const stagingAccount = resolveTopologyAccount(
+	const stagingAccount = resolveSelectedOrganizationAccount(
 		accounts,
-		desiredTopology.staging,
+		organizationSelection.staging,
 	)
-	const productionAccount = resolveTopologyAccount(
+	const productionAccount = resolveSelectedOrganizationAccount(
 		accounts,
-		desiredTopology.production,
+		organizationSelection.production,
 	)
 
 	const instances = runAwsJson<{ Instances: SsoInstance[] }>(
@@ -1344,48 +1340,19 @@ async function main(): Promise<void> {
 	const managementAccountId = managementAccount.Id
 	const stagingAccountId = stagingAccount.Id
 	const productionAccountId = productionAccount.Id
-	const roots = listOrganizationRoots(profile)
-	const root = roots[0]
-	if (!root) {
-		throw new Error(
-			'No AWS Organizations root found in the current organization.',
-		)
-	}
-	const stagingParentId =
-		desiredTopology.staging.currentParentId ??
-		getParentIdForChild(stagingAccountId, profile)
-	const productionParentId =
-		desiredTopology.production.currentParentId ??
-		getParentIdForChild(productionAccountId, profile)
-	const organizationTopologyConfig = buildOrganizationTopologyConfig({
-		topology: {
-			...desiredTopology,
-			management: {
-				...desiredTopology.management,
-				id: managementAccountId,
-			},
-			staging: {
-				...desiredTopology.staging,
-				id: stagingAccountId,
-				...(stagingParentId ? { currentParentId: stagingParentId } : {}),
-			},
-			production: {
-				...desiredTopology.production,
-				id: productionAccountId,
-				...(productionParentId ? { currentParentId: productionParentId } : {}),
-			},
-		},
+	const organizationInventory =
+		providedInventory ??
+		loadOrganizationInventory({
+			infraDir,
+			profile,
+			region,
+		})
+	const organizationImportsConfig = buildOrganizationImportsConfig({
+		inventory: organizationInventory,
+		managementAccountId,
 		stagingAccountId,
 		productionAccountId,
-		requestedAccounts,
 	})
-	const organizationInventoryConfig = providedInventory
-		? JSON.stringify(providedInventory)
-		: buildOrganizationInventoryConfig({
-				infraDir,
-				profile,
-				region,
-			})
 	const stagingAssumeRoleName = resolveAssumeRoleNameForAccount(
 		stagingAccountId,
 		stagingAccount.Name,
@@ -1454,8 +1421,12 @@ async function main(): Promise<void> {
 				'organization:developersGroupId': { value: developersGroup.GroupId },
 				'organization:readOnlyGroupId': { value: readOnlyGroup.GroupId },
 				'organization:requestedAccounts': { value: requestedAccounts },
-				'organization:topology': { value: organizationTopologyConfig },
-				'organization:inventory': { value: organizationInventoryConfig },
+				'organization:importedAccounts': {
+					value: organizationImportsConfig.importedAccounts,
+				},
+				'organization:importedPolicies': {
+					value: organizationImportsConfig.importedPolicies,
+				},
 			},
 		},
 		{

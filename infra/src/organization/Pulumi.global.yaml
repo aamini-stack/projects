@@ -7,4 +7,21 @@ config:
   organization:adminsGroupId: b4b86408-e0d1-7003-ad26-1c66785c7f91
   organization:developersGroupId: 8478f4c8-f011-706d-b199-73c569c9766f
   organization:readOnlyGroupId: 9468c488-8091-7075-395f-8dcc10388575
+  organization:importedAccounts:
+    - key: cloudtrail-administrator-1691
+      name: CloudTrail administrator
+      id: '639098881691'
+      parentKey: security
+    - key: aggregator-account-4837
+      name: Aggregator account
+      id: '765151564837'
+      parentKey: security
+  organization:importedPolicies:
+    - key: aws-guardrails-veasrx-p-c8zu0d23
+      name: aws-guardrails-VEaSrx
+      id: p-c8zu0d23
+      attachToKey: security
+    - key: aws-guardrails-kxupwq-p-quyz3iax
+      name: aws-guardrails-kXuPWq
+      id: p-quyz3iax
   organization:requestedAccounts: '[]'
