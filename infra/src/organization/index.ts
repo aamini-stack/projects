@@ -193,7 +193,7 @@ export const organization = {
 
 export { identity }
 
-export const topologyOutputs = {
+export const organizationStructure = {
 	organizationalUnits: {
 		security: describeOrganizationalUnit(securityOu, rootId, 'Security'),
 		workloads: describeOrganizationalUnit(workloadsOu, rootId, 'Workloads'),
@@ -208,30 +208,31 @@ export const topologyOutputs = {
 			'Workloads/Production',
 		),
 	},
-	organizationalUnitIds: {
-		security: securityOu.id,
-		workloads: workloadsOu.id,
-		'workloads-staging': workloadsStagingOu.id,
-		'workloads-production': workloadsProductionOu.id,
-	},
-	organizationalUnitPaths: {
-		security: pulumi.output('Security'),
-		workloads: pulumi.output('Workloads'),
-		'workloads-staging': pulumi.output('Workloads/Staging'),
-		'workloads-production': pulumi.output('Workloads/Production'),
-	},
-	accountIds: {
-		management: pulumi.output(managementAccountId),
-		staging: stagingAccount.id,
-		production: productionAccount.id,
+	accounts: {
+		management: pulumi.output({
+			id: managementAccountId,
+			parentId: rootId,
+		}),
+		staging: pulumi.output({
+			id: stagingAccount.id,
+			parentId: rootId,
+		}),
+		production: pulumi.output({
+			id: productionAccount.id,
+			parentId: rootId,
+		}),
 		...Object.fromEntries(
 			Object.entries(managedImportedAccounts).map(([key, account]) => [
 				key,
-				account.id,
+				pulumi.output({
+					id: account.id,
+					parentKey: importedAccounts.find((candidate) => candidate.key === key)
+						?.parentKey,
+				}),
 			]),
 		),
 	},
-	controlTowerGovernedOuKeys: ['workloads-staging', 'workloads-production'],
+	controlTowerManagedOus: ['workloads-staging', 'workloads-production'],
 }
 
 export const serviceControlPolicies = {
