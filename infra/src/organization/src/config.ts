@@ -70,6 +70,7 @@ export type GuardrailsAccountConfig = ManagedAccountConfig & {
 export type GuardrailsConfig = {
 	billingAlertEmail: string | undefined
 	ciCdPrincipalArn: string
+	deploymentPrincipalArns: string[]
 	staging: GuardrailsAccountConfig
 	production: GuardrailsAccountConfig
 }
@@ -102,6 +103,7 @@ export function loadOrganizationConfig(): OrganizationStackConfig {
 		Partial<{
 			billingAlertEmail?: string
 			ciCdPrincipalArn: string
+			deploymentPrincipalArns: string[]
 			staging: Partial<Pick<GuardrailsAccountConfig, 'budgetLimitUsd'>>
 			production: Partial<Pick<GuardrailsAccountConfig, 'budgetLimitUsd'>>
 		}>
@@ -142,6 +144,10 @@ export function loadOrganizationConfig(): OrganizationStackConfig {
 		groupedGuardrails?.billingAlertEmail ?? config.get('billingAlertEmail')
 	const ciCdPrincipalArn =
 		groupedGuardrails?.ciCdPrincipalArn ?? config.require('ciCdPrincipalArn')
+	const deploymentPrincipalArns =
+		groupedGuardrails?.deploymentPrincipalArns ??
+		config.getObject<string[]>('deploymentPrincipalArns') ??
+		[]
 	const stagingBudgetLimitUsd =
 		groupedGuardrails?.staging?.budgetLimitUsd ??
 		config.getNumber('stagingBudgetLimitUsd') ??
@@ -176,6 +182,7 @@ export function loadOrganizationConfig(): OrganizationStackConfig {
 		guardrails: {
 			billingAlertEmail,
 			ciCdPrincipalArn,
+			deploymentPrincipalArns,
 			staging: {
 				environment: 'staging',
 				accountId: stagingAccountId,

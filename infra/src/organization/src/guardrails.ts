@@ -7,6 +7,7 @@ type AccountGuardrailsInput = {
 	provider: aws.Provider
 	managementAccountId: string
 	ciCdPrincipalArn: string
+	deploymentPrincipalArns: string[]
 	billingAlertEmail: string | undefined
 	account: GuardrailsAccountConfig
 }
@@ -20,6 +21,10 @@ export function createAccountGuardrails(input: AccountGuardrailsInput) {
 
 	const resourceName = (name: string) =>
 		`guardrails-${input.account.environment}-${name}`
+
+	const deploymentPrincipalArns = Array.from(
+		new Set([input.ciCdPrincipalArn, ...input.deploymentPrincipalArns]),
+	)
 
 	const budgetTopic = new aws.sns.Topic(
 		resourceName('budget-alerts'),
@@ -100,6 +105,41 @@ export function createAccountGuardrails(input: AccountGuardrailsInput) {
 			okActions: [budgetTopic.arn],
 		},
 		{ aliases: [alias('billing-alarm')], provider: input.provider },
+	)
+
+	const pulumiDeployRole = new aws.iam.Role(
+		resourceName('pulumi-deploy-role'),
+		{
+			name: 'PulumiDeployRole',
+			assumeRolePolicy: JSON.stringify({
+				Version: '2012-10-17',
+				Statement: [
+					{
+						Action: 'sts:AssumeRole',
+						Effect: 'Allow',
+						Principal: {
+							AWS:
+								deploymentPrincipalArns.length === 1
+									? deploymentPrincipalArns[0]
+									: deploymentPrincipalArns,
+						},
+					},
+				],
+			}),
+		},
+		{ aliases: [alias('pulumi-deploy-role')], provider: input.provider },
+	)
+
+	new aws.iam.RolePolicyAttachment(
+		resourceName('pulumi-deploy-admin-access'),
+		{
+			role: pulumiDeployRole.name,
+			policyArn: 'arn:aws:iam::aws:policy/AdministratorAccess',
+		},
+		{
+			aliases: [alias('pulumi-deploy-admin-access')],
+			provider: input.provider,
+		},
 	)
 
 	const ciCdDeployRole = new aws.iam.Role(
@@ -198,9 +238,11 @@ export function createAccountGuardrails(input: AccountGuardrailsInput) {
 		providerRoleArn: pulumi.output(
 			`arn:aws:iam::${input.account.accountId}:role/${input.account.assumeRoleName}`,
 		),
+		pulumiDeployRoleArn: pulumiDeployRole.arn,
 		budgetAlertsTopicArn: budgetTopic.arn,
 		platformLogGroupName: platformLogGroup.name,
 		bootstrapRoles: {
+			pulumiDeployRoleArn: pulumiDeployRole.arn,
 			cicdDeployRoleArn: ciCdDeployRole.arn,
 			readOnlyAuditRoleArn: readOnlyAuditRole.arn,
 			breakGlassRoleArn: breakGlassRole.arn,

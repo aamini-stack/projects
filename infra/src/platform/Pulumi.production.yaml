@@ -4,6 +4,7 @@ config:
   platform:managementAccountId: "302481198387"
   platform:assumeRoleName: OrganizationAccountAccessRole
   platform:region: us-east-1
+  platform:organizationStack: organization/global
   platform:workloadBucketName: aamini-production-workloads
   platform:ciCdPrincipalArn: arn:aws:iam::302481198387:role/PulumiOperatorRole
   aws:region: us-east-1

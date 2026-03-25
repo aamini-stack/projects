@@ -3,7 +3,9 @@ import * as eks from '@pulumi/eks'
 import * as k8s from '@pulumi/kubernetes'
 import * as pulumi from '@pulumi/pulumi'
 
-export const createCluster = () => {
+import { workloadInvokeOptions, workloadProvider } from './provider.ts'
+
+export const createCluster = (awsProvider: aws.Provider) => {
 	type KubernetesConfig = {
 		version: string
 		instanceType: string
@@ -30,46 +32,57 @@ export const createCluster = () => {
 	const kubernetesConfig = config.requireObject<KubernetesConfig>('kubernetes')
 
 	const resolvedVpcId = pulumi.output(
-		aws.ec2.getVpcOutput({ default: true }).id,
+		aws.ec2.getVpcOutput({ default: true }, workloadInvokeOptions).id,
 	)
 	const resolvedSubnetIds = pulumi.output(
-		aws.ec2.getSubnetsOutput({
-			filters: [
-				{ name: 'vpc-id', values: [resolvedVpcId] },
-				{
-					name: 'availability-zone',
-					values: [
-						'us-east-1a',
-						'us-east-1b',
-						'us-east-1c',
-						'us-east-1d',
-						'us-east-1f',
-					],
-				},
-			],
-		}).ids,
+		aws.ec2.getSubnetsOutput(
+			{
+				filters: [
+					{ name: 'vpc-id', values: [resolvedVpcId] },
+					{
+						name: 'availability-zone',
+						values: [
+							'us-east-1a',
+							'us-east-1b',
+							'us-east-1c',
+							'us-east-1d',
+							'us-east-1f',
+						],
+					},
+				],
+			},
+			workloadInvokeOptions,
+		).ids,
 	)
 
-	const cluster = new eks.Cluster('kubernetes', {
-		name: `aamini-${stack}`,
-		version: kubernetesConfig.version,
-		vpcId: resolvedVpcId,
-		subnetIds: resolvedSubnetIds,
-		instanceType: kubernetesConfig.instanceType,
-		desiredCapacity: kubernetesConfig.desiredCapacity,
-		minSize: kubernetesConfig.minSize,
-		maxSize: kubernetesConfig.maxSize,
-		endpointPublicAccess: true,
-		endpointPrivateAccess: false,
-		corednsAddonOptions: {
-			enabled: false,
+	const cluster = new eks.Cluster(
+		'kubernetes',
+		{
+			name: `aamini-${stack}`,
+			version: kubernetesConfig.version,
+			vpcId: resolvedVpcId,
+			subnetIds: resolvedSubnetIds,
+			instanceType: kubernetesConfig.instanceType,
+			desiredCapacity: kubernetesConfig.desiredCapacity,
+			minSize: kubernetesConfig.minSize,
+			maxSize: kubernetesConfig.maxSize,
+			endpointPublicAccess: true,
+			endpointPrivateAccess: false,
+			corednsAddonOptions: {
+				enabled: false,
+			},
+			createOidcProvider: true,
+			tags: {
+				ManagedBy: 'pulumi',
+				Environment: stack,
+			},
 		},
-		createOidcProvider: true,
-		tags: {
-			ManagedBy: 'pulumi',
-			Environment: stack,
+		{
+			providers: {
+				aws: awsProvider,
+			},
 		},
-	})
+	)
 
 	new aws.eks.Addon(
 		'kubernetes-coredns',
@@ -79,7 +92,7 @@ export const createCluster = () => {
 			resolveConflictsOnCreate: 'OVERWRITE',
 			resolveConflictsOnUpdate: 'OVERWRITE',
 		},
-		{ dependsOn: [cluster] },
+		{ dependsOn: [cluster], provider: awsProvider },
 	)
 
 	const kubeconfigValue = cluster.kubeconfig.apply((value) =>
@@ -134,6 +147,7 @@ export const createCluster = () => {
 
 export const createFlux = (
 	cluster: ReturnType<typeof createCluster>,
+	awsProvider: aws.Provider,
 ): {
 	fluxNamespace: k8s.core.v1.Namespace
 	fluxOperator: k8s.helm.v3.Release
@@ -243,10 +257,14 @@ export const createFlux = (
 			}),
 		)
 
-	const fluxEcrReadRole = new aws.iam.Role('flux-ecr-read-role', {
-		name: 'flux-ecr-readonly',
-		assumeRolePolicy: fluxEcrAssumeRolePolicy,
-	})
+	const fluxEcrReadRole = new aws.iam.Role(
+		'flux-ecr-read-role',
+		{
+			name: 'flux-ecr-readonly',
+			assumeRolePolicy: fluxEcrAssumeRolePolicy,
+		},
+		{ provider: awsProvider },
+	)
 
 	const fluxReadableRepositories = [
 		'projects-gitops',
@@ -256,34 +274,38 @@ export const createFlux = (
 	] as const
 	const fluxReadableRepositoryArns = fluxReadableRepositories.map(
 		(name) =>
-			pulumi.interpolate`arn:aws:ecr:${aws.getRegionOutput().name}:${aws.getCallerIdentityOutput().accountId}:repository/${name}`,
+			pulumi.interpolate`arn:aws:ecr:${aws.getRegionOutput({}, workloadInvokeOptions).name}:${aws.getCallerIdentityOutput({}, workloadInvokeOptions).accountId}:repository/${name}`,
 	)
 
-	new aws.iam.RolePolicy('flux-ecr-read-policy', {
-		role: fluxEcrReadRole.id,
-		policy: pulumi.jsonStringify({
-			Version: '2012-10-17',
-			Statement: [
-				{
-					Effect: 'Allow',
-					Action: ['ecr:GetAuthorizationToken'],
-					Resource: '*',
-				},
-				{
-					Effect: 'Allow',
-					Action: [
-						'ecr:BatchCheckLayerAvailability',
-						'ecr:BatchGetImage',
-						'ecr:DescribeImages',
-						'ecr:DescribeRepositories',
-						'ecr:GetDownloadUrlForLayer',
-						'ecr:ListImages',
-					],
-					Resource: fluxReadableRepositoryArns,
-				},
-			],
-		}),
-	})
+	new aws.iam.RolePolicy(
+		'flux-ecr-read-policy',
+		{
+			role: fluxEcrReadRole.id,
+			policy: pulumi.jsonStringify({
+				Version: '2012-10-17',
+				Statement: [
+					{
+						Effect: 'Allow',
+						Action: ['ecr:GetAuthorizationToken'],
+						Resource: '*',
+					},
+					{
+						Effect: 'Allow',
+						Action: [
+							'ecr:BatchCheckLayerAvailability',
+							'ecr:BatchGetImage',
+							'ecr:DescribeImages',
+							'ecr:DescribeRepositories',
+							'ecr:GetDownloadUrlForLayer',
+							'ecr:ListImages',
+						],
+						Resource: fluxReadableRepositoryArns,
+					},
+				],
+			}),
+		},
+		{ provider: awsProvider },
+	)
 
 	new k8s.core.v1.ServiceAccountPatch(
 		'flux-source-controller-irsa',
@@ -336,8 +358,8 @@ export const createFlux = (
 	}
 }
 
-const clusterOutputs = createCluster()
-const fluxOutputs = createFlux(clusterOutputs)
+const clusterOutputs = createCluster(workloadProvider)
+const fluxOutputs = createFlux(clusterOutputs, workloadProvider)
 
 export const kubeconfig = clusterOutputs.kubeconfig
 export const clusterArn = clusterOutputs.clusterArn

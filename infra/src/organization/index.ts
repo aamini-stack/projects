@@ -115,6 +115,7 @@ const accountGuardrails = {
 		provider: stagingGuardrailsProvider,
 		managementAccountId: organizationConfig.managementAccountId,
 		ciCdPrincipalArn: guardrails.ciCdPrincipalArn,
+		deploymentPrincipalArns: guardrails.deploymentPrincipalArns,
 		billingAlertEmail: guardrails.billingAlertEmail,
 		account: guardrails.staging,
 	}),
@@ -122,9 +123,26 @@ const accountGuardrails = {
 		provider: productionGuardrailsProvider,
 		managementAccountId: organizationConfig.managementAccountId,
 		ciCdPrincipalArn: guardrails.ciCdPrincipalArn,
+		deploymentPrincipalArns: guardrails.deploymentPrincipalArns,
 		billingAlertEmail: guardrails.billingAlertEmail,
 		account: guardrails.production,
 	}),
+}
+
+export const workloadAccess = {
+	region: organizationConfig.region,
+	staging: {
+		accountId: accounts.staging.accountId,
+		assumeRoleName: guardrails.staging.assumeRoleName,
+		organizationAccessRoleArn: accountGuardrails.staging.providerRoleArn,
+		pulumiDeployRoleArn: accountGuardrails.staging.pulumiDeployRoleArn,
+	},
+	production: {
+		accountId: accounts.production.accountId,
+		assumeRoleName: guardrails.production.assumeRoleName,
+		organizationAccessRoleArn: accountGuardrails.production.providerRoleArn,
+		pulumiDeployRoleArn: accountGuardrails.production.pulumiDeployRoleArn,
+	},
 }
 
 export const organization = topology.organization

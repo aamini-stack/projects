@@ -2,6 +2,8 @@ import * as aws from '@pulumi/aws'
 import * as pulumi from '@pulumi/pulumi'
 import * as random from '@pulumi/random'
 
+import { workloadInvokeOptions, workloadProvider } from './provider.ts'
+
 type PostgresConfig = {
 	instanceClass: string
 	allocatedStorage: number
@@ -32,61 +34,79 @@ const finalSnapshotSuffix = new random.RandomString(
 	},
 )
 
-const defaultVpc = aws.ec2.getVpcOutput({ default: true })
-const defaultSubnets = aws.ec2.getSubnetsOutput({
-	filters: [{ name: 'vpc-id', values: [defaultVpc.id] }],
-})
-
-const securityGroup = new aws.ec2.SecurityGroup('postgres-sg', {
-	description: 'PostgreSQL access for platform workloads',
-	vpcId: defaultVpc.id,
-	ingress: [
-		{
-			protocol: 'tcp',
-			fromPort: port,
-			toPort: port,
-			cidrBlocks: postgresConfig.allowedCidrs,
-		},
-	],
-	egress: [
-		{
-			protocol: '-1',
-			fromPort: 0,
-			toPort: 0,
-			cidrBlocks: ['0.0.0.0/0'],
-		},
-	],
-})
-
-const subnetGroup = new aws.rds.SubnetGroup('postgres-subnet-group', {
-	subnetIds: defaultSubnets.ids,
-	tags: {
-		Name: `${identifier}-subnets`,
+const defaultVpc = aws.ec2.getVpcOutput(
+	{ default: true },
+	workloadInvokeOptions,
+)
+const defaultSubnets = aws.ec2.getSubnetsOutput(
+	{
+		filters: [{ name: 'vpc-id', values: [defaultVpc.id] }],
 	},
-})
+	workloadInvokeOptions,
+)
 
-const instance = new aws.rds.Instance('postgres', {
-	identifier,
-	engine: 'postgres',
-	engineVersion: postgresConfig.engineVersion,
-	instanceClass: postgresConfig.instanceClass,
-	allocatedStorage: postgresConfig.allocatedStorage,
-	maxAllocatedStorage: postgresConfig.maxAllocatedStorage,
-	backupRetentionPeriod: postgresConfig.backupRetentionDays,
-	username: adminUser,
-	password: adminPassword,
-	port,
-	dbSubnetGroupName: subnetGroup.name,
-	vpcSecurityGroupIds: [securityGroup.id],
-	publiclyAccessible: postgresConfig.publiclyAccessible,
-	deletionProtection: postgresConfig.deletionProtection,
-	multiAz: postgresConfig.multiAz,
-	storageType: postgresConfig.storageType,
-	storageEncrypted: true,
-	skipFinalSnapshot: false,
-	finalSnapshotIdentifier: pulumi.interpolate`${identifier}-snapshot-${finalSnapshotSuffix.result}`,
-	applyImmediately: true,
-})
+const securityGroup = new aws.ec2.SecurityGroup(
+	'postgres-sg',
+	{
+		description: 'PostgreSQL access for platform workloads',
+		vpcId: defaultVpc.id,
+		ingress: [
+			{
+				protocol: 'tcp',
+				fromPort: port,
+				toPort: port,
+				cidrBlocks: postgresConfig.allowedCidrs,
+			},
+		],
+		egress: [
+			{
+				protocol: '-1',
+				fromPort: 0,
+				toPort: 0,
+				cidrBlocks: ['0.0.0.0/0'],
+			},
+		],
+	},
+	{ provider: workloadProvider },
+)
+
+const subnetGroup = new aws.rds.SubnetGroup(
+	'postgres-subnet-group',
+	{
+		subnetIds: defaultSubnets.ids,
+		tags: {
+			Name: `${identifier}-subnets`,
+		},
+	},
+	{ provider: workloadProvider },
+)
+
+const instance = new aws.rds.Instance(
+	'postgres',
+	{
+		identifier,
+		engine: 'postgres',
+		engineVersion: postgresConfig.engineVersion,
+		instanceClass: postgresConfig.instanceClass,
+		allocatedStorage: postgresConfig.allocatedStorage,
+		maxAllocatedStorage: postgresConfig.maxAllocatedStorage,
+		backupRetentionPeriod: postgresConfig.backupRetentionDays,
+		username: adminUser,
+		password: adminPassword,
+		port,
+		dbSubnetGroupName: subnetGroup.name,
+		vpcSecurityGroupIds: [securityGroup.id],
+		publiclyAccessible: postgresConfig.publiclyAccessible,
+		deletionProtection: postgresConfig.deletionProtection,
+		multiAz: postgresConfig.multiAz,
+		storageType: postgresConfig.storageType,
+		storageEncrypted: true,
+		skipFinalSnapshot: false,
+		finalSnapshotIdentifier: pulumi.interpolate`${identifier}-snapshot-${finalSnapshotSuffix.result}`,
+		applyImmediately: true,
+	},
+	{ provider: workloadProvider },
+)
 
 export const postgres = {
 	host: instance.address,
