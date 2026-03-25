@@ -7,4 +7,11 @@
 
 vim AI:
 
-- avante, supermaven, cmp-ai, opencode.nvim, copilot
+- avante (17.6k)
+- supermaven (1.4k)
+- cmp-ai (272)
+- opencode.nvim (3k)
+- copilot (11.5k)
+- codecompanion (6.3k)
+- neocodium/windsurf (444/5.1k)
+- minuet-ai.nvim (1.1k)
