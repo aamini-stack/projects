@@ -1,6 +1,10 @@
 import { resolve } from 'node:path'
 
-import { STACK_KEY_ORDER } from './constants.ts'
+const STACK_KEY_ORDER = [
+	'organization/global',
+	'platform/staging',
+	'platform/production',
+] as const
 import type {
 	BootstrapContext,
 	BootstrapPlan,

@@ -1,4 +1,4 @@
-import { DEFAULT_REGION } from '../bootstrap/constants.ts'
+const DEFAULT_REGION = 'us-east-1'
 import { execJson, execPassthrough } from '../process/exec.ts'
 import type { AssumedRoleCredentials } from './types.ts'
 

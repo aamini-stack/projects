@@ -12,25 +12,6 @@ import {
 } from '../aws/sts.ts'
 import { execText } from '../process/exec.ts'
 import type { BootstrapContext, BootstrapOptions } from './types.ts'
-import {
-	DEFAULT_ADMINS_GROUP_NAME,
-	DEFAULT_ASSUME_ROLE_NAME,
-	DEFAULT_BILLING_ALERT_EMAIL,
-	DEFAULT_CICD_ROLE_NAME,
-	DEFAULT_CLOUDFLARE_ORIGIN_HOSTNAME,
-	DEFAULT_DEVELOPERS_GROUP_NAME,
-	DEFAULT_MANAGEMENT_ACCOUNT_NAME,
-	DEFAULT_PRODUCTION_ACCOUNT_NAME,
-	DEFAULT_PRODUCTION_BUDGET_USD,
-	DEFAULT_READONLY_GROUP_NAME,
-	DEFAULT_REGION,
-	DEFAULT_REPO,
-	DEFAULT_REQUESTED_ACCOUNTS,
-	DEFAULT_STACK_OPERATION_RETRIES,
-	DEFAULT_STACK_OPERATION_TIMEOUT_MINUTES,
-	DEFAULT_STAGING_ACCOUNT_NAME,
-	DEFAULT_STAGING_BUDGET_USD,
-} from './constants.ts'
 
 import {
 	getOrCreateIdentityGroup,
@@ -42,6 +23,24 @@ import {
 	resolveProfile,
 	resolveSelectedOrganizationAccount,
 } from './support/discovery.ts'
+
+const DEFAULT_REGION = 'us-east-1'
+const DEFAULT_ASSUME_ROLE_NAME = 'AWSControlTowerExecution'
+const DEFAULT_CICD_ROLE_NAME = 'PulumiOperatorRole'
+const DEFAULT_REQUESTED_ACCOUNTS = '[]'
+const DEFAULT_MANAGEMENT_ACCOUNT_NAME = 'aamini-root'
+const DEFAULT_STAGING_ACCOUNT_NAME = 'aamini-staging'
+const DEFAULT_PRODUCTION_ACCOUNT_NAME = 'aamini-production'
+const DEFAULT_ADMINS_GROUP_NAME = 'Admins'
+const DEFAULT_DEVELOPERS_GROUP_NAME = 'Developers'
+const DEFAULT_READONLY_GROUP_NAME = 'ReadOnly'
+const DEFAULT_REPO = 'aamini-stack/projects'
+const DEFAULT_BILLING_ALERT_EMAIL = 'platform-alerts@example.com'
+const DEFAULT_STAGING_BUDGET_USD = '150'
+const DEFAULT_PRODUCTION_BUDGET_USD = '500'
+const DEFAULT_CLOUDFLARE_ORIGIN_HOSTNAME = 'origin.ariaamini.com'
+const DEFAULT_STACK_OPERATION_TIMEOUT_MINUTES = 45
+const DEFAULT_STACK_OPERATION_RETRIES = 2
 
 function runPulumiWhoAmI(): string {
 	return execText({
