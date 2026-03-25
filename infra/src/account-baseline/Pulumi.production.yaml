@@ -1,9 +1,0 @@
-config:
-  account-baseline:accountId: "324793866424"
-  account-baseline:environment: production
-  account-baseline:managementAccountId: "302481198387"
-  account-baseline:assumeRoleName: OrganizationAccountAccessRole
-  account-baseline:region: us-east-1
-  account-baseline:budgetLimitUsd: "500"
-  account-baseline:billingAlertEmail: platform-alerts@example.com
-  account-baseline:ciCdPrincipalArn: arn:aws:iam::302481198387:role/PulumiOperatorRole

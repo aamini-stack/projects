@@ -1,3 +1,0 @@
-name: account-baseline
-runtime: nodejs
-description: Per-environment account baseline and guardrails
