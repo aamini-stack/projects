@@ -18,8 +18,6 @@ config:
   organization:guardrails:
     billingAlertEmail: platform-alerts@example.com
     ciCdPrincipalArn: arn:aws:iam::302481198387:role/PulumiOperatorRole
-    deploymentPrincipalArns:
-      - arn:aws:iam::302481198387:role/AWSReservedSSO_AWSAdministratorAccess_20d64ce49a7ea5f7
     staging:
       budgetLimitUsd: 150
     production:
