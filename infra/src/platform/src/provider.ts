@@ -18,6 +18,7 @@ type WorkloadAccess = {
 
 const config = new pulumi.Config()
 const stack = pulumi.getStack()
+const organization = pulumi.getOrganization()
 
 if (stack !== 'staging' && stack !== 'production') {
 	throw new Error(
@@ -27,7 +28,8 @@ if (stack !== 'staging' && stack !== 'production') {
 
 const environment = stack satisfies WorkloadEnvironment
 const organizationStackName =
-	config.get('organizationStack') ?? 'organization/global'
+	config.get('organizationStack') ??
+	(organization ? `${organization}/organization/global` : 'organization/global')
 const organizationStack = new pulumi.StackReference(organizationStackName)
 
 const workloadAccess = organizationStack

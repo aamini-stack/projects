@@ -164,7 +164,7 @@ export const createFlux = (
 				name: 'flux-system',
 			},
 		},
-		{ provider: k8sProvider },
+		{ provider: k8sProvider, deletedWith: cluster.cluster },
 	)
 
 	const fluxOperator = new k8s.helm.v3.Release(
@@ -180,6 +180,7 @@ export const createFlux = (
 		{
 			provider: k8sProvider,
 			dependsOn: [fluxNamespace],
+			deletedWith: cluster.cluster,
 			customTimeouts: { delete: '10m' },
 		},
 	)
@@ -227,6 +228,7 @@ export const createFlux = (
 		{
 			provider: k8sProvider,
 			dependsOn: [fluxNamespace, fluxOperator],
+			deletedWith: cluster.cluster,
 			customTimeouts: { delete: '20m' },
 		},
 	)
@@ -318,7 +320,11 @@ export const createFlux = (
 				},
 			},
 		},
-		{ provider: k8sProvider, dependsOn: [fluxInstance] },
+		{
+			provider: k8sProvider,
+			dependsOn: [fluxInstance],
+			deletedWith: cluster.cluster,
+		},
 	)
 
 	new k8s.core.v1.ServiceAccountPatch(
@@ -332,7 +338,11 @@ export const createFlux = (
 				},
 			},
 		},
-		{ provider: k8sProvider, dependsOn: [fluxInstance] },
+		{
+			provider: k8sProvider,
+			dependsOn: [fluxInstance],
+			deletedWith: cluster.cluster,
+		},
 	)
 
 	new k8s.core.v1.Secret(
@@ -347,7 +357,11 @@ export const createFlux = (
 				password: githubConfig.requireSecret('token'),
 			},
 		},
-		{ provider: k8sProvider, dependsOn: [fluxNamespace] },
+		{
+			provider: k8sProvider,
+			dependsOn: [fluxNamespace],
+			deletedWith: cluster.cluster,
+		},
 	)
 
 	return {
