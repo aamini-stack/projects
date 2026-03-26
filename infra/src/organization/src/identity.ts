@@ -5,17 +5,33 @@ export function createIdentityCenterAccess(input: {
 	provider: aws.Provider
 	identityCenterArn: pulumi.Output<string>
 	adminsGroupId: string
+	operatorsGroupId?: string
 	developersGroupId: string
 	readOnlyGroupId: string
+	managementAccountId: string
 	stagingAccountId: string
 	productionAccountId: string
-	managementAccountId: string
 }) {
-	const adminsPermissionSet = new aws.ssoadmin.PermissionSet(
-		'admins-permission-set',
+	const operatorPrincipalId = input.operatorsGroupId ?? input.adminsGroupId
+
+	const adminsPermissionSetArn = aws.ssoadmin.getPermissionSetOutput(
 		{
-			name: 'Admins',
-			description: 'Broad admin access for trusted operators',
+			instanceArn: input.identityCenterArn,
+			name: 'AWSAdministratorAccess',
+		},
+		{ provider: input.provider },
+	).arn
+
+	const adminsPermissionSet = {
+		arn: adminsPermissionSetArn,
+		name: pulumi.output('AWSAdministratorAccess'),
+	}
+
+	const operatorsPermissionSet = new aws.ssoadmin.PermissionSet(
+		'operators-permission-set',
+		{
+			name: 'OperatorAccess',
+			description: 'Production deployment access from the management account',
 			instanceArn: input.identityCenterArn,
 			sessionDuration: 'PT4H',
 		},
@@ -23,11 +39,32 @@ export function createIdentityCenterAccess(input: {
 	)
 
 	new aws.ssoadmin.ManagedPolicyAttachment(
-		'admins-admin-access',
+		'operators-power-user-access',
 		{
 			instanceArn: input.identityCenterArn,
-			permissionSetArn: adminsPermissionSet.arn,
-			managedPolicyArn: 'arn:aws:iam::aws:policy/AdministratorAccess',
+			permissionSetArn: operatorsPermissionSet.arn,
+			managedPolicyArn: 'arn:aws:iam::aws:policy/PowerUserAccess',
+		},
+		{ provider: input.provider },
+	)
+
+	new aws.ssoadmin.PermissionSetInlinePolicy(
+		'operators-inline-policy',
+		{
+			instanceArn: input.identityCenterArn,
+			permissionSetArn: operatorsPermissionSet.arn,
+			inlinePolicy: pulumi.jsonStringify({
+				Version: '2012-10-17',
+				Statement: [
+					{
+						Effect: 'Allow',
+						Action: ['sts:AssumeRole'],
+						Resource: [
+							`arn:aws:iam::${input.productionAccountId}:role/PulumiDeployRole`,
+						],
+					},
+				],
+			}),
 		},
 		{ provider: input.provider },
 	)
@@ -35,8 +72,8 @@ export function createIdentityCenterAccess(input: {
 	const developersPermissionSet = new aws.ssoadmin.PermissionSet(
 		'developers-permission-set',
 		{
-			name: 'Developers',
-			description: 'Power user access in staging environments',
+			name: 'DeveloperAccess',
+			description: 'Staging deployment access from the management account',
 			instanceArn: input.identityCenterArn,
 			sessionDuration: 'PT4H',
 		},
@@ -53,10 +90,31 @@ export function createIdentityCenterAccess(input: {
 		{ provider: input.provider },
 	)
 
+	new aws.ssoadmin.PermissionSetInlinePolicy(
+		'developers-inline-policy',
+		{
+			instanceArn: input.identityCenterArn,
+			permissionSetArn: developersPermissionSet.arn,
+			inlinePolicy: pulumi.jsonStringify({
+				Version: '2012-10-17',
+				Statement: [
+					{
+						Effect: 'Allow',
+						Action: ['sts:AssumeRole'],
+						Resource: [
+							`arn:aws:iam::${input.stagingAccountId}:role/PulumiDeployRole`,
+						],
+					},
+				],
+			}),
+		},
+		{ provider: input.provider },
+	)
+
 	const readOnlyPermissionSet = new aws.ssoadmin.PermissionSet(
 		'read-only-permission-set',
 		{
-			name: 'ReadOnly',
+			name: 'ReadOnlyAccess',
 			description: 'Read-only access for production by default',
 			instanceArn: input.identityCenterArn,
 			sessionDuration: 'PT2H',
@@ -70,6 +128,19 @@ export function createIdentityCenterAccess(input: {
 			instanceArn: input.identityCenterArn,
 			permissionSetArn: readOnlyPermissionSet.arn,
 			managedPolicyArn: 'arn:aws:iam::aws:policy/ReadOnlyAccess',
+		},
+		{ provider: input.provider },
+	)
+
+	new aws.ssoadmin.AccountAssignment(
+		'admins-management-assignment',
+		{
+			instanceArn: input.identityCenterArn,
+			permissionSetArn: adminsPermissionSet.arn,
+			principalId: input.adminsGroupId,
+			principalType: 'GROUP',
+			targetId: input.managementAccountId,
+			targetType: 'AWS_ACCOUNT',
 		},
 		{ provider: input.provider },
 	)
@@ -101,13 +172,26 @@ export function createIdentityCenterAccess(input: {
 	)
 
 	new aws.ssoadmin.AccountAssignment(
-		'developers-staging-assignment',
+		'operators-management-assignment',
+		{
+			instanceArn: input.identityCenterArn,
+			permissionSetArn: operatorsPermissionSet.arn,
+			principalId: operatorPrincipalId,
+			principalType: 'GROUP',
+			targetId: input.managementAccountId,
+			targetType: 'AWS_ACCOUNT',
+		},
+		{ provider: input.provider },
+	)
+
+	new aws.ssoadmin.AccountAssignment(
+		'developers-management-assignment',
 		{
 			instanceArn: input.identityCenterArn,
 			permissionSetArn: developersPermissionSet.arn,
 			principalId: input.developersGroupId,
 			principalType: 'GROUP',
-			targetId: input.stagingAccountId,
+			targetId: input.managementAccountId,
 			targetType: 'AWS_ACCOUNT',
 		},
 		{ provider: input.provider },
@@ -159,6 +243,7 @@ export function createIdentityCenterAccess(input: {
 		identityCenterArn: input.identityCenterArn,
 		permissionSets: {
 			admins: adminsPermissionSet.arn,
+			operators: operatorsPermissionSet.arn,
 			developers: developersPermissionSet.arn,
 			readOnly: readOnlyPermissionSet.arn,
 		},

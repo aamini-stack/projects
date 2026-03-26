@@ -35,12 +35,12 @@ export function createOrganizationTopology(input: OrganizationTopologyInput) {
 	})
 	const rootId = root.apply((value) => value.id)
 
-	const securityOu = new aws.organizations.OrganizationalUnit(
-		'ou-security',
+	const infrastructureOu = new aws.organizations.OrganizationalUnit(
+		'ou-infrastructure',
 		{
-			name: 'Security',
+			name: 'Infrastructure',
 			parentId: rootId,
-			tags: organizationTags('Security'),
+			tags: organizationTags('Infrastructure'),
 		},
 		{ provider: input.provider },
 	)
@@ -55,54 +55,26 @@ export function createOrganizationTopology(input: OrganizationTopologyInput) {
 		{ provider: input.provider },
 	)
 
-	const workloadsStagingOu = new aws.organizations.OrganizationalUnit(
-		'ou-workloads-staging',
-		{
-			name: 'Staging',
-			parentId: workloadsOu.id,
-			tags: organizationTags('Workloads/Staging'),
-		},
-		{ provider: input.provider },
-	)
-
-	const workloadsProductionOu = new aws.organizations.OrganizationalUnit(
-		'ou-workloads-production',
-		{
-			name: 'Production',
-			parentId: workloadsOu.id,
-			tags: organizationTags('Workloads/Production'),
-		},
-		{ provider: input.provider },
-	)
-
 	const organizationalUnits = {
-		security: securityOu,
+		infrastructure: infrastructureOu,
 		workloads: workloadsOu,
-		'workloads-staging': workloadsStagingOu,
-		'workloads-production': workloadsProductionOu,
 	} as const
 
-	const stagingAccount = aws.organizations.Account.get(
-		'account-staging',
-		input.stagingAccountId,
-		undefined,
+	const stagingAccount = aws.organizations.getAccountOutput(
+		{ accountId: input.stagingAccountId },
 		{ provider: input.provider },
 	)
 
-	const productionAccount = aws.organizations.Account.get(
-		'account-production',
-		input.productionAccountId,
-		undefined,
+	const productionAccount = aws.organizations.getAccountOutput(
+		{ accountId: input.productionAccountId },
 		{ provider: input.provider },
 	)
 
 	const managedImportedAccounts = Object.fromEntries(
 		input.importedAccounts.map((account) => [
 			account.key,
-			aws.organizations.Account.get(
-				`account-${account.key}`,
-				account.id,
-				undefined,
+			aws.organizations.getAccountOutput(
+				{ accountId: account.id },
 				{ provider: input.provider },
 			),
 		]),
@@ -150,45 +122,43 @@ export function createOrganizationTopology(input: OrganizationTopologyInput) {
 		},
 		organizationStructure: {
 			organizationalUnits: {
-				security: describeOrganizationalUnit(securityOu, rootId, 'Security'),
+				infrastructure: describeOrganizationalUnit(
+					infrastructureOu,
+					rootId,
+					'Infrastructure',
+				),
 				workloads: describeOrganizationalUnit(workloadsOu, rootId, 'Workloads'),
-				'workloads-staging': describeOrganizationalUnit(
-					workloadsStagingOu,
-					workloadsOu.id,
-					'Workloads/Staging',
-				),
-				'workloads-production': describeOrganizationalUnit(
-					workloadsProductionOu,
-					workloadsOu.id,
-					'Workloads/Production',
-				),
 			},
 			accounts: {
 				management: pulumi.output({
 					id: input.managementAccountId,
 					parentId: rootId,
+					desiredPlacement: 'Root/Management',
 				}),
-				staging: pulumi.output({
-					id: stagingAccount.id,
-					parentId: rootId,
-				}),
-				production: pulumi.output({
-					id: productionAccount.id,
-					parentId: rootId,
-				}),
+				staging: stagingAccount.apply((account) => ({
+					id: account.id,
+					parentId: account.parentId,
+					desiredPlacement: 'Workloads/Staging',
+				})),
+				production: productionAccount.apply((account) => ({
+					id: account.id,
+					parentId: account.parentId,
+					desiredPlacement: 'Workloads/Production',
+				})),
 				...Object.fromEntries(
 					Object.entries(managedImportedAccounts).map(([key, account]) => [
 						key,
-						pulumi.output({
-							id: account.id,
+						account.apply((resolvedAccount) => ({
+							id: resolvedAccount.id,
+							parentId: resolvedAccount.parentId,
 							parentKey: input.importedAccounts.find(
 								(candidate) => candidate.key === key,
 							)?.parentKey,
-						}),
+						})),
 					]),
 				),
 			},
-			controlTowerManagedOus: ['workloads-staging', 'workloads-production'],
+			controlTowerManagedOus: ['workloads'],
 		},
 		serviceControlPolicies: {
 			configuredPolicyCount: input.importedPolicies.length,

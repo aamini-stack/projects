@@ -4,6 +4,7 @@ config:
     managementAccountId: '302481198387'
   organization:identity:
     assumeRoleName: none
+    requiredCallerRoleFragment: AWSReservedSSO_AWSAdministratorAccess_
     adminsGroupId: b4b86408-e0d1-7003-ad26-1c66785c7f91
     developersGroupId: 8478f4c8-f011-706d-b199-73c569c9766f
     readOnlyGroupId: 9468c488-8091-7075-395f-8dcc10388575
@@ -20,5 +21,9 @@ config:
     ciCdPrincipalArn: arn:aws:iam::302481198387:role/PulumiOperatorRole
     staging:
       budgetLimitUsd: 150
+      deploymentPrincipalPatterns:
+        - arn:aws:iam::302481198387:role/aws-reserved/sso.amazonaws.com/AWSReservedSSO_DeveloperAccess_*
     production:
       budgetLimitUsd: 500
+      deploymentPrincipalPatterns:
+        - arn:aws:iam::302481198387:role/aws-reserved/sso.amazonaws.com/AWSReservedSSO_OperatorAccess_*

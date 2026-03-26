@@ -1,4 +1,5 @@
 import * as aws from '@pulumi/aws'
+import * as pulumi from '@pulumi/pulumi'
 
 import { loadOrganizationConfig } from './src/config.ts'
 import { createAccountGuardrails } from './src/guardrails.ts'
@@ -32,6 +33,24 @@ const managementProvider = new aws.Provider(
 	managementProviderArgs,
 )
 
+const managementCallerIdentity = aws.getCallerIdentityOutput(
+	{},
+	{ provider: managementProvider },
+)
+
+const validatedManagementCallerArn = pulumi
+	.output(managementCallerIdentity.arn)
+	.apply((arn) => {
+		const requiredRoleFragment = identityConfig.requiredCallerRoleFragment
+		if (requiredRoleFragment && !arn.includes(requiredRoleFragment)) {
+			throw new Error(
+				`The organization stack must be run with a principal containing "${requiredRoleFragment}". Current caller ARN: ${arn}`,
+			)
+		}
+
+		return arn
+	})
+
 const identityCenterInstances = aws.ssoadmin.getInstancesOutput(
 	{},
 	{ provider: managementProvider },
@@ -51,6 +70,9 @@ const identity = createIdentityCenterAccess({
 	provider: managementProvider,
 	identityCenterArn,
 	adminsGroupId: identityConfig.adminsGroupId,
+	...(identityConfig.operatorsGroupId
+		? { operatorsGroupId: identityConfig.operatorsGroupId }
+		: {}),
 	developersGroupId: identityConfig.developersGroupId,
 	readOnlyGroupId: identityConfig.readOnlyGroupId,
 	stagingAccountId: accounts.staging.accountId,
@@ -115,7 +137,6 @@ const accountGuardrails = {
 		provider: stagingGuardrailsProvider,
 		managementAccountId: organizationConfig.managementAccountId,
 		ciCdPrincipalArn: guardrails.ciCdPrincipalArn,
-		deploymentPrincipalArns: guardrails.deploymentPrincipalArns,
 		billingAlertEmail: guardrails.billingAlertEmail,
 		account: guardrails.staging,
 	}),
@@ -123,7 +144,6 @@ const accountGuardrails = {
 		provider: productionGuardrailsProvider,
 		managementAccountId: organizationConfig.managementAccountId,
 		ciCdPrincipalArn: guardrails.ciCdPrincipalArn,
-		deploymentPrincipalArns: guardrails.deploymentPrincipalArns,
 		billingAlertEmail: guardrails.billingAlertEmail,
 		account: guardrails.production,
 	}),
@@ -148,6 +168,8 @@ export const workloadAccess = {
 export const organization = topology.organization
 
 export { identity }
+
+export const managementCallerArn = validatedManagementCallerArn
 
 export const organizationStructure = topology.organizationStructure
 

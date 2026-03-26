@@ -18,23 +18,14 @@ export type ImportedAccount = {
 	key: string
 	name: string
 	id: string
-	parentKey:
-		| 'root'
-		| 'security'
-		| 'workloads'
-		| 'workloads-staging'
-		| 'workloads-production'
+	parentKey: 'root' | 'infrastructure' | 'workloads'
 }
 
 export type ImportedPolicy = {
 	key: string
 	name: string
 	id: string
-	attachToKey?:
-		| 'security'
-		| 'workloads'
-		| 'workloads-staging'
-		| 'workloads-production'
+	attachToKey?: 'infrastructure' | 'workloads'
 }
 
 export type ManagedAccountEnvironment = 'staging' | 'production'
@@ -51,7 +42,9 @@ export type OrganizationConfig = {
 
 export type IdentityConfig = {
 	assumeRoleName: string
+	requiredCallerRoleFragment?: string
 	adminsGroupId: string
+	operatorsGroupId?: string
 	developersGroupId: string
 	readOnlyGroupId: string
 }
@@ -65,12 +58,13 @@ export type AccountsConfig = {
 export type GuardrailsAccountConfig = ManagedAccountConfig & {
 	environment: ManagedAccountEnvironment
 	budgetLimitUsd: number
+	deploymentPrincipalPatterns: string[]
 }
 
 export type GuardrailsConfig = {
 	billingAlertEmail: string | undefined
 	ciCdPrincipalArn: string
-	deploymentPrincipalArns: string[]
+	deploymentPrincipalPatterns: string[]
 	staging: GuardrailsAccountConfig
 	production: GuardrailsAccountConfig
 }
@@ -103,9 +97,19 @@ export function loadOrganizationConfig(): OrganizationStackConfig {
 		Partial<{
 			billingAlertEmail?: string
 			ciCdPrincipalArn: string
-			deploymentPrincipalArns: string[]
-			staging: Partial<Pick<GuardrailsAccountConfig, 'budgetLimitUsd'>>
-			production: Partial<Pick<GuardrailsAccountConfig, 'budgetLimitUsd'>>
+			deploymentPrincipalPatterns: string[]
+			staging: Partial<
+				Pick<
+					GuardrailsAccountConfig,
+					'budgetLimitUsd' | 'deploymentPrincipalPatterns'
+				>
+			>
+			production: Partial<
+				Pick<
+					GuardrailsAccountConfig,
+					'budgetLimitUsd' | 'deploymentPrincipalPatterns'
+				>
+			>
 		}>
 	>('guardrails')
 	const region =
@@ -130,8 +134,16 @@ export function loadOrganizationConfig(): OrganizationStackConfig {
 		groupedIdentity?.assumeRoleName ??
 		config.get('identityAssumeRoleName') ??
 		'none'
+	const requiredCallerRoleFragment =
+		groupedIdentity?.requiredCallerRoleFragment ??
+		config.get('requiredCallerRoleFragment') ??
+		undefined
 	const adminsGroupId =
 		groupedIdentity?.adminsGroupId ?? config.require('adminsGroupId')
+	const operatorsGroupId =
+		groupedIdentity?.operatorsGroupId ??
+		config.get('operatorsGroupId') ??
+		undefined
 	const developersGroupId =
 		groupedIdentity?.developersGroupId ?? config.require('developersGroupId')
 	const readOnlyGroupId =
@@ -144,10 +156,18 @@ export function loadOrganizationConfig(): OrganizationStackConfig {
 		groupedGuardrails?.billingAlertEmail ?? config.get('billingAlertEmail')
 	const ciCdPrincipalArn =
 		groupedGuardrails?.ciCdPrincipalArn ?? config.require('ciCdPrincipalArn')
-	const deploymentPrincipalArns =
-		groupedGuardrails?.deploymentPrincipalArns ??
-		config.getObject<string[]>('deploymentPrincipalArns') ??
+	const deploymentPrincipalPatterns =
+		groupedGuardrails?.deploymentPrincipalPatterns ??
+		config.getObject<string[]>('deploymentPrincipalPatterns') ??
 		[]
+	const stagingDeploymentPrincipalPatterns =
+		groupedGuardrails?.staging?.deploymentPrincipalPatterns ??
+		config.getObject<string[]>('stagingDeploymentPrincipalPatterns') ??
+		deploymentPrincipalPatterns
+	const productionDeploymentPrincipalPatterns =
+		groupedGuardrails?.production?.deploymentPrincipalPatterns ??
+		config.getObject<string[]>('productionDeploymentPrincipalPatterns') ??
+		deploymentPrincipalPatterns
 	const stagingBudgetLimitUsd =
 		groupedGuardrails?.staging?.budgetLimitUsd ??
 		config.getNumber('stagingBudgetLimitUsd') ??
@@ -164,7 +184,9 @@ export function loadOrganizationConfig(): OrganizationStackConfig {
 		},
 		identity: {
 			assumeRoleName: identityAssumeRoleName,
+			...(requiredCallerRoleFragment ? { requiredCallerRoleFragment } : {}),
 			adminsGroupId,
+			...(operatorsGroupId ? { operatorsGroupId } : {}),
 			developersGroupId,
 			readOnlyGroupId,
 		},
@@ -182,18 +204,20 @@ export function loadOrganizationConfig(): OrganizationStackConfig {
 		guardrails: {
 			billingAlertEmail,
 			ciCdPrincipalArn,
-			deploymentPrincipalArns,
+			deploymentPrincipalPatterns,
 			staging: {
 				environment: 'staging',
 				accountId: stagingAccountId,
 				assumeRoleName: stagingAssumeRoleName,
 				budgetLimitUsd: stagingBudgetLimitUsd,
+				deploymentPrincipalPatterns: stagingDeploymentPrincipalPatterns,
 			},
 			production: {
 				environment: 'production',
 				accountId: productionAccountId,
 				assumeRoleName: productionAssumeRoleName,
 				budgetLimitUsd: productionBudgetLimitUsd,
+				deploymentPrincipalPatterns: productionDeploymentPrincipalPatterns,
 			},
 		},
 	}

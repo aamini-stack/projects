@@ -7,7 +7,6 @@ type AccountGuardrailsInput = {
 	provider: aws.Provider
 	managementAccountId: string
 	ciCdPrincipalArn: string
-	deploymentPrincipalArns: string[]
 	billingAlertEmail: string | undefined
 	account: GuardrailsAccountConfig
 }
@@ -22,8 +21,11 @@ export function createAccountGuardrails(input: AccountGuardrailsInput) {
 	const resourceName = (name: string) =>
 		`guardrails-${input.account.environment}-${name}`
 
-	const deploymentPrincipalArns = Array.from(
-		new Set([input.ciCdPrincipalArn, ...input.deploymentPrincipalArns]),
+	const deploymentPrincipalPatterns = Array.from(
+		new Set([
+			input.ciCdPrincipalArn,
+			...input.account.deploymentPrincipalPatterns,
+		]),
 	)
 
 	const budgetTopic = new aws.sns.Topic(
@@ -118,10 +120,15 @@ export function createAccountGuardrails(input: AccountGuardrailsInput) {
 						Action: 'sts:AssumeRole',
 						Effect: 'Allow',
 						Principal: {
-							AWS:
-								deploymentPrincipalArns.length === 1
-									? deploymentPrincipalArns[0]
-									: deploymentPrincipalArns,
+							AWS: `arn:aws:iam::${input.managementAccountId}:root`,
+						},
+						Condition: {
+							ArnLike: {
+								'aws:PrincipalArn':
+									deploymentPrincipalPatterns.length === 1
+										? deploymentPrincipalPatterns[0]
+										: deploymentPrincipalPatterns,
+							},
 						},
 					},
 				],

@@ -3,6 +3,7 @@ config:
   platform:environment: production
   platform:managementAccountId: "302481198387"
   platform:assumeRoleName: OrganizationAccountAccessRole
+  platform:requiredCallerRoleFragment: AWSReservedSSO_OperatorAccess_
   platform:region: us-east-1
   platform:organizationStack: aamini11/organization/global
   platform:workloadBucketName: aamini-production-workloads
@@ -10,7 +11,6 @@ config:
   aws:region: us-east-1
   github:token:
     secure: AAABAOO5ZgRSv0m0/NbJGBV37+k27X1h7F02v2GwkwfagMOTFTfFsBUsEsfTZeBYHKkwOYzMwcoELlM=
-  platform:deployerTrustedPrincipalArn: arn:aws:sts::302481198387:assumed-role/AWSReservedSSO_AWSAdministratorAccess_20d64ce49a7ea5f7/aamini1024@gmail.com
   platform:kubernetes: '{"version":"1.35","instanceType":"t3.medium","desiredCapacity":2,"minSize":2,"maxSize":2}'
   platform:postgres: '{"instanceClass":"db.t4g.micro","allocatedStorage":20,"maxAllocatedStorage":100,"backupRetentionDays":7,"engineVersion":"16.3","storageType":"gp3","publiclyAccessible":false,"deletionProtection":false,"multiAz":false,"allowedCidrs":["172.31.0.0/16"]}'
   platform:postgresAdminPassword:

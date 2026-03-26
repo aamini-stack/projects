@@ -19,6 +19,7 @@ type WorkloadAccess = {
 const config = new pulumi.Config()
 const stack = pulumi.getStack()
 const organization = pulumi.getOrganization()
+const requiredCallerRoleFragment = config.get('requiredCallerRoleFragment')
 
 if (stack !== 'staging' && stack !== 'production') {
 	throw new Error(
@@ -31,6 +32,23 @@ const organizationStackName =
 	config.get('organizationStack') ??
 	(organization ? `${organization}/organization/global` : 'organization/global')
 const organizationStack = new pulumi.StackReference(organizationStackName)
+
+const callerIdentity = aws.getCallerIdentityOutput({})
+
+export const validatedCallerArn = pulumi
+	.output(callerIdentity.arn)
+	.apply((arn) => {
+		if (
+			requiredCallerRoleFragment &&
+			!arn.includes(requiredCallerRoleFragment)
+		) {
+			throw new Error(
+				`The platform ${environment} stack must be run with a principal containing "${requiredCallerRoleFragment}". Current caller ARN: ${arn}`,
+			)
+		}
+
+		return arn
+	})
 
 const workloadAccess = organizationStack
 	.requireOutput('workloadAccess')

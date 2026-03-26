@@ -5,7 +5,8 @@
 	"type": "module",
 	"scripts": {
 		"typecheck": "tsc --noEmit",
-		"bootstrap": "tsx src/lib/bootstrap/main.ts"
+		"bootstrap": "tsx src/lib/bootstrap/main.ts",
+		"preflight": "bash scripts/aws-preflight.sh"
 	},
 	"dependencies": {
 		"@lbrlabs/pulumi-awscontroltower": "^0.0.2",
