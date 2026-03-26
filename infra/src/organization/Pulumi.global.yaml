@@ -6,6 +6,7 @@ config:
     assumeRoleName: none
     requiredCallerRoleFragment: AWSReservedSSO_AWSAdministratorAccess_
     adminsGroupId: b4b86408-e0d1-7003-ad26-1c66785c7f91
+    # operatorsGroupId: PLACEHOLDER - Set this after creating the Operators group in Identity Center
     developersGroupId: 8478f4c8-f011-706d-b199-73c569c9766f
     readOnlyGroupId: 9468c488-8091-7075-395f-8dcc10388575
   organization:accounts:

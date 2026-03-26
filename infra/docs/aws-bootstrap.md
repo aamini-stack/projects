@@ -52,19 +52,21 @@ useful for future shared-infra accounts, but `management` remains at `Root`.
 ### 3. Create the first human access path
 
 - Create your user in Identity Center
-- Create group `Admins`
-- Add your user to `Admins`
+- Create groups: `Admins`, `Operators`, `Developers`, `ReadOnly`
+- Add your user to `Admins`, `Operators`, and `Developers`
 - Assign the existing `AWSAdministratorAccess` permission set to `Admins` on
-  account `302481198387`
-- Run the organization stack once as an admin to let Pulumi create the managed
-  permission sets and assignments
-- After the first successful org deploy, verify these permission sets exist:
-  `AWSAdministratorAccess`, `OperatorAccess`, `DeveloperAccess`, `ReadOnlyAccess`
-- Optional: create group `Operators` and set `organization:identity.operatorsGroupId`
-  in `infra/src/organization/Pulumi.global.yaml` so production operator access is
-  separate from `Admins`
-- Create group `Developers` if it does not already exist
-- Keep `ReadOnly` for audit-style users
+  account `302481198387` (this is your bootstrap access)
+- Copy the group IDs and update `infra/src/organization/Pulumi.global.yaml`:
+  - `organization:identity.adminsGroupId`
+  - `organization:identity.operatorsGroupId`
+  - `organization:identity.developersGroupId`
+  - `organization:identity.readOnlyGroupId`
+- Run the organization stack as `admin` to create the managed permission sets
+- After the first org deploy, Pulumi will assign:
+  - `OperatorAccess` → `Operators` group
+  - `DeveloperAccess` → `Developers` group
+  - `ReadOnlyAccess` → `ReadOnly` group
+  - `AWSAdministratorAccess` → `Admins` group (for break-glass)
 
 ### 4. Stop using root
 
