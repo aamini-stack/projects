@@ -1,0 +1,21 @@
+config:
+  platform:accountId: '135133927765'
+  platform:environment: staging
+  platform:managementAccountId: '302481198387'
+  platform:assumeRoleName: OrganizationAccountAccessRole
+  platform:requiredCallerRoleFragment: AWSReservedSSO_DeveloperAccess_
+  platform:region: us-east-1
+  platform:organizationStack: aamini11/organization/global
+  platform:workloadBucketName: aamini-staging-workloads
+  platform:ciCdPrincipalArn: arn:aws:iam::302481198387:role/PulumiOperatorRole
+  aws:region: us-east-1
+  platform:kubernetes: '{"version":"1.35","instanceType":"t3.medium","desiredCapacity":2,"minSize":2,"maxSize":2}'
+  platform:postgres: '{"instanceClass":"db.t4g.micro","allocatedStorage":20,"maxAllocatedStorage":100,"backupRetentionDays":7,"engineVersion":"16.3","storageType":"gp3","publiclyAccessible":false,"deletionProtection":false,"multiAz":false,"allowedCidrs":["172.31.0.0/16"]}'
+  platform:repo: aamini-stack/projects
+  github:token:
+    secure: AAABAHAoADw33SbeImnYc6yXueP6M3y1NrXgE5owYmmftTIuRmWT/fb5dZJz1ETYQ5FV996+F5MNgXg=
+  platform:postgresAdminPassword:
+    secure: AAABAHRBj4mCdvBEFXkJuThujhDlI8GnYo6PI2c5YT4Iva7lKIzObFl6m+7/+ZueARhy/eeypm3roWYNEJcyNQ==
+  platform:cloudflareOriginHostname: origin.ariaamini.com
+  cloudflare:apiToken:
+    secure: AAABAOpPSlXe21OQIlbdCQXw91jvxAOXQ7AiIcOWC88FayjEvcnuaMEixatbqtk9ZI6IRFSmN/m5hep3hB3wLu610X8wFd60

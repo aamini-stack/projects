@@ -1,0 +1,21 @@
+config:
+  platform:accountId: "324793866424"
+  platform:environment: production
+  platform:managementAccountId: "302481198387"
+  platform:assumeRoleName: OrganizationAccountAccessRole
+  platform:requiredCallerRoleFragment: AWSReservedSSO_OperatorAccess_
+  platform:region: us-east-1
+  platform:organizationStack: aamini11/organization/global
+  platform:workloadBucketName: aamini-production-workloads
+  platform:ciCdPrincipalArn: arn:aws:iam::302481198387:role/PulumiOperatorRole
+  aws:region: us-east-1
+  github:token:
+    secure: AAABAOO5ZgRSv0m0/NbJGBV37+k27X1h7F02v2GwkwfagMOTFTfFsBUsEsfTZeBYHKkwOYzMwcoELlM=
+  platform:kubernetes: '{"version":"1.35","instanceType":"t3.medium","desiredCapacity":2,"minSize":2,"maxSize":2}'
+  platform:postgres: '{"instanceClass":"db.t4g.micro","allocatedStorage":20,"maxAllocatedStorage":100,"backupRetentionDays":7,"engineVersion":"16.3","storageType":"gp3","publiclyAccessible":false,"deletionProtection":false,"multiAz":false,"allowedCidrs":["172.31.0.0/16"]}'
+  platform:postgresAdminPassword:
+    secure: AAABACfTBiFg2TuvUo+SCMtkQb2yZZhVf+Ie6OeyIuF7HEb/9R8aAbkqX5DU2I8jbIaVZBsIEe/OW360MuNasQ==
+  platform:repo: aamini-stack/projects
+  platform:cloudflareOriginHostname: origin.ariaamini.com
+  cloudflare:apiToken:
+    secure: AAABANU9JqUKcVakANl8YlieGshsLdKSQLnx5ajqQ55dF6KTITx7ePq32hVlTYjAYh4e69db/Z3ow4xPHLwAXhFWZpD3504c

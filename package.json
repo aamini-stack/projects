@@ -4,6 +4,8 @@
 	"version": "0.0.0",
 	"type": "module",
 	"scripts": {
+		"bootstrap": "pnpm --filter @aamini/infra bootstrap",
+		"bootstrap:check": "pnpm bootstrap -- up --check",
 		"build": "turbo build",
 		"docker:build": "turbo run --continue=dependencies-successful docker:build --filter='./apps/*'",
 		"docker:push": "turbo run --continue=dependencies-successful docker:push --filter='./apps/*'",

@@ -1,0 +1,30 @@
+config:
+  organization:organization:
+    region: us-east-1
+    managementAccountId: '302481198387'
+  organization:identity:
+    assumeRoleName: none
+    requiredCallerRoleFragment: AWSReservedSSO_AWSAdministratorAccess_
+    adminsGroupId: b4b86408-e0d1-7003-ad26-1c66785c7f91
+    # operatorsGroupId: PLACEHOLDER - Set this after creating the Operators group in Identity Center
+    developersGroupId: 8478f4c8-f011-706d-b199-73c569c9766f
+    readOnlyGroupId: 9468c488-8091-7075-395f-8dcc10388575
+  organization:accounts:
+    staging:
+      accountId: '135133927765'
+      assumeRoleName: OrganizationAccountAccessRole
+    production:
+      accountId: '324793866424'
+      assumeRoleName: OrganizationAccountAccessRole
+    requested: []
+  organization:guardrails:
+    billingAlertEmail: platform-alerts@example.com
+    ciCdPrincipalArn: arn:aws:iam::302481198387:role/PulumiOperatorRole
+    staging:
+      budgetLimitUsd: 150
+      deploymentPrincipalPatterns:
+        - arn:aws:iam::302481198387:role/aws-reserved/sso.amazonaws.com/AWSReservedSSO_DeveloperAccess_*
+    production:
+      budgetLimitUsd: 500
+      deploymentPrincipalPatterns:
+        - arn:aws:iam::302481198387:role/aws-reserved/sso.amazonaws.com/AWSReservedSSO_OperatorAccess_*
