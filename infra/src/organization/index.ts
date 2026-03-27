@@ -1,5 +1,4 @@
 import * as aws from '@pulumi/aws'
-import * as controltower from '@lbrlabs/pulumi-awscontroltower'
 import * as pulumi from '@pulumi/pulumi'
 
 // =============================================================================
@@ -19,7 +18,6 @@ type Config = {
 	accounts: {
 		staging: { accountId: string; assumeRoleName: string }
 		production: { accountId: string; assumeRoleName: string }
-		requested: RequestedAccount[]
 	}
 	guardrails: {
 		billingAlertEmail?: string
@@ -27,20 +25,6 @@ type Config = {
 		staging: GuardrailsAccount
 		production: GuardrailsAccount
 	}
-}
-
-type RequestedAccount = {
-	name: string
-	email: string
-	organizationalUnit: string
-	ssoFirstName: string
-	ssoLastName: string
-	ssoEmail: string
-	organizationalUnitIdOnDelete: string
-	closeAccountOnDelete: boolean
-	provisionedProductName: string
-	pathId: string
-	tags: Record<string, string>
 }
 
 type GuardrailsAccount = {
@@ -621,31 +605,6 @@ IMPORTED_POLICIES.forEach((policy) => {
 	)
 })
 
-// Create requested accounts via Control Tower
-const createdAccounts = config.accounts.requested.map(
-	(account) =>
-		new controltower.ControlTowerAwsAccount(account.name, {
-			name: account.name,
-			email: account.email,
-			organizationalUnit: account.organizationalUnit,
-			closeAccountOnDelete: account.closeAccountOnDelete,
-			organizationalUnitIdOnDelete: account.organizationalUnitIdOnDelete,
-			provisionedProductName: account.provisionedProductName,
-			pathId: account.pathId,
-			sso: {
-				firstName: account.ssoFirstName,
-				lastName: account.ssoLastName,
-				email: account.ssoEmail,
-			},
-			tags: {
-				...account.tags,
-				ManagedBy: 'Pulumi',
-				Project: 'aamini-stack',
-				Scope: 'organization',
-			},
-		}),
-)
-
 // =============================================================================
 // GUARDRAILS (Per-Account)
 // =============================================================================
@@ -1006,12 +965,6 @@ export const managementCallerArn = validatedManagementCallerArn
 export const serviceControlPolicies = {
 	configuredPolicyCount: IMPORTED_POLICIES.length,
 	policies: {},
-}
-
-export const controltowerOutputs = {
-	configuredRegion: config.organization.region,
-	requestedAccountCount: config.accounts.requested.length,
-	createdAccountIds: createdAccounts.map((a) => a.accountId),
 }
 
 export const guardrailsOutputs = {
