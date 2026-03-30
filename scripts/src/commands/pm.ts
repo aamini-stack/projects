@@ -1,10 +1,10 @@
-#!/usr/bin/env node
-import { cac } from 'cac'
 import * as fs from 'node:fs'
 import * as path from 'node:path'
+import { Command } from 'commander'
 import { $ } from 'zx'
+import { getRepoRoot, getRepoRootSync } from '../helpers/repo.ts'
 
-interface Task {
+export interface Task {
 	id: string
 	title: string
 	description: string
@@ -16,30 +16,144 @@ interface Task {
 	notes: string
 }
 
-interface TasksFile {
+export interface TasksFile {
 	tasks: Task[]
 }
 
-function getRepoRoot(): string {
-	let current = path.resolve(process.cwd())
-
-	while (true) {
-		if (fs.existsSync(path.join(current, '.git'))) {
-			return current
-		}
-
-		const parent = path.dirname(current)
-		if (parent === current) {
-			return process.cwd()
-		}
-
-		current = parent
-	}
+export interface CIResult {
+	app: string
+	check: string
+	passed: boolean
+	output: string
 }
 
-const TASKS_PATH = path.resolve(getRepoRoot(), 'tasks.json')
+export interface CIReturn {
+	passed: boolean
+	results: CIResult[]
+}
 
-function loadTasks(): TasksFile {
+const TASKS_PATH = path.resolve(getRepoRootSync(), 'tasks.json')
+
+export function createPMCommand(): Command {
+	const cli = new Command('pm')
+	cli.description('Project management')
+	cli.version('0.0.1')
+
+	cli.addCommand(
+		new Command('next').description('Show next available tasks').action(() => {
+			cmdNext()
+		}),
+	)
+
+	cli.addCommand(
+		new Command('progress').description('Show task progress').action(() => {
+			cmdProgress()
+		}),
+	)
+
+	cli.addCommand(
+		new Command('wipe').description('Wipe all progress fields').action(() => {
+			cmdWipe()
+		}),
+	)
+
+	cli.addCommand(
+		new Command('show')
+			.description('Show details for a task')
+			.argument('<id>', 'Task ID')
+			.action((id: string) => {
+				cmdShow(id)
+			}),
+	)
+
+	cli.addCommand(
+		new Command('update')
+			.description('Update task field')
+			.argument('<id>', 'Task ID')
+			.argument('<field>', 'Field to update')
+			.argument('[value...]', 'New value(s)')
+			.action((id: string, field: string, value: string[] = []) => {
+				if (value.length === 0) {
+					console.error('Error: Usage: aamini pm update <id> <field> <value>')
+					process.exit(1)
+				}
+				cmdUpdate(id, field, value.join(' '))
+			}),
+	)
+
+	cli.addCommand(
+		new Command('done')
+			.description('Mark task done')
+			.argument('[taskOrJson]', 'Task ID or JSON')
+			.argument('[commitSha]', 'Commit SHA')
+			.argument('[notes...]', 'Optional notes')
+			.action(
+				async (
+					taskOrJson: string | undefined,
+					commitSha: string | undefined,
+					notes: string[] = [],
+				) => {
+					if (!taskOrJson) {
+						const jsonStr = await readFromStdin()
+						if (jsonStr) {
+							cmdDoneJson(jsonStr)
+							return
+						}
+						console.error(
+							'Error: Usage: aamini pm done <task-id> <commit-sha> [notes]',
+						)
+						console.error(
+							'       or: aamini pm done \'{"task": 1, "status": "done", "sha": "abc", "notes": "..."}\'',
+						)
+						console.error(
+							'       or: echo \'{"task": 1, ...}\' | aamini pm done',
+						)
+						process.exit(1)
+					}
+
+					if (taskOrJson.startsWith('{')) {
+						cmdDoneJson(taskOrJson)
+						return
+					}
+
+					if (!commitSha) {
+						console.error(
+							'Error: Usage: aamini pm done <task-id> <commit-sha> [notes]',
+						)
+						process.exit(1)
+					}
+
+					cmdDone(taskOrJson, commitSha, notes.join(' '))
+				},
+			),
+	)
+
+	cli.addCommand(
+		new Command('blocked')
+			.description('Mark task blocked')
+			.argument('<id>', 'Task ID')
+			.argument('[notes...]', 'Optional notes')
+			.action((id: string, notes: string[] = []) => {
+				cmdBlocked(id, notes.join(' '))
+			}),
+	)
+
+	cli.addCommand(
+		new Command('ci')
+			.description('Run CI checks across all apps')
+			.action(async () => {
+				await cmdCi()
+			}),
+	)
+
+	cli.action(() => {
+		cli.outputHelp()
+	})
+
+	return cli
+}
+
+export function loadTasks(): TasksFile {
 	if (!fs.existsSync(TASKS_PATH)) {
 		console.error('Error: tasks.json not found in current directory')
 		process.exit(1)
@@ -47,28 +161,28 @@ function loadTasks(): TasksFile {
 	return JSON.parse(fs.readFileSync(TASKS_PATH, 'utf-8'))
 }
 
-function saveTasks(tasks: TasksFile): void {
+export function saveTasks(tasks: TasksFile): void {
 	fs.writeFileSync(TASKS_PATH, JSON.stringify(tasks, null, '\t') + '\n')
 }
 
-function getTaskById(tasks: TasksFile, id: string): Task | undefined {
+export function getTaskById(tasks: TasksFile, id: string): Task | undefined {
 	return tasks.tasks.find((t) => t.id === id)
 }
 
-function areDependenciesMet(tasks: TasksFile, task: Task): boolean {
+export function areDependenciesMet(tasks: TasksFile, task: Task): boolean {
 	return task.dependencies.every((depId) => {
 		const dep = getTaskById(tasks, depId)
 		return dep?.done === true
 	})
 }
 
-function getNextTasks(tasks: TasksFile): Task[] {
+export function getNextTasks(tasks: TasksFile): Task[] {
 	return tasks.tasks.filter(
 		(task) => !task.done && areDependenciesMet(tasks, task),
 	)
 }
 
-function wipeAllProgress(tasks: TasksFile): number {
+export function wipeAllProgress(tasks: TasksFile): number {
 	for (const task of tasks.tasks) {
 		task.done = false
 		task.commitSha = null
@@ -77,7 +191,7 @@ function wipeAllProgress(tasks: TasksFile): number {
 	return tasks.tasks.length
 }
 
-function getProgress(tasks: TasksFile): {
+export function getProgress(tasks: TasksFile): {
 	completed: number
 	total: number
 	remaining: number
@@ -91,7 +205,7 @@ function getProgress(tasks: TasksFile): {
 	}
 }
 
-function cmdNext(): void {
+export function cmdNext(): void {
 	const tasks = loadTasks()
 	const next = getNextTasks(tasks)
 
@@ -108,7 +222,7 @@ function cmdNext(): void {
 	}
 }
 
-function cmdShow(id: string): void {
+export function cmdShow(id: string): void {
 	const tasks = loadTasks()
 	const task = getTaskById(tasks, id)
 
@@ -135,7 +249,7 @@ function cmdShow(id: string): void {
 	console.log()
 }
 
-function cmdUpdate(id: string, field: string, value: string): void {
+export function cmdUpdate(id: string, field: string, value: string): void {
 	const tasks = loadTasks()
 	const task = getTaskById(tasks, id)
 
@@ -166,7 +280,7 @@ function cmdUpdate(id: string, field: string, value: string): void {
 	console.log(`Updated ${id}.${field} = ${value}`)
 }
 
-function cmdDone(id: string, commitSha: string, notes: string): void {
+export function cmdDone(id: string, commitSha: string, notes: string): void {
 	const tasks = loadTasks()
 	const task = getTaskById(tasks, id)
 
@@ -184,7 +298,7 @@ function cmdDone(id: string, commitSha: string, notes: string): void {
 	console.log(`Marked task ${id} as done (commit: ${commitSha})`)
 }
 
-interface DonePayload {
+export interface DonePayload {
 	task: number | string
 	status: 'done' | 'blocked' | 'failed'
 	sha?: string
@@ -192,7 +306,7 @@ interface DonePayload {
 	notes?: string
 }
 
-function cmdDoneJson(jsonStr: string): void {
+export function cmdDoneJson(jsonStr: string): void {
 	let payload: DonePayload
 	try {
 		payload = JSON.parse(jsonStr)
@@ -226,7 +340,7 @@ function cmdDoneJson(jsonStr: string): void {
 	)
 }
 
-function cmdBlocked(id: string, notes: string): void {
+export function cmdBlocked(id: string, notes: string): void {
 	const tasks = loadTasks()
 	const task = getTaskById(tasks, id)
 
@@ -243,20 +357,8 @@ function cmdBlocked(id: string, notes: string): void {
 	console.log(`Marked task ${id} as blocked`)
 }
 
-interface CIResult {
-	app: string
-	check: string
-	passed: boolean
-	output: string
-}
-
-interface CIReturn {
-	passed: boolean
-	results: CIResult[]
-}
-
-async function cmdCi(): Promise<void> {
-	const repoRoot = getRepoRoot()
+export async function cmdCi(): Promise<void> {
+	const repoRoot = await getRepoRoot()
 	const appsDir = path.join(repoRoot, 'apps')
 
 	if (!fs.existsSync(appsDir)) {
@@ -298,14 +400,15 @@ async function cmdCi(): Promise<void> {
 		process.exit(1)
 	}
 }
-function cmdWipe(): void {
+
+export function cmdWipe(): void {
 	const tasks = loadTasks()
 	const count = wipeAllProgress(tasks)
 	saveTasks(tasks)
 	console.log(`Wiped progress for ${count} tasks`)
 }
 
-async function readFromStdin(): Promise<string> {
+export async function readFromStdin(): Promise<string> {
 	return new Promise((resolve) => {
 		let data = ''
 		process.stdin.on('data', (chunk) => {
@@ -321,12 +424,7 @@ async function readFromStdin(): Promise<string> {
 	})
 }
 
-function cmdProgress(args: string[]): void {
-	if (args.length > 0) {
-		console.error('Error: Usage: aamini pm progress')
-		process.exit(1)
-	}
-
+export function cmdProgress(): void {
 	const tasks = loadTasks()
 	const progress = getProgress(tasks)
 
@@ -334,108 +432,3 @@ function cmdProgress(args: string[]): void {
 		`${progress.completed}/${progress.total} completed (${progress.remaining} left)`,
 	)
 }
-
-async function main(): Promise<void> {
-	const cli = cac('aamini pm')
-	cli.help()
-	cli.version('0.0.1')
-
-	cli.command('next', 'Show next available tasks').action(() => {
-		cmdNext()
-	})
-
-	cli.command('progress', 'Show task progress').action(() => {
-		cmdProgress([])
-	})
-
-	cli.command('wipe', 'Wipe all progress fields').action(() => {
-		cmdWipe()
-	})
-
-	cli.command('show <id>', 'Show details for a task').action((id: string) => {
-		cmdShow(id)
-	})
-
-	cli
-		.command('update <id> <field> [...value]', 'Update task field')
-		.action((id: string, field: string, value: string[] = []) => {
-			if (value.length === 0) {
-				console.error('Error: Usage: aamini pm update <id> <field> <value>')
-				process.exit(1)
-			}
-			cmdUpdate(id, field, value.join(' '))
-		})
-
-	cli
-		.command('done [taskOrJson] [commitSha] [...notes]', 'Mark task done')
-		.action(
-			async (
-				taskOrJson: string | undefined,
-				commitSha: string | undefined,
-				notes: string[] = [],
-			) => {
-				if (!taskOrJson) {
-					const jsonStr = await readFromStdin()
-					if (jsonStr) {
-						cmdDoneJson(jsonStr)
-						return
-					}
-					console.error(
-						'Error: Usage: aamini pm done <task-id> <commit-sha> [notes]',
-					)
-					console.error(
-						'       or: aamini pm done \'{"task": 1, "status": "done", "sha": "abc", "notes": "..."}\'',
-					)
-					console.error('       or: echo \'{"task": 1, ...}\' | aamini pm done')
-					process.exit(1)
-				}
-
-				if (taskOrJson.startsWith('{')) {
-					cmdDoneJson(taskOrJson)
-					return
-				}
-
-				if (!commitSha) {
-					console.error(
-						'Error: Usage: aamini pm done <task-id> <commit-sha> [notes]',
-					)
-					process.exit(1)
-				}
-
-				cmdDone(taskOrJson, commitSha, notes.join(' '))
-			},
-		)
-
-	cli
-		.command('blocked <id> [...notes]', 'Mark task blocked')
-		.action((id: string, notes: string[] = []) => {
-			cmdBlocked(id, notes.join(' '))
-		})
-
-	cli.command('ci', 'Run CI checks across all apps').action(async () => {
-		await cmdCi()
-	})
-
-	cli.addEventListener('command:*', () => {
-		console.error(`Error: Unknown command '${cli.args[0] ?? ''}'`)
-		cli.outputHelp()
-		process.exit(1)
-	})
-
-	cli.parse()
-}
-
-if (process.argv[1] === import.meta.url.replace('file://', '')) {
-	void main()
-}
-
-export {
-	areDependenciesMet,
-	getNextTasks,
-	getProgress,
-	getTaskById,
-	loadTasks,
-	saveTasks,
-	wipeAllProgress,
-}
-export type { CIResult, CIReturn, Task, TasksFile }

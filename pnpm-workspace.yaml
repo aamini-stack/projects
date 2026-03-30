@@ -1,6 +1,7 @@
 packages:
   - apps/*
   - apps/*/infra
+  - infra
   - packages/*
   - scripts
 
