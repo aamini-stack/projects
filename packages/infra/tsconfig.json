@@ -1,3 +1,6 @@
 {
-	"extends": "@aamini/config-typescript/lib"
+  "extends": "@aamini/config-typescript/lib",
+  "compilerOptions": {
+    "allowImportingTsExtensions": true
+  }
 }

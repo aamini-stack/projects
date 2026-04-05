@@ -9,7 +9,7 @@ SUBSCRIPTION_ID="${SUBSCRIPTION_ID:-331269d5-143f-4246-b389-9c1f41bb5882}"
 LOCATION="${LOCATION:-westus}"
 RESOURCE_GROUP="${RESOURCE_GROUP:-rg-aamini-staging}"
 NODE_RESOURCE_GROUP="${NODE_RESOURCE_GROUP:-rg-aamini-nodes-staging}"
-SERVICE_PRINCIPAL_NAME="aamini-infra-staging"
+SERVICE_PRINCIPAL_NAME="aamini-platform-staging"
 
 RG_SCOPE="/subscriptions/${SUBSCRIPTION_ID}/resourceGroups/${RESOURCE_GROUP}"
 NODE_RG_SCOPE="/subscriptions/${SUBSCRIPTION_ID}/resourceGroups/${NODE_RESOURCE_GROUP}"

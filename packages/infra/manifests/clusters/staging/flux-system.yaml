@@ -1,0 +1,126 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: aamini-projects
+  namespace: flux-system
+spec:
+  interval: 1m
+  url: https://github.com/aamini-stack/projects
+  ref:
+    branch: ci
+  secretRef:
+    name: github-api-token
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: platform-crds
+  namespace: flux-system
+spec:
+  interval: 10m
+  retryInterval: 1m
+  timeout: 5m
+  prune: true
+  wait: true
+  path: ./packages/infra/manifests/platform/crds
+  sourceRef:
+    kind: GitRepository
+    name: aamini-projects
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: platform-controllers
+  namespace: flux-system
+spec:
+  interval: 10m
+  retryInterval: 1m
+  timeout: 10m
+  prune: true
+  wait: true
+  path: ./packages/infra/manifests/platform/controllers
+  dependsOn:
+    - name: platform-crds
+  sourceRef:
+    kind: GitRepository
+    name: aamini-projects
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: platform-networking
+  namespace: flux-system
+spec:
+  interval: 10m
+  retryInterval: 1m
+  timeout: 10m
+  prune: true
+  wait: true
+  path: ./packages/infra/manifests/platform/networking
+  dependsOn:
+    - name: platform-controllers
+  postBuild:
+    substituteFrom:
+      - kind: Secret
+        name: cloudflare-api-token
+  sourceRef:
+    kind: GitRepository
+    name: aamini-projects
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: platform-previews
+  namespace: flux-system
+spec:
+  interval: 10m
+  retryInterval: 1m
+  timeout: 5m
+  prune: true
+  wait: true
+  path: ./packages/infra/manifests/platform/previews
+  dependsOn:
+    - name: platform-controllers
+  sourceRef:
+    kind: GitRepository
+    name: aamini-projects
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: imdbgraph-stable
+  namespace: flux-system
+spec:
+  interval: 10m
+  retryInterval: 1m
+  timeout: 10m
+  prune: true
+  wait: true
+  path: ./packages/infra/manifests/apps/imdbgraph/stable
+  dependsOn:
+    - name: platform-controllers
+    - name: platform-networking
+  sourceRef:
+    kind: GitRepository
+    name: aamini-projects
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: imdbgraph-preview
+  namespace: flux-system
+spec:
+  interval: 10m
+  retryInterval: 1m
+  timeout: 10m
+  prune: true
+  wait: true
+  path: ./packages/infra/manifests/apps/imdbgraph/preview
+  dependsOn:
+    - name: platform-controllers
+    - name: platform-networking
+    - name: platform-previews
+    - name: imdbgraph-stable
+  sourceRef:
+    kind: GitRepository
+    name: aamini-projects

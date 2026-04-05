@@ -1,2 +1,3 @@
-export * as aks from './src/aks'
-export * as postgres from './src/postgres'
+export * as aks from './src/aks.ts'
+export * as githubActions from './src/github-actions.ts'
+export * as postgres from './src/postgres.ts'
