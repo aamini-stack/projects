@@ -38,19 +38,15 @@ const server = new azure.dbforpostgresql.Server(serverName, {
 	},
 })
 
-new azure.dbforpostgresql.FirewallRule('allow-azure-services', {
-	resourceGroupName: resourceGroupName,
-	serverName: server.name,
-	startIpAddress: '0.0.0.0',
-	endIpAddress: '0.0.0.0',
-})
-
-new azure.dbforpostgresql.FirewallRule('allow-all', {
-	resourceGroupName: resourceGroupName,
-	serverName: server.name,
-	startIpAddress: '0.0.0.0',
-	endIpAddress: '255.255.255.255',
-})
+const allowAllFirewallRule = new azure.dbforpostgresql.FirewallRule(
+	'allow-all',
+	{
+		resourceGroupName: resourceGroupName,
+		serverName: server.name,
+		startIpAddress: '0.0.0.0',
+		endIpAddress: '255.255.255.255',
+	},
+)
 
 new azure.dbforpostgresql.Configuration(
 	'pg-extensions',
@@ -61,7 +57,7 @@ new azure.dbforpostgresql.Configuration(
 		value: 'PG_TRGM',
 		source: 'user-override',
 	},
-	{ deletedWith: server },
+	{ deletedWith: server, dependsOn: allowAllFirewallRule },
 )
 
 // Exports for apps to consume
