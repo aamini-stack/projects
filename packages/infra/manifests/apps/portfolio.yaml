@@ -1,7 +1,7 @@
 name: portfolio
 namespace: portfolio
 image:
-  repository: ghcr.io/aamini-stack/portfolio
+  repository: aaministack.azurecr.io/portfolio
   policy: portfolio
 stable:
   host: portfolio.ariaamini.com

@@ -1,16 +1,3 @@
-apiVersion: source.toolkit.fluxcd.io/v1
-kind: GitRepository
-metadata:
-  name: aamini-projects
-  namespace: flux-system
-spec:
-  interval: 1m
-  url: https://github.com/aamini-stack/projects
-  ref:
-    branch: ci
-  secretRef:
-    name: github-api-token
----
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
@@ -25,7 +12,7 @@ spec:
   path: ./packages/infra/manifests/platform/crds
   sourceRef:
     kind: GitRepository
-    name: aamini-projects
+    name: flux-system
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
@@ -43,7 +30,7 @@ spec:
     - name: platform-crds
   sourceRef:
     kind: GitRepository
-    name: aamini-projects
+    name: flux-system
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
@@ -65,7 +52,7 @@ spec:
         name: cloudflare-api-token
   sourceRef:
     kind: GitRepository
-    name: aamini-projects
+    name: flux-system
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
@@ -83,12 +70,12 @@ spec:
     - name: platform-controllers
   sourceRef:
     kind: GitRepository
-    name: aamini-projects
+    name: flux-system
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: imdbgraph-stable
+  name: apps-stable
   namespace: flux-system
 spec:
   interval: 10m
@@ -96,31 +83,10 @@ spec:
   timeout: 10m
   prune: true
   wait: true
-  path: ./packages/infra/manifests/apps/imdbgraph/stable
+  path: ./packages/infra/manifests/apps/stable
   dependsOn:
     - name: platform-controllers
     - name: platform-networking
   sourceRef:
     kind: GitRepository
-    name: aamini-projects
----
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
-metadata:
-  name: imdbgraph-preview
-  namespace: flux-system
-spec:
-  interval: 10m
-  retryInterval: 1m
-  timeout: 10m
-  prune: true
-  wait: true
-  path: ./packages/infra/manifests/apps/imdbgraph/preview
-  dependsOn:
-    - name: platform-controllers
-    - name: platform-networking
-    - name: platform-previews
-    - name: imdbgraph-stable
-  sourceRef:
-    kind: GitRepository
-    name: aamini-projects
+    name: flux-system

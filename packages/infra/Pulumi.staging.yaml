@@ -6,6 +6,7 @@ config:
   aamini-platform:resourceGroupName: rg-aamini-staging
   aamini-platform:nodeResourceGroupName: rg-aamini-nodes-staging
 
+  aamini-platform:githubOrganizationName: aamini-stack
   aamini-platform:githubRepositoryName: projects
 
   aamini-platform:aksSpecs:

@@ -7,11 +7,12 @@ const azureConfig = new pulumi.Config('azure-native')
 const location = azureConfig.require('location')
 const subscriptionId = azureConfig.require('subscriptionId')
 const resourceGroupName = config.require('resourceGroupName')
+const githubOrganizationName = config.require('githubOrganizationName')
 const githubRepositoryName = config.require('githubRepositoryName')
 
 const githubOidcSubject =
 	config.get('githubOidcSubject') ??
-	`repo:aamini-stack/${githubRepositoryName}:ref:refs/heads/main`
+	`repo:${githubOrganizationName}/${githubRepositoryName}:ref:refs/heads/main`
 
 const githubActionsIdentity = new azure.managedidentity.UserAssignedIdentity(
 	'github-actions-identity',

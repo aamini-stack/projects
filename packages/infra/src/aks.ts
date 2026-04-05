@@ -9,11 +9,14 @@ const subscriptionId = azureConfig.require('subscriptionId')
 
 const config = new pulumi.Config()
 const resourceGroupName = config.require('resourceGroupName')
+const githubOrganizationName = config.require('githubOrganizationName')
+const githubRepositoryName = config.require('githubRepositoryName')
 const aksSpecs = config.requireObject<{
 	nodeCount: number
 	vmSize: string
 	maxSurge: string
 }>('aksSpecs')
+const githubRepositoryUrl = `https://github.com/${githubOrganizationName}/${githubRepositoryName}`
 
 function createKubernetes() {
 	// AKS Cluster
@@ -142,16 +145,27 @@ function createFlux(k8sProvider: k8s.Provider) {
 		{ provider: k8sProvider },
 	)
 
-	new k8s.helm.v3.Release(
+	const fluxInstance = new k8s.helm.v3.Release(
 		'flux-instance',
 		{
 			chart: 'oci://ghcr.io/controlplaneio-fluxcd/charts/flux-instance',
 			namespace: fluxNamespace.metadata.name,
+			values: {
+				instance: {
+					sync: {
+						kind: 'GitRepository',
+						url: githubRepositoryUrl,
+						ref: 'refs/heads/ci',
+						path: 'packages/infra/manifests/clusters/staging',
+						pullSecret: 'github-api-token',
+					},
+				},
+			},
 		},
 		{ provider: k8sProvider, dependsOn: [fluxOperator] },
 	)
 
-	new k8s.core.v1.Secret(
+	const cloudflareApiToken = new k8s.core.v1.Secret(
 		'cloudflare-api-token',
 		{
 			metadata: {
@@ -165,7 +179,7 @@ function createFlux(k8sProvider: k8s.Provider) {
 		{ provider: k8sProvider },
 	)
 
-	new k8s.core.v1.Secret(
+	const githubApiToken = new k8s.core.v1.Secret(
 		'github-api-token',
 		{
 			metadata: {
@@ -179,6 +193,8 @@ function createFlux(k8sProvider: k8s.Provider) {
 		},
 		{ provider: k8sProvider },
 	)
+
+	return { fluxInstance, cloudflareApiToken, githubApiToken }
 }
 
 const { aksCluster, k8sProvider } = createKubernetes()

@@ -1,0 +1,184 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: imdbgraph
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: imdbgraph-secrets
+  namespace: imdbgraph
+spec:
+  encryptedData:
+    CRON_SECRET: AgBErYYa9rwcQ3xf1Ne1YDw7pWvXBU8TCweoTi0BnSGlKdwSivRpdq1YQGPjZJJPX3Y0tjIJ2Zt2JERE5GljkFZOT2ByAMiG0aO2Tt9OtJMuOsI6GKQ/P2b8Nb/89ddbVvwwmB/5NZICuf/1Ed9GjrvRs0Lm63Nb6sD0d8SJrut5ojTJn8RiapecjHshkIsxxWOcbKQJO9mmYa3EL7Qw1ziMHrQmi6Hk3cXV09o83WnWSP099oWIC+I7czGAoEcw38UvEjfA86ygnA2sb4NkbsC3pTAql6T/U6cm2K5BivUARpfu5L6yHWsqAdIdWPl4+7wv/jN/Yvc08qRgDQBv9170v358/f8pWnuJcMToEj7j4dHNArgQ6c+Ar1m/FnYm+KaristCGv7GX3l+kSKK5IrrXNU1NsY1rT5N6oafLcIQdMNf1SlYsKArFK7DzvmoxSOfluaawlN34PscxqdFLa+y4EmOq/YoUdtRtQ2GZ/boQbS1/CSLrTCzvdZQy6CZiSHrmbfWTxaIsvneDODETm4d3DFOBHC8ccT/xPGZ9VdlkcRkoSPaiCm4AP/uxHSyx71Mg9AZxEvXGvoGtEKukGgKljlE3Zq5jk4mGhcsz2w0mOlQql0G5BOkYyGCAmL63iPWNAPoYbJv9t4FX7q78f5ZrOqb9S+zWY59cz4D9h3b4TTCLOSZNCIgQNMjMP7LEVWkTh5wdMWW04yr7wtgEf4PEVUJ9+mTNdrhp9m8/yEAZN+C2sk=
+    DATABASE_URL: AgArQIYw5St//5qLGCdiR32wyz8nJ27uu/HuUEu0GDGu3REr5CA3dxBSF/q2F5F80hyvA417Wt//bgMZw3L0hiBiWmSY3svn90Oc2vRp16wIDOj6nU+BVk2UQdSe7s2rKATne1tOBntu7XaqUNdJKgsJEStTxQHzU+b6GVvLpP/KaBktztLhpfANwfc+5+PZ8dIw3oJ2c4WGY+ko3Dkk88QAa1gITAOLQkKDf+Hf2hkp22TOEOAeOZyu+yaK29Iz+C2YelhBt0EhYRWooItvURc6KxcJEhaTictGmTl8gRyr6tbwBseAG3CJnSb0wgEENODu0Tlpxwr6JRMSwTHsm0xbQnJcbnkbrdFwddBQRPBSzL71S4GViRs3S9Mra2lGMvAdriKa4ZFlFhjPDAiStOiVsCScO7ZHBhG1HLeVziGz3d7gkcwF3qj3F0cne5DoE+C8lI/IXGK0HzsxczZ5O7m4Jw0pTM2anUEbfYl2m1G29AMrz3D2SOxWM6F5Qlk2sCU0u6nnhnxaKL5frdnC2PxFH/qMc9wdIfn17w0y899LOx/+VUh9y10XqqesnhLWYayEQhdLtnoAd+P409yt8yyVRBUNeWIa2bEeTV71WAArnLxFXYv8IE+SzsIGkI+9JQEnpjGMv/tnIkEiEiPvz/3J8OCRZghQ9w2GtwscCNrZ2gVkbIgaihD1Q/yuzCVI25EwafJpZyTShYu0yqtUNEdWqIsGneDY7oGq/hW2PDkSfcGpOuOMn234AilX3vNSymomMnmoE2mLUZtngq8oNYML5tmke1JIu22hEh2SYT+YO61jcZHOuVpZPiuLgGn9rMk1kbIaNJxIWSJfXBLxqb8037Pwbh25ffvRunoAob+FcNcIsBmKNrzzXM6Fv2trkMD0LV50aV8=
+  template:
+    metadata:
+      name: imdbgraph-secrets
+      namespace: imdbgraph
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: imdbgraph
+  namespace: imdbgraph
+spec:
+  interval: 10m
+  chart:
+    spec:
+      chart: ./packages/infra/charts/app-release
+      sourceRef:
+        kind: GitRepository
+        name: aamini-projects
+        namespace: flux-system
+      interval: 10m
+  values:
+    app:
+      name: imdbgraph
+      namespace: imdbgraph
+    image:
+      repository: aaministack.azurecr.io/imdbgraph
+      tag: latest
+    host: imdbgraph.ariaamini.com
+    envFromSecret: imdbgraph-secrets
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: portfolio
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: portfolio-secrets
+  namespace: portfolio
+spec:
+  encryptedData:
+    MAILGUN_API_KEY: AgCNJDtJGAeohlo9ui+wnMnScezxXbFt84nxX4pyDbdDtZjIdiuCMhN9EDOUhRdv9IxuvUwqazZx/9vOZjZCCfm+YgBqeVBJrnPlA2Klxion8qjUmWkj1UAcMqqyG1ZW5f7zSbPMGxzish6PfmlDZMWQFuPK+/GTY3i+41dnTASJpyMV4GmK76yRotEH0TsKuM39nkegPb8dVRbjc3EWBJKCYsh68Ex4LbI8tTvboiTTGJExqvecyHhbHLUK7lXrVBojt0Ef9RcsvDIPa4xSdR801rc+l372oQ+PLAWVrPnkMjEqg3MFLiBel4q5Q08ncz4hrHdkwD4Rnr+g5u97kfySXKqS/9N+IIx2mmp3i2vY9sP2hbzCtJNzY4khQDVhxnm0GILgfq+pjiIAm4QRVYP9AUl4zXHTe64OYW1UnXqjqmd1LIwgQzNMI23jpHcCpidJaz5DH7uQE9zRGtGGH0YpA1+dP3Sw1NpKPz0dMnt/xo7hBdDafEEC8A4ujpYHl05NRcrOYGsHC3BHguhddVHcTHLDMukgMzpe9HL7rHgWrv3JpAJTuDimHalVjwiyq7NR2AqtBJCESqu0XHNw0snMZ+14rSnrkPREon0bzHOITylHmEk6FEfnDumLyYD6bVPnrkrcz6+RTppT0kKxEzINUGOggYLbWB/7rS8NE2Q1IhMTdEVj5MedVWjlfq9YM9tVVcwCaHcJa2NclA==
+    MAILGUN_DOMAIN: AgBa2KaL0FvsSW/0qpal0DGAJ5sbSoRumzwFASXgjYFe6g8Nb8am9dr/lOnClX3aV2OWpIwvQjNfSWyU+d73sT6joLw4AaCojddANl9eBOLlqLbg7uDqrFcmxeCwWjgRm4yi5wsU6aE+mp80gE2SpteKZp6U3hjXomVRDqqokln2hwSbtK0WrLSF8Yz1rEf6ba43K5ZtaCYQ7IDFCw1sy4Y2+GouqrloRHHJuJQ2j/DzUzGF+2aZ0tN3RIhxMOfZjuHquiCjGVkn+TEYK1xj41byh8FNC5JMC7H0KHCmv8pwIMOcYMohtLreOAa/p1I+g42SbAof5/KxhzewuPuZv/ORMbUSpW6NmnuH0I930c8IZaQMyKkMXiRcBfokBwk3OrAxURcoGzMGShHM+tZ/FZzPiVV1UgsiQDDauVTXsjJStwmESziw7SrdjBop1VsfYVmqtTGvQVcIJNm8Ub9g/pY9R91nAslMGkZnDfxVaODJAUXctKgmgQpDG/ZCkwpHNJ1CKUJoIY0OB1nfL+rzXcVN/M2diK+/2QWaPgj56CxObubMG7RGWZplSyfEZrl3HtgQZ3aR7oh0sfU0Jj5sN4v87cj9vMoNruUSBwa11bNet3bK+zoZoNgTLG6b2rJHEyCznKokQO55Wugp/ChfJbbqII6+wiP3rJ/GdClWOhBcfF4bxCdqUOQxz3g0uNcXbFTPlzCSqNbfc/7Oig==
+  template:
+    metadata:
+      name: portfolio-secrets
+      namespace: portfolio
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: portfolio
+  namespace: portfolio
+spec:
+  interval: 10m
+  chart:
+    spec:
+      chart: ./packages/infra/charts/app-release
+      sourceRef:
+        kind: GitRepository
+        name: aamini-projects
+        namespace: flux-system
+      interval: 10m
+  values:
+    app:
+      name: portfolio
+      namespace: portfolio
+    image:
+      repository: aaministack.azurecr.io/portfolio
+      tag: latest
+    host: portfolio.ariaamini.com
+    envFromSecret: portfolio-secrets
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: portfolio-root-http
+  namespace: portfolio
+spec:
+  parentRefs:
+    - name: traefik-gateway
+      namespace: networking
+      sectionName: web
+  hostnames:
+    - ariaamini.com
+  rules:
+    - filters:
+        - type: RequestRedirect
+          requestRedirect:
+            scheme: https
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: portfolio-root-https
+  namespace: portfolio
+spec:
+  parentRefs:
+    - name: traefik-gateway
+      namespace: networking
+      sectionName: websecure-root
+  hostnames:
+    - ariaamini.com
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: portfolio-service
+          port: 80
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: dota-visualizer
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: dota-visualizer
+  namespace: dota-visualizer
+spec:
+  interval: 10m
+  chart:
+    spec:
+      chart: ./packages/infra/charts/app-release
+      sourceRef:
+        kind: GitRepository
+        name: aamini-projects
+        namespace: flux-system
+      interval: 10m
+  values:
+    app:
+      name: dota-visualizer
+      namespace: dota-visualizer
+    image:
+      repository: aaministack.azurecr.io/dota-visualizer
+      tag: latest
+    host: dota-visualizer.ariaamini.com
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pc-tune-ups
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: pc-tune-ups
+  namespace: pc-tune-ups
+spec:
+  interval: 10m
+  chart:
+    spec:
+      chart: ./packages/infra/charts/app-release
+      sourceRef:
+        kind: GitRepository
+        name: aamini-projects
+        namespace: flux-system
+      interval: 10m
+  values:
+    app:
+      name: pc-tune-ups
+      namespace: pc-tune-ups
+    image:
+      repository: aaministack.azurecr.io/pc-tune-ups
+      tag: latest
+    host: pc-tune-ups.ariaamini.com
