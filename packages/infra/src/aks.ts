@@ -145,15 +145,17 @@ function createFlux(k8sProvider: k8s.Provider) {
 	const fluxOperator = new k8s.helm.v3.Release(
 		'flux-operator-helm-release',
 		{
+			name: 'flux-operator',
 			chart: 'oci://ghcr.io/controlplaneio-fluxcd/charts/flux-operator',
 			namespace: fluxNamespace.metadata.name,
 		},
-		{ provider: k8sProvider },
+		{ provider: k8sProvider, deletedWith: fluxNamespace },
 	)
 
 	new k8s.helm.v3.Release(
 		'flux-instance-helm-release',
 		{
+			name: 'flux',
 			chart: 'oci://ghcr.io/controlplaneio-fluxcd/charts/flux-instance',
 			namespace: fluxNamespace.metadata.name,
 			values: {
@@ -163,12 +165,15 @@ function createFlux(k8sProvider: k8s.Provider) {
 						url: githubRepositoryUrl,
 						ref: 'refs/heads/ci',
 						path: 'packages/infra/manifests/clusters/staging',
-						pullSecret: 'github-api-token',
 					},
 				},
 			},
 		},
-		{ provider: k8sProvider, dependsOn: [fluxOperator] },
+		{
+			provider: k8sProvider,
+			dependsOn: [fluxOperator],
+			deletedWith: fluxNamespace,
+		},
 	)
 
 	new k8s.core.v1.Secret(
