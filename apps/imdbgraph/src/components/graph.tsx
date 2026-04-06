@@ -30,6 +30,7 @@ interface ChartDataPoint {
 export function Graph({ ratings }: { ratings: Ratings }) {
 	const { show } = ratings
 	const { data: chartData, seasons } = transformRatingsData(ratings)
+	const shouldAnimate = import.meta.env.MODE !== 'test'
 	const chartConfig: ChartConfig = {}
 	const chartColors = [
 		'var(--chart-1)',
@@ -93,6 +94,7 @@ export function Graph({ ratings }: { ratings: Ratings }) {
 								type="linear"
 								stroke={chartConfig[`season${seasonNum}`]?.color}
 								strokeWidth={2}
+								isAnimationActive={shouldAnimate}
 								dot={true}
 								connectNulls={false}
 							/>

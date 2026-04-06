@@ -7,10 +7,11 @@ on:
   pull_request:
     branches:
       - main
+  workflow_dispatch:
 
-permissions:
-  contents: write
-  statuses: write
+concurrency:
+  group: ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 env:
   TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
@@ -19,99 +20,100 @@ env:
 jobs:
   quality-checks:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v6
         with:
           node-version: 22
-          cache: 'pnpm'
-      - run: pnpm i
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
       - run: pnpm turbo run format typecheck lint test:unit
 
   integration-tests:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v6
         with:
           node-version: 22
-          cache: 'pnpm'
-      - run: pnpm i
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
       - run: pnpm exec playwright install --with-deps chromium
       - run: pnpm test:integration
 
-  find-apps:
+  deploy-pipeline:
     runs-on: ubuntu-latest
-    outputs:
-      apps: ${{ steps.calculate-apps.outputs.apps }}
+    permissions:
+      contents: read
+      id-token: write
+      pull-requests: read
+    strategy:
+      fail-fast: false
+      matrix:
+        app:
+          - dota-visualizer
+          - imdbgraph
+          - pc-tune-ups
+          - portfolio
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
-      - name: Get Changed Apps
-        id: calculate-apps
-        run: |
-          FILTER="{./apps/*}...[HEAD~...HEAD]"
-          APPS=$(npx turbo@2.5.8 build --filter="$FILTER" --dry=json | jq -c .packages)
-          echo $APPS
-          echo "apps=$APPS" >> $GITHUB_OUTPUT
-
-  e2e:
-    needs: [find-apps]
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        app: ${{ fromJson(needs.find-apps.outputs.apps) }}
-      fail-fast: false
-    steps:
-      # Setup
-      - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v6
         with:
           node-version: 22
-          cache: 'pnpm'
-      - run: pnpm i
-      - run: pnpm exec playwright install --with-deps chromium
-      # Deploy
-      - name: Deploy to Vercel
-        working-directory: ./apps/${{ matrix.app }}
-        run: |
-          pnpm i -g vercel
-          pnpm vercel link \
-            --yes \
-            --repo \
-            --token=${{ secrets.VERCEL_TOKEN }} \
-            --scope=${{ vars.TURBO_TEAM }}
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
 
-          # Add --prod flag if pushing to main branch (not a PR)
-          if [ "${{ github.event_name }}" = "push" ] && [ "${{ github.ref }}" = "refs/heads/main" ]; then
-            PROD_FLAG="--prod"
+      - name: Compute deploy outputs
+        id: deploy
+        run: |
+          ./scripts/bin/aamini ci deploy outputs \
+            --repository "${GITHUB_REPOSITORY}" \
+            --event-name "${GITHUB_EVENT_NAME}" \
+            --event-path "${GITHUB_EVENT_PATH}" \
+            --app "${{ matrix.app }}" \
+            --sha "${{ github.sha }}" \
+            --github-output "${GITHUB_OUTPUT}"
+
+      - name: No-op summary
+        if: steps.deploy.outputs.changed != 'true'
+        run: |
+          if [[ "${{ steps.deploy.outputs.reason }}" == "fork-pr" ]]; then
+            echo "Deploy skipped: fork PR has no deploy secrets"
+          elif [[ "${{ steps.deploy.outputs.reason }}" == "unsupported-event" ]]; then
+            echo "Deploy skipped: event '${{ github.event_name }}' is not a deploy trigger"
           else
-            PROD_FLAG=""
+            echo "No changed apps for ${{ matrix.app }}; skipping build/push/deploy"
           fi
 
-          BASE_URL=$(pnpm vercel \
-            --yes \
-            $PROD_FLAG \
-            --token=${{ secrets.VERCEL_TOKEN }} \
-            --scope=${{ vars.TURBO_TEAM }} \
-            -m githubDeployment='1' \
-            -m githubCommitRef='${{ github.head_ref || github.ref_name }}' \
-            -m githubCommitSha='${{ github.sha }}' \
-          | tail -1)
-          echo BASE_URL=$BASE_URL >> $GITHUB_ENV
-
-      - name: Run Playwright tests
-        working-directory: './apps/${{ matrix.app }}'
-        run: pnpm e2e
-
-      - name: Publish Report
-        uses: actions/upload-artifact@v4
-        if: failure()
+      - uses: azure/login@v2
+        if: steps.deploy.outputs.changed == 'true'
         with:
-          name: playwright-report-${{ matrix.app }}
-          path: './apps/${{ matrix.app }}/playwright-report'
-          retention-days: 30
+          client-id: cf8a46ce-be98-4f8c-acbc-618771c1caba
+          tenant-id: 1eb98549-3952-4fc7-b783-da109d29a89a
+          subscription-id: 331269d5-143f-4246-b389-9c1f41bb5882
+      - name: Login to ACR
+        if: steps.deploy.outputs.changed == 'true'
+        run: az acr login --name aaministack
+
+      - name: Build image
+        if: steps.deploy.outputs.changed == 'true'
+        env:
+          ECR_REGISTRY: aaministack.azurecr.io
+          IMAGE_TAG: ${{ steps.deploy.outputs.image_tag }}
+        run: ./scripts/bin/aamini docker build ${{ matrix.app }}
+
+      - name: Push image
+        if: steps.deploy.outputs.changed == 'true'
+        env:
+          ECR_REGISTRY: aaministack.azurecr.io
+          IMAGE_TAG: ${{ steps.deploy.outputs.image_tag }}
+        run: ./scripts/bin/aamini docker push ${{ matrix.app }}

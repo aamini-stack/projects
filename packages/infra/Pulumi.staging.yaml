@@ -1,32 +1,29 @@
 config:
   # Azure
-  azure-native:resourceGroup: rg-aamini-staging
-  azure-native:nodeResourceGroup: rg-aamini-nodes-staging
   azure-native:location: westus
   azure-native:subscriptionId: 331269d5-143f-4246-b389-9c1f41bb5882
-  aamini-infra:aks:
-    nodeCount: 1
-    vmSize: Standard_D8ds_v5
+
+  aamini-platform:resourceGroupName: rg-aamini-staging
+  aamini-platform:nodeResourceGroupName: rg-aamini-nodes-staging
+
+  aamini-platform:githubOrganizationName: aamini-stack
+  aamini-platform:githubRepositoryName: projects
+
+  aamini-platform:aksSpecs:
     maxSurge: '1'
-  aamini-infra:flux:
-    ociRepository: oci://ghcr.io/aamini-stack/projects-gitops
-    ociTag: latest
-  aamini-infra:fluxOperator:
-    githubRepository: aamini-stack/projects
-    githubSecretName: github-operator-auth
-    registryServer: ghcr.io
-    registryUsername: aamini-stack
-    registrySecretName: ghcr-auth
-  # Postgres
-  aamini-infra:postgres:
+    nodeCount: 1
+    vmSize: Standard_DS2_v2
+
+  aamini-platform:dbSpecs:
+    backupRetentionDays: 7
+    geoRedundantBackup: Disabled
     skuName: Standard_B1ms
     skuTier: Burstable
     storageSizeGb: 32
-    backupRetentionDays: 7
-    geoRedundantBackup: Disabled
-  github:token:
-    secure: AAABAEn5sQBN8aOyIdo5XwUwiG7GJ5Ph+lw1YXhzmkKt6M7iLbNqcSpyBt7IUUQUNTI4qp99/7bhEvgNA+/k4eXcbCUEMirDrzHUmhQdbWwpCUuW+ZgONSohQUBq1d80L2PUjSBdmTWT2sQTg8+ayNs7OWpdm1iveU7ZZro=
-  aamini-infra:postgresAdminPassword:
-    secure: AAABAKE91IagSDI/hctrf8si0Kt7aJ62MFl/vSIJu0zEIZPpd+lCTG8YumF/N7rv
-  cloudflare:apiToken:
-    secure: AAABACByNobnYI4YhGFqM3DS0tG72wzDHXBdRhJosY6kkJyLeV9Xukp8kGK0DA/VUrXqBHyR3camz0YBu4jSN3748qmLUyR7
+
+  aamini-platform:cloudflareApiToken:
+    secure: AAABAEvj2lg+c2ye1m8O526jNsrzDzGorUcOyCCegb0Vo0Hg4iZ66sTO4HiO6SG6/86Gj9/qBaKa9EEgdB69+sq/utOL3Ynb
+  aamini-platform:dbPassword:
+    secure: AAABAAsNrHBK4mJ7UgWepfAMWPyUBOS6Bt3qzegJEtFU27XJlFGrP/EwIEV3ZNjUAywbr6mkm3z1fvM/Odwxqw==
+  aamini-platform:githubApiToken:
+    secure: AAABAIWRulUv/SLLZ6fg/UVl9iBDRyLSwGzW0DqT7IadEZh5/TwgQJxpRaUeN2WDaMLGgIDrXL/QXCSPCOI5S6rD7zbWJGfx03/SzL8HRR3css6seohnG1Pb0IVViGV9QkXE6//J158b8jt9uEpXfYQkGr0TQhG4nakOdEY=

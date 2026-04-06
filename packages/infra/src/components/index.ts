@@ -1,1 +1,1 @@
-export * from './AppDatabase'
+export * from './AppDatabase.ts'
