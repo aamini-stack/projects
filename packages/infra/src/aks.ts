@@ -20,7 +20,7 @@ const githubRepositoryUrl = `https://github.com/${githubOrganizationName}/${gith
 
 function createKubernetes() {
 	// AKS Cluster
-	const aksCluster = new azure.containerservice.ManagedCluster('aks', {
+	const aksCluster = new azure.containerservice.ManagedCluster('aks-cluster', {
 		dnsPrefix: 'aamini-stack',
 		nodeResourceGroup: config.require('nodeResourceGroupName'),
 		resourceGroupName: resourceGroupName,
@@ -56,23 +56,26 @@ function createKubernetes() {
 
 	// Creds
 	const workloadIdentity = new azure.managedidentity.UserAssignedIdentity(
-		'azure-alb-identity',
+		'aks-workload-identity',
 		{
 			location: location,
 			resourceGroupName: resourceGroupName,
 		},
 	)
 
-	const registry = new azure.containerregistry.Registry('registry', {
-		location: 'westus',
-		registryName: 'aaministack',
-		resourceGroupName: resourceGroupName,
-		sku: {
-			name: azure.containerregistry.SkuName.Standard,
+	const registry = new azure.containerregistry.Registry(
+		'aks-container-registry',
+		{
+			location: 'westus',
+			registryName: 'aaministack',
+			resourceGroupName: resourceGroupName,
+			sku: {
+				name: azure.containerregistry.SkuName.Standard,
+			},
 		},
-	})
+	)
 
-	new azure.authorization.RoleAssignment('reader-role', {
+	new azure.authorization.RoleAssignment('aks-reader-role', {
 		roleDefinitionId: `/subscriptions/${subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7`,
 		principalId: workloadIdentity.principalId,
 		scope: aksCluster.nodeResourceGroup.apply(
@@ -81,16 +84,19 @@ function createKubernetes() {
 		principalType: 'ServicePrincipal',
 	})
 
-	new azure.managedidentity.FederatedIdentityCredential('managed-identity', {
-		federatedIdentityCredentialResourceName: workloadIdentity.name,
-		resourceGroupName: resourceGroupName,
-		resourceName: workloadIdentity.name,
-		audiences: ['api://AzureADTokenExchange'],
-		issuer: aksCluster.oidcIssuerProfile.apply((p) => p?.issuerURL || ''),
-		subject: 'system:serviceaccount:azure-alb-system:alb-controller-sa',
-	})
+	new azure.managedidentity.FederatedIdentityCredential(
+		'aks-federated-credential',
+		{
+			federatedIdentityCredentialResourceName: workloadIdentity.name,
+			resourceGroupName: resourceGroupName,
+			resourceName: workloadIdentity.name,
+			audiences: ['api://AzureADTokenExchange'],
+			issuer: aksCluster.oidcIssuerProfile.apply((p) => p?.issuerURL || ''),
+			subject: 'system:serviceaccount:azure-alb-system:alb-controller-sa',
+		},
+	)
 
-	new azure.authorization.RoleAssignment('container-registry-reader-role', {
+	new azure.authorization.RoleAssignment('aks-image-pull-role', {
 		roleDefinitionId: `/subscriptions/${subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/7f951dda-4ed3-4680-a7ca-43fe172d538d`,
 		principalId: aksCluster.identityProfile.apply(
 			(identityProfile) => identityProfile?.kubeletidentity?.objectId || '',
@@ -100,7 +106,7 @@ function createKubernetes() {
 	})
 
 	// Get AKS credentials and update kubeconfig before running Flux
-	new command.local.Command('get-aks-credentials', {
+	new command.local.Command('aks-get-credentials-command', {
 		create: pulumi.interpolate`az aks get-credentials --name ${aksCluster.name} --resource-group ${resourceGroupName} --overwrite-existing`,
 	})
 
@@ -115,7 +121,7 @@ function createKubernetes() {
 		) ?? '',
 	)
 
-	const k8sProvider = new k8s.Provider('k8s-provider', {
+	const k8sProvider = new k8s.Provider('aks-k8s-provider', {
 		kubeconfig,
 	})
 
@@ -127,7 +133,7 @@ function createKubernetes() {
 
 function createFlux(k8sProvider: k8s.Provider) {
 	const fluxNamespace = new k8s.core.v1.Namespace(
-		'flux-system',
+		'flux-system-namespace',
 		{
 			metadata: {
 				name: 'flux-system',
@@ -137,7 +143,7 @@ function createFlux(k8sProvider: k8s.Provider) {
 	)
 
 	const fluxOperator = new k8s.helm.v3.Release(
-		'flux-operator',
+		'flux-operator-helm-release',
 		{
 			chart: 'oci://ghcr.io/controlplaneio-fluxcd/charts/flux-operator',
 			namespace: fluxNamespace.metadata.name,
@@ -145,8 +151,8 @@ function createFlux(k8sProvider: k8s.Provider) {
 		{ provider: k8sProvider },
 	)
 
-	const fluxInstance = new k8s.helm.v3.Release(
-		'flux-instance',
+	new k8s.helm.v3.Release(
+		'flux-instance-helm-release',
 		{
 			chart: 'oci://ghcr.io/controlplaneio-fluxcd/charts/flux-instance',
 			namespace: fluxNamespace.metadata.name,
@@ -165,7 +171,7 @@ function createFlux(k8sProvider: k8s.Provider) {
 		{ provider: k8sProvider, dependsOn: [fluxOperator] },
 	)
 
-	const cloudflareApiToken = new k8s.core.v1.Secret(
+	new k8s.core.v1.Secret(
 		'cloudflare-api-token',
 		{
 			metadata: {
@@ -179,7 +185,7 @@ function createFlux(k8sProvider: k8s.Provider) {
 		{ provider: k8sProvider },
 	)
 
-	const githubApiToken = new k8s.core.v1.Secret(
+	new k8s.core.v1.Secret(
 		'github-api-token',
 		{
 			metadata: {
@@ -194,7 +200,7 @@ function createFlux(k8sProvider: k8s.Provider) {
 		{ provider: k8sProvider },
 	)
 
-	return { fluxInstance, cloudflareApiToken, githubApiToken }
+	return { aksCluster, k8sProvider }
 }
 
 const { aksCluster, k8sProvider } = createKubernetes()
