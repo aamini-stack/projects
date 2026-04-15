@@ -1,10 +1,12 @@
 packages:
   - apps/*
   - apps/*/infra
+  - infra
   - packages/*
   - scripts
 
 onlyBuiltDependencies:
+  - '@lbrlabs/pulumi-awscontroltower'
   - '@pulumi/command'
   - '@pulumi/kubernetes'
   - '@worawat/flux'

@@ -1,0 +1,10 @@
+{
+	"extends": "@aamini/config-typescript/lib",
+	"compilerOptions": {
+		"allowImportingTsExtensions": true,
+		"types": ["node"]
+	},
+	"include": [
+		"src/**/*.ts"
+	]
+}

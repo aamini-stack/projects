@@ -10,6 +10,7 @@ flux2 = "2.7.5"
 "npm:oxlint" = "latest"
 "npm:markdownlint-cli" = "latest"
 "npm:playwriter" = "latest"
+aws-cli = { version = "latest", symlink_bins = "true" }
 
 [env]
 _.path = ["./scripts/bin"]
