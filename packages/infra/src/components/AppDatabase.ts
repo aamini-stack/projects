@@ -55,8 +55,8 @@ export class AppDatabase extends pulumi.ComponentResource {
 				resourceGroupName: args.serverResourceGroupName,
 				serverName: args.serverName,
 				databaseName: args.name,
-				charset: args.charset ?? 'UTF8',
-				collation: args.collation ?? 'en_US.utf8',
+				charset: 'UTF8',
+				collation: 'en_US.utf8',
 			},
 			{ parent: this, dependsOn: [role] },
 		)

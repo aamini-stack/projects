@@ -59,6 +59,7 @@ test('aamini e2e', () => {
 		  -P, --production    Run e2e against production
 		  -a, --all           Run e2e for all apps
 		  --wait              Wait for deployment to be ready before running tests
+		  --update-snapshots  Update Playwright snapshots
 		  -h, --help          display help for command
 		"
 	`)

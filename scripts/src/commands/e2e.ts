@@ -21,6 +21,7 @@ export type E2EOptions = {
 	production?: boolean
 	all?: boolean
 	wait?: boolean
+	updateSnapshots?: boolean
 }
 
 export function createE2ECommand(): Command {
@@ -35,6 +36,7 @@ export function createE2ECommand(): Command {
 		.option('-P, --production', 'Run e2e against production')
 		.option('-a, --all', 'Run e2e for all apps')
 		.option('--wait', 'Wait for deployment to be ready before running tests')
+		.option('--update-snapshots', 'Update Playwright snapshots')
 		.action(
 			async (
 				app: string | undefined,
@@ -103,7 +105,7 @@ export async function runE2E(
 	options: E2EOptions,
 ): Promise<void> {
 	const mode = getMode(options)
-	const targetUrl = getTargetUrl(app, options)
+	const targetUrl = getTargetUrl(app, options) || process.env.BASE_URL || ''
 
 	assertAppExists(repoRoot, app)
 
@@ -123,13 +125,20 @@ export async function runE2E(
 			CI: targetUrl || process.env.CI === 'true' ? 'true' : '',
 		},
 	})
-
-	if (mode === 'local') {
-		await interactive`docker compose -f ${E2E_COMPOSE_FILE} run --build --rm e2e`
+	if (mode === 'local' && !targetUrl) {
+		if (options.updateSnapshots) {
+			await interactive`docker compose -f ${E2E_COMPOSE_FILE} run --build --rm e2e --update-snapshots`
+		} else {
+			await interactive`docker compose -f ${E2E_COMPOSE_FILE} run --build --rm e2e`
+		}
 	} else {
 		// Run e2e against deployed environment
 		await interactive`pnpm --dir ${path.join('apps', app)} exec playwright install --with-deps chromium`
-		await interactive`pnpm --dir ${path.join('apps', app)} exec playwright test`
+		if (options.updateSnapshots) {
+			await interactive`pnpm --dir ${path.join('apps', app)} exec playwright test --update-snapshots`
+		} else {
+			await interactive`pnpm --dir ${path.join('apps', app)} exec playwright test`
+		}
 	}
 }
 
