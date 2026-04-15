@@ -85,13 +85,27 @@ function stylesPlugin(): Plugin {
 
 const stylesSetup = new URL('setup/styles.ts', import.meta.url).pathname
 
+function asPlugins(plugins: unknown[]): NonNullable<ViteUserConfig['plugins']> {
+	return plugins as NonNullable<ViteUserConfig['plugins']>
+}
+
+function mergeProjectConfig(
+	base: TestProjectConfiguration,
+	overrides: TestProjectConfiguration = {},
+): TestProjectConfiguration {
+	return mergeConfig(
+		base as Record<string, any>,
+		overrides as Record<string, any>,
+	) as TestProjectConfiguration
+}
+
 // Auto-detect app-level vitest.setup.ts for custom setup (e.g., MSW server)
 const localSetup = resolve(process.cwd(), 'vitest.setup.ts')
 const hasLocalSetup = existsSync(localSetup)
 
 interface ProjectOverrides {
-	server?: Partial<ViteUserConfig>
-	browser?: Partial<ViteUserConfig>
+	server?: TestProjectConfiguration
+	browser?: TestProjectConfiguration
 }
 
 export const createBaseConfig = (
@@ -100,7 +114,7 @@ export const createBaseConfig = (
 ) =>
 	mergeConfig(
 		defineConfig({
-			plugins: [
+			plugins: asPlugins([
 				tsconfigPaths(),
 				tailwindcss(),
 				viteReact({
@@ -112,7 +126,7 @@ export const createBaseConfig = (
 					include: '**/*.svg',
 					svgrOptions: { exportType: 'default' },
 				}),
-			],
+			]),
 			test: {
 				passWithNoTests: true,
 				projects: [
@@ -123,7 +137,7 @@ export const createBaseConfig = (
 							include: ['src/**/*.test.unit.ts'],
 						},
 					},
-					mergeConfig(
+					mergeProjectConfig(
 						{
 							extends: true,
 							plugins: [mswHandlersPlugin()],
@@ -137,7 +151,7 @@ export const createBaseConfig = (
 						} satisfies TestProjectConfiguration,
 						projectOverrides.server ?? {},
 					),
-					mergeConfig(
+					mergeProjectConfig(
 						{
 							extends: true,
 							plugins: [mswHandlersPlugin(), stylesPlugin()],
