@@ -3,23 +3,12 @@ import * as postgresql from '@pulumi/postgresql'
 import * as pulumi from '@pulumi/pulumi'
 
 export interface AppDatabaseArgs {
-	/** Database name (e.g., "imdbgraph") */
 	name: pulumi.Input<string>
-	/** Server resource group name */
 	serverResourceGroupName: pulumi.Input<string>
-	/** Server name */
 	serverName: pulumi.Input<string>
-	/** FQDN of the PostgreSQL server */
 	serverHost: pulumi.Input<string>
-	/** Admin username for the PostgreSQL server */
 	adminUser: pulumi.Input<string>
-	/** Admin password for the PostgreSQL server */
 	adminPassword: pulumi.Input<string>
-	/** Charset (default: UTF8) */
-	charset?: pulumi.Input<string>
-	/** Collation (default: en_US.utf8) */
-	collation?: pulumi.Input<string>
-	/** App user password */
 	userPassword: pulumi.Input<string>
 }
 
@@ -35,7 +24,6 @@ export class AppDatabase extends pulumi.ComponentResource {
 	) {
 		super('aamini:infra:AppDatabase', name, {}, opts)
 
-		// Create a PostgreSQL provider using admin credentials
 		const pgProvider = new postgresql.Provider(
 			`${name}-pg-provider`,
 			{
@@ -50,7 +38,6 @@ export class AppDatabase extends pulumi.ComponentResource {
 
 		const appUserName = pulumi.output(args.name).apply((n) => `${n}_user`)
 
-		// Create the PostgreSQL role for the app user
 		const role = new postgresql.Role(
 			`${name}-db-role`,
 			{
@@ -74,7 +61,6 @@ export class AppDatabase extends pulumi.ComponentResource {
 			{ parent: this, dependsOn: [role] },
 		)
 
-		// Grant all privileges on the database to the app user
 		new postgresql.Grant(
 			`${name}-db-grant`,
 			{
