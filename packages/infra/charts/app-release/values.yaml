@@ -1,5 +1,5 @@
 image:
-  repository: ghcr.io/aamini-stack/app
+  repository: aaministack.azurecr.io/app
   tag: latest
 app:
   name: app-release

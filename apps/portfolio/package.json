@@ -58,7 +58,7 @@
 		"@aamini/config-testing": "workspace:*",
 		"@aamini/config-typescript": "workspace:*",
 		"@aamini/config-vite": "workspace:*",
-		"@playwright/test": "^1.58.2",
+		"@playwright/test": "^1.59.1",
 		"@tailwindcss/vite": "^4.2.1",
 		"@tanstack/devtools-vite": "^0.5.3",
 		"@types/node": "^25.4.0",

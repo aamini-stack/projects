@@ -3,7 +3,7 @@
 // oxlint-disable no-empty-pattern
 import handlers from '@test/handlers'
 import type { NodePgDatabase } from 'drizzle-orm/node-postgres'
-import { setupServer, type SetupServerApi } from 'msw/node'
+import { setupServer, SetupServer } from 'msw/node'
 import { resolve } from 'node:path'
 import type { Pool } from 'pg'
 import { test as baseTest } from 'vitest'
@@ -19,7 +19,7 @@ export type Database = NodePgDatabase & {
 }
 
 export interface DbFixture {
-	server: SetupServerApi
+	server: SetupServer
 	_cleanup: void
 	db: Database
 	seedFunction: (db: Database) => Promise<void>
@@ -88,7 +88,7 @@ export const test = baseTest.extend<DbFixture>({
 })
 
 export function initDb(seedFunction: (db: Database) => Promise<void>) {
-	test.scoped({
+	test.override({
 		seedFunction: [async ({}, use) => use(seedFunction), { scope: 'file' }],
 	})
 }

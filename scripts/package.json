@@ -10,12 +10,14 @@
 	},
 	"devDependencies": {
 		"@aamini/config-typescript": "workspace:*",
+		"@types/libsodium-wrappers": "^0.8.2",
 		"typescript": "5.9.3",
 		"vitest": "^4.0.18"
 	},
 	"dependencies": {
 		"commander": "^14.0.3",
 		"glob": "^13.0.6",
+		"libsodium-wrappers": "^0.8.3",
 		"zx": "^8.8.5"
 	}
 }

@@ -12,6 +12,7 @@ type SealTarget = {
 	appDir: string
 	envFile: string
 	output: string
+	stableOutput: string
 }
 
 type CommandResult = {
@@ -25,6 +26,7 @@ type RunCommandInput = {
 }
 
 type SealAllOptions = {
+	apps?: string[]
 	runCommand?: (input: RunCommandInput) => Promise<CommandResult>
 }
 
@@ -39,18 +41,26 @@ export function createSecretsCommand(): Command {
 
 	cli
 		.command('seal')
-		.description('Seal all app secrets')
-		.action(async () => {
+		.description('Seal app secrets')
+		.argument('[app]', 'App name to seal')
+		.option('--all', 'Seal every app with a local env file')
+		.action(async (app: string | undefined) => {
 			const repoRoot = await getRepoRoot()
-			await sealAll(repoRoot)
+			await sealAll(repoRoot, {
+				apps: parseApps(repoRoot, app ? [app] : ['--all']),
+			})
 		})
 
 	cli
 		.command('unseal')
-		.description('Unseal all app secrets')
-		.action(async () => {
+		.description('Unseal app secrets')
+		.argument('[app]', 'App name to unseal')
+		.option('--all', 'Unseal every app that has a sealed secret manifest')
+		.action(async (app: string | undefined) => {
 			const repoRoot = await getRepoRoot()
-			await unsealAll(repoRoot)
+			await unsealAll(repoRoot, {
+				apps: parseApps(repoRoot, app ? [app] : ['--all']),
+			})
 		})
 
 	cli.action(() => {
@@ -60,8 +70,11 @@ export function createSecretsCommand(): Command {
 	return cli
 }
 
-function findSealTargets(repoRoot: string): SealTarget[] {
-	return listAppDirectories(repoRoot)
+function findSealTargets(
+	repoRoot: string,
+	apps = listAppDirectories(repoRoot),
+): SealTarget[] {
+	return apps
 		.map((app) => {
 			const appDir = path.join(repoRoot, 'apps', app)
 			return {
@@ -69,9 +82,27 @@ function findSealTargets(repoRoot: string): SealTarget[] {
 				appDir,
 				envFile: path.join(appDir, '.env.local'),
 				output: path.join(appDir, 'k8s', 'sealed-secret.yaml'),
+				stableOutput: path.join(
+					repoRoot,
+					'packages',
+					'infra',
+					'manifests',
+					'apps',
+					'stable',
+					`${app}-sealed-secret.yaml`,
+				),
 			}
 		})
 		.filter((target) => fs.existsSync(target.envFile))
+}
+
+function syncStableManifest(target: SealTarget, yaml: string): void {
+	if (!fs.existsSync(target.stableOutput)) {
+		return
+	}
+
+	fs.writeFileSync(target.stableOutput, yaml)
+	console.log(`Synced to ${target.stableOutput}`)
 }
 
 function normalizeSealedSecretYaml(yaml: string, _app: string): string {
@@ -137,12 +168,14 @@ async function fetchSealingCert(
 
 export async function sealAll(
 	repoRoot: string,
-	{ runCommand = runCommandWithZx }: SealAllOptions = {},
+	{ apps, runCommand = runCommandWithZx }: SealAllOptions = {},
 ): Promise<void> {
-	const targets = findSealTargets(repoRoot)
+	const targets = findSealTargets(repoRoot, apps)
 	if (targets.length === 0) {
 		throw new Error(
-			'No .env.local files found in apps/*/.env.local. Create environment files before sealing.',
+			apps?.length
+				? `No .env.local files found for ${apps.join(', ')}. Create environment files before sealing.`
+				: 'No .env.local files found in apps/*/.env.local. Create environment files before sealing.',
 		)
 	}
 
@@ -189,11 +222,13 @@ export async function sealAll(
 				input: created.stdout,
 			})
 
-			fs.writeFileSync(
-				target.output,
-				normalizeSealedSecretYaml(sealed.stdout, target.app),
+			const normalizedYaml = normalizeSealedSecretYaml(
+				sealed.stdout,
+				target.app,
 			)
+			fs.writeFileSync(target.output, normalizedYaml)
 			console.log(`Written to ${target.output}`)
+			syncStableManifest(target, normalizedYaml)
 		} catch (error) {
 			const message = error instanceof Error ? error.message : String(error)
 			throw new Error(`Failed to seal ${target.app}: ${message}`)
@@ -264,7 +299,10 @@ function parseTemplateMetadata(
 	return { name, namespace }
 }
 
-export async function unsealAll(repoRoot: string): Promise<void> {
+export async function unsealAll(
+	repoRoot: string,
+	{ apps = listAppDirectories(repoRoot) }: { apps?: string[] } = {},
+): Promise<void> {
 	const { $ } = await import('zx')
 	const contextResult = await $({
 		cwd: repoRoot,
@@ -307,7 +345,7 @@ export async function unsealAll(repoRoot: string): Promise<void> {
 	const defaultSecretName = process.env.SEALED_SECRET_NAME ?? ''
 	const defaultNamespace = process.env.SEALED_SECRET_NAMESPACE ?? ''
 
-	for (const app of listAppDirectories(repoRoot)) {
+	for (const app of apps) {
 		const appDir = path.join(repoRoot, 'apps', app)
 		const sealedSecretFile = path.join(appDir, 'k8s', 'sealed-secret.yaml')
 		const envFile = path.join(appDir, '.env.local')

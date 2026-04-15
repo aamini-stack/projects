@@ -42,7 +42,7 @@ USER app
 EXPOSE ${PORT}
 CMD ["node", ".output/server/index.mjs"]
 
-FROM mcr.microsoft.com/playwright:v1.58.2-noble AS e2e
+FROM mcr.microsoft.com/playwright:v1.59.1-noble AS e2e
 ARG APP_NAME
 ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0
 RUN corepack enable && corepack install -g pnpm@10.29.3
