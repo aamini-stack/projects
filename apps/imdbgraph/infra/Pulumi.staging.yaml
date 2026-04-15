@@ -1,4 +1,4 @@
 config:
   azure-native:resourceGroup: rg-aamini-staging
   imdbgraph-infra:dbPassword:
-    secure: AAABAIZ9BsakkW7pbCEfpDlks4YAKYfPP2difGbkASC0t4VOTnMOhHSst3CkQiCs2wikaJSSbKa1q+Ek8WpnDg==
+    secure: AAABAKe9/U7f60gMMS9MbI/SVlDw7MCbApzRtkhl5Yo746dt94G9ssjkPqXowEDk+fTFAF+dWMz9lnWOQpyKBhy9ll6KQ+eDnG3tT+i8sB2d+xRV0+wjiZ+96o5WtMz3CPZjaXvNy1QW/4eWzSpohljDf2hNPgbdCOQFeoD4ULxM67Ht53JCkURHBNeg6TgjK6lzVaiS58Ou

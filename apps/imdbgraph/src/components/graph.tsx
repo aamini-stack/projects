@@ -91,6 +91,7 @@ export function Graph({ ratings }: { ratings: Ratings }) {
 								key={seasonNum}
 								dataKey={`season${seasonNum}`}
 								type="linear"
+								isAnimationActive={false}
 								stroke={chartConfig[`season${seasonNum}`]?.color}
 								strokeWidth={2}
 								dot={true}

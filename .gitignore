@@ -2,9 +2,9 @@
 
 # env files
 .env*.local
+.mise.local.toml
 
 # Build
-#TODO: remove astro + dist
 .turbo
 .vercel
 .output

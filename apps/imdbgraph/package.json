@@ -17,8 +17,6 @@
 		"e2e": "node --experimental-strip-types ../../scripts/src/aamini.ts e2e imdbgraph",
 		"e2e:staging": "BASE_URL=https://imdbgraph.ariaamini.com pnpm playwright test",
 		"e2e:update": "node --experimental-strip-types ../../scripts/src/aamini.ts e2e imdbgraph --update-snapshots",
-		"docker:build": "node --experimental-strip-types ../../scripts/src/aamini.ts build imdbgraph",
-		"docker:push": "node --experimental-strip-types ../../scripts/src/aamini.ts push imdbgraph",
 		"report": "playwright show-report",
 		"verify": "turbo run build test typecheck e2e",
 		"populate": "tsx --env-file .env.local scripts/populate-db.ts"

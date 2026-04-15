@@ -2,7 +2,7 @@
 	"name": "imdbgraph-infra",
 	"main": "index.ts",
 	"scripts": {
-		"typecheck": "tsc --noEmit --module esnext --moduleResolution bundler --target es2022 index.ts",
+		"typecheck": "tsc -p tsconfig.json",
 		"verify": "turbo run typecheck"
 	},
 	"dependencies": {

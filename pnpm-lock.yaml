@@ -896,9 +896,9 @@ importers:
 
   scripts:
     dependencies:
-      cac:
-        specifier: ^7.0.0
-        version: 7.0.0
+      commander:
+        specifier: ^14.0.3
+        version: 14.0.3
       glob:
         specifier: ^13.0.6
         version: 13.0.6
@@ -906,9 +906,6 @@ importers:
         specifier: ^8.8.5
         version: 8.8.5
     devDependencies:
-      '@aamini/config-testing':
-        specifier: workspace:*
-        version: link:../packages/config-testing
       '@aamini/config-typescript':
         specifier: workspace:*
         version: link:../packages/config-typescript
@@ -4135,10 +4132,6 @@ packages:
     resolution: {integrity: sha512-s6webAy+R4SR8XVuJWt2V2rGvhnrhxN+9S15GNuTK3wKPOXFF6RNc+8ug2XhH+2s4f+uudG4kUVYmYOQWL2g0Q==}
     engines: {node: '>=0.10.0'}
 
-  cac@7.0.0:
-    resolution: {integrity: sha512-tixWYgm5ZoOD+3g6UTea91eow5z6AAHaho3g0V9CNSNb45gM8SmflpAc+GRd1InC4AqN/07Unrgp56Y94N9hJQ==}
-    engines: {node: '>=20.19.0'}
-
   cacache@20.0.3:
     resolution: {integrity: sha512-3pUp4e8hv07k1QlijZu6Kn7c9+ZpWWk4j3F8N3xPuCExULobqJydKYOTj1FTq58srkJsXvO7LbGAH4C0ZU3WGw==}
     engines: {node: ^20.17.0 || >=22.9.0}
@@ -4240,6 +4233,10 @@ packages:
   combined-stream@1.0.8:
     resolution: {integrity: sha512-FQN4MRfuJeHf7cBbBMJFXhKSDq+2kAArBlmRBvcvFE5BB1HZKXtSFASDhdlz9zOYwxh8lDdnvmMOe/+5cdoEdg==}
     engines: {node: '>= 0.8'}
+
+  commander@14.0.3:
+    resolution: {integrity: sha512-H+y0Jo/T1RZ9qPP4Eh1pkcQcLRglraJaSLoyOtHxu6AapkjWVCy2Sit1QQ4x3Dng8qDlSsZEet7g5Pq06MvTgw==}
+    engines: {node: '>=20'}
 
   comment-parser@1.4.5:
     resolution: {integrity: sha512-aRDkn3uyIlCFfk5NUA+VdwMmMsh8JGhc4hapfV4yxymHGQ3BVskMQfoXGpCo5IoBuQ9tS5iiVKhCpTcB4pW4qw==}
@@ -9858,8 +9855,6 @@ snapshots:
 
   byline@5.0.0: {}
 
-  cac@7.0.0: {}
-
   cacache@20.0.3:
     dependencies:
       '@npmcli/fs': 5.0.0
@@ -9990,6 +9985,8 @@ snapshots:
   combined-stream@1.0.8:
     dependencies:
       delayed-stream: 1.0.0
+
+  commander@14.0.3: {}
 
   comment-parser@1.4.5: {}
 
