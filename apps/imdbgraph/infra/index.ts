@@ -8,17 +8,15 @@ const dbPassword = config.requireSecret('dbPassword')
 // Reference the global infrastructure stack using the current stack's environment name
 const currentStack = pulumi.getStack()
 const globalStack = new pulumi.StackReference(
-	`aamini11/aamini-infra/${currentStack}`,
+	`aamini11/aamini-platform/${currentStack}`,
 )
 
 // Get server details from global stack
 const serverResourceGroup = azureConfig.require('resourceGroup')
 const serverName = globalStack
 	.getOutput('postgres')
-	.apply((pg: any) => pg.postgresServerName)
-const dbHost = globalStack
-	.getOutput('postgres')
-	.apply((pg: any) => pg.postgresHost)
+	.apply((pg) => pg.postgresServerName)
+const dbHost = globalStack.getOutput('postgres').apply((pg) => pg.postgresHost)
 
 // Create app database using shared component
 const appDb = new AppDatabase('imdbgraph', {
@@ -28,10 +26,10 @@ const appDb = new AppDatabase('imdbgraph', {
 	serverHost: dbHost,
 	adminUser: globalStack
 		.getOutput('postgres')
-		.apply((pg: any) => pg.postgresAdminUser),
+		.apply((pg) => pg.postgresAdminUser),
 	adminPassword: globalStack
 		.getOutput('postgres')
-		.apply((pg: any) => pg.postgresAdminPassword),
+		.apply((pg) => pg.postgresAdminPassword),
 	userPassword: dbPassword,
 })
 
