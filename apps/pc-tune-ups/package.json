@@ -20,8 +20,6 @@
 		"e2e": "node --experimental-strip-types ../../scripts/src/aamini.ts e2e pc-tune-ups",
 		"e2e:staging": "BASE_URL=https://pc-tune-ups.ariaamini.com pnpm playwright test",
 		"e2e:update": "node --experimental-strip-types ../../scripts/src/aamini.ts e2e pc-tune-ups --update-snapshots",
-		"docker:build": "node --experimental-strip-types ../../scripts/src/aamini.ts build pc-tune-ups",
-		"docker:push": "node --experimental-strip-types ../../scripts/src/aamini.ts push pc-tune-ups",
 		"report": "playwright show-report",
 		"verify": "turbo run build test typecheck e2e"
 	},
