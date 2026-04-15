@@ -19,6 +19,23 @@ async function getRepoRoot(): Promise<string> {
 	return path.resolve(helpersDir, '..', '..')
 }
 
+function getRepoRootSync(): string {
+	let current = path.resolve(process.cwd())
+
+	while (true) {
+		if (fs.existsSync(path.join(current, '.git'))) {
+			return current
+		}
+
+		const parent = path.dirname(current)
+		if (parent === current) {
+			return process.cwd()
+		}
+
+		current = parent
+	}
+}
+
 function listAppDirectories(repoRoot: string): string[] {
 	const appsDir = path.join(repoRoot, 'apps')
 	if (!fs.existsSync(appsDir)) {
@@ -38,4 +55,4 @@ function assertAppExists(repoRoot: string, app: string): void {
 	}
 }
 
-export { assertAppExists, getRepoRoot, listAppDirectories }
+export { assertAppExists, getRepoRoot, getRepoRootSync, listAppDirectories }
