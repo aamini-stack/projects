@@ -3,7 +3,7 @@
 	"include": ["**/*.ts", "**/*.tsx"],
 	"exclude": [".output"],
 	"compilerOptions": {
-		"types": ["vite-plugin-svgr/client"],
+		"types": ["vite-plugin-svgr/client", "@testing-library/jest-dom"],
 		"paths": {
 			"@/*": ["./src/*"],
 			"@/mocks/*": ["./__mocks__/*"]

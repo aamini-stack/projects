@@ -2,6 +2,7 @@ import * as azure from '@pulumi/azure-native'
 import * as k8s from '@pulumi/kubernetes'
 import * as pulumi from '@pulumi/pulumi'
 import { resourceGroup } from './resource-groups'
+import { ManagedCluster } from '@pulumi/azure-native/containerservice'
 
 const azureConfig = new pulumi.Config('azure-native')
 const location = azureConfig.require('location')
@@ -124,13 +125,10 @@ function createKubernetes() {
 		principalType: 'ServicePrincipal',
 	})
 
-	const creds = azure.containerservice.listManagedClusterUserCredentialsOutput(
-		{
-			resourceGroupName: resourceGroup.name,
-			resourceName: aksCluster.name,
-		},
-		{ dependsOn: [aksCluster] },
-	)
+	const creds = azure.containerservice.listManagedClusterUserCredentialsOutput({
+		resourceGroupName: resourceGroup.name,
+		resourceName: aksCluster.name,
+	})
 
 	const kubeconfig = pulumi.secret(
 		creds.kubeconfigs[0]?.value.apply((enc: string) =>
@@ -149,7 +147,7 @@ function createKubernetes() {
 	}
 }
 
-function createFlux(k8sProvider: k8s.Provider) {
+function createFlux(k8sProvider: k8s.Provider, aksCluster: ManagedCluster) {
 	const fluxNamespace = new k8s.core.v1.Namespace(
 		'flux-system-namespace',
 		{
@@ -157,7 +155,7 @@ function createFlux(k8sProvider: k8s.Provider) {
 				name: 'flux-system',
 			},
 		},
-		{ provider: k8sProvider },
+		{ provider: k8sProvider, deletedWith: aksCluster },
 	)
 
 	const fluxOperator = new k8s.helm.v3.Release(
@@ -167,7 +165,7 @@ function createFlux(k8sProvider: k8s.Provider) {
 			chart: 'oci://ghcr.io/controlplaneio-fluxcd/charts/flux-operator',
 			namespace: fluxNamespace.metadata.name,
 		},
-		{ provider: k8sProvider, deletedWith: fluxNamespace },
+		{ provider: k8sProvider, deletedWith: aksCluster },
 	)
 
 	new k8s.helm.v3.Release(
@@ -190,7 +188,7 @@ function createFlux(k8sProvider: k8s.Provider) {
 		{
 			provider: k8sProvider,
 			dependsOn: [fluxOperator],
-			deletedWith: fluxNamespace,
+			deletedWith: aksCluster,
 		},
 	)
 
@@ -227,7 +225,7 @@ function createFlux(k8sProvider: k8s.Provider) {
 }
 
 const { aksCluster, ingressPublicIp, k8sProvider } = createKubernetes()
-createFlux(k8sProvider)
+createFlux(k8sProvider, aksCluster)
 
 // Outputs
 export const aksClusterId = aksCluster.id

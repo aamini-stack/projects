@@ -12,6 +12,7 @@
 		"**/.output",
 		"pnpm-lock.yaml",
 		"routeTree.gen.ts",
-		"packages/infra/manifests/gitops/flux-system/gotk-components.yaml"
+		"packages/infra/manifests/gitops/flux-system/gotk-components.yaml",
+		"packages/infra/charts/**/templates/**/*.{yml,yaml}"
 	]
 }

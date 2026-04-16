@@ -5,12 +5,14 @@ import { userEvent } from 'vitest/browser'
 
 test('render card', async () => {
 	const screen = await render(<ContactCard />)
-	expect(screen.getByText('Reach out!')).toBeInTheDocument()
+	await expect.element(screen.getByText('Reach out!')).toBeInTheDocument()
 })
 
 test('empty email', async () => {
 	const screen = await render(<ContactCard />)
 	const submitButton = screen.getByRole('button', { name: /send message/i })
 	await userEvent.click(submitButton)
-	expect(screen.getByText(/Invalid email address/i)).toBeInTheDocument()
+	await expect
+		.element(screen.getByText(/Invalid email address/i))
+		.toBeInTheDocument()
 })

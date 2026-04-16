@@ -2,6 +2,7 @@
 
 # env files
 .env*.local
+env.d.ts
 .mise.local.toml
 
 # Build
