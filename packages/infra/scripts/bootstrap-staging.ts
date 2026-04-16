@@ -243,11 +243,8 @@ async function main() {
 	)
 
 	const currentClientSecret =
-		process.env.ARM_CLIENT_SECRET ??
 		process.env.AZURE_CLIENT_SECRET ??
-		existingEnv.ARM_CLIENT_SECRET ??
 		existingEnv.AZURE_CLIENT_SECRET ??
-		existingMise.ARM_CLIENT_SECRET ??
 		existingMise.AZURE_CLIENT_SECRET
 	const shouldResetSpSecret = envBoolean(
 		'RESET_SP_SECRET',
@@ -316,10 +313,6 @@ async function main() {
 	}
 
 	const envFile = [
-		`ARM_CLIENT_ID=${servicePrincipal.appId}`,
-		`ARM_CLIENT_SECRET=${clientSecret}`,
-		`ARM_SUBSCRIPTION_ID=${subscriptionId}`,
-		`ARM_TENANT_ID=${tenantId}`,
 		`AZURE_CLIENT_ID=${servicePrincipal.appId}`,
 		`AZURE_CLIENT_SECRET=${clientSecret}`,
 		`AZURE_SUBSCRIPTION_ID=${subscriptionId}`,
@@ -328,10 +321,6 @@ async function main() {
 	].join('\n')
 	const miseFile = [
 		'[env]',
-		`ARM_CLIENT_ID = ${toTomlString(servicePrincipal.appId)}`,
-		`ARM_CLIENT_SECRET = ${toTomlString(clientSecret)}`,
-		`ARM_SUBSCRIPTION_ID = ${toTomlString(subscriptionId)}`,
-		`ARM_TENANT_ID = ${toTomlString(tenantId)}`,
 		`AZURE_CLIENT_ID = ${toTomlString(servicePrincipal.appId)}`,
 		`AZURE_CLIENT_SECRET = ${toTomlString(clientSecret)}`,
 		`AZURE_SUBSCRIPTION_ID = ${toTomlString(subscriptionId)}`,
