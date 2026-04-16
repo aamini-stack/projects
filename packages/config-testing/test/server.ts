@@ -2,11 +2,11 @@
 /// <reference path="../virtual-modules.d.ts" />
 // oxlint-disable no-empty-pattern
 import handlers from '@test/handlers'
-import { setupServer, type SetupServerApi } from 'msw/node'
+import { SetupServer, setupServer } from 'msw/node'
 import { test as baseTest } from 'vitest'
 
 export interface MswServerFixture {
-	server: SetupServerApi
+	server: SetupServer
 	_cleanup: void
 }
 

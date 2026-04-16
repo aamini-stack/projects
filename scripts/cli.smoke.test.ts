@@ -36,6 +36,8 @@ test('aamini', () => {
 		  secrets              Manage secrets
 		  ci                   CI utilities
 		  pm [options]         Project management
+		  env                  Sync local env files to GitHub Actions variables and
+		                       secrets
 		  help [command]       display help for command
 		"
 	`)
@@ -74,11 +76,11 @@ test('aamini secrets', () => {
 		Manage secrets
 
 		Options:
-		  -h, --help  display help for command
+		  -h, --help              display help for command
 
 		Commands:
-		  seal        Seal all app secrets
-		  unseal      Unseal all app secrets
+		  seal [options] [app]    Seal app secrets
+		  unseal [options] [app]  Unseal app secrets
 		"
 	`)
 	expect(runCommand(['secrets', '--help'])).toEqual(secretsHelp)

@@ -4,11 +4,11 @@ import { initDb, test } from '@aamini/config-testing/test/db'
 import { describe, expect } from 'vitest'
 import { shows } from './__fixtures__/shows'
 
-describe('search tests', () => {
-	initDb(async (db) => {
-		await db.insert(show).values(shows)
-	})
+initDb(async (db) => {
+	await db.insert(show).values(shows)
+})
 
+describe('search tests', () => {
 	test('exact title', async ({ db }) => {
 		const results = await fetchSuggestions(db, 'Game of Thrones')
 		expect(results[0]).toEqual({

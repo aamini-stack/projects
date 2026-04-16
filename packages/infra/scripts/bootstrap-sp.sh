@@ -1,18 +1,14 @@
 #!/usr/bin/env bash
 #
-# Creates the staging resource-group boundary and scopes the Pulumi principal to it.
-# Run with a privileged bootstrap identity, then run Pulumi with the restricted principal.
+# Creates the staging service principal and grants subscription-scoped access.
+# Run with a privileged bootstrap identity, then run Pulumi with the service principal.
 #
 set -euo pipefail
 
 SUBSCRIPTION_ID="${SUBSCRIPTION_ID:-331269d5-143f-4246-b389-9c1f41bb5882}"
-LOCATION="${LOCATION:-westus}"
-RESOURCE_GROUP="${RESOURCE_GROUP:-rg-aamini-staging}"
-NODE_RESOURCE_GROUP="${NODE_RESOURCE_GROUP:-rg-aamini-nodes-staging}"
-SERVICE_PRINCIPAL_NAME="aamini-infra-staging"
+SERVICE_PRINCIPAL_NAME="aamini-platform-staging"
 
-RG_SCOPE="/subscriptions/${SUBSCRIPTION_ID}/resourceGroups/${RESOURCE_GROUP}"
-NODE_RG_SCOPE="/subscriptions/${SUBSCRIPTION_ID}/resourceGroups/${NODE_RESOURCE_GROUP}"
+SUBSCRIPTION_SCOPE="/subscriptions/${SUBSCRIPTION_ID}"
 
 resolve_service_principal() {
 	local object_id
@@ -53,13 +49,9 @@ ensure_role_assignment() {
 
 az account set --subscription "$SUBSCRIPTION_ID"
 
-az group create --name "$RESOURCE_GROUP" --location "$LOCATION" >/dev/null
-az group create --name "$NODE_RESOURCE_GROUP" --location "$LOCATION" >/dev/null
-
-ensure_role_assignment "$RG_SCOPE" "Contributor"
-ensure_role_assignment "$RG_SCOPE" "Azure Kubernetes Service Cluster User Role"
-ensure_role_assignment "$NODE_RG_SCOPE" "Contributor"
-ensure_role_assignment "$NODE_RG_SCOPE" "User Access Administrator"
+ensure_role_assignment "$SUBSCRIPTION_SCOPE" "Contributor"
+ensure_role_assignment "$SUBSCRIPTION_SCOPE" "User Access Administrator"
+ensure_role_assignment "$SUBSCRIPTION_SCOPE" "Azure Kubernetes Service Cluster User Role"
 
 printf '\nReset client secret for %s and print it now? [y/N] ' "$SERVICE_PRINCIPAL_NAME"
 read -r should_reset_secret

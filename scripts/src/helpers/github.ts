@@ -44,7 +44,7 @@ function getGitHubToken(): string {
 
 export async function githubRequest<T>(input: {
 	body?: unknown
-	method?: 'GET' | 'POST'
+	method?: 'DELETE' | 'GET' | 'PATCH' | 'POST' | 'PUT'
 	path: string
 	query?: Record<string, number | string | undefined>
 }): Promise<T> {

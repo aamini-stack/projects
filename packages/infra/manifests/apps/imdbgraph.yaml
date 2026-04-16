@@ -1,7 +1,7 @@
 name: imdbgraph
 namespace: imdbgraph
 image:
-  repository: ghcr.io/aamini-stack/imdbgraph
+  repository: aaministack.azurecr.io/imdbgraph
   policy: imdbgraph
 stable:
   host: imdbgraph.ariaamini.com

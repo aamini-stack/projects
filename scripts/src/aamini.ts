@@ -4,6 +4,7 @@ import { createE2ECommand } from './commands/e2e.ts'
 import { createSecretsCommand } from './commands/secrets.ts'
 import { createCICommand } from './commands/ci.ts'
 import { createPMCommand } from './commands/pm.ts'
+import { createEnvCommand } from './commands/env.ts'
 
 async function main(): Promise<void> {
 	const program = new Command()
@@ -15,6 +16,7 @@ async function main(): Promise<void> {
 	program.addCommand(createSecretsCommand())
 	program.addCommand(createCICommand())
 	program.addCommand(createPMCommand())
+	program.addCommand(createEnvCommand())
 
 	void program.parseAsync(process.argv)
 }

@@ -38,17 +38,6 @@ export class AppDatabase extends pulumi.ComponentResource {
 
 		const appUserName = pulumi.output(args.name).apply((n) => `${n}_user`)
 
-		const role = new postgresql.Role(
-			`${name}-db-role`,
-			{
-				name: appUserName,
-				login: true,
-				password: args.userPassword,
-			},
-			{ parent: this, provider: pgProvider },
-		)
-
-		// Create the database after the app role so destroy tears down the database first.
 		const database = new azure.dbforpostgresql.Database(
 			`${name}-db`,
 			{
@@ -58,7 +47,22 @@ export class AppDatabase extends pulumi.ComponentResource {
 				charset: 'UTF8',
 				collation: 'en_US.utf8',
 			},
-			{ parent: this, dependsOn: [role] },
+			{ parent: this },
+		)
+
+		const role = new postgresql.Role(
+			`${name}-db-role`,
+			{
+				name: appUserName,
+				login: true,
+				password: args.userPassword,
+			},
+			{
+				parent: this,
+				provider: pgProvider,
+				dependsOn: [database],
+				deletedWith: database,
+			},
 		)
 
 		new postgresql.Grant(
@@ -69,10 +73,14 @@ export class AppDatabase extends pulumi.ComponentResource {
 				objectType: 'database',
 				privileges: ['ALL'],
 			},
-			{ parent: this, provider: pgProvider, dependsOn: [role, database] },
+			{
+				parent: this,
+				provider: pgProvider,
+				dependsOn: [database],
+				deletedWith: database,
+			},
 		)
 
-		// Grant all privileges on the public schema to the app user
 		new postgresql.Grant(
 			`${name}-schema-grant`,
 			{
@@ -82,10 +90,14 @@ export class AppDatabase extends pulumi.ComponentResource {
 				objectType: 'schema',
 				privileges: ['ALL'],
 			},
-			{ parent: this, provider: pgProvider, dependsOn: [role, database] },
+			{
+				parent: this,
+				provider: pgProvider,
+				dependsOn: [database],
+				deletedWith: database,
+			},
 		)
 
-		// Enable pg_trgm extension (allow-listed at the server level)
 		const dbProvider = new postgresql.Provider(
 			`${name}-pg-db-provider`,
 			{

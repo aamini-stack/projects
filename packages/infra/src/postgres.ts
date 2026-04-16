@@ -1,6 +1,8 @@
 import * as azure from '@pulumi/azure-native'
 import * as pulumi from '@pulumi/pulumi'
 
+import { resourceGroup } from './resource-groups'
+
 interface PostgresConfig {
 	skuName: string
 	skuTier: string
@@ -10,75 +12,57 @@ interface PostgresConfig {
 }
 
 const config = new pulumi.Config()
-const pgConfig = config.requireObject<PostgresConfig>('postgres')
-const env = pulumi.getStack()
 const azureConfig = new pulumi.Config('azure-native')
+
+const serverName = `pg-aamini-${pulumi.getStack()}`
+const dbSpecs = config.requireObject<PostgresConfig>('dbSpecs')
 const location = azureConfig.require('location')
-const resourceGroupName = azureConfig.require('resourceGroup')
+const dbPassword = config.requireSecret('dbPassword')
 
-const adminPassword = config.requireSecret('postgresAdminPassword')
-
-// PostgreSQL Flexible Server
-const serverName = `pg-aamini-${env}`
 const server = new azure.dbforpostgresql.Server(serverName, {
 	serverName,
-	resourceGroupName: resourceGroupName,
+	resourceGroupName: resourceGroup.name,
 	location: location,
 	version: '16',
 	administratorLogin: 'pgadmin',
-	administratorLoginPassword: adminPassword,
+	administratorLoginPassword: dbPassword,
 	sku: {
-		name: pgConfig.skuName,
-		tier: pgConfig.skuTier,
+		name: dbSpecs.skuName,
+		tier: dbSpecs.skuTier,
 	},
 	storage: {
-		storageSizeGB: pgConfig.storageSizeGb,
+		storageSizeGB: dbSpecs.storageSizeGb,
 	},
 	backup: {
-		backupRetentionDays: pgConfig.backupRetentionDays,
-		geoRedundantBackup: pgConfig.geoRedundantBackup,
+		backupRetentionDays: dbSpecs.backupRetentionDays,
+		geoRedundantBackup: dbSpecs.geoRedundantBackup,
 	},
 })
 
-// Allow Azure services to connect
-const allowAzureServices = new azure.dbforpostgresql.FirewallRule(
-	'allow-azure-services',
-	{
-		resourceGroupName: resourceGroupName,
-		serverName: server.name,
-		startIpAddress: '0.0.0.0',
-		endIpAddress: '0.0.0.0',
-	},
-	{ dependsOn: [server] },
-)
-
-// Allow all public IPs to connect
-const allowAll = new azure.dbforpostgresql.FirewallRule(
+const allowAllFirewallRule = new azure.dbforpostgresql.FirewallRule(
 	'allow-all',
 	{
-		resourceGroupName: resourceGroupName,
+		resourceGroupName: resourceGroup.name,
 		serverName: server.name,
 		startIpAddress: '0.0.0.0',
 		endIpAddress: '255.255.255.255',
 	},
-	{ dependsOn: [allowAzureServices] },
 )
 
-// Allow-list PostgreSQL extensions after other server-scoped operations settle.
 new azure.dbforpostgresql.Configuration(
 	'pg-extensions',
 	{
-		resourceGroupName: resourceGroupName,
+		resourceGroupName: resourceGroup.name,
 		serverName: server.name,
 		configurationName: 'azure.extensions',
 		value: 'PG_TRGM',
 		source: 'user-override',
 	},
-	{ dependsOn: [allowAll] },
+	{ deletedWith: server, dependsOn: allowAllFirewallRule },
 )
 
 // Exports for apps to consume
 export const postgresHost = server.fullyQualifiedDomainName
 export const postgresAdminUser = server.administratorLogin
-export const postgresAdminPassword = adminPassword
+export const postgresAdminPassword = dbPassword
 export const postgresServerName = server.name
