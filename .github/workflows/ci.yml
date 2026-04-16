@@ -49,6 +49,7 @@ jobs:
       - run: pnpm test:integration
 
   deploy-pipeline:
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     env:
       DOCKER_REGISTRY: aaministack.azurecr.io
