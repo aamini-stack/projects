@@ -121,7 +121,7 @@ export const createBaseConfig = (
 					babel: {
 						plugins: ['babel-plugin-react-compiler'],
 					},
-				}),
+				} as Parameters<typeof viteReact>[0]),
 				svgr({
 					include: '**/*.svg',
 					svgrOptions: { exportType: 'default' },

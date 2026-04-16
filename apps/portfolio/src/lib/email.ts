@@ -24,13 +24,19 @@ export async function sendEmail({
 		throw new Error('TOO_MANY_REQUESTS: Rate limit exceeded')
 	}
 
+	const mailgunApiKey = ENV.MAILGUN_API_KEY
+	const mailgunDomain = ENV.MAILGUN_DOMAIN
+	if (!mailgunApiKey || !mailgunDomain) {
+		throw new Error('INTERNAL_SERVER_ERROR: Email service is not configured')
+	}
+
 	try {
 		const client = mailgun.client({
 			username: 'api',
-			key: ENV.MAILGUN_API_KEY,
+			key: mailgunApiKey,
 		})
-		await client.messages.create(ENV.MAILGUN_DOMAIN, {
-			from: `Portfolio Contact Form <postmaster@${ENV.MAILGUN_DOMAIN}>`,
+		await client.messages.create(mailgunDomain, {
+			from: `Portfolio Contact Form <postmaster@${mailgunDomain}>`,
 			to: 'Aria Amini <aamini1024@gmail.com>',
 			subject: 'New Contact Form Submission',
 			text: message,
