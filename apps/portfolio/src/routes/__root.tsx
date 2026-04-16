@@ -8,17 +8,18 @@ import {
 	createRootRoute,
 } from '@tanstack/react-router'
 import posthog from 'posthog-js'
+import { ENV } from 'varlock/env'
 import appCss from '../styles.css?url'
 
 if (import.meta.env.MODE !== 'development') {
-	posthog.init(import.meta.env.VITE_PUBLIC_POSTHOG_KEY, {
+	posthog.init(ENV.VITE_PUBLIC_POSTHOG_KEY, {
 		api_host: '/api/ingest',
 		ui_host: 'https://us.posthog.com',
 		defaults: '2025-05-24',
 		person_profiles: 'always',
 	})
 } else {
-	console.log('Posthog not initialized in dev mode.')
+	console.log('Posthog not initialized')
 }
 
 export const Route = createRootRoute({

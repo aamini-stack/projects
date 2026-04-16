@@ -1,12 +1,10 @@
 import { RateLimiter } from '@/lib/rate-limiter'
 import FormData from 'form-data'
 import Mailgun from 'mailgun.js'
+import { ENV } from 'varlock/env'
 
 const rateLimiter = new RateLimiter()
 const mailgun = new Mailgun(FormData)
-
-const MAILGUN_API_KEY = process.env.MAILGUN_API_KEY
-const MAILGUN_DOMAIN = process.env.MAILGUN_DOMAIN
 
 export async function sendEmail({
 	message,
@@ -20,9 +18,6 @@ export async function sendEmail({
 	if (!ipAddress) {
 		throw new Error('BAD_REQUEST: No IP address provided')
 	}
-	if (!(MAILGUN_DOMAIN && MAILGUN_API_KEY)) {
-		throw new Error('INTERNAL_SERVER_ERROR: Missing Mailgun credentials')
-	}
 
 	const result = rateLimiter.consume(ipAddress)
 	if (!result.success) {
@@ -32,10 +27,10 @@ export async function sendEmail({
 	try {
 		const client = mailgun.client({
 			username: 'api',
-			key: MAILGUN_API_KEY,
+			key: ENV.MAILGUN_API_KEY,
 		})
-		await client.messages.create(MAILGUN_DOMAIN, {
-			from: `Portfolio Contact Form <postmaster@${MAILGUN_DOMAIN}>`,
+		await client.messages.create(ENV.MAILGUN_DOMAIN, {
+			from: `Portfolio Contact Form <postmaster@${ENV.MAILGUN_DOMAIN}>`,
 			to: 'Aria Amini <aamini1024@gmail.com>',
 			subject: 'New Contact Form Submission',
 			text: message,
