@@ -1,13 +1,3 @@
-'use client'
-
-import {
-	Carousel,
-	CarouselContent,
-	CarouselItem,
-	CarouselNext,
-	CarouselPrevious,
-} from '@aamini/ui/components/carousel'
-
 const storePhotos = [
 	{
 		src: '/photos/pc1.webp',
@@ -25,29 +15,30 @@ const storePhotos = [
 
 export function StorePhotos() {
 	return (
-		<Carousel
-			opts={{
-				align: 'start',
-				loop: true,
-			}}
-			className="w-full"
-		>
-			<CarouselContent>
-				{storePhotos.map((photo, index) => (
-					<CarouselItem key={index}>
-						<div className="overflow-hidden rounded-2xl border border-white/10">
-							<img
-								src={photo.src}
-								alt={photo.alt}
-								className="h-auto w-full object-cover"
-								loading={index === 0 ? 'eager' : 'lazy'}
-							/>
-						</div>
-					</CarouselItem>
+		<div className="grid gap-3 p-3 md:grid-cols-[1.4fr_1fr]">
+			<div className="overflow-hidden rounded-2xl border border-white/10">
+				<img
+					src={storePhotos[0].src}
+					alt={storePhotos[0].alt}
+					className="h-full min-h-72 w-full object-cover"
+					loading="eager"
+				/>
+			</div>
+			<div className="grid gap-3">
+				{storePhotos.slice(1).map((photo, index) => (
+					<div
+						key={photo.src}
+						className="overflow-hidden rounded-2xl border border-white/10"
+					>
+						<img
+							src={photo.src}
+							alt={photo.alt}
+							className="h-40 w-full object-cover"
+							loading={index === 0 ? 'eager' : 'lazy'}
+						/>
+					</div>
 				))}
-			</CarouselContent>
-			<CarouselPrevious className="left-4 border-white/20 bg-black/50 text-white hover:bg-black/70 hover:text-emerald-200" />
-			<CarouselNext className="right-4 border-white/20 bg-black/50 text-white hover:bg-black/70 hover:text-emerald-200" />
-		</Carousel>
+			</div>
+		</div>
 	)
 }
