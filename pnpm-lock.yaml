@@ -339,16 +339,19 @@ importers:
         version: link:../../../packages/infra
       '@pulumi/azure-native':
         specifier: ^3.15.0
-        version: 3.16.0(typescript@6.0.2)
+        version: 3.16.0(ts-node@10.9.2(@types/node@25.6.0)(typescript@6.0.2))(typescript@6.0.2)
       '@pulumi/command':
         specifier: ^1.2.1
-        version: 1.2.1(typescript@6.0.2)
+        version: 1.2.1(ts-node@10.9.2(@types/node@25.6.0)(typescript@6.0.2))(typescript@6.0.2)
       '@pulumi/postgresql':
         specifier: ^3.16.2
-        version: 3.16.3(typescript@6.0.2)
+        version: 3.16.3(ts-node@10.9.2(@types/node@25.6.0)(typescript@6.0.2))(typescript@6.0.2)
       '@pulumi/pulumi':
         specifier: ^3.231.0
-        version: 3.231.0(typescript@6.0.2)
+        version: 3.231.0(ts-node@10.9.2(@types/node@25.6.0)(typescript@6.0.2))(typescript@6.0.2)
+      tsx:
+        specifier: ^4.21.0
+        version: 4.21.0
 
   apps/pc-tune-ups:
     dependencies:
@@ -742,31 +745,31 @@ importers:
     dependencies:
       '@pulumi/azure-native':
         specifier: ^3.15.0
-        version: 3.16.0(typescript@6.0.2)
+        version: 3.16.0(ts-node@10.9.2(@types/node@22.19.17)(typescript@6.0.2))(typescript@6.0.2)
       '@pulumi/cloudflare':
         specifier: ^6.14.0
-        version: 6.14.0(typescript@6.0.2)
+        version: 6.14.0(ts-node@10.9.2(@types/node@22.19.17)(typescript@6.0.2))(typescript@6.0.2)
       '@pulumi/command':
         specifier: ^1.2.1
-        version: 1.2.1(typescript@6.0.2)
+        version: 1.2.1(ts-node@10.9.2(@types/node@22.19.17)(typescript@6.0.2))(typescript@6.0.2)
       '@pulumi/kubernetes':
         specifier: ^4.29.0
-        version: 4.29.0(typescript@6.0.2)
+        version: 4.29.0(ts-node@10.9.2(@types/node@22.19.17)(typescript@6.0.2))(typescript@6.0.2)
       '@pulumi/local':
         specifier: ^0.1.6
-        version: 0.1.6(typescript@6.0.2)
+        version: 0.1.6(ts-node@10.9.2(@types/node@22.19.17)(typescript@6.0.2))(typescript@6.0.2)
       '@pulumi/postgresql':
         specifier: ^3.0.0
-        version: 3.16.3(typescript@6.0.2)
+        version: 3.16.3(ts-node@10.9.2(@types/node@22.19.17)(typescript@6.0.2))(typescript@6.0.2)
       '@pulumi/pulumi':
         specifier: ^3.231.0
-        version: 3.231.0(typescript@6.0.2)
+        version: 3.231.0(ts-node@10.9.2(@types/node@22.19.17)(typescript@6.0.2))(typescript@6.0.2)
       '@pulumi/random':
         specifier: ^4.0.0
-        version: 4.19.2(typescript@6.0.2)
+        version: 4.19.2(ts-node@10.9.2(@types/node@22.19.17)(typescript@6.0.2))(typescript@6.0.2)
       '@pulumi/tls':
         specifier: ^5.3.0
-        version: 5.3.1(typescript@6.0.2)
+        version: 5.3.1(ts-node@10.9.2(@types/node@22.19.17)(typescript@6.0.2))(typescript@6.0.2)
       yaml:
         specifier: ^2.8.1
         version: 2.8.3
@@ -1066,6 +1069,10 @@ packages:
 
   '@blazediff/core@1.9.1':
     resolution: {integrity: sha512-ehg3jIkYKulZh+8om/O25vkvSsXXwC+skXmyA87FFx6A/45eqOkZsBltMw/TVteb0mloiGT8oGRTcjRAz66zaA==}
+
+  '@cspotcode/source-map-support@0.8.1':
+    resolution: {integrity: sha512-IchNf6dN4tHoMFIn/7OE8LWZ19Y6q/67Bmf6vnGREv8RSbBVb9LPJxEcnwrcwX6ixSvaiGoomAUvu4YSxXrVgw==}
+    engines: {node: '>=12'}
 
   '@drizzle-team/brocli@0.10.2':
     resolution: {integrity: sha512-z33Il7l5dKjUgGULTqBsQBQwckHh5AbIuxhdsIxDDiZAzBOrZO6q9ogcWC65kU382AfynTfgNumVcNIjuIua6w==}
@@ -1637,6 +1644,9 @@ packages:
 
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
+
+  '@jridgewell/trace-mapping@0.3.9':
+    resolution: {integrity: sha512-3Belt6tdc8bPgAtbcmdtNJlirVoTmEb5e2gC94PnkwEW9jI6CAHUeoG85tjWP5WquqfavoMtMwiG4P926ZKKuQ==}
 
   '@js-sdsl/ordered-map@4.4.2':
     resolution: {integrity: sha512-iUKgm52T8HOE/makSxjqoWhe95ZJA1/G1sYsGev2JDKUSS14KAgg1LHb+Ba+IPow0xflbnSkOsZcO08C7w1gYw==}
@@ -3423,6 +3433,18 @@ packages:
     resolution: {integrity: sha512-zIcONa+hVtVSSep9UT3jZ5rizo2BsxgyDYU7WFD5eICBE7no3881HGeb/QkGfsJs6JTkY1aQhT7rIPC7e+0nnA==}
     engines: {node: '>=14', npm: '>=6', yarn: '>=1'}
 
+  '@tsconfig/node10@1.0.12':
+    resolution: {integrity: sha512-UCYBaeFvM11aU2y3YPZ//O5Rhj+xKyzy7mvcIoAjASbigy8mHMryP5cK7dgjlz2hWxh1g5pLw084E0a/wlUSFQ==}
+
+  '@tsconfig/node12@1.0.11':
+    resolution: {integrity: sha512-cqefuRsh12pWyGsIoBKJA9luFu3mRxCA+ORZvA4ktLSzIuCUtWVxGIuXigEwO5/ywWFMZ2QEGKWvkZG1zDMTag==}
+
+  '@tsconfig/node14@1.0.3':
+    resolution: {integrity: sha512-ysT8mhdixWK6Hw3i1V2AeRqZ5WfXg1G43mqoYlM2nc6388Fq5jcXyr5mRsqViLx/GJYdoL0bfXD8nmF+Zn/Iow==}
+
+  '@tsconfig/node16@1.0.4':
+    resolution: {integrity: sha512-vxhUy4J8lyeyinH7Azl1pdd43GJhZH/tP2weN8TntQblOY+A0XbT8DJk1/oCPuOOyg/Ja757rG0CgHcWC8OfMA==}
+
   '@tufjs/canonical-json@2.0.0':
     resolution: {integrity: sha512-yVtV8zsdo8qFHe+/3kw81dSLyF7D576A5cCFCi4X7B39tWT7SekaEFUnvnWJHz+9qO7qJTah1JbrDjWKqFtdWA==}
     engines: {node: ^16.14.0 || >=18.0.0}
@@ -3667,6 +3689,10 @@ packages:
     peerDependencies:
       acorn: ^8
 
+  acorn-walk@8.3.5:
+    resolution: {integrity: sha512-HEHNfbars9v4pgpW6SO1KSPkfoS0xVOM/9UzkJltjlsHZmJasxg8aXkuZa7SMf8vKGIBhpUsPluQSqhJFCqebw==}
+    engines: {node: '>=0.4.0'}
+
   acorn@8.16.0:
     resolution: {integrity: sha512-UVJyE9MttOsBQIDKw1skb9nAwQuR5wuGD3+82K6JgJlm/Y+KI92oNsMNGZCYdDsVtRHSak0pcV5Dno5+4jh9sw==}
     engines: {node: '>=0.4.0'}
@@ -3707,6 +3733,9 @@ packages:
   archiver@7.0.1:
     resolution: {integrity: sha512-ZcbTaIqJOfCc03QwD468Unz/5Ir8ATtvAHsK+FdXbDIbGfihqh9mrvdcYunQzqn4HrvWWaFyaxJhGZagaJJpPQ==}
     engines: {node: '>= 14'}
+
+  arg@4.1.3:
+    resolution: {integrity: sha512-58S9QDqG0Xx27YwPSt9fJxivjYl432YCwfDMfZ+71RAqUrZef7LrKQZ3LHLOwCS4FLNBplP533Zx895SeOCHvA==}
 
   argparse@1.0.10:
     resolution: {integrity: sha512-o5Roy6tNG4SL/FOkCAN6RzjiakZS25RLYFrcMttJqbdd8BWrnA+fGz57iN5Pb06pvBGvl5gQ0B48dJlslXvoTg==}
@@ -4022,6 +4051,9 @@ packages:
     resolution: {integrity: sha512-piICUB6ei4IlTv1+653yq5+KoqfBYmj9bw6LqXoOneTMDXk5nM1qt12mFW1caG3LlJXEKW1Bp0WggEmIfQB34g==}
     engines: {node: '>= 14'}
 
+  create-require@1.1.1:
+    resolution: {integrity: sha512-dcKFX3jn0MpIaXjisoRvexIJVEKzaq7z2rZKxf+MSr9TkdmHmsU4m2lcLojrj/FHl8mk5VxMmYA+ftRkP/3oKQ==}
+
   cross-spawn@7.0.6:
     resolution: {integrity: sha512-uV2QOWP2nWzsy2aMp8aRibhi9dlzF5Hgh5SHaB9OiTGEyDTiJJyx0uy51QXdyWbtAHNua4XJzUKca3OzKUd3vA==}
     engines: {node: '>= 8'}
@@ -4154,6 +4186,10 @@ packages:
 
   devlop@1.1.0:
     resolution: {integrity: sha512-RWmIqhcFf1lRYBvNmr7qTNuyCt/7/ns2jbpp1+PalgE/rDQcBT0fioSMUpJ93irlUhC5hrg4cYqe6U+0ImW0rA==}
+
+  diff@4.0.4:
+    resolution: {integrity: sha512-X07nttJQkwkfKfvTPG/KSnE2OMdcUCao6+eXF3wmnIQRn2aPAHH3VxDbDOdegkd6JbPsXqShpvEOHfAT+nCNwQ==}
+    engines: {node: '>=0.3.1'}
 
   diff@8.0.4:
     resolution: {integrity: sha512-DPi0FmjiSU5EvQV0++GFDOJ9ASQUVFh5kD+OzOnYdi7n3Wpm9hWWGfB/O2blfHcMVTL5WkQXSnRiK9makhrcnw==}
@@ -4916,6 +4952,9 @@ packages:
   mailgun.js@13.0.0:
     resolution: {integrity: sha512-q59DjkjjN6Q8S6BBiY3aAXv5kdbgwp3JBffa/IFRo2FaaVodrDzRUrvuGyafKYMQXhIPnoVQ2i0f/hOlj4GEBA==}
     engines: {node: '>=18.0.0'}
+
+  make-error@1.3.6:
+    resolution: {integrity: sha512-s8UhlNe7vPKomQhC1qFelMokr/Sc3AgNbso3n74mVPA5LTZwkB9NlXf4XPamLxJE8h0gh73rM94xvwRT2CVInw==}
 
   make-fetch-happen@15.0.5:
     resolution: {integrity: sha512-uCbIa8jWWmQZt4dSnEStkVC6gdakiinAm4PiGsywIkguF0eWMdcjDz0ECYhUolFU3pFLOev9VNPCEygydXnddg==}
@@ -5945,6 +5984,20 @@ packages:
     resolution: {integrity: sha512-gcANaAnd2QDZFmHFEOF4k7uc1J/6a6z3DJMd/QwEyxLoKGiptJRwid582r7QIsFlFMIZ3SnxfS52S4hm2DHkuQ==}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
 
+  ts-node@10.9.2:
+    resolution: {integrity: sha512-f0FFpIdcHgn8zcPSbf1dRevwt047YMnaiJM3u2w2RewrB+fob/zePZcrOyQoLMMO7aBIddLcQIEK5dYjkLnGrQ==}
+    hasBin: true
+    peerDependencies:
+      '@swc/core': '>=1.2.50'
+      '@swc/wasm': '>=1.2.50'
+      '@types/node': '*'
+      typescript: '>=2.7'
+    peerDependenciesMeta:
+      '@swc/core':
+        optional: true
+      '@swc/wasm':
+        optional: true
+
   tsconfck@3.1.6:
     resolution: {integrity: sha512-ks6Vjr/jEw0P1gmOVwutM3B7fWxoWBL2KRDb1JfqGVawBmO5UsvmWOQFGHBPl5yxYz4eERr19E6L7NMv+Fej4w==}
     engines: {node: ^18 || >=20}
@@ -6138,6 +6191,9 @@ packages:
   uuid@10.0.0:
     resolution: {integrity: sha512-8XkAphELsDnEGrDxUOHB3RGvXz6TeuYSGEZBOjtTtPm2lwhGBjLgOzLHB63IUWfBpNucQjND6d3AOudO+H3RWQ==}
     hasBin: true
+
+  v8-compile-cache-lib@3.0.1:
+    resolution: {integrity: sha512-wa7YjyUGfNZngI/vtK0UHAN+lgDCxBPCylVXGp0zu59Fz5aiGtNXaq3DhIov063MorB+VfufLh3JlF2KdTK3xg==}
 
   validate-npm-package-license@3.0.4:
     resolution: {integrity: sha512-DpKm2Ui/xN7/HQKCtpZxoRWBhZ9Z0kqtygG8XCgNQ8ZlDnxuQmWhj566j8fN4Cu3/JmbhsDo7fcAJq4s9h27Ew==}
@@ -6366,6 +6422,10 @@ packages:
     resolution: {integrity: sha512-7dSzzRQ++CKnNI/krKnYRV7JKKPUXMEh61soaHKg9mrWEhzFWhFnxPxGl+69cD1Ou63C13NUPCnmIcrvqCuM6w==}
     engines: {node: '>=12'}
 
+  yn@3.1.1:
+    resolution: {integrity: sha512-Ux4ygGWsu2c7isFWe8Yu1YluJmqVhxqK2cLXNQA5AcC3QfbGNpM7fu0Y8b/z16pXLnFxZYvWhd3fhBY9DLmC6Q==}
+    engines: {node: '>=6'}
+
   zip-stream@6.0.1:
     resolution: {integrity: sha512-zK7YHHz4ZXpW89AHXUPbQVGKI7uvkd3hzusTdotCg1UxyaVtg0zFJSTfW/Dq5f7OBBVnq6cZIaC8Ti4hb6dtCA==}
     engines: {node: '>= 14'}
@@ -6516,6 +6576,11 @@ snapshots:
   '@balena/dockerignore@1.0.2': {}
 
   '@blazediff/core@1.9.1': {}
+
+  '@cspotcode/source-map-support@0.8.1':
+    dependencies:
+      '@jridgewell/trace-mapping': 0.3.9
+    optional: true
 
   '@drizzle-team/brocli@0.10.2': {}
 
@@ -6874,6 +6939,12 @@ snapshots:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
+
+  '@jridgewell/trace-mapping@0.3.9':
+    dependencies:
+      '@jridgewell/resolve-uri': 3.1.2
+      '@jridgewell/sourcemap-codec': 1.5.5
+    optional: true
 
   '@js-sdsl/ordered-map@4.4.2': {}
 
@@ -7420,33 +7491,49 @@ snapshots:
 
   '@protobufjs/utf8@1.1.0': {}
 
-  '@pulumi/azure-native@3.16.0(typescript@6.0.2)':
+  '@pulumi/azure-native@3.16.0(ts-node@10.9.2(@types/node@22.19.17)(typescript@6.0.2))(typescript@6.0.2)':
     dependencies:
-      '@pulumi/pulumi': 3.231.0(typescript@6.0.2)
+      '@pulumi/pulumi': 3.231.0(ts-node@10.9.2(@types/node@22.19.17)(typescript@6.0.2))(typescript@6.0.2)
     transitivePeerDependencies:
       - supports-color
       - ts-node
       - typescript
 
-  '@pulumi/cloudflare@6.14.0(typescript@6.0.2)':
+  '@pulumi/azure-native@3.16.0(ts-node@10.9.2(@types/node@25.6.0)(typescript@6.0.2))(typescript@6.0.2)':
     dependencies:
-      '@pulumi/pulumi': 3.231.0(typescript@6.0.2)
+      '@pulumi/pulumi': 3.231.0(ts-node@10.9.2(@types/node@25.6.0)(typescript@6.0.2))(typescript@6.0.2)
     transitivePeerDependencies:
       - supports-color
       - ts-node
       - typescript
 
-  '@pulumi/command@1.2.1(typescript@6.0.2)':
+  '@pulumi/cloudflare@6.14.0(ts-node@10.9.2(@types/node@22.19.17)(typescript@6.0.2))(typescript@6.0.2)':
     dependencies:
-      '@pulumi/pulumi': 3.231.0(typescript@6.0.2)
+      '@pulumi/pulumi': 3.231.0(ts-node@10.9.2(@types/node@22.19.17)(typescript@6.0.2))(typescript@6.0.2)
     transitivePeerDependencies:
       - supports-color
       - ts-node
       - typescript
 
-  '@pulumi/kubernetes@4.29.0(typescript@6.0.2)':
+  '@pulumi/command@1.2.1(ts-node@10.9.2(@types/node@22.19.17)(typescript@6.0.2))(typescript@6.0.2)':
     dependencies:
-      '@pulumi/pulumi': 3.231.0(typescript@6.0.2)
+      '@pulumi/pulumi': 3.231.0(ts-node@10.9.2(@types/node@22.19.17)(typescript@6.0.2))(typescript@6.0.2)
+    transitivePeerDependencies:
+      - supports-color
+      - ts-node
+      - typescript
+
+  '@pulumi/command@1.2.1(ts-node@10.9.2(@types/node@25.6.0)(typescript@6.0.2))(typescript@6.0.2)':
+    dependencies:
+      '@pulumi/pulumi': 3.231.0(ts-node@10.9.2(@types/node@25.6.0)(typescript@6.0.2))(typescript@6.0.2)
+    transitivePeerDependencies:
+      - supports-color
+      - ts-node
+      - typescript
+
+  '@pulumi/kubernetes@4.29.0(ts-node@10.9.2(@types/node@22.19.17)(typescript@6.0.2))(typescript@6.0.2)':
+    dependencies:
+      '@pulumi/pulumi': 3.231.0(ts-node@10.9.2(@types/node@22.19.17)(typescript@6.0.2))(typescript@6.0.2)
       glob: 12.0.0
       shell-quote: 1.8.3
     transitivePeerDependencies:
@@ -7454,23 +7541,31 @@ snapshots:
       - ts-node
       - typescript
 
-  '@pulumi/local@0.1.6(typescript@6.0.2)':
+  '@pulumi/local@0.1.6(ts-node@10.9.2(@types/node@22.19.17)(typescript@6.0.2))(typescript@6.0.2)':
     dependencies:
-      '@pulumi/pulumi': 3.231.0(typescript@6.0.2)
+      '@pulumi/pulumi': 3.231.0(ts-node@10.9.2(@types/node@22.19.17)(typescript@6.0.2))(typescript@6.0.2)
     transitivePeerDependencies:
       - supports-color
       - ts-node
       - typescript
 
-  '@pulumi/postgresql@3.16.3(typescript@6.0.2)':
+  '@pulumi/postgresql@3.16.3(ts-node@10.9.2(@types/node@22.19.17)(typescript@6.0.2))(typescript@6.0.2)':
     dependencies:
-      '@pulumi/pulumi': 3.231.0(typescript@6.0.2)
+      '@pulumi/pulumi': 3.231.0(ts-node@10.9.2(@types/node@22.19.17)(typescript@6.0.2))(typescript@6.0.2)
     transitivePeerDependencies:
       - supports-color
       - ts-node
       - typescript
 
-  '@pulumi/pulumi@3.231.0(typescript@6.0.2)':
+  '@pulumi/postgresql@3.16.3(ts-node@10.9.2(@types/node@25.6.0)(typescript@6.0.2))(typescript@6.0.2)':
+    dependencies:
+      '@pulumi/pulumi': 3.231.0(ts-node@10.9.2(@types/node@25.6.0)(typescript@6.0.2))(typescript@6.0.2)
+    transitivePeerDependencies:
+      - supports-color
+      - ts-node
+      - typescript
+
+  '@pulumi/pulumi@3.231.0(ts-node@10.9.2(@types/node@22.19.17)(typescript@6.0.2))(typescript@6.0.2)':
     dependencies:
       '@grpc/grpc-js': 1.14.3
       '@logdna/tail-file': 2.2.0
@@ -7500,21 +7595,57 @@ snapshots:
       tmp: 0.2.5
       upath: 1.2.0
     optionalDependencies:
+      ts-node: 10.9.2(@types/node@22.19.17)(typescript@6.0.2)
       typescript: 6.0.2
     transitivePeerDependencies:
       - supports-color
 
-  '@pulumi/random@4.19.2(typescript@6.0.2)':
+  '@pulumi/pulumi@3.231.0(ts-node@10.9.2(@types/node@25.6.0)(typescript@6.0.2))(typescript@6.0.2)':
     dependencies:
-      '@pulumi/pulumi': 3.231.0(typescript@6.0.2)
+      '@grpc/grpc-js': 1.14.3
+      '@logdna/tail-file': 2.2.0
+      '@npmcli/arborist': 9.4.2
+      '@opentelemetry/api': 1.9.1
+      '@opentelemetry/exporter-trace-otlp-grpc': 0.57.2(@opentelemetry/api@1.9.1)
+      '@opentelemetry/exporter-zipkin': 1.30.1(@opentelemetry/api@1.9.1)
+      '@opentelemetry/instrumentation': 0.57.2(@opentelemetry/api@1.9.1)
+      '@opentelemetry/instrumentation-grpc': 0.57.2(@opentelemetry/api@1.9.1)
+      '@opentelemetry/resources': 1.30.1(@opentelemetry/api@1.9.1)
+      '@opentelemetry/sdk-trace-base': 1.30.1(@opentelemetry/api@1.9.1)
+      '@opentelemetry/sdk-trace-node': 1.30.1(@opentelemetry/api@1.9.1)
+      '@types/google-protobuf': 3.15.12
+      '@types/semver': 7.7.1
+      '@types/tmp': 0.2.6
+      execa: 5.1.1
+      fdir: 6.5.0(picomatch@4.0.4)
+      google-protobuf: 3.21.4
+      ini: 2.0.0
+      js-yaml: 3.14.2
+      minimist: 1.2.8
+      normalize-package-data: 6.0.2
+      picomatch: 4.0.4
+      require-from-string: 2.0.2
+      semver: 7.7.4
+      source-map-support: 0.5.21
+      tmp: 0.2.5
+      upath: 1.2.0
+    optionalDependencies:
+      ts-node: 10.9.2(@types/node@25.6.0)(typescript@6.0.2)
+      typescript: 6.0.2
+    transitivePeerDependencies:
+      - supports-color
+
+  '@pulumi/random@4.19.2(ts-node@10.9.2(@types/node@22.19.17)(typescript@6.0.2))(typescript@6.0.2)':
+    dependencies:
+      '@pulumi/pulumi': 3.231.0(ts-node@10.9.2(@types/node@22.19.17)(typescript@6.0.2))(typescript@6.0.2)
     transitivePeerDependencies:
       - supports-color
       - ts-node
       - typescript
 
-  '@pulumi/tls@5.3.1(typescript@6.0.2)':
+  '@pulumi/tls@5.3.1(ts-node@10.9.2(@types/node@22.19.17)(typescript@6.0.2))(typescript@6.0.2)':
     dependencies:
-      '@pulumi/pulumi': 3.231.0(typescript@6.0.2)
+      '@pulumi/pulumi': 3.231.0(ts-node@10.9.2(@types/node@22.19.17)(typescript@6.0.2))(typescript@6.0.2)
     transitivePeerDependencies:
       - supports-color
       - ts-node
@@ -8660,6 +8791,18 @@ snapshots:
       picocolors: 1.1.1
       redent: 3.0.0
 
+  '@tsconfig/node10@1.0.12':
+    optional: true
+
+  '@tsconfig/node12@1.0.11':
+    optional: true
+
+  '@tsconfig/node14@1.0.3':
+    optional: true
+
+  '@tsconfig/node16@1.0.4':
+    optional: true
+
   '@tufjs/canonical-json@2.0.0': {}
 
   '@tufjs/models@4.1.0':
@@ -8915,6 +9058,11 @@ snapshots:
     dependencies:
       acorn: 8.16.0
 
+  acorn-walk@8.3.5:
+    dependencies:
+      acorn: 8.16.0
+    optional: true
+
   acorn@8.16.0: {}
 
   agent-base@7.1.4: {}
@@ -8959,6 +9107,9 @@ snapshots:
       - bare-abort-controller
       - bare-buffer
       - react-native-b4a
+
+  arg@4.1.3:
+    optional: true
 
   argparse@1.0.10:
     dependencies:
@@ -9288,6 +9439,9 @@ snapshots:
       crc-32: 1.2.2
       readable-stream: 4.7.0
 
+  create-require@1.1.1:
+    optional: true
+
   cross-spawn@7.0.6:
     dependencies:
       path-key: 3.1.1
@@ -9379,6 +9533,9 @@ snapshots:
   devlop@1.1.0:
     dependencies:
       dequal: 2.0.3
+
+  diff@4.0.4:
+    optional: true
 
   diff@8.0.4: {}
 
@@ -10058,6 +10215,9 @@ snapshots:
       url-join: 4.0.1
     transitivePeerDependencies:
       - debug
+
+  make-error@1.3.6:
+    optional: true
 
   make-fetch-happen@15.0.5:
     dependencies:
@@ -11315,6 +11475,44 @@ snapshots:
 
   treeverse@3.0.0: {}
 
+  ts-node@10.9.2(@types/node@22.19.17)(typescript@6.0.2):
+    dependencies:
+      '@cspotcode/source-map-support': 0.8.1
+      '@tsconfig/node10': 1.0.12
+      '@tsconfig/node12': 1.0.11
+      '@tsconfig/node14': 1.0.3
+      '@tsconfig/node16': 1.0.4
+      '@types/node': 22.19.17
+      acorn: 8.16.0
+      acorn-walk: 8.3.5
+      arg: 4.1.3
+      create-require: 1.1.1
+      diff: 4.0.4
+      make-error: 1.3.6
+      typescript: 6.0.2
+      v8-compile-cache-lib: 3.0.1
+      yn: 3.1.1
+    optional: true
+
+  ts-node@10.9.2(@types/node@25.6.0)(typescript@6.0.2):
+    dependencies:
+      '@cspotcode/source-map-support': 0.8.1
+      '@tsconfig/node10': 1.0.12
+      '@tsconfig/node12': 1.0.11
+      '@tsconfig/node14': 1.0.3
+      '@tsconfig/node16': 1.0.4
+      '@types/node': 25.6.0
+      acorn: 8.16.0
+      acorn-walk: 8.3.5
+      arg: 4.1.3
+      create-require: 1.1.1
+      diff: 4.0.4
+      make-error: 1.3.6
+      typescript: 6.0.2
+      v8-compile-cache-lib: 3.0.1
+      yn: 3.1.1
+    optional: true
+
   tsconfck@3.1.6(typescript@5.9.3):
     optionalDependencies:
       typescript: 5.9.3
@@ -11427,6 +11625,9 @@ snapshots:
   util-deprecate@1.0.2: {}
 
   uuid@10.0.0: {}
+
+  v8-compile-cache-lib@3.0.1:
+    optional: true
 
   validate-npm-package-license@3.0.4:
     dependencies:
@@ -11628,6 +11829,9 @@ snapshots:
       string-width: 4.2.3
       y18n: 5.0.8
       yargs-parser: 21.1.1
+
+  yn@3.1.1:
+    optional: true
 
   zip-stream@6.0.1:
     dependencies:
