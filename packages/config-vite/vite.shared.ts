@@ -6,9 +6,11 @@ import viteReact from '@vitejs/plugin-react'
 import { nitro } from 'nitro/vite'
 import { defineConfig } from 'vite'
 import svgr from 'vite-plugin-svgr'
-import viteTsConfigPaths from 'vite-tsconfig-paths'
 
 export const baseConfig = defineConfig({
+	resolve: {
+		tsconfigPaths: true,
+	},
 	plugins: [
 		devtools(),
 		nitro({
@@ -33,7 +35,6 @@ export const baseConfig = defineConfig({
 				},
 			},
 		}),
-		viteTsConfigPaths({ projects: ['./tsconfig.json'] }),
 		tailwindcss(),
 		tanstackStart(),
 		varlockVitePlugin({ ssrInjectMode: 'auto-load' }),

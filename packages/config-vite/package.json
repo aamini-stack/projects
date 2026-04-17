@@ -19,7 +19,6 @@
 		"nitro": "latest",
 		"varlock": "^0.7.2",
 		"vite": "^8.0.8",
-		"vite-plugin-svgr": "^5.2.0",
-		"vite-tsconfig-paths": "^6.1.1"
+		"vite-plugin-svgr": "^5.2.0"
 	}
 }
