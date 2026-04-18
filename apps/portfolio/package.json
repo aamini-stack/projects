@@ -18,6 +18,7 @@
 		"test:integration": "vitest run --project browser --project server",
 		"test:watch": "vitest --watch",
 		"e2e": "node --experimental-strip-types ../../scripts/src/aamini.ts e2e portfolio",
+		"e2e:ci": "node --experimental-strip-types ../../scripts/src/aamini.ts e2e portfolio --docker",
 		"e2e:staging": "BASE_URL=https://portfolio.ariaamini.com pnpm playwright test",
 		"e2e:update": "node --experimental-strip-types ../../scripts/src/aamini.ts e2e portfolio --update-snapshots",
 		"report": "playwright show-report",

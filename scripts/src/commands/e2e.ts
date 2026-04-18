@@ -15,7 +15,7 @@ const E2E_COMPOSE_FILE = path.resolve(
 )
 
 export type E2EOptions = {
-	local?: boolean
+	docker?: boolean
 	preview?: string
 	staging?: boolean
 	production?: boolean
@@ -30,7 +30,7 @@ export function createE2ECommand(): Command {
 
 	cli
 		.argument('[app]', 'App name to run e2e for')
-		.option('-l, --local', 'Run e2e locally with docker compose')
+		.option('-d, --docker', 'Run local e2e in docker compose')
 		.option('-p, --preview <pr>', 'Run e2e against preview deployment')
 		.option('-s, --staging', 'Run e2e against staging')
 		.option('-P, --production', 'Run e2e against production')
@@ -64,26 +64,22 @@ export function createE2ECommand(): Command {
 
 export function getMode(
 	options: E2EOptions,
-): 'local' | 'preview' | 'staging' | 'production' | null {
-	const modes = [
-		options.local,
-		options.preview,
-		options.staging,
-		options.production,
-	].filter(Boolean)
+): 'preview' | 'staging' | 'production' | null {
+	const modes = [options.preview, options.staging, options.production].filter(
+		Boolean,
+	)
 	if (modes.length > 1) {
 		console.error(
-			'Error: Specify only one of --local, --preview, --staging, --production',
+			'Error: Specify only one of --preview, --staging, --production',
 		)
 		process.exit(1)
 	}
 
-	if (options.local) return 'local'
 	if (options.preview) return 'preview'
 	if (options.staging) return 'staging'
 	if (options.production) return 'production'
 
-	return 'local'
+	return null
 }
 
 export function getTargetUrl(app: string, options: E2EOptions): string {
@@ -125,15 +121,22 @@ export async function runE2E(
 			CI: targetUrl || process.env.CI === 'true' ? 'true' : '',
 		},
 	})
-	if (mode === 'local' && !targetUrl) {
+	if (!mode && !targetUrl) {
 		if (options.updateSnapshots) {
-			await interactive`docker compose -f ${E2E_COMPOSE_FILE} run --build --rm e2e --update-snapshots`
+			if (options.docker) {
+				await interactive`docker compose -f ${E2E_COMPOSE_FILE} run --build --rm e2e --update-snapshots`
+			} else {
+				await interactive`pnpm --dir ${path.join('apps', app)} exec playwright test --update-snapshots`
+			}
 		} else {
-			await interactive`docker compose -f ${E2E_COMPOSE_FILE} run --build --rm e2e`
+			if (options.docker) {
+				await interactive`docker compose -f ${E2E_COMPOSE_FILE} run --build --rm e2e`
+			} else {
+				await interactive`pnpm --dir ${path.join('apps', app)} exec playwright test`
+			}
 		}
 	} else {
 		// Run e2e against deployed environment
-		await interactive`pnpm --dir ${path.join('apps', app)} exec playwright install --with-deps chromium`
 		if (options.updateSnapshots) {
 			await interactive`pnpm --dir ${path.join('apps', app)} exec playwright test --update-snapshots`
 		} else {

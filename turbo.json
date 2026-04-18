@@ -42,6 +42,11 @@
 			"env": ["BASE_URL", "CI"],
 			"passThroughEnv": ["PLAYWRIGHT_*"]
 		},
+		"e2e:ci": {
+			"dependsOn": ["^build", "build"],
+			"env": ["BASE_URL", "CI"],
+			"passThroughEnv": ["PLAYWRIGHT_*"]
+		},
 		"e2e:staging": {
 			"cache": false
 		},
