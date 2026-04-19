@@ -2,24 +2,31 @@
 
 import { Toaster } from '@/components/sonner'
 import {
+	ClientOnly,
 	HeadContent,
 	Outlet,
 	Scripts,
 	createRootRoute,
 } from '@tanstack/react-router'
+import { useEffect } from 'react'
 import posthog from 'posthog-js'
 import { ENV } from 'varlock/env'
 import appCss from '../styles.css?url'
 
-if (import.meta.env.MODE !== 'development') {
-	posthog.init(ENV.VITE_PUBLIC_POSTHOG_KEY, {
-		api_host: '/api/ingest',
-		ui_host: 'https://us.posthog.com',
-		defaults: '2025-05-24',
-		person_profiles: 'always',
-	})
-} else {
-	console.log('Posthog not initialized')
+function Analytics() {
+	useEffect(() => {
+		const posthogKey = ENV.VITE_PUBLIC_POSTHOG_KEY?.trim()
+		if (import.meta.env.MODE === 'development' || !posthogKey) return
+
+		posthog.init(posthogKey, {
+			api_host: '/api/ingest',
+			ui_host: 'https://us.posthog.com',
+			defaults: '2025-05-24',
+			person_profiles: 'always',
+		})
+	}, [])
+
+	return null
 }
 
 export const Route = createRootRoute({
@@ -56,6 +63,9 @@ function RootComponent() {
 			</head>
 			<body className="antialiased">
 				<Outlet />
+				<ClientOnly fallback={null}>
+					<Analytics />
+				</ClientOnly>
 				<Toaster className="offset-y-(--header-size)" />
 				<Scripts />
 			</body>

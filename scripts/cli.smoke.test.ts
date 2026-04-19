@@ -55,7 +55,7 @@ test('aamini e2e', () => {
 		  app                 App name to run e2e for
 
 		Options:
-		  -l, --local         Run e2e locally with docker compose
+		  -d, --docker        Run local e2e in docker compose
 		  -p, --preview <pr>  Run e2e against preview deployment
 		  -s, --staging       Run e2e against staging
 		  -P, --production    Run e2e against production
@@ -79,7 +79,7 @@ test('aamini secrets', () => {
 		  -h, --help              display help for command
 
 		Commands:
-		  seal [options] [app]    Seal app secrets
+		  seal                    Seal app and infra secrets
 		  unseal [options] [app]  Unseal app secrets
 		"
 	`)

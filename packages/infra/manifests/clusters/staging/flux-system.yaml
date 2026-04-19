@@ -46,10 +46,6 @@ spec:
   path: ./packages/infra/manifests/platform/networking
   dependsOn:
     - name: platform-controllers
-  postBuild:
-    substituteFrom:
-      - kind: Secret
-        name: cloudflare-api-token
   sourceRef:
     kind: GitRepository
     name: flux-system

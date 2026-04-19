@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test'
 
 test.beforeEach(async ({ page }) => {
-	await page.goto('/', { waitUntil: 'networkidle' })
+	await page.goto('/')
 })
 
 test.describe('Home', () => {
@@ -10,12 +10,13 @@ test.describe('Home', () => {
 	})
 
 	test('Experience', async ({ page }) => {
-		await page.getByRole('button', { name: 'About Me' }).click()
+		await page.getByRole('link', { name: 'About Me' }).click()
 		await expect(page.getByTitle('Experience')).toBeInViewport()
 		await expect(page).toHaveScreenshot()
 	})
 
 	test('Full Page', async ({ page }) => {
+		await expect(page.getByTestId('contact-card')).toBeVisible()
 		await expect(page).toHaveScreenshot({
 			fullPage: true,
 		})
@@ -24,11 +25,14 @@ test.describe('Home', () => {
 
 test.describe('Contact Card', () => {
 	test('Basic', async ({ page }) => {
-		await expect(page.getByTestId('contact-card')).toHaveScreenshot()
+		const contactCard = page.getByTestId('contact-card')
+		await expect(contactCard).toBeVisible()
+		await expect(contactCard).toHaveScreenshot()
 	})
 
 	test('Error State', async ({ page }) => {
 		const contactCard = page.getByTestId('contact-card')
+		await expect(contactCard).toBeVisible()
 		await contactCard.scrollIntoViewIfNeeded()
 		await page.getByRole('button', { name: 'Send Message' }).click()
 		await expect(contactCard.getByText('Invalid email address')).toBeVisible()

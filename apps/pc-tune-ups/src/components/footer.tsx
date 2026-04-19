@@ -1,28 +1,26 @@
-import { Facebook, Instagram, Linkedin, Twitter, Youtube } from 'lucide-react'
-
 const currentYear = new Date().getFullYear()
 
 const socialLinks = [
 	{
 		name: 'Facebook',
 		href: 'https://www.facebook.com/PCTuneUps365/',
-		Icon: Facebook,
+		label: 'Fb',
 	},
-	{ name: 'Twitter', href: 'https://twitter.com/pctuneups', Icon: Twitter },
+	{ name: 'Twitter', href: 'https://twitter.com/pctuneups', label: 'X' },
 	{
 		name: 'Instagram',
 		href: 'https://www.instagram.com/pc_tuneups/',
-		Icon: Instagram,
+		label: 'Ig',
 	},
 	{
 		name: 'LinkedIn',
 		href: 'https://www.linkedin.com/company/pctuneups',
-		Icon: Linkedin,
+		label: 'In',
 	},
 	{
 		name: 'YouTube',
 		href: 'https://www.youtube.com/channel/UCLBMfHkUR9qu9WyNBGigPlg',
-		Icon: Youtube,
+		label: 'YT',
 	},
 ]
 
@@ -35,7 +33,7 @@ export default function Footer() {
 					<p>© {currentYear} PC Tune-Ups. All rights reserved.</p>
 				</div>
 				<div className="flex flex-wrap items-center gap-4">
-					{socialLinks.map(({ name, href, Icon }) => (
+					{socialLinks.map(({ name, href, label }) => (
 						<a
 							key={name}
 							className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-stone-200 bg-white transition-all duration-200 hover:-translate-y-0.5 hover:border-lime-500/40 hover:bg-lime-50 hover:text-lime-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lime-600"
@@ -44,7 +42,9 @@ export default function Footer() {
 							rel="noreferrer"
 							aria-label={name}
 						>
-							<Icon className="h-5 w-5" />
+							<span className="text-xs font-semibold tracking-wide uppercase">
+								{label}
+							</span>
 						</a>
 					))}
 				</div>

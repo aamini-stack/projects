@@ -1,5 +1,3 @@
-import { Avatar, AvatarImage } from '@aamini/ui/components/avatar'
-
 export function Testimonials() {
 	const testimonials = [
 		{
@@ -44,9 +42,12 @@ export function Testimonials() {
 					>
 						<p className="mb-4 leading-relaxed text-stone-600">{quote}</p>
 						<div className="flex items-center gap-3 border-t border-stone-200 pt-4">
-							<Avatar>
-								<AvatarImage src={avatar} alt={`${name} avatar`} />
-							</Avatar>
+							<img
+								src={avatar}
+								alt={`${name} avatar`}
+								className="h-10 w-10 rounded-full object-cover"
+								loading="lazy"
+							/>
 							<div>
 								<p className="text-sm font-semibold text-stone-900">{name}</p>
 								<p className="text-xs text-stone-500">{role}</p>

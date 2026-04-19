@@ -8,6 +8,7 @@ import { Command } from 'commander'
 import { getRepoRoot, listAppDirectories } from '../helpers/repo.ts'
 
 type SealTarget = {
+	kind: 'app' | 'infra'
 	app: string
 	appDir: string
 	envFile: string
@@ -41,13 +42,11 @@ export function createSecretsCommand(): Command {
 
 	cli
 		.command('seal')
-		.description('Seal app secrets')
-		.argument('[app]', 'App name to seal')
-		.option('--all', 'Seal every app with a local env file')
-		.action(async (app: string | undefined) => {
+		.description('Seal app and infra secrets')
+		.action(async () => {
 			const repoRoot = await getRepoRoot()
 			await sealAll(repoRoot, {
-				apps: parseApps(repoRoot, app ? [app] : ['--all']),
+				apps: parseApps(repoRoot, ['--all']),
 			})
 		})
 
@@ -78,6 +77,7 @@ function findSealTargets(
 		.map((app) => {
 			const appDir = path.join(repoRoot, 'apps', app)
 			return {
+				kind: 'app' as const,
 				app,
 				appDir,
 				envFile: path.join(appDir, '.env.local'),
@@ -96,6 +96,25 @@ function findSealTargets(
 		.filter((target) => fs.existsSync(target.envFile))
 }
 
+function findInfraSealTarget(repoRoot: string): SealTarget {
+	return {
+		kind: 'infra',
+		app: 'infra',
+		appDir: path.join(repoRoot, 'packages', 'infra'),
+		envFile: path.join(repoRoot, 'packages', 'infra', '.env.staging.local'),
+		output: path.join(
+			repoRoot,
+			'packages',
+			'infra',
+			'manifests',
+			'platform',
+			'networking',
+			'cloudflare-api-token-sealed-secret.yaml',
+		),
+		stableOutput: '',
+	}
+}
+
 function syncStableManifest(target: SealTarget, yaml: string): void {
 	if (!fs.existsSync(target.stableOutput)) {
 		return
@@ -107,6 +126,61 @@ function syncStableManifest(target: SealTarget, yaml: string): void {
 
 function normalizeSealedSecretYaml(yaml: string, _app: string): string {
 	return yaml
+}
+
+function readEnvValue(envFile: string, key: string): string {
+	const lines = fs.readFileSync(envFile, 'utf8').split(/\r?\n/)
+
+	for (const line of lines) {
+		const trimmed = line.trim()
+		if (!trimmed || trimmed.startsWith('#')) {
+			continue
+		}
+
+		const separatorIndex = trimmed.indexOf('=')
+		if (separatorIndex <= 0) {
+			continue
+		}
+
+		const currentKey = trimmed.slice(0, separatorIndex).trim()
+		if (currentKey !== key) {
+			continue
+		}
+
+		const rawValue = trimmed.slice(separatorIndex + 1)
+		if (
+			(rawValue.startsWith('"') && rawValue.endsWith('"')) ||
+			(rawValue.startsWith("'") && rawValue.endsWith("'"))
+		) {
+			return rawValue.slice(1, -1)
+		}
+
+		return rawValue
+	}
+
+	throw new Error(`Missing ${key} in ${envFile}`)
+}
+
+function buildInfraSecretYaml(target: SealTarget): string {
+	const cloudflareApiToken = readEnvValue(
+		target.envFile,
+		'CLOUDFLARE_API_TOKEN',
+	)
+	const encodedToken = Buffer.from(cloudflareApiToken, 'utf8').toString(
+		'base64',
+	)
+
+	return [
+		'apiVersion: v1',
+		'kind: Secret',
+		'metadata:',
+		'  name: cloudflare-api-token',
+		'  namespace: networking',
+		'type: Opaque',
+		'data:',
+		`  api-token: ${encodedToken}`,
+		'',
+	].join('\n')
 }
 
 async function runCommandWithZx({
@@ -171,6 +245,15 @@ export async function sealAll(
 	{ apps, runCommand = runCommandWithZx }: SealAllOptions = {},
 ): Promise<void> {
 	const targets = findSealTargets(repoRoot, apps)
+	const infraTarget = findInfraSealTarget(repoRoot)
+	if (!fs.existsSync(infraTarget.envFile)) {
+		throw new Error(
+			`No ${path.relative(repoRoot, infraTarget.envFile)} found. Create environment file before sealing infra secrets.`,
+		)
+	}
+
+	targets.push(infraTarget)
+
 	if (targets.length === 0) {
 		throw new Error(
 			apps?.length
@@ -193,22 +276,25 @@ export async function sealAll(
 		console.log(`Sealing ${target.app}...`)
 
 		try {
-			const created = await runCommand({
-				cwd: repoRoot,
-				command: [
-					'kubectl',
-					'create',
-					'secret',
-					'generic',
-					`${target.app}-secrets`,
-					'--namespace',
-					target.app,
-					`--from-env-file=${target.envFile}`,
-					'--dry-run=client',
-					'-o',
-					'yaml',
-				],
-			})
+			const created =
+				target.kind === 'infra'
+					? { stdout: buildInfraSecretYaml(target) }
+					: await runCommand({
+							cwd: repoRoot,
+							command: [
+								'kubectl',
+								'create',
+								'secret',
+								'generic',
+								`${target.app}-secrets`,
+								'--namespace',
+								target.app,
+								`--from-env-file=${target.envFile}`,
+								'--dry-run=client',
+								'-o',
+								'yaml',
+							],
+						})
 
 			const sealed = await runCommand({
 				cwd: repoRoot,

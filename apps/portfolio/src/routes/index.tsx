@@ -8,7 +8,7 @@ import { SkillBubble } from '@/components/skill-bubble'
 import { jobs } from '@/lib/jobs'
 import { skills } from '@/lib/skills'
 import { Button } from '@aamini/ui/components/button'
-import { createFileRoute } from '@tanstack/react-router'
+import { ClientOnly, createFileRoute } from '@tanstack/react-router'
 import { ArrowDown } from 'lucide-react'
 
 export const Route = createFileRoute('/')({
@@ -52,14 +52,14 @@ function Index() {
 						</p>
 						<div className="mt-6 flex items-center justify-center gap-4">
 							<Button
-								onClick={() =>
-									document.getElementById('experience')?.scrollIntoView()
-								}
 								size="lg"
 								variant="default"
 								className="px-4"
+								asChild={true}
 							>
-								About Me <ArrowDown className="inline animate-bounce" />
+								<a href="#experience">
+									About Me <ArrowDown className="inline animate-bounce" />
+								</a>
 							</Button>
 							<Button
 								size="lg"
@@ -102,7 +102,9 @@ function Index() {
 
 				{/* Contact */}
 				<Section title="Contact Me">
-					<ContactCard />
+					<ClientOnly fallback={null}>
+						<ContactCard />
+					</ClientOnly>
 				</Section>
 			</main>
 		</>

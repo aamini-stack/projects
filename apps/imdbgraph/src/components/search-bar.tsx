@@ -10,12 +10,17 @@ import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { Link, useRouter } from '@tanstack/react-router'
 import { Command } from 'cmdk'
 import { Search as SearchIcon, Star } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 /** https://www.w3.org/WAI/ARIA/apg/patterns/combobox/examples/combobox-autocomplete-list/ */
 export function SearchBar({ className }: { className?: string }) {
 	const [search, setSearch] = useState('')
+	const [isHydrated, setIsHydrated] = useState(false)
 	const router = useRouter()
+
+	useEffect(() => {
+		setIsHydrated(true)
+	}, [])
 
 	const {
 		isFetching,
@@ -30,7 +35,7 @@ export function SearchBar({ className }: { className?: string }) {
 			)
 			return response.json() as Promise<Show[]>
 		},
-		enabled: Boolean(search),
+		enabled: isHydrated && Boolean(search),
 		placeholderData: keepPreviousData,
 	})
 
@@ -42,22 +47,32 @@ export function SearchBar({ className }: { className?: string }) {
 			)}
 			shouldFilter={false}
 		>
-			<InputGroup className="border-border">
+			<InputGroup
+				className={cn('border-border transition-opacity', {
+					'cursor-progress opacity-70': !isHydrated,
+				})}
+			>
 				<Command.Input
 					value={search}
 					onValueChange={setSearch}
-					placeholder="Search for any TV show..."
+					placeholder={
+						isHydrated ? 'Search for any TV show...' : 'Loading search...'
+					}
 					className="flex-1 outline-none placeholder:text-xs"
+					disabled={!isHydrated}
+					aria-busy={!isHydrated}
 					asChild={true}
 				>
 					<InputGroupInput />
 				</Command.Input>
 
-				<InputGroupAddon>
+				<InputGroupAddon className={cn({ 'opacity-60': !isHydrated })}>
 					<SearchIcon />
 				</InputGroupAddon>
 				<InputGroupAddon align="inline-end">
-					{isFetching && <Spinner className="ml-2" />}
+					{isFetching && (
+						<Spinner className="ml-2" data-testid="loading-spinner" />
+					)}
 				</InputGroupAddon>
 			</InputGroup>
 
@@ -100,14 +115,12 @@ export function SearchBar({ className }: { className?: string }) {
 								params={{ id: show.imdbId }}
 								className="aria-selected:bg-accent aria-selected:text-accent-foreground text-foreground flex cursor-pointer gap-4 rounded-md px-2 py-1.5 text-sm outline-none select-none"
 							>
-								{/* Show Title + Years */}
 								<div className="flex flex-1 flex-col">
 									<span className="wrap-break-word">{show.title}&nbsp;</span>
 									<span className="text-muted-foreground text-xs">
 										{formatYears(show)}
 									</span>
 								</div>
-								{/* 1-10 Rating + Blue Star Icon */}
 								<div className="text-muted-foreground flex items-center space-x-1 text-sm">
 									<span>{`${show.rating.toFixed(1)} / 10.0`}</span>
 									<Star className="size-4 text-sky-500" />

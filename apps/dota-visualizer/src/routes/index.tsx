@@ -1,7 +1,7 @@
 import { AppHeader } from '@/components/app-header'
 import { defaultViewId, getView, viewsById } from '@/components/views/registry'
 import { fetchLatestHeroData } from '@/lib/dota/api'
-import { createFileRoute } from '@tanstack/react-router'
+import { ClientOnly, createFileRoute } from '@tanstack/react-router'
 
 interface SearchParams {
 	view?: string
@@ -34,7 +34,9 @@ function Index() {
 					void navigate({ search: { view: viewId } })
 				}}
 			/>
-			<ViewComponent heroDictionary={heroDictionary} />
+			<ClientOnly fallback={null}>
+				<ViewComponent heroDictionary={heroDictionary} />
+			</ClientOnly>
 		</main>
 	)
 }

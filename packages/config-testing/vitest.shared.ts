@@ -5,7 +5,6 @@ import { existsSync } from 'node:fs'
 import { resolve } from 'node:path'
 import type { Plugin } from 'vite'
 import svgr from 'vite-plugin-svgr'
-import tsconfigPaths from 'vite-tsconfig-paths'
 import {
 	defineConfig,
 	mergeConfig,
@@ -114,8 +113,10 @@ export const createBaseConfig = (
 ) =>
 	mergeConfig(
 		defineConfig({
+			resolve: {
+				tsconfigPaths: true,
+			},
 			plugins: asPlugins([
-				tsconfigPaths(),
 				tailwindcss(),
 				viteReact({
 					babel: {

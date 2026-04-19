@@ -1,5 +1,3 @@
-import * as os from 'node:os'
-import * as path from 'node:path'
 import {
 	defineConfig,
 	devices,
@@ -13,19 +11,13 @@ export const baseConfig = (
 	overrides?: PlaywrightTestConfig,
 ) => {
 	const devUrl = `http://localhost:${port}`
-	const useDevServer = !(process.env.CI || process.env.BASE_URL)
-	const baseUrl = useDevServer ? devUrl : process.env.BASE_URL
+	const baseUrl = process.env.BASE_URL || devUrl
+	const useDevServer = !process.env.BASE_URL
 	const testDir = './e2e'
-	const outputDir = path.join(
-		os.tmpdir(),
-		'aamini-playwright',
-		path.basename(process.cwd()),
-		'test-results',
-	)
 	return defineConfig(
 		{
 			testDir: testDir,
-			outputDir,
+			outputDir: '.playwright/test-results',
 			/* Run tests in files in parallel */
 			fullyParallel: true,
 			// Opt out of parallel tests on CI.
@@ -53,20 +45,20 @@ export const baseConfig = (
 			...(useDevServer
 				? {
 						webServer: {
-							command: `pnpm serve --port ${port}`,
+							command: `pnpm dev --port ${port} --strictPort`,
 							url: devUrl,
-							reuseExistingServer: !process.env.CI,
-							timeout: 180_000, // 3 minutes for Nitro/Vite to fully initialize
+							reuseExistingServer: true,
+							timeout: 15_000,
+							env: loadEnv('development', process.cwd(), ''),
 							stdout: 'pipe',
 							stderr: 'pipe',
-							env: loadEnv('test', process.cwd(), ''),
 						},
 					}
 				: {}),
 
-			timeout: 60_000,
+			timeout: 5_000,
 			expect: {
-				timeout: 15_000,
+				timeout: 5_000,
 				toHaveScreenshot: {
 					stylePath: `${testDir}/screenshot.css`,
 				},

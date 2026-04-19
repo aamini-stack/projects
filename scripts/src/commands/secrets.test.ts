@@ -24,9 +24,24 @@ function createRepoFixture(): string {
 		path.join(repoRoot, 'packages', 'infra', 'manifests', 'apps', 'stable'),
 		{ recursive: true },
 	)
+	fs.mkdirSync(
+		path.join(
+			repoRoot,
+			'packages',
+			'infra',
+			'manifests',
+			'platform',
+			'networking',
+		),
+		{ recursive: true },
+	)
 	fs.writeFileSync(
 		path.join(repoRoot, 'apps', 'imdbgraph', '.env.local'),
 		'DATABASE_URL=postgresql://example\n',
+	)
+	fs.writeFileSync(
+		path.join(repoRoot, 'packages', 'infra', '.env.staging.local'),
+		'CLOUDFLARE_API_TOKEN=test-cloudflare-token\n',
 	)
 	fs.writeFileSync(
 		path.join(
@@ -94,6 +109,45 @@ describe('sealAll', () => {
 					'apps',
 					'stable',
 					'imdbgraph-sealed-secret.yaml',
+				),
+				'utf8',
+			),
+		).toBe(sealedYaml)
+	})
+
+	it('writes infra sealed secret from packages/infra/.env.staging.local', async () => {
+		const repoRoot = createRepoFixture()
+		const sealedYaml = 'apiVersion: bitnami.com/v1alpha1\nkind: SealedSecret\n'
+
+		await sealAll(repoRoot, {
+			apps: [],
+			runCommand: async ({ command, input }) => {
+				if (command[0] === 'kubeseal' && command.includes('--fetch-cert')) {
+					return { stdout: 'cert' }
+				}
+
+				if (command[0] === 'kubectl') {
+					throw new Error('infra seal should not call kubectl create secret')
+				}
+
+				expect(input).toContain('name: cloudflare-api-token')
+				expect(input).toContain('namespace: networking')
+				expect(input).toContain('api-token: dGVzdC1jbG91ZGZsYXJlLXRva2Vu')
+
+				return { stdout: sealedYaml }
+			},
+		})
+
+		expect(
+			fs.readFileSync(
+				path.join(
+					repoRoot,
+					'packages',
+					'infra',
+					'manifests',
+					'platform',
+					'networking',
+					'cloudflare-api-token-sealed-secret.yaml',
 				),
 				'utf8',
 			),

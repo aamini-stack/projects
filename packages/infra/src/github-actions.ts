@@ -10,7 +10,7 @@ const location = azureConfig.require('location')
 const subscriptionId = azureConfig.require('subscriptionId')
 const githubOrganizationName = config.require('githubOrganizationName')
 const githubRepositoryName = config.require('githubRepositoryName')
-const registryName = config.get('registryName') ?? 'aaministack'
+const registryName = 'aaministack'
 
 const githubOidcSubject = config.get('githubOidcSubject')
 const githubOidcSubjects =

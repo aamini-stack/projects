@@ -5,8 +5,11 @@ import {
 	createRoute,
 	createRouter,
 	RouterContextProvider,
+	type AnyRouter,
 } from '@tanstack/react-router'
 import { http, HttpResponse } from 'msw'
+import { hydrateRoot } from 'react-dom/client'
+import { renderToString } from 'react-dom/server'
 import { beforeEach, describe, expect, vi } from 'vitest'
 import { render } from 'vitest-browser-react'
 import { page, userEvent } from 'vitest/browser'
@@ -28,20 +31,26 @@ beforeEach(() => {
 	testQueryClient.clear()
 })
 
-function MockRouter(props: { children: React.ReactNode }) {
+function createMockRouter() {
 	const rootRoute = createRootRoute()
 	const indexRoute = createRoute({
 		getParentRoute: () => rootRoute,
 		path: '/',
 	})
 	const routeTree = rootRoute.addChildren([indexRoute])
-	const router = createRouter({ routeTree })
+	return createRouter({ routeTree })
+}
 
+function MockRouter({
+	children,
+	router = createMockRouter(),
+}: {
+	children: React.ReactNode
+	router?: AnyRouter
+}) {
 	return (
 		<QueryClientProvider client={testQueryClient}>
-			<RouterContextProvider router={router}>
-				{props.children}
-			</RouterContextProvider>
+			<RouterContextProvider router={router}>{children}</RouterContextProvider>
 		</QueryClientProvider>
 	)
 }
@@ -57,6 +66,57 @@ describe('searchbar tests', () => {
 		await expect
 			.element(page.getByText(/Avatar: The Last Airbender/).first())
 			.toBeVisible()
+	})
+
+	test('is disabled until hydration completes', async () => {
+		const rootElement = document.createElement('div')
+		document.body.append(rootElement)
+
+		const router = createMockRouter()
+		rootElement.innerHTML = renderToString(
+			<MockRouter router={router}>
+				<SearchBar />
+			</MockRouter>,
+		)
+
+		const input = rootElement.querySelector('input')
+		if (!(input instanceof HTMLInputElement)) {
+			throw new Error('Search input not found')
+		}
+
+		expect(input.disabled).toBe(true)
+
+		const root = hydrateRoot(
+			rootElement,
+			<MockRouter router={router}>
+				<SearchBar />
+			</MockRouter>,
+		)
+
+		await expect.element(page.getByRole('combobox')).not.toBeDisabled()
+
+		root.unmount()
+		rootElement.remove()
+	})
+
+	test('ArrowDown moves to next result on Enter', async () => {
+		const router = createMockRouter()
+		const navigateSpy = vi.spyOn(router, 'navigate')
+		const screen = await render(<SearchBar />, {
+			wrapper: (props) => <MockRouter router={router} {...props} />,
+		})
+
+		const searchBar = screen.getByRole('combobox')
+		await userEvent.fill(searchBar, 'avatar')
+		await expect
+			.element(page.getByText(/Avatar: The Last Airbender/).first())
+			.toBeVisible()
+		await userEvent.keyboard('{ArrowDown}{Enter}')
+
+		expect(navigateSpy).toHaveBeenCalledWith({
+			params: { id: 'tt9018736' },
+			to: '/ratings/$id',
+		})
 	})
 
 	test('no results', async ({ worker }) => {

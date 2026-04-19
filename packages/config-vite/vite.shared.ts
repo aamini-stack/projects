@@ -6,9 +6,15 @@ import viteReact from '@vitejs/plugin-react'
 import { nitro } from 'nitro/vite'
 import { defineConfig } from 'vite'
 import svgr from 'vite-plugin-svgr'
-import viteTsConfigPaths from 'vite-tsconfig-paths'
 
 export const baseConfig = defineConfig({
+	resolve: {
+		tsconfigPaths: true,
+		dedupe: ['react', 'react-dom'],
+	},
+	ssr: {
+		noExternal: ['recharts'],
+	},
 	plugins: [
 		devtools(),
 		nitro({
@@ -33,7 +39,6 @@ export const baseConfig = defineConfig({
 				},
 			},
 		}),
-		viteTsConfigPaths({ projects: ['./tsconfig.json'] }),
 		tailwindcss(),
 		tanstackStart(),
 		varlockVitePlugin({ ssrInjectMode: 'auto-load' }),
@@ -63,5 +68,8 @@ export const baseConfig = defineConfig({
 	// https://github.com/vitejs/vite/issues/16522
 	server: {
 		host: '127.0.0.1',
+		watch: {
+			ignored: ['**/.playwright/**', '**/playwright-report/**'],
+		},
 	},
 })

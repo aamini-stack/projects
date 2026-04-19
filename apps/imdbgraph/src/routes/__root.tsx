@@ -1,23 +1,31 @@
 /// <reference types="vite/client" />
+import { clientEnv } from '@/env'
 import type { QueryClient } from '@tanstack/react-query'
 import {
+	ClientOnly,
 	HeadContent,
 	Outlet,
 	Scripts,
 	createRootRouteWithContext,
 } from '@tanstack/react-router'
+import { useEffect } from 'react'
 import posthog from 'posthog-js'
 import appCss from '../styles.css?url'
 
-if (import.meta.env.MODE !== 'development') {
-	posthog.init(import.meta.env.VITE_PUBLIC_POSTHOG_KEY, {
-		api_host: '/api/ingest',
-		ui_host: 'https://us.posthog.com',
-		defaults: '2025-11-30',
-		person_profiles: 'always',
-	})
-} else {
-	console.log('Posthog not initialized in dev mode.')
+function Analytics() {
+	useEffect(() => {
+		const posthogKey = clientEnv.VITE_PUBLIC_POSTHOG_KEY?.trim()
+		if (import.meta.env.MODE === 'development' || !posthogKey) return
+
+		posthog.init(posthogKey, {
+			api_host: '/api/ingest',
+			ui_host: 'https://us.posthog.com',
+			defaults: '2025-11-30',
+			person_profiles: 'always',
+		})
+	}, [])
+
+	return null
 }
 
 export const Route = createRootRouteWithContext<{
@@ -78,6 +86,9 @@ function RootComponent() {
 						</span>
 					</footer>
 				</div>
+				<ClientOnly fallback={null}>
+					<Analytics />
+				</ClientOnly>
 				<Scripts />
 			</body>
 		</html>

@@ -1,8 +1,8 @@
 import { defineConfig } from 'drizzle-kit'
-import { loadEnv } from 'vite'
+import 'varlock/auto-load'
+import { ENV } from 'varlock/env'
 
-const env = loadEnv('production', '.', '')
-if (!env.DATABASE_URL) {
+if (!ENV.DATABASE_URL) {
 	throw Error('Missing DATABASE_URL')
 }
 
@@ -11,6 +11,6 @@ export default defineConfig({
 	out: './src/db/migrations',
 	dialect: 'postgresql',
 	dbCredentials: {
-		url: env.DATABASE_URL,
+		url: ENV.DATABASE_URL,
 	},
 })
