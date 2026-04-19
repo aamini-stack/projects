@@ -47,7 +47,7 @@ export const baseConfig = (
 						webServer: {
 							command: `pnpm serve --port ${port} --strictPort`,
 							url: devUrl,
-							reuseExistingServer: true,
+							reuseExistingServer: false,
 							timeout: 15_000,
 							env: loadEnv('test', process.cwd(), ''),
 						},
