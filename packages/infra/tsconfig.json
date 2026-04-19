@@ -1,5 +1,5 @@
 {
-	"extends": "@aamini/config-typescript/lib",
+	"extends": "../config-typescript/tsconfig.lib.json",
 	"compilerOptions": {
 		"noEmit": true
 	}

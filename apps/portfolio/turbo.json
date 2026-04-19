@@ -3,7 +3,7 @@
 	"extends": ["//"],
 	"tasks": {
 		"build": {
-			"env": ["APP_ENV", "MAILGUN_API_KEY", "MAILGUN_DOMAIN"]
+			"env": ["$TURBO_EXTENDS$", "MAILGUN_API_KEY", "MAILGUN_DOMAIN"]
 		}
 	}
 }

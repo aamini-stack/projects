@@ -1,0 +1,11 @@
+vercel-live-feedback {
+	display: none;
+}
+
+*,
+*::before,
+*::after {
+	animation: none !important;
+	transition: none !important;
+	caret-color: transparent !important;
+}

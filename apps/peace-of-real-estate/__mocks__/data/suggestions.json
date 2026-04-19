@@ -1,0 +1,50 @@
+[
+	{
+		"id": "sunset-loft-linden",
+		"slug": "sunset-loft-linden",
+		"title": "Sunset Loft on Linden",
+		"city": "Austin",
+		"state": "TX",
+		"propertyType": "Loft",
+		"bedrooms": 1,
+		"bathrooms": 1,
+		"squareFeet": 820,
+		"listPrice": 385000,
+		"status": "Hot home",
+		"vibeSummary": "Brick walls, rooftop string lights, and enough natural light to start a ceramics phase.",
+		"heroImageUrl": null,
+		"swipeScore": 98
+	},
+	{
+		"id": "soft-launch-townhouse",
+		"slug": "soft-launch-townhouse",
+		"title": "Soft-Launch Townhouse",
+		"city": "Brooklyn",
+		"state": "NY",
+		"propertyType": "Townhouse",
+		"bedrooms": 2,
+		"bathrooms": 2,
+		"squareFeet": 1380,
+		"listPrice": 1095000,
+		"status": "Just listed",
+		"vibeSummary": "Two sunny floors, one tiny balcony, and elite dinner-party delusion.",
+		"heroImageUrl": null,
+		"swipeScore": 92
+	},
+	{
+		"id": "cozy-chaos-bungalow",
+		"slug": "cozy-chaos-bungalow",
+		"title": "Cozy Chaos Bungalow",
+		"city": "Nashville",
+		"state": "TN",
+		"propertyType": "Bungalow",
+		"bedrooms": 2,
+		"bathrooms": 2,
+		"squareFeet": 1180,
+		"listPrice": 525000,
+		"status": "Touring fast",
+		"vibeSummary": "Front porch charm, moody dining nook, and enough room for questionable hobbies.",
+		"heroImageUrl": null,
+		"swipeScore": 87
+	}
+]

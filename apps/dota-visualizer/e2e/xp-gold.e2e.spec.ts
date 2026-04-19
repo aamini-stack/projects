@@ -5,7 +5,7 @@ test.beforeEach(async ({ page }) => {
 })
 
 test('Screenshot XP & Gold Page', async ({ page }) => {
-	await page.goto('/?view=xp-gold')
+	test.setTimeout(15_000)
 
 	// Wait for all three section headings to be visible
 	await expect(page.getByRole('heading', { name: 'Hero Levels' })).toBeVisible()

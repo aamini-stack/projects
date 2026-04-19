@@ -13,7 +13,6 @@ type SealTarget = {
 	appDir: string
 	envFile: string
 	output: string
-	stableOutput: string
 }
 
 type CommandResult = {
@@ -81,15 +80,15 @@ function findSealTargets(
 				app,
 				appDir,
 				envFile: path.join(appDir, '.env.local'),
-				output: path.join(appDir, 'k8s', 'sealed-secret.yaml'),
-				stableOutput: path.join(
+				output: path.join(
 					repoRoot,
 					'packages',
 					'infra',
 					'manifests',
 					'apps',
 					'stable',
-					`${app}-sealed-secret.yaml`,
+					app,
+					'sealed-secret.yaml',
 				),
 			}
 		})
@@ -111,17 +110,7 @@ function findInfraSealTarget(repoRoot: string): SealTarget {
 			'networking',
 			'cloudflare-api-token-sealed-secret.yaml',
 		),
-		stableOutput: '',
 	}
-}
-
-function syncStableManifest(target: SealTarget, yaml: string): void {
-	if (!fs.existsSync(target.stableOutput)) {
-		return
-	}
-
-	fs.writeFileSync(target.stableOutput, yaml)
-	console.log(`Synced to ${target.stableOutput}`)
 }
 
 function normalizeSealedSecretYaml(yaml: string, _app: string): string {
@@ -271,6 +260,10 @@ export async function sealAll(
 	}
 
 	for (const target of targets) {
+		if (target.kind === 'app' && target.app === 'portfolio') {
+			continue
+		}
+
 		fs.mkdirSync(path.dirname(target.output), { recursive: true })
 
 		console.log(`Sealing ${target.app}...`)
@@ -314,7 +307,6 @@ export async function sealAll(
 			)
 			fs.writeFileSync(target.output, normalizedYaml)
 			console.log(`Written to ${target.output}`)
-			syncStableManifest(target, normalizedYaml)
 		} catch (error) {
 			const message = error instanceof Error ? error.message : String(error)
 			throw new Error(`Failed to seal ${target.app}: ${message}`)
@@ -433,7 +425,16 @@ export async function unsealAll(
 
 	for (const app of apps) {
 		const appDir = path.join(repoRoot, 'apps', app)
-		const sealedSecretFile = path.join(appDir, 'k8s', 'sealed-secret.yaml')
+		const sealedSecretFile = path.join(
+			repoRoot,
+			'packages',
+			'infra',
+			'manifests',
+			'apps',
+			'stable',
+			app,
+			'sealed-secret.yaml',
+		)
 		const envFile = path.join(appDir, '.env.local')
 
 		if (!fs.existsSync(sealedSecretFile)) {

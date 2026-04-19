@@ -1,0 +1,351 @@
+@import '@fontsource-variable/dm-sans';
+@import '@aamini/ui/globals.css';
+
+:root {
+	--font-family-sans: 'DM Sans Variable', system-ui, sans-serif;
+	--font-family-serif: Georgia, 'Times New Roman', Cambria, serif;
+
+	/* Institutional Modern — Swiss precision meets warm authority */
+	--radius: 0.125rem;
+	--background: #FAFAF8;
+	--foreground: #1A1A1A;
+	--card: #FFFFFF;
+	--card-foreground: #1A1A1A;
+	--popover: #FFFFFF;
+	--popover-foreground: #1A1A1A;
+	--primary: #1A1A1A;
+	--primary-foreground: #FAFAF8;
+	--secondary: #F5F5F0;
+	--secondary-foreground: #1A1A1A;
+	--muted: #F0EFEA;
+	--muted-foreground: #6B6B6B;
+	--accent: #B8956A;
+	--accent-foreground: #1A1A1A;
+	--destructive: #8B3A3A;
+	--border: #D4D0C8;
+	--input: #E8E6E1;
+	--ring: #1A1A1A;
+
+	/* Extended Accent Palette — disciplined pops of color */
+	--teal: #2D6B6B;
+	--teal-foreground: #FAFAF8;
+	--teal-tint: rgba(45, 107, 107, 0.08);
+	--teal-muted: #4A8585;
+
+	--terracotta: #C4705A;
+	--terracotta-foreground: #FAFAF8;
+	--terracotta-tint: rgba(196, 112, 90, 0.08);
+	--terracotta-muted: #D48A76;
+
+	--olive: #6B7B4A;
+	--olive-foreground: #FAFAF8;
+	--olive-tint: rgba(107, 123, 74, 0.08);
+	--olive-muted: #82915E;
+
+	--ochre: #B8956A;
+	--ochre-foreground: #1A1A1A;
+	--ochre-tint: rgba(184, 149, 106, 0.08);
+	--ochre-muted: #C9A97E;
+}
+
+.dark {
+	--background: #FAFAF8;
+	--foreground: #1A1A1A;
+	--card: #FFFFFF;
+	--card-foreground: #1A1A1A;
+	--popover: #FFFFFF;
+	--popover-foreground: #1A1A1A;
+	--primary: #1A1A1A;
+	--primary-foreground: #FAFAF8;
+	--secondary: #F5F5F0;
+	--secondary-foreground: #1A1A1A;
+	--muted: #F0EFEA;
+	--muted-foreground: #6B6B6B;
+	--accent: #B8956A;
+	--accent-foreground: #1A1A1A;
+	--destructive: #8B3A3A;
+	--border: #D4D0C8;
+	--input: #E8E6E1;
+	--ring: #1A1A1A;
+}
+
+/* Base typography */
+html {
+	scroll-behavior: smooth;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+body {
+	font-family: var(--font-family-sans);
+	letter-spacing: -0.01em;
+	line-height: 1.6;
+}
+
+/* Serif display type */
+.font-serif {
+	font-family: var(--font-family-serif);
+	letter-spacing: -0.02em;
+	line-height: 1.15;
+}
+
+/* Institutional hairline rule */
+.hairline {
+	height: 1px;
+	background: var(--border);
+}
+
+.hairline-vertical {
+	width: 1px;
+	background: var(--border);
+}
+
+/* Grid lines background pattern */
+.grid-pattern {
+	background-image:
+		linear-gradient(to right, var(--border) 1px, transparent 1px),
+		linear-gradient(to bottom, var(--border) 1px, transparent 1px);
+	background-size: 4rem 4rem;
+	background-position: center top;
+}
+
+/* Institutional card — sharp, bordered, precise */
+.card-institutional {
+	background: var(--card);
+	border: 1px solid var(--border);
+	border-radius: var(--radius);
+}
+
+/* Data label styling */
+.data-label {
+	font-size: 0.6875rem;
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+	font-weight: 600;
+	color: var(--muted-foreground);
+}
+
+/* Custom scrollbar — minimal */
+::-webkit-scrollbar {
+	width: 4px;
+}
+
+::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+	background: var(--border);
+}
+
+::-webkit-scrollbar-thumb:hover {
+	background: var(--muted-foreground);
+}
+
+/* Animations — precise, purposeful */
+@keyframes fade-in {
+	from { opacity: 0; }
+	to { opacity: 1; }
+}
+
+@keyframes fade-in-up {
+	from {
+		opacity: 0;
+		transform: translateY(12px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+@keyframes line-draw {
+	from { transform: scaleX(0); }
+	to { transform: scaleX(1); }
+}
+
+@keyframes slide-in-right {
+	from {
+		opacity: 0;
+		transform: translateX(16px);
+	}
+	to {
+		opacity: 1;
+		transform: translateX(0);
+	}
+}
+
+.animate-fade-in {
+	animation: fade-in 0.4s ease-out forwards;
+}
+
+.animate-fade-in-up {
+	animation: none;
+}
+
+.animate-line-draw {
+	animation: line-draw 0.8s ease-out forwards;
+	transform-origin: left;
+}
+
+.animate-slide-in-right {
+	animation: slide-in-right 0.4s ease-out forwards;
+}
+
+/* Stagger delays */
+.delay-100 { animation-delay: 100ms; }
+.delay-200 { animation-delay: 200ms; }
+.delay-300 { animation-delay: 300ms; }
+.delay-400 { animation-delay: 400ms; }
+.delay-500 { animation-delay: 500ms; }
+
+/* Number styling for data display */
+.data-number {
+	font-variant-numeric: tabular-nums;
+	font-feature-settings: 'tnum';
+	letter-spacing: -0.03em;
+}
+
+/* Institutional button */
+.btn-primary {
+	background: var(--primary);
+	color: var(--primary-foreground);
+	border: 1px solid var(--primary);
+	padding: 0.75rem 1.5rem;
+	font-size: 0.8125rem;
+	font-weight: 600;
+	letter-spacing: 0.02em;
+	text-transform: uppercase;
+	transition: all 0.15s ease;
+}
+
+.btn-primary:hover {
+	background: var(--foreground);
+	border-color: var(--foreground);
+}
+
+.btn-secondary {
+	background: transparent;
+	color: var(--foreground);
+	border: 1px solid var(--border);
+	padding: 0.75rem 1.5rem;
+	font-size: 0.8125rem;
+	font-weight: 600;
+	letter-spacing: 0.02em;
+	text-transform: uppercase;
+	transition: all 0.15s ease;
+}
+
+.btn-secondary:hover {
+	background: var(--secondary);
+	border-color: var(--foreground);
+}
+
+/* Table styling */
+.table-institutional {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+.table-institutional th {
+	font-size: 0.6875rem;
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+	font-weight: 600;
+	color: var(--muted-foreground);
+	text-align: left;
+	padding: 0.75rem 1rem;
+	border-bottom: 1px solid var(--border);
+}
+
+.table-institutional td {
+	padding: 1rem;
+	border-bottom: 1px solid var(--border);
+	font-size: 0.875rem;
+}
+
+/* Focus states */
+*:focus-visible {
+	outline: 2px solid var(--primary);
+	outline-offset: 2px;
+}
+
+/* Selection */
+::selection {
+	background: var(--primary);
+	color: var(--primary-foreground);
+}
+
+/* Remove old bubbly utilities */
+.gradient-text {
+	background: none;
+	-webkit-background-clip: initial;
+	-webkit-text-fill-color: initial;
+	background-clip: initial;
+}
+
+.warm-glow {
+	box-shadow: none;
+}
+
+.fit-score-ring {
+	background: conic-gradient(var(--primary) var(--score, 0%), var(--border) var(--score, 0%));
+}
+
+/* Extended color utilities */
+.text-teal { color: var(--teal); }
+.text-terracotta { color: var(--terracotta); }
+.text-olive { color: var(--olive); }
+.text-ochre { color: var(--ochre); }
+
+.bg-teal { background-color: var(--teal); }
+.bg-terracotta { background-color: var(--terracotta); }
+.bg-olive { background-color: var(--olive); }
+.bg-ochre { background-color: var(--ochre); }
+
+.bg-teal-tint { background-color: var(--teal-tint); }
+.bg-terracotta-tint { background-color: var(--terracotta-tint); }
+.bg-olive-tint { background-color: var(--olive-tint); }
+.bg-ochre-tint { background-color: var(--ochre-tint); }
+
+.text-teal-muted { color: var(--teal-muted); }
+.text-terracotta-muted { color: var(--terracotta-muted); }
+.text-olive-muted { color: var(--olive-muted); }
+.text-ochre-muted { color: var(--ochre-muted); }
+
+.border-teal { border-color: var(--teal); }
+.border-terracotta { border-color: var(--terracotta); }
+.border-olive { border-color: var(--olive); }
+.border-ochre { border-color: var(--ochre); }
+
+/* Subtle warm gradient for hero sections */
+.warm-gradient {
+	background: linear-gradient(135deg, var(--background) 0%, #F5F0E8 50%, var(--background) 100%);
+}
+
+/* Colored score bar variants */
+.score-bar-teal { background-color: var(--teal); }
+.score-bar-terracotta { background-color: var(--terracotta); }
+.score-bar-olive { background-color: var(--olive); }
+.score-bar-ochre { background-color: var(--ochre); }
+
+/* Colored badge */
+.badge-teal {
+	background: var(--teal);
+	color: var(--teal-foreground);
+}
+
+.badge-terracotta {
+	background: var(--terracotta);
+	color: var(--terracotta-foreground);
+}
+
+.badge-olive {
+	background: var(--olive);
+	color: var(--olive-foreground);
+}
+
+.badge-ochre {
+	background: var(--ochre);
+	color: var(--ochre-foreground);
+}
