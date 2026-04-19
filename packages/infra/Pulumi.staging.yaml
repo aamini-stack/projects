@@ -15,6 +15,10 @@ config:
     skuName: Standard_B1ms
     skuTier: Burstable
     storageSizeGb: 32
+  aamini-platform:postgresAdmin:
+    objectId: 00000000-0000-0000-0000-000000000000
+    principalName: grp-pg-aamini-staging-admins
+    principalType: Group
   aamini-platform:githubApiToken:
     secure: AAABAA05jKTMKxWlaucLfunD+3C8WZfmbHk19l4blD4IQuo4ILKWCCyTG2BBHfsPMx3J71EED5xbU29PsAg7ezMUHUBj2c+mzkRAJn90HR8eapjesTA3uS4VknDYNMjEjsNNpKkryALK58UeBjq7cXS8EGBqff8sLsPh+oY=
   aamini-platform:dbPassword:

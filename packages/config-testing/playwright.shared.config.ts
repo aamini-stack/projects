@@ -17,6 +17,7 @@ export const baseConfig = (
 	return defineConfig(
 		{
 			testDir: testDir,
+			outputDir: '.playwright/test-results',
 			/* Run tests in files in parallel */
 			fullyParallel: true,
 			// Opt out of parallel tests on CI.
@@ -46,7 +47,7 @@ export const baseConfig = (
 						webServer: {
 							command: `pnpm serve --port ${port} --strictPort`,
 							url: devUrl,
-							reuseExistingServer: false,
+							reuseExistingServer: true,
 							timeout: 15_000,
 							env: loadEnv('test', process.cwd(), ''),
 						},

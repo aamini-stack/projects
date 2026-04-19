@@ -8,6 +8,7 @@ export interface AppDatabaseArgs {
 	serverName: pulumi.Input<string>
 	serverHost: pulumi.Input<string>
 	adminUser: pulumi.Input<string>
+	runtimePrincipalObjectId: pulumi.Input<string>
 }
 
 export class AppDatabase extends pulumi.ComponentResource {
@@ -21,12 +22,15 @@ export class AppDatabase extends pulumi.ComponentResource {
 	) {
 		super('aamini:infra:AppDatabase', name, {}, opts)
 
+		const currentClient = azure.authorization.getClientConfigOutput()
+
 		const pgProvider = new postgresql.Provider(
 			`${name}-pg-provider`,
 			{
 				host: args.serverHost,
 				username: args.adminUser,
 				azureIdentityAuth: true,
+				azureTenantId: currentClient.tenantId,
 				sslmode: 'require',
 				superuser: false,
 			},
@@ -44,6 +48,8 @@ export class AppDatabase extends pulumi.ComponentResource {
 			},
 			{ parent: this },
 		)
+
+		const appUserName = pulumi.output(args.name)
 
 		const role = new postgresql.Role(
 			`${name}-db-role`,
@@ -114,6 +120,7 @@ export class AppDatabase extends pulumi.ComponentResource {
 				host: args.serverHost,
 				username: args.adminUser,
 				azureIdentityAuth: true,
+				azureTenantId: currentClient.tenantId,
 				database: args.name,
 				sslmode: 'require',
 				superuser: false,
@@ -149,8 +156,10 @@ export class AppDatabase extends pulumi.ComponentResource {
 		)
 
 		this.databaseName = database.name
+		this.userName = role.name
 		this.registerOutputs({
 			databaseName: this.databaseName,
+			userName: this.userName,
 		})
 	}
 }

@@ -3,12 +3,18 @@ import { drizzle } from 'drizzle-orm/node-postgres'
 import { Pool } from 'pg'
 import { getDatabaseUrl } from '@/env.server'
 
-const pool = new Pool({
-	connectionString: getDatabaseUrl(),
-})
+let pool: Pool | undefined
+
+function getPool() {
+	pool ??= new Pool({
+		connectionString: getDatabaseUrl(),
+	})
+
+	return pool
+}
 
 export const createDb = createServerOnlyFn(() => {
 	return drizzle({
-		client: pool,
+		client: getPool(),
 	})
 })

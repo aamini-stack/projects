@@ -19,11 +19,9 @@ export const Route = createFileRoute('/api/populate')({
 				}
 
 				waitUntil(
-					createDb()
-						.then((db) => update(db))
-						.catch((e) => {
-							console.log(e)
-						}),
+					update(createDb()).catch((error: unknown) => {
+						console.log(error)
+					}),
 				)
 				return new Response('Update queued', {
 					status: 200,

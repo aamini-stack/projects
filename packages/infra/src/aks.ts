@@ -20,8 +20,6 @@ const aksSpecs = config.requireObject<{
 	maxSurge: string
 }>('aksSpecs')
 const githubRepositoryUrl = `https://github.com/${githubOrganizationName}/${githubRepositoryName}`
-const infraDir = process.cwd()
-
 function createKubernetes() {
 	const aksCluster = new azure.containerservice.ManagedCluster('aks-cluster', {
 		dnsPrefix: 'aamini-stack',

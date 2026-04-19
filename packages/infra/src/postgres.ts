@@ -11,12 +11,20 @@ interface PostgresConfig {
 	geoRedundantBackup: types.dbforpostgresql.GeographicallyRedundantBackup
 }
 
+interface PostgresAdminConfig {
+	objectId: string
+	principalName: string
+	principalType: 'Group' | 'ServicePrincipal' | 'User'
+}
+
 const azureConfig = new pulumi.Config('azure-native')
 const location = azureConfig.require('location')
 const currentClient = azure.authorization.getClientConfigOutput()
 
 const config = new pulumi.Config()
 const dbSpecs = config.requireObject<PostgresConfig>('dbSpecs')
+const adminPrincipal =
+	config.requireObject<PostgresAdminConfig>('postgresAdmin')
 const serverName = `pg-aamini-${pulumi.getStack()}`
 
 const server = new azure.dbforpostgresql.Server(serverName, {
@@ -62,6 +70,19 @@ const allowAllFirewallRule = new azure.dbforpostgresql.FirewallRule(
 	{ deletedWith: server },
 )
 
+const postgresEntraAdmin = new azure.dbforpostgresql.Administrator(
+	'postgres-entra-admin',
+	{
+		resourceGroupName: resourceGroup.name,
+		serverName: server.name,
+		objectId: adminPrincipal.objectId,
+		principalName: adminPrincipal.principalName,
+		principalType: adminPrincipal.principalType,
+		tenantId: currentClient.tenantId,
+	},
+	{ dependsOn: [server] },
+)
+
 new azure.dbforpostgresql.Configuration(
 	'pg-extensions',
 	{
@@ -79,5 +100,5 @@ new azure.dbforpostgresql.Configuration(
 
 // Exports for apps to consume
 export const postgresHost = server.fullyQualifiedDomainName
-export const postgresAdminUser = server
+export const postgresAdminUser = postgresEntraAdmin.principalName
 export const postgresServerName = server.name
