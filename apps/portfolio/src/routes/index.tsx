@@ -8,7 +8,7 @@ import { SkillBubble } from '@/components/skill-bubble'
 import { jobs } from '@/lib/jobs'
 import { skills } from '@/lib/skills'
 import { Button } from '@aamini/ui/components/button'
-import { createFileRoute } from '@tanstack/react-router'
+import { ClientOnly, createFileRoute } from '@tanstack/react-router'
 import { ArrowDown } from 'lucide-react'
 
 export const Route = createFileRoute('/')({
@@ -97,7 +97,9 @@ function Index() {
 
 				{/* Contact */}
 				<Section title="Contact Me">
-					<ContactCard />
+					<ClientOnly fallback={null}>
+						<ContactCard />
+					</ClientOnly>
 				</Section>
 			</main>
 		</>
