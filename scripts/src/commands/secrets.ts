@@ -162,8 +162,13 @@ function readEnvValue(envFile: string, key: string): string {
 }
 
 function buildInfraSecretYaml(target: SealTarget): string {
-	const cloudflareApiToken = readEnvValue(target.envFile, 'CLOUDFLARE_API_TOKEN')
-	const encodedToken = Buffer.from(cloudflareApiToken, 'utf8').toString('base64')
+	const cloudflareApiToken = readEnvValue(
+		target.envFile,
+		'CLOUDFLARE_API_TOKEN',
+	)
+	const encodedToken = Buffer.from(cloudflareApiToken, 'utf8').toString(
+		'base64',
+	)
 
 	return [
 		'apiVersion: v1',

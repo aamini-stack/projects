@@ -25,7 +25,14 @@ function createRepoFixture(): string {
 		{ recursive: true },
 	)
 	fs.mkdirSync(
-		path.join(repoRoot, 'packages', 'infra', 'manifests', 'platform', 'networking'),
+		path.join(
+			repoRoot,
+			'packages',
+			'infra',
+			'manifests',
+			'platform',
+			'networking',
+		),
 		{ recursive: true },
 	)
 	fs.writeFileSync(
