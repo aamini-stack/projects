@@ -14,7 +14,7 @@ export const Route = createFileRoute('/api/suggestions')({
 					return new Response(JSON.stringify([]))
 				}
 
-				const shows = await fetchSuggestions(createDb(), q)
+				const shows = await fetchSuggestions(await createDb(), q)
 				return new Response(JSON.stringify(shows), {
 					headers: {
 						'CDN-Cache-Control':

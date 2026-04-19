@@ -79,7 +79,7 @@ test('aamini secrets', () => {
 		  -h, --help              display help for command
 
 		Commands:
-		  seal [options] [app]    Seal app secrets
+		  seal                    Seal app and infra secrets
 		  unseal [options] [app]  Unseal app secrets
 		"
 	`)

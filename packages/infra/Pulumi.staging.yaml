@@ -15,8 +15,6 @@ config:
     skuName: Standard_B1ms
     skuTier: Burstable
     storageSizeGb: 32
-  aamini-platform:cloudflareApiToken:
-    secure: AAABAB4Edgz81UYiDtj834/u+ekxppK9D7pnVjQ52+XTeIDH+pLuL9JgLT1jvE2Fn+fDVFrtd9mAE8ITr0+DBKuN6l9lp6Qd
   aamini-platform:githubApiToken:
     secure: AAABAA05jKTMKxWlaucLfunD+3C8WZfmbHk19l4blD4IQuo4ILKWCCyTG2BBHfsPMx3J71EED5xbU29PsAg7ezMUHUBj2c+mzkRAJn90HR8eapjesTA3uS4VknDYNMjEjsNNpKkryALK58UeBjq7cXS8EGBqff8sLsPh+oY=
   aamini-platform:dbPassword:

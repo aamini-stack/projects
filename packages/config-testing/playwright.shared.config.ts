@@ -1,5 +1,3 @@
-import * as os from 'node:os'
-import * as path from 'node:path'
 import {
 	defineConfig,
 	devices,
@@ -16,16 +14,9 @@ export const baseConfig = (
 	const useDevServer = !(process.env.CI || process.env.BASE_URL)
 	const baseUrl = useDevServer ? devUrl : process.env.BASE_URL
 	const testDir = './e2e'
-	const outputDir = path.join(
-		os.tmpdir(),
-		'aamini-playwright',
-		path.basename(process.cwd()),
-		'test-results',
-	)
 	return defineConfig(
 		{
 			testDir: testDir,
-			outputDir,
 			/* Run tests in files in parallel */
 			fullyParallel: true,
 			// Opt out of parallel tests on CI.

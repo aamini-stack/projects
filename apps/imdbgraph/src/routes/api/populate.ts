@@ -19,9 +19,11 @@ export const Route = createFileRoute('/api/populate')({
 				}
 
 				waitUntil(
-					update(createDb()).catch((e) => {
-						console.log(e)
-					}),
+					createDb()
+						.then((db) => update(db))
+						.catch((e) => {
+							console.log(e)
+						}),
 				)
 				return new Response('Update queued', {
 					status: 200,

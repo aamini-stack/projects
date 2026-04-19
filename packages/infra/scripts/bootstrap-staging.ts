@@ -275,15 +275,9 @@ async function main() {
 		workDir: projectDir,
 	})
 
-	const cloudflareConfig = await stack.getConfig(
-		'aamini-platform:cloudflareApiToken',
-	)
 	const githubConfig = await stack.getConfig('aamini-platform:githubApiToken')
 	const dbPasswordConfig = await stack.getConfig('aamini-platform:dbPassword')
 
-	const cloudflareApiToken =
-		process.env.CLOUDFLARE_API_TOKEN ||
-		(cloudflareConfig?.value ? null : await prompt('Cloudflare API token'))
 	const githubApiToken =
 		process.env.GITHUB_API_TOKEN ||
 		(githubConfig?.value ? null : await prompt('GitHub API token'))
@@ -293,12 +287,6 @@ async function main() {
 			? null
 			: await prompt('Database password', generatePassword()))
 
-	if (cloudflareApiToken) {
-		await stack.setConfig('aamini-platform:cloudflareApiToken', {
-			value: cloudflareApiToken,
-			secret: true,
-		})
-	}
 	if (githubApiToken) {
 		await stack.setConfig('aamini-platform:githubApiToken', {
 			value: githubApiToken,

@@ -8,7 +8,7 @@ import type { NodePgDatabase } from 'drizzle-orm/node-postgres'
 export const getRatings = createServerFn()
 	.inputValidator((data: { showId: string }) => data)
 	.handler(async ({ data }) => {
-		const db = createDb()
+		const db = await createDb()
 		return getRatingsDb(db, data.showId)
 	})
 

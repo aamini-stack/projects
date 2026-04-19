@@ -18,8 +18,8 @@ export function StorePhotos() {
 		<div className="grid gap-3 p-3 md:grid-cols-[1.4fr_1fr]">
 			<div className="overflow-hidden rounded-2xl border border-white/10">
 				<img
-					src={storePhotos[0].src}
-					alt={storePhotos[0].alt}
+					src={storePhotos[0]?.src ?? ''}
+					alt={storePhotos[0]?.alt ?? ''}
 					className="h-full min-h-72 w-full object-cover"
 					loading="eager"
 				/>
