@@ -64,5 +64,8 @@ export const baseConfig = defineConfig({
 	// https://github.com/vitejs/vite/issues/16522
 	server: {
 		host: '127.0.0.1',
+		watch: {
+			ignored: ['**/.playwright/**', '**/playwright-report/**'],
+		},
 	},
 })

@@ -5,6 +5,7 @@ import {
 	ChartTooltipContent,
 	type ChartConfig,
 } from '@aamini/ui/components/chart'
+import { ClientOnly } from '@tanstack/react-router'
 import { Area, AreaChart, XAxis, YAxis } from 'recharts'
 import type { ViewProps } from '../types'
 
@@ -97,75 +98,77 @@ export default function XpGoldView(_props: ViewProps) {
 
 				{/* XP Chart */}
 				<div className="mb-8 rounded-lg border border-zinc-800 bg-zinc-900/50 p-6">
-					<ChartContainer config={chartConfig} className="h-72 w-full">
-						<AreaChart data={XP_TABLE} margin={{ left: 12, right: 12 }}>
-							<defs>
-								<linearGradient id="xpGradient" x1="0" y1="0" x2="1" y2="0">
-									<stop offset="0%" stopColor="hsl(240, 60%, 50%)" />
-									<stop offset="50%" stopColor="hsl(280, 60%, 50%)" />
-									<stop offset="100%" stopColor="hsl(45, 93%, 47%)" />
-								</linearGradient>
-								<linearGradient id="xpFillGradient" x1="0" y1="0" x2="1" y2="0">
-									<stop
-										offset="0%"
-										stopColor="hsl(240, 60%, 50%)"
-										stopOpacity={0.3}
-									/>
-									<stop
-										offset="50%"
-										stopColor="hsl(280, 60%, 50%)"
-										stopOpacity={0.3}
-									/>
-									<stop
-										offset="100%"
-										stopColor="hsl(45, 93%, 47%)"
-										stopOpacity={0.3}
-									/>
-								</linearGradient>
-							</defs>
-							<XAxis
-								dataKey="level"
-								tickLine={false}
-								axisLine={false}
-								tickMargin={8}
-								tick={{ fill: '#18181b', fontSize: 12 }}
-							/>
-							<YAxis
-								tickLine={false}
-								axisLine={false}
-								tickMargin={8}
-								tick={{ fill: '#18181b', fontSize: 12 }}
-								tickFormatter={(value: number) =>
-									value >= 1000
-										? `${(value / 1000).toFixed(0)}k`
-										: String(value)
-								}
-							/>
-							<ChartTooltip
-								cursor={false}
-								content={
-									<ChartTooltipContent
-										formatter={(value, _name) => (
-											<div className="flex items-center gap-2">
-												<span className="text-zinc-400">Total XP:</span>
-												<span className="font-mono font-bold text-amber-400">
-													{Number(value).toLocaleString()}
-												</span>
-											</div>
-										)}
-										labelFormatter={(label) => `Level ${label}`}
-									/>
-								}
-							/>
-							<Area
-								type="monotone"
-								dataKey="totalXp"
-								stroke="url(#xpGradient)"
-								strokeWidth={3}
-								fill="url(#xpFillGradient)"
-							/>
-						</AreaChart>
-					</ChartContainer>
+					<ClientOnly fallback={<div className="h-72 w-full" />}>
+						<ChartContainer config={chartConfig} className="h-72 w-full">
+							<AreaChart data={XP_TABLE} margin={{ left: 12, right: 12 }}>
+								<defs>
+									<linearGradient id="xpGradient" x1="0" y1="0" x2="1" y2="0">
+										<stop offset="0%" stopColor="hsl(240, 60%, 50%)" />
+										<stop offset="50%" stopColor="hsl(280, 60%, 50%)" />
+										<stop offset="100%" stopColor="hsl(45, 93%, 47%)" />
+									</linearGradient>
+									<linearGradient id="xpFillGradient" x1="0" y1="0" x2="1" y2="0">
+										<stop
+											offset="0%"
+											stopColor="hsl(240, 60%, 50%)"
+											stopOpacity={0.3}
+										/>
+										<stop
+											offset="50%"
+											stopColor="hsl(280, 60%, 50%)"
+											stopOpacity={0.3}
+										/>
+										<stop
+											offset="100%"
+											stopColor="hsl(45, 93%, 47%)"
+											stopOpacity={0.3}
+										/>
+									</linearGradient>
+								</defs>
+								<XAxis
+									dataKey="level"
+									tickLine={false}
+									axisLine={false}
+									tickMargin={8}
+									tick={{ fill: '#18181b', fontSize: 12 }}
+								/>
+								<YAxis
+									tickLine={false}
+									axisLine={false}
+									tickMargin={8}
+									tick={{ fill: '#18181b', fontSize: 12 }}
+									tickFormatter={(value: number) =>
+										value >= 1000
+											? `${(value / 1000).toFixed(0)}k`
+											: String(value)
+									}
+								/>
+								<ChartTooltip
+									cursor={false}
+									content={
+										<ChartTooltipContent
+											formatter={(value, _name) => (
+												<div className="flex items-center gap-2">
+													<span className="text-zinc-400">Total XP:</span>
+													<span className="font-mono font-bold text-amber-400">
+														{Number(value).toLocaleString()}
+													</span>
+												</div>
+											)}
+											labelFormatter={(label) => `Level ${label}`}
+										/>
+									}
+								/>
+								<Area
+									type="monotone"
+									dataKey="totalXp"
+									stroke="url(#xpGradient)"
+									strokeWidth={3}
+									fill="url(#xpFillGradient)"
+								/>
+							</AreaChart>
+						</ChartContainer>
+					</ClientOnly>
 				</div>
 
 				{/* XP Table */}
