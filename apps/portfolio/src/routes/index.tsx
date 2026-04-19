@@ -51,15 +51,10 @@ function Index() {
 							experience building web applications.
 						</p>
 						<div className="mt-6 flex items-center justify-center gap-4">
-							<Button
-								onClick={() =>
-									document.getElementById('experience')?.scrollIntoView()
-								}
-								size="lg"
-								variant="default"
-								className="px-4"
-							>
-								About Me <ArrowDown className="inline animate-bounce" />
+							<Button size="lg" variant="default" className="px-4" asChild={true}>
+								<a href="#experience">
+									About Me <ArrowDown className="inline animate-bounce" />
+								</a>
 							</Button>
 							<Button
 								size="lg"

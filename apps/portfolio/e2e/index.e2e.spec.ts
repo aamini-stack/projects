@@ -10,7 +10,7 @@ test.describe('Home', () => {
 	})
 
 	test('Experience', async ({ page }) => {
-		await page.getByRole('button', { name: 'About Me' }).click()
+		await page.getByRole('link', { name: 'About Me' }).click()
 		await expect(page.getByTitle('Experience')).toBeInViewport()
 		await expect(page).toHaveScreenshot()
 	})
