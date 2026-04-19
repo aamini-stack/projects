@@ -5,7 +5,7 @@ export default mergeConfig(
 	baseConfig,
 	defineConfig({
 		ssr: {
-			noExternal: ['recharts', 'lodash'],
+			noExternal: ['recharts'],
 		},
 	}),
 )
