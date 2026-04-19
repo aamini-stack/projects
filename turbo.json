@@ -38,12 +38,10 @@
 			"persistent": true
 		},
 		"e2e": {
-			"dependsOn": ["^build", "build"],
 			"env": ["BASE_URL", "CI"],
 			"passThroughEnv": ["PLAYWRIGHT_*"]
 		},
 		"e2e:ci": {
-			"dependsOn": ["^build", "build"],
 			"env": ["BASE_URL", "CI"],
 			"passThroughEnv": ["PLAYWRIGHT_*"]
 		},
@@ -51,7 +49,6 @@
 			"cache": false
 		},
 		"e2e:update": {
-			"dependsOn": ["^build", "build"],
 			"cache": false
 		}
 	}

@@ -45,18 +45,18 @@ export const baseConfig = (
 			...(useDevServer
 				? {
 						webServer: {
-							command: `pnpm serve --port ${port} --strictPort`,
+							command: `pnpm dev --port ${port} --strictPort`,
 							url: devUrl,
 							reuseExistingServer: false,
 							timeout: 15_000,
-							env: loadEnv('test', process.cwd(), ''),
+							env: loadEnv('development', process.cwd(), ''),
 						},
 					}
 				: {}),
 
-			timeout: 60_000,
+			timeout: 5_000,
 			expect: {
-				timeout: 15_000,
+				timeout: 5_000,
 				toHaveScreenshot: {
 					stylePath: `${testDir}/screenshot.css`,
 				},

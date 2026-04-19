@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test'
 
 test.beforeEach(async ({ page }) => {
-	await page.goto('/', { waitUntil: 'networkidle' })
+	await page.goto('/')
 })
 
 test.describe('Home', () => {
