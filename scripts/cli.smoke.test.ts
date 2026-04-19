@@ -28,17 +28,16 @@ test('aamini', () => {
 		@aamini-stack CLI tool
 
 		Options:
-		  -V, --version        output the version number
-		  -h, --help           display help for command
+		  -V, --version                            output the version number
+		  -h, --help                               display help for command
 
 		Commands:
-		  e2e [options] [app]  Run e2e tests
-		  secrets              Manage secrets
-		  ci                   CI utilities
-		  pm [options]         Project management
-		  env                  Sync local env files to GitHub Actions variables and
-		                       secrets
-		  help [command]       display help for command
+		  e2e [options] [app] [playwrightArgs...]  Run e2e tests
+		  secrets                                  Manage secrets
+		  ci                                       CI utilities
+		  pm [options]                             Project management
+		  env                                      Sync local env files to GitHub Actions variables and secrets
+		  help [command]                           display help for command
 		"
 	`)
 	expect(runCommand(['--help'])).toEqual(aaminiHelp)
@@ -47,12 +46,13 @@ test('aamini', () => {
 test('aamini e2e', () => {
 	const e2eHelp = runCommand(['e2e'])
 	expect(e2eHelp).toMatchInlineSnapshot(`
-		"Usage: aamini e2e [options] [app]
+		"Usage: aamini e2e [options] [app] [playwrightArgs...]
 
 		Run e2e tests
 
 		Arguments:
 		  app                 App name to run e2e for
+		  playwrightArgs      Extra arguments forwarded to playwright
 
 		Options:
 		  -d, --docker        Run local e2e in docker compose

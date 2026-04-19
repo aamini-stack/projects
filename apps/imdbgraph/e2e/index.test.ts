@@ -1,6 +1,17 @@
 import { expect, test } from '@playwright/test'
+import { readFile } from 'node:fs/promises'
 
 test.beforeEach(async ({ page }) => {
+	await page.route('/api/suggestions**', async (route) => {
+		const body = await readFile(
+			new URL('../__mocks__/data/suggestions.json', import.meta.url),
+			'utf8',
+		)
+		await route.fulfill({
+			contentType: 'application/json',
+			body,
+		})
+	})
 	await page.goto('/')
 })
 
@@ -13,7 +24,6 @@ test('Search bar click navigation works', async ({ page }) => {
 	await expect(searchBar).not.toBeDisabled()
 	await searchBar.click()
 	await searchBar.fill('Avatar')
-	await page.getByTestId('loading-spinner').waitFor({ state: 'hidden' })
 	const avatarDropdownOption = page.getByText(
 		'Avatar: The Last Airbender 2005 - 2008',
 	)
@@ -27,7 +37,6 @@ test('Search bar keyboard navigation works', async ({ page }) => {
 	await expect(searchBar).not.toBeDisabled()
 	await searchBar.click()
 	await searchBar.fill('Avatar')
-	await page.getByTestId('loading-spinner').waitFor({ state: 'hidden' })
 	await expect(
 		page.getByText('Avatar: The Last Airbender 2005 - 2008'),
 	).toBeVisible()

@@ -18,6 +18,7 @@ spec:
         app.kubernetes.io/instance: {{ include "app-release.name" . }}
         app: {{ include "app-release.name" . }}
     spec:
+      serviceAccountName: {{ include "app-release.name" . }}
       containers:
         - name: {{ include "app-release.name" . }}
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}

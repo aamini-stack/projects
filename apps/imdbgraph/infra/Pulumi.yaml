@@ -1,7 +1,4 @@
 name: imdbgraph-infra
 runtime:
   name: nodejs
-  options:
-    typescript: false
-    nodeargs: '--import tsx'
 description: Infrastructure for imdbgraph

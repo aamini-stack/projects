@@ -7,11 +7,7 @@ export default mergeConfig(baseConfig, {
 		include: ['recharts'],
 	},
 	ssr: {
-		// Bundle lodash for SSR to avoid ESM/CJS resolution issues
-		// recharts depends on lodash which uses CJS without .js extensions
-		noExternal: ['lodash', 'recharts'],
-		optimizeDeps: {
-			include: ['lodash', 'recharts'],
-		},
+		// Bundle recharts for SSR so its CJS deps resolve correctly.
+		noExternal: ['recharts'],
 	},
 })

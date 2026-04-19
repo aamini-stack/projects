@@ -10,7 +10,6 @@ const location = azureConfig.require('location')
 const subscriptionId = azureConfig.require('subscriptionId')
 const githubOrganizationName = config.require('githubOrganizationName')
 const githubRepositoryName = config.require('githubRepositoryName')
-const registryName = 'aaministack'
 
 const githubOidcSubject = config.get('githubOidcSubject')
 const githubOidcSubjects =
@@ -69,17 +68,6 @@ new azure.authorization.RoleAssignment(
 		principalType: 'ServicePrincipal',
 		roleDefinitionId: `/subscriptions/${subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c`,
 		scope: resourceGroup.id,
-	},
-	{ dependsOn: [githubActionsIdentity] },
-)
-
-new azure.authorization.RoleAssignment(
-	'github-actions-acr-push',
-	{
-		principalId: githubActionsIdentity.principalId,
-		principalType: 'ServicePrincipal',
-		roleDefinitionId: `/subscriptions/${subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/8311e382-0749-4cb8-b61a-304f252e45ec`,
-		scope: pulumi.interpolate`${resourceGroup.id}/providers/Microsoft.ContainerRegistry/registries/${registryName}`,
 	},
 	{ dependsOn: [githubActionsIdentity] },
 )
