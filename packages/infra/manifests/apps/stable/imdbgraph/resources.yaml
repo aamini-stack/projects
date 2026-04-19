@@ -30,7 +30,7 @@ spec:
       name: imdbgraph
       namespace: imdbgraph
     image:
-      repository: aaministack.azurecr.io/imdbgraph
+      repository: ghcr.io/aamini-stack/imdbgraph
       tag: latest
     host: imdbgraph.ariaamini.com
     envFromSecret: imdbgraph-secrets

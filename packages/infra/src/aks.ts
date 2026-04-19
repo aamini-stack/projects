@@ -12,8 +12,6 @@ const subscriptionId = azureConfig.require('subscriptionId')
 const config = new pulumi.Config()
 const githubOrganizationName = config.require('githubOrganizationName')
 const githubRepositoryName = config.require('githubRepositoryName')
-const registryName = 'aaministack'
-const publicIngressIpName = `pip-aamini-${pulumi.getStack()}`
 const aksSpecs = config.requireObject<{
 	nodeCount: number
 	vmSize: string
@@ -72,17 +70,7 @@ function createKubernetes() {
 			},
 		)
 
-	const registry = new azure.containerregistry.Registry(
-		'aks-container-registry',
-		{
-			location: 'westus',
-			registryName,
-			resourceGroupName: resourceGroup.name,
-			sku: {
-				name: azure.containerregistry.SkuName.Standard,
-			},
-		},
-	)
+	const publicIngressIpName = `pip-aamini-${pulumi.getStack()}`
 
 	const ingressPublicIp = new azure.network.PublicIPAddress(
 		'aks-ingress-public-ip',
@@ -132,15 +120,6 @@ function createKubernetes() {
 			subject: 'system:serviceaccount:external-secrets:external-secrets',
 		},
 	)
-
-	new azure.authorization.RoleAssignment('aks-image-pull-role', {
-		roleDefinitionId: `/subscriptions/${subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/7f951dda-4ed3-4680-a7ca-43fe172d538d`,
-		principalId: aksCluster.identityProfile.apply(
-			(x) => x?.kubeletidentity?.objectId ?? '',
-		),
-		scope: registry.id,
-		principalType: 'ServicePrincipal',
-	})
 
 	new command.local.Command(
 		'refresh-local-kubeconfig',

@@ -30,6 +30,18 @@ function createRepoFixture(): string {
 			'packages',
 			'infra',
 			'manifests',
+			'apps',
+			'stable',
+			'imdbgraph',
+		),
+		{ recursive: true },
+	)
+	fs.mkdirSync(
+		path.join(
+			repoRoot,
+			'packages',
+			'infra',
+			'manifests',
 			'platform',
 			'networking',
 		),
@@ -37,23 +49,15 @@ function createRepoFixture(): string {
 	)
 	fs.writeFileSync(
 		path.join(repoRoot, 'apps', 'imdbgraph', '.env.local'),
-		'DATABASE_URL=postgresql://example\n',
+		'CRON_SECRET=example-cron-secret\n',
+	)
+	fs.writeFileSync(
+		path.join(repoRoot, 'apps', 'portfolio', '.env.local'),
+		'LEGACY_PORTFOLIO_TOKEN=example-token\n',
 	)
 	fs.writeFileSync(
 		path.join(repoRoot, 'packages', 'infra', '.env.staging.local'),
 		'CLOUDFLARE_API_TOKEN=test-cloudflare-token\n',
-	)
-	fs.writeFileSync(
-		path.join(
-			repoRoot,
-			'packages',
-			'infra',
-			'manifests',
-			'apps',
-			'stable',
-			'imdbgraph-sealed-secret.yaml',
-		),
-		'placeholder\n',
 	)
 
 	return repoRoot
@@ -95,12 +99,6 @@ describe('sealAll', () => {
 
 		expect(
 			fs.readFileSync(
-				path.join(repoRoot, 'apps', 'imdbgraph', 'k8s', 'sealed-secret.yaml'),
-				'utf8',
-			),
-		).toBe(sealedYaml)
-		expect(
-			fs.readFileSync(
 				path.join(
 					repoRoot,
 					'packages',
@@ -108,11 +106,49 @@ describe('sealAll', () => {
 					'manifests',
 					'apps',
 					'stable',
-					'imdbgraph-sealed-secret.yaml',
+					'imdbgraph',
+					'sealed-secret.yaml',
 				),
 				'utf8',
 			),
 		).toBe(sealedYaml)
+	})
+
+	it('skips portfolio when sealing all apps', async () => {
+		const repoRoot = createRepoFixture()
+		const portfolioSealedSecret = path.join(
+			repoRoot,
+			'packages',
+			'infra',
+			'manifests',
+			'apps',
+			'stable',
+			'portfolio',
+			'sealed-secret.yaml',
+		)
+		fs.mkdirSync(path.dirname(portfolioSealedSecret), { recursive: true })
+		fs.writeFileSync(portfolioSealedSecret, 'sentinel')
+
+		await sealAll(repoRoot, {
+			apps: ['portfolio'],
+			runCommand: async ({ command }) => {
+				if (command[0] === 'kubeseal' && command.includes('--fetch-cert')) {
+					return { stdout: 'cert' }
+				}
+
+				if (command[0] === 'kubectl') {
+					throw new Error(
+						'portfolio seal should not call kubectl create secret',
+					)
+				}
+
+				return {
+					stdout: 'apiVersion: bitnami.com/v1alpha1\nkind: SealedSecret\n',
+				}
+			},
+		})
+
+		expect(fs.readFileSync(portfolioSealedSecret, 'utf8')).toBe('sentinel')
 	})
 
 	it('writes infra sealed secret from packages/infra/.env.staging.local', async () => {

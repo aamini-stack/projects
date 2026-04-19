@@ -81,6 +81,22 @@ spec:
         namespaces:
           from: All
 ---
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: ReferenceGrant
+metadata:
+  name: allow-cross-namespace-gateway
+  namespace: networking
+spec:
+  from:
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+      namespace: imdbgraph
+  to:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+    - group: ''
+      kind: Secret
+---
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmRepository
 metadata:
@@ -108,7 +124,7 @@ spec:
   values:
     provider: cloudflare
     env:
-      - name: CLOUDFLARE_API_TOKEN
+      - name: CF_API_TOKEN
         valueFrom:
           secretKeyRef:
             name: cloudflare-api-token
