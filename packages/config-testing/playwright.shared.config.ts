@@ -44,13 +44,13 @@ export const baseConfig = (
 			/* Run your local dev server when running tests locally */
 			...(useDevServer
 				? {
-					webServer: {
-						command: `pnpm dev --port ${port} --strictPort`,
-						url: devUrl,
-						reuseExistingServer: false,
-						timeout: 15_000,
-						env: loadEnv('development', process.cwd(), ''),
-						stdout: 'pipe',
+						webServer: {
+							command: `pnpm dev --port ${port} --strictPort`,
+							url: devUrl,
+							reuseExistingServer: true,
+							timeout: 15_000,
+							env: loadEnv('development', process.cwd(), ''),
+							stdout: 'pipe',
 							stderr: 'pipe',
 						},
 					}

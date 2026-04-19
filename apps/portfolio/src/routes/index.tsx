@@ -51,7 +51,12 @@ function Index() {
 							experience building web applications.
 						</p>
 						<div className="mt-6 flex items-center justify-center gap-4">
-							<Button size="lg" variant="default" className="px-4" asChild={true}>
+							<Button
+								size="lg"
+								variant="default"
+								className="px-4"
+								asChild={true}
+							>
 								<a href="#experience">
 									About Me <ArrowDown className="inline animate-bounce" />
 								</a>

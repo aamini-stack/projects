@@ -5,7 +5,6 @@ import {
 	ChartTooltipContent,
 	type ChartConfig,
 } from '@aamini/ui/components/chart'
-import { ClientOnly } from '@tanstack/react-router'
 import { Area, AreaChart, XAxis, YAxis } from 'recharts'
 import type { ViewProps } from '../types'
 
@@ -98,8 +97,7 @@ export default function XpGoldView(_props: ViewProps) {
 
 				{/* XP Chart */}
 				<div className="mb-8 rounded-lg border border-zinc-800 bg-zinc-900/50 p-6">
-					<ClientOnly fallback={<div className="h-72 w-full" />}>
-						<ChartContainer config={chartConfig} className="h-72 w-full">
+					<ChartContainer config={chartConfig} className="h-72 w-full">
 							<AreaChart data={XP_TABLE} margin={{ left: 12, right: 12 }}>
 								<defs>
 									<linearGradient id="xpGradient" x1="0" y1="0" x2="1" y2="0">
@@ -107,7 +105,13 @@ export default function XpGoldView(_props: ViewProps) {
 										<stop offset="50%" stopColor="hsl(280, 60%, 50%)" />
 										<stop offset="100%" stopColor="hsl(45, 93%, 47%)" />
 									</linearGradient>
-									<linearGradient id="xpFillGradient" x1="0" y1="0" x2="1" y2="0">
+									<linearGradient
+										id="xpFillGradient"
+										x1="0"
+										y1="0"
+										x2="1"
+										y2="0"
+									>
 										<stop
 											offset="0%"
 											stopColor="hsl(240, 60%, 50%)"
@@ -168,7 +172,6 @@ export default function XpGoldView(_props: ViewProps) {
 								/>
 							</AreaChart>
 						</ChartContainer>
-					</ClientOnly>
 				</div>
 
 				{/* XP Table */}

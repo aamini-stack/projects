@@ -70,7 +70,9 @@ export function SearchBar({ className }: { className?: string }) {
 					<SearchIcon />
 				</InputGroupAddon>
 				<InputGroupAddon align="inline-end">
-					{isFetching && <Spinner className="ml-2" data-testid="loading-spinner" />}
+					{isFetching && (
+						<Spinner className="ml-2" data-testid="loading-spinner" />
+					)}
 				</InputGroupAddon>
 			</InputGroup>
 

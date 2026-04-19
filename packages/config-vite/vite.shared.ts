@@ -10,6 +10,10 @@ import svgr from 'vite-plugin-svgr'
 export const baseConfig = defineConfig({
 	resolve: {
 		tsconfigPaths: true,
+		dedupe: ['react', 'react-dom'],
+	},
+	ssr: {
+		noExternal: ['recharts'],
 	},
 	plugins: [
 		devtools(),
