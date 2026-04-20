@@ -16,7 +16,10 @@ export async function getListingDetailsDb(
 	db: NodePgDatabase,
 	listingId: string,
 ): Promise<ListingDetails | undefined> {
-	const result = await db.select().from(listing).where(eq(listing.id, listingId))
+	const result = await db
+		.select()
+		.from(listing)
+		.where(eq(listing.id, listingId))
 	const summary = result[0]
 	if (!summary) {
 		return undefined

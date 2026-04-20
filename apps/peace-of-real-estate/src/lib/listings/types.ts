@@ -28,7 +28,9 @@ export interface ListingDetails {
 	priceHistory: ListingPricePoint[]
 }
 
-export function formatLocation(listing: Pick<ListingSummary, 'city' | 'state'>) {
+export function formatLocation(
+	listing: Pick<ListingSummary, 'city' | 'state'>,
+) {
 	return `${listing.city}, ${listing.state}`
 }
 

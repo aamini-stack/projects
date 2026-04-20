@@ -90,32 +90,118 @@ export const listings: ListingSummary[] = [
 
 const priceHistoryByListing: Record<string, ListingDetails['priceHistory']> = {
 	'sunset-loft-linden': [
-		{ id: 'sunset-1', recordedAt: '2025-01-12', price: 420000, eventType: 'listed', title: 'Listed above market to feel something' },
-		{ id: 'sunset-2', recordedAt: '2025-02-02', price: 405000, eventType: 'price drop', title: 'Reality entered chat' },
-		{ id: 'sunset-3', recordedAt: '2025-02-21', price: 398000, eventType: 'price drop', title: 'More flirty pricing' },
-		{ id: 'sunset-4', recordedAt: '2025-03-15', price: 385000, eventType: 'active', title: 'Current asking price' },
+		{
+			id: 'sunset-1',
+			recordedAt: '2025-01-12',
+			price: 420000,
+			eventType: 'listed',
+			title: 'Listed above market to feel something',
+		},
+		{
+			id: 'sunset-2',
+			recordedAt: '2025-02-02',
+			price: 405000,
+			eventType: 'price drop',
+			title: 'Reality entered chat',
+		},
+		{
+			id: 'sunset-3',
+			recordedAt: '2025-02-21',
+			price: 398000,
+			eventType: 'price drop',
+			title: 'More flirty pricing',
+		},
+		{
+			id: 'sunset-4',
+			recordedAt: '2025-03-15',
+			price: 385000,
+			eventType: 'active',
+			title: 'Current asking price',
+		},
 	],
 	'soft-launch-townhouse': [
-		{ id: 'soft-1', recordedAt: '2025-01-05', price: 1135000, eventType: 'listed', title: 'Debut with dramatic confidence' },
-		{ id: 'soft-2', recordedAt: '2025-01-28', price: 1110000, eventType: 'price drop', title: 'A tiny compromise' },
-		{ id: 'soft-3', recordedAt: '2025-03-10', price: 1095000, eventType: 'active', title: 'Now accepting emotionally prepared buyers' },
+		{
+			id: 'soft-1',
+			recordedAt: '2025-01-05',
+			price: 1135000,
+			eventType: 'listed',
+			title: 'Debut with dramatic confidence',
+		},
+		{
+			id: 'soft-2',
+			recordedAt: '2025-01-28',
+			price: 1110000,
+			eventType: 'price drop',
+			title: 'A tiny compromise',
+		},
+		{
+			id: 'soft-3',
+			recordedAt: '2025-03-10',
+			price: 1095000,
+			eventType: 'active',
+			title: 'Now accepting emotionally prepared buyers',
+		},
 	],
 	'ghost-mode-cabin': [
-		{ id: 'ghost-1', recordedAt: '2024-12-18', price: 480000, eventType: 'listed', title: 'Listed during escapist season' },
-		{ id: 'ghost-2', recordedAt: '2025-01-30', price: 460000, eventType: 'price drop', title: 'Softer ask, same forest drama' },
-		{ id: 'ghost-3', recordedAt: '2025-03-01', price: 445000, eventType: 'active', title: 'Current ask' },
+		{
+			id: 'ghost-1',
+			recordedAt: '2024-12-18',
+			price: 480000,
+			eventType: 'listed',
+			title: 'Listed during escapist season',
+		},
+		{
+			id: 'ghost-2',
+			recordedAt: '2025-01-30',
+			price: 460000,
+			eventType: 'price drop',
+			title: 'Softer ask, same forest drama',
+		},
+		{
+			id: 'ghost-3',
+			recordedAt: '2025-03-01',
+			price: 445000,
+			eventType: 'active',
+			title: 'Current ask',
+		},
 	],
 	'poolside-chaos-villa': [
-		{ id: 'pool-1', recordedAt: '2025-01-08', price: 910000, eventType: 'listed', title: 'Listed for the hot people' },
-		{ id: 'pool-2', recordedAt: '2025-02-11', price: 890000, eventType: 'active', title: 'Current ask' },
+		{
+			id: 'pool-1',
+			recordedAt: '2025-01-08',
+			price: 910000,
+			eventType: 'listed',
+			title: 'Listed for the hot people',
+		},
+		{
+			id: 'pool-2',
+			recordedAt: '2025-02-11',
+			price: 890000,
+			eventType: 'active',
+			title: 'Current ask',
+		},
 	],
 	'cozy-chaos-bungalow': [
-		{ id: 'cozy-1', recordedAt: '2025-02-06', price: 540000, eventType: 'listed', title: 'Launched with porch energy' },
-		{ id: 'cozy-2', recordedAt: '2025-02-27', price: 525000, eventType: 'active', title: 'Current ask' },
+		{
+			id: 'cozy-1',
+			recordedAt: '2025-02-06',
+			price: 540000,
+			eventType: 'listed',
+			title: 'Launched with porch energy',
+		},
+		{
+			id: 'cozy-2',
+			recordedAt: '2025-02-27',
+			price: 525000,
+			eventType: 'active',
+			title: 'Current ask',
+		},
 	],
 }
 
-export function getSeedListingDetails(listingId: string): ListingDetails | undefined {
+export function getSeedListingDetails(
+	listingId: string,
+): ListingDetails | undefined {
 	const summary = listings.find((listing) => listing.id === listingId)
 	if (!summary) {
 		return undefined
