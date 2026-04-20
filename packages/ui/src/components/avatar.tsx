@@ -1,5 +1,5 @@
 import { cn } from '@aamini/ui/lib/utils'
-import * as AvatarPrimitive from '@radix-ui/react-avatar'
+import { Avatar as AvatarPrimitive } from 'radix-ui'
 import type * as React from 'react'
 
 function Avatar({

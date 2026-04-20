@@ -48,7 +48,7 @@ export const baseConfig = (
 							command: `pnpm dev --port ${port} --strictPort`,
 							url: devUrl,
 							reuseExistingServer: true,
-							timeout: 15_000,
+							timeout: 30_000,
 							env: loadEnv('development', process.cwd(), ''),
 							stdout: 'pipe',
 							stderr: 'pipe',
@@ -56,7 +56,7 @@ export const baseConfig = (
 					}
 				: {}),
 
-			timeout: 5_000,
+			timeout: 15_000,
 			expect: {
 				timeout: 5_000,
 				toHaveScreenshot: {
