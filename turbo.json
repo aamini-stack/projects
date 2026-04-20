@@ -4,6 +4,7 @@
 	"tasks": {
 		"build": {
 			"dependsOn": ["^build"],
+			"env": ["APP_ENV", "DATABASE_URL"],
 			"inputs": ["$TURBO_DEFAULT$", ".env*"],
 			"outputs": [".vercel/**", ".output/**", ".nitro/**"]
 		},
@@ -38,11 +39,11 @@
 			"persistent": true
 		},
 		"e2e": {
-			"env": ["BASE_URL", "CI"],
+			"env": ["APP_ENV", "DATABASE_URL", "BASE_URL", "CI"],
 			"passThroughEnv": ["PLAYWRIGHT_*"]
 		},
 		"e2e:ci": {
-			"env": ["BASE_URL", "CI"],
+			"env": ["APP_ENV", "DATABASE_URL", "BASE_URL", "CI"],
 			"passThroughEnv": ["PLAYWRIGHT_*"]
 		},
 		"e2e:staging": {

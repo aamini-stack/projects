@@ -3,16 +3,7 @@
 	"extends": ["//"],
 	"tasks": {
 		"build": {
-			"env": ["APP_ENV", "DATABASE_URL", "CRON_SECRET"]
-		},
-		"e2e": {
-			"env": ["APP_ENV", "DATABASE_URL", "CRON_SECRET"]
-		},
-		"e2e:ci": {
-			"env": ["APP_ENV", "DATABASE_URL", "CRON_SECRET"]
-		},
-		"e2e:update": {
-			"env": ["APP_ENV", "DATABASE_URL", "CRON_SECRET"]
+			"env": ["$TURBO_EXTENDS$", "CRON_SECRET"]
 		}
 	}
 }
