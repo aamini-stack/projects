@@ -1,6 +1,7 @@
 import { AppHeader } from '@/components/app-header'
 import { defaultViewId, getView, viewsById } from '@/components/views/registry'
 import { fetchLatestHeroData } from '@/lib/dota/api'
+import type { HeroDictionary } from '@/lib/dota/hero'
 import { ClientOnly, createFileRoute } from '@tanstack/react-router'
 
 interface SearchParams {
@@ -14,12 +15,12 @@ export const Route = createFileRoute('/')({
 				? search.view
 				: defaultViewId,
 	}),
-	loader: async () => await fetchLatestHeroData(),
+	loader: async () => Array.from((await fetchLatestHeroData()).entries()),
 	component: Index,
 })
 
 function Index() {
-	const heroDictionary = Route.useLoaderData()
+	const heroDictionary: HeroDictionary = new Map(Route.useLoaderData())
 	const { view: currentViewId } = Route.useSearch()
 	const navigate = Route.useNavigate()
 
