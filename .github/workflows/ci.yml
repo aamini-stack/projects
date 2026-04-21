@@ -7,12 +7,6 @@ on:
   pull_request:
     branches:
       - main
-  workflow_dispatch:
-
-permissions:
-  contents: read
-  pull-requests: read
-  id-token: write
 
 concurrency:
   group: ci-${{ github.event.pull_request.number || github.ref }}
@@ -26,9 +20,12 @@ jobs:
   quality-checks:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v6
+      - name: checkout
+        uses: actions/checkout@v6
+      - name: setup pnpm
+        uses: pnpm/action-setup@v4
+      - name: setup node.js
+        uses: actions/setup-node@v6
         with:
           node-version: 22
           cache: pnpm
@@ -38,73 +35,15 @@ jobs:
   integration-tests:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v6
+      - name: checkout
+        uses: actions/checkout@v6
+      - name: setup pnpm
+        uses: pnpm/action-setup@v4
+      - name: setup node.js
+        uses: actions/setup-node@v6
         with:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm exec playwright install --with-deps chromium
       - run: pnpm test:integration
-
-  deploy-pipeline:
-    runs-on: ubuntu-latest
-    env:
-      DOCKER_REGISTRY: ghcr.io
-    strategy:
-      fail-fast: false
-      matrix:
-        app:
-          - dota-visualizer
-          - imdbgraph
-          - pc-tune-ups
-          - portfolio
-    permissions:
-      contents: read
-      packages: write
-    steps:
-      - uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v6
-        with:
-          node-version: 22
-          cache: pnpm
-      - run: pnpm install --frozen-lockfile
-
-      - uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      - uses: docker/setup-buildx-action@v3
-      - id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images:
-            ${{ env.DOCKER_REGISTRY }}/${{ github.repository_owner }}/${{
-            matrix.app }}
-          tags: |
-            type=raw,value=main-${{ github.sha }},enable=${{ github.event_name == 'push' }}
-            type=raw,value=pr-${{ github.event.pull_request.number }},enable=${{ github.event_name == 'pull_request' }}
-            type=sha
-            type=raw,value=latest,enable={{is_default_branch}}
-      - name: Build image
-        if:
-          github.event_name == 'push' ||
-          github.event.pull_request.head.repo.full_name == github.repository
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          file: ./Dockerfile
-          target: production
-          platforms: linux/amd64
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          build-args: |
-            APP_NAME=${{ matrix.app }}
-            PORT=3000
-            NODE_VERSION=22
