@@ -1,14 +1,11 @@
-import { sql } from 'drizzle-orm'
 import {
 	boolean,
 	foreignKey,
 	index,
-	integer,
 	pgTable,
 	text,
 	timestamp,
 	uniqueIndex,
-	varchar,
 } from 'drizzle-orm/pg-core'
 
 export const user = pgTable(

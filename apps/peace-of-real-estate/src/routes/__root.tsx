@@ -40,6 +40,8 @@ export const Route = createRootRouteWithContext<{
 		],
 	}),
 	beforeLoad: async ({ location }) => {
+		if (import.meta.env.DEV) return
+
 		const isAuthenticated =
 			typeof document !== 'undefined'
 				? checkBetaAuthClient()
