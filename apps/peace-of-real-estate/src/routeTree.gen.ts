@@ -10,11 +10,9 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SignupRouteImport } from './routes/signup'
-import { Route as MatchActivityRouteImport } from './routes/match-activity'
 import { Route as LoginRouteImport } from './routes/login'
-import { Route as AccountRouteImport } from './routes/account'
+import { Route as BetaRouteImport } from './routes/beta'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as MatchesIndexRouteImport } from './routes/matches/index'
 import { Route as ConsumerIndexRouteImport } from './routes/consumer/index'
 import { Route as AgentIndexRouteImport } from './routes/agent/index'
 import { Route as ConsumerResultsRouteImport } from './routes/consumer/results'
@@ -22,6 +20,7 @@ import { Route as ConsumerQuizRouteImport } from './routes/consumer/quiz'
 import { Route as AgentQuizRouteImport } from './routes/agent/quiz'
 import { Route as AgentProfileRouteImport } from './routes/agent/profile'
 import { Route as ApiIngestSplatRouteImport } from './routes/api/ingest/$'
+import { Route as ApiBetaAuthRouteImport } from './routes/api/beta/auth'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as ApiIngestStaticSplatRouteImport } from './routes/api/ingest/static/$'
 
@@ -30,29 +29,19 @@ const SignupRoute = SignupRouteImport.update({
   path: '/signup',
   getParentRoute: () => rootRouteImport,
 } as any)
-const MatchActivityRoute = MatchActivityRouteImport.update({
-  id: '/match-activity',
-  path: '/match-activity',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AccountRoute = AccountRouteImport.update({
-  id: '/account',
-  path: '/account',
+const BetaRoute = BetaRouteImport.update({
+  id: '/beta',
+  path: '/beta',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MatchesIndexRoute = MatchesIndexRouteImport.update({
-  id: '/matches/',
-  path: '/matches/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ConsumerIndexRoute = ConsumerIndexRouteImport.update({
@@ -90,6 +79,11 @@ const ApiIngestSplatRoute = ApiIngestSplatRouteImport.update({
   path: '/api/ingest/$',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiBetaAuthRoute = ApiBetaAuthRouteImport.update({
+  id: '/api/beta/auth',
+  path: '/api/beta/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
   path: '/api/auth/$',
@@ -103,9 +97,8 @@ const ApiIngestStaticSplatRoute = ApiIngestStaticSplatRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/account': typeof AccountRoute
+  '/beta': typeof BetaRoute
   '/login': typeof LoginRoute
-  '/match-activity': typeof MatchActivityRoute
   '/signup': typeof SignupRoute
   '/agent/profile': typeof AgentProfileRoute
   '/agent/quiz': typeof AgentQuizRoute
@@ -113,16 +106,15 @@ export interface FileRoutesByFullPath {
   '/consumer/results': typeof ConsumerResultsRoute
   '/agent/': typeof AgentIndexRoute
   '/consumer/': typeof ConsumerIndexRoute
-  '/matches/': typeof MatchesIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/beta/auth': typeof ApiBetaAuthRoute
   '/api/ingest/$': typeof ApiIngestSplatRoute
   '/api/ingest/static/$': typeof ApiIngestStaticSplatRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/account': typeof AccountRoute
+  '/beta': typeof BetaRoute
   '/login': typeof LoginRoute
-  '/match-activity': typeof MatchActivityRoute
   '/signup': typeof SignupRoute
   '/agent/profile': typeof AgentProfileRoute
   '/agent/quiz': typeof AgentQuizRoute
@@ -130,17 +122,16 @@ export interface FileRoutesByTo {
   '/consumer/results': typeof ConsumerResultsRoute
   '/agent': typeof AgentIndexRoute
   '/consumer': typeof ConsumerIndexRoute
-  '/matches': typeof MatchesIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/beta/auth': typeof ApiBetaAuthRoute
   '/api/ingest/$': typeof ApiIngestSplatRoute
   '/api/ingest/static/$': typeof ApiIngestStaticSplatRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/account': typeof AccountRoute
+  '/beta': typeof BetaRoute
   '/login': typeof LoginRoute
-  '/match-activity': typeof MatchActivityRoute
   '/signup': typeof SignupRoute
   '/agent/profile': typeof AgentProfileRoute
   '/agent/quiz': typeof AgentQuizRoute
@@ -148,8 +139,8 @@ export interface FileRoutesById {
   '/consumer/results': typeof ConsumerResultsRoute
   '/agent/': typeof AgentIndexRoute
   '/consumer/': typeof ConsumerIndexRoute
-  '/matches/': typeof MatchesIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/beta/auth': typeof ApiBetaAuthRoute
   '/api/ingest/$': typeof ApiIngestSplatRoute
   '/api/ingest/static/$': typeof ApiIngestStaticSplatRoute
 }
@@ -157,9 +148,8 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/account'
+    | '/beta'
     | '/login'
-    | '/match-activity'
     | '/signup'
     | '/agent/profile'
     | '/agent/quiz'
@@ -167,16 +157,15 @@ export interface FileRouteTypes {
     | '/consumer/results'
     | '/agent/'
     | '/consumer/'
-    | '/matches/'
     | '/api/auth/$'
+    | '/api/beta/auth'
     | '/api/ingest/$'
     | '/api/ingest/static/$'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/account'
+    | '/beta'
     | '/login'
-    | '/match-activity'
     | '/signup'
     | '/agent/profile'
     | '/agent/quiz'
@@ -184,16 +173,15 @@ export interface FileRouteTypes {
     | '/consumer/results'
     | '/agent'
     | '/consumer'
-    | '/matches'
     | '/api/auth/$'
+    | '/api/beta/auth'
     | '/api/ingest/$'
     | '/api/ingest/static/$'
   id:
     | '__root__'
     | '/'
-    | '/account'
+    | '/beta'
     | '/login'
-    | '/match-activity'
     | '/signup'
     | '/agent/profile'
     | '/agent/quiz'
@@ -201,17 +189,16 @@ export interface FileRouteTypes {
     | '/consumer/results'
     | '/agent/'
     | '/consumer/'
-    | '/matches/'
     | '/api/auth/$'
+    | '/api/beta/auth'
     | '/api/ingest/$'
     | '/api/ingest/static/$'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AccountRoute: typeof AccountRoute
+  BetaRoute: typeof BetaRoute
   LoginRoute: typeof LoginRoute
-  MatchActivityRoute: typeof MatchActivityRoute
   SignupRoute: typeof SignupRoute
   AgentProfileRoute: typeof AgentProfileRoute
   AgentQuizRoute: typeof AgentQuizRoute
@@ -219,8 +206,8 @@ export interface RootRouteChildren {
   ConsumerResultsRoute: typeof ConsumerResultsRoute
   AgentIndexRoute: typeof AgentIndexRoute
   ConsumerIndexRoute: typeof ConsumerIndexRoute
-  MatchesIndexRoute: typeof MatchesIndexRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
+  ApiBetaAuthRoute: typeof ApiBetaAuthRoute
   ApiIngestSplatRoute: typeof ApiIngestSplatRoute
   ApiIngestStaticSplatRoute: typeof ApiIngestStaticSplatRoute
 }
@@ -234,13 +221,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SignupRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/match-activity': {
-      id: '/match-activity'
-      path: '/match-activity'
-      fullPath: '/match-activity'
-      preLoaderRoute: typeof MatchActivityRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/login': {
       id: '/login'
       path: '/login'
@@ -248,11 +228,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/account': {
-      id: '/account'
-      path: '/account'
-      fullPath: '/account'
-      preLoaderRoute: typeof AccountRouteImport
+    '/beta': {
+      id: '/beta'
+      path: '/beta'
+      fullPath: '/beta'
+      preLoaderRoute: typeof BetaRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -260,13 +240,6 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/matches/': {
-      id: '/matches/'
-      path: '/matches'
-      fullPath: '/matches/'
-      preLoaderRoute: typeof MatchesIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/consumer/': {
@@ -318,6 +291,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiIngestSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/beta/auth': {
+      id: '/api/beta/auth'
+      path: '/api/beta/auth'
+      fullPath: '/api/beta/auth'
+      preLoaderRoute: typeof ApiBetaAuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/auth/$': {
       id: '/api/auth/$'
       path: '/api/auth/$'
@@ -337,9 +317,8 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AccountRoute: AccountRoute,
+  BetaRoute: BetaRoute,
   LoginRoute: LoginRoute,
-  MatchActivityRoute: MatchActivityRoute,
   SignupRoute: SignupRoute,
   AgentProfileRoute: AgentProfileRoute,
   AgentQuizRoute: AgentQuizRoute,
@@ -347,8 +326,8 @@ const rootRouteChildren: RootRouteChildren = {
   ConsumerResultsRoute: ConsumerResultsRoute,
   AgentIndexRoute: AgentIndexRoute,
   ConsumerIndexRoute: ConsumerIndexRoute,
-  MatchesIndexRoute: MatchesIndexRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
+  ApiBetaAuthRoute: ApiBetaAuthRoute,
   ApiIngestSplatRoute: ApiIngestSplatRoute,
   ApiIngestStaticSplatRoute: ApiIngestStaticSplatRoute,
 }

@@ -5,6 +5,8 @@ FROM node:${NODE_VERSION}-bookworm-slim AS base
 LABEL org.opencontainers.image.source="https://github.com/aamini-stack/projects"
 ENV TURBO_TELEMETRY_DISABLED=1
 ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0
+ENV PNPM_HOME=/tmp/pnpm
+ENV PATH="$PNPM_HOME:$PATH"
 RUN corepack enable && corepack install -g pnpm@10.29.3
 
 FROM base AS pruner
@@ -39,7 +41,17 @@ RUN groupadd --system --gid 1001 nodejs \
 	&& useradd --system --uid 1001 --gid nodejs app
 RUN mkdir -p /home/app/.cache/node/corepack \
 	&& chown -R app:nodejs /home/app/.cache
+
+# Install varlock globally for runtime env loading
+RUN pnpm add -g varlock
+
+# Copy the built app and env schema
 COPY --from=installer --chown=app:nodejs /app/apps/${APP_NAME}/.output ./.output
+COPY --from=installer --chown=app:nodejs /app/apps/${APP_NAME}/.env.schema ./.env.schema
+
+# Ensure app user can write to /app (needed for varlock env.d.ts generation)
+RUN chown -R app:nodejs /app
+
 USER app
 EXPOSE ${PORT}
-CMD ["node", ".output/server/index.mjs"]
+CMD ["sh", "-c", "varlock run -- node .output/server/index.mjs"]

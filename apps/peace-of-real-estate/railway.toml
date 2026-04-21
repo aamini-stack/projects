@@ -3,7 +3,7 @@ builder = "DOCKERFILE"
 dockerfilePath = "Dockerfile"
 
 [deploy]
-startCommand = "/bin/sh -c 'NITRO_HOST=0.0.0.0 exec node .output/server/index.mjs'"
+startCommand = "/bin/sh -c 'NITRO_HOST=0.0.0.0 exec varlock run -- node .output/server/index.mjs'"
 healthcheckPath = "/"
 healthcheckTimeout = 300
 restartPolicyType = "ALWAYS"
