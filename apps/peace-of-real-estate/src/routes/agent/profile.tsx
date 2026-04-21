@@ -171,7 +171,7 @@ function AgentProfile() {
 					Back
 				</Link>
 				<Link
-					to="/match-activity"
+					to={'/match-activity' as any}
 					className="btn-primary inline-flex items-center gap-2"
 				>
 					View Match Demo

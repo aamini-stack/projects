@@ -59,7 +59,7 @@ export const Route = createRootRouteWithContext<{
 })
 
 function RootComponent() {
-	const { data: session, isPending } = authClient.useSession()
+	const { data: session } = authClient.useSession()
 	const router = useRouterState()
 	const currentPath = router.location.pathname
 	const userInitials = session?.user.name
@@ -99,7 +99,7 @@ function RootComponent() {
 									{session ? (
 										<>
 											<Link
-												to="/matches"
+												to={'/matches' as any}
 												className={`hidden items-center gap-2 px-4 py-2 text-sm font-medium transition-colors md:inline-flex ${
 													currentPath === '/matches'
 														? 'text-foreground'
@@ -111,7 +111,7 @@ function RootComponent() {
 											</Link>
 											<div className="bg-border mx-2 h-4 w-px" />
 											<Link
-												to="/account"
+												to={'/account' as any}
 												className="hover:bg-secondary flex items-center gap-3 px-3 py-1.5 transition-colors"
 												aria-label="Open account"
 											>

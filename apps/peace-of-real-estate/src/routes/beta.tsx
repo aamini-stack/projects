@@ -37,8 +37,8 @@ function BetaLogin() {
 		if (await authenticateBeta(password)) {
 			setError(false)
 			setSuccess(true)
-			setTimeout(() => {
-				navigate({ to: '/' })
+			setTimeout(async () => {
+				await navigate({ to: '/' })
 			}, 800)
 		} else {
 			setError(true)
