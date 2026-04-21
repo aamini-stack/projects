@@ -21,7 +21,7 @@ const categories = [
 		id: 'working-style',
 		label: 'Working Style',
 		icon: Heart,
-		color: 'teal',
+		color: 'blue-cyan',
 		description: 'How hands-on or independent you prefer your agent to be',
 	},
 	{
@@ -66,35 +66,53 @@ function ConsumerFlow() {
 			title="Set Your Priorities"
 			subtitle="Step 1 of 4 — Weight what matters most to you"
 			icon={SlidersHorizontal}
-			iconClassName="border-teal bg-teal-tint text-teal"
+			iconClassName="border-blue-cyan bg-blue-cyan-tint text-blue-cyan"
 		>
-			{/* Category Weighting Cards */}
-			<div className="space-y-4">
+			{/* Category Weighting */}
+			<div className="space-y-6">
 				{categories.map((cat, i) => {
 					const Icon = cat.icon
-					const weight = weights[cat.id]
+					const weight = weights[cat.id] ?? 3
 					return (
-						<div
-							key={cat.id}
-							className="border-border bg-card card-institutional p-6"
-							style={{ animationDelay: `${(i + 1) * 100}ms` }}
-						>
-							<div className="mb-4 flex items-start justify-between">
+						<div key={cat.id} style={{ animationDelay: `${(i + 1) * 100}ms` }}>
+							<div className="mb-3 flex items-center justify-between">
 								<div className="flex items-center gap-3">
-									<div
-										className={`border-${cat.color} bg-${cat.color}-tint flex h-9 w-9 items-center justify-center border`}
-									>
-										<Icon className={`text-${cat.color} h-4.5 w-4.5`} />
-									</div>
+									<Icon
+										className={`text-${cat.color} h-6 w-6 transition-all duration-300`}
+										style={{
+											filter:
+												cat.color === 'ochre'
+													? `brightness(${0.4 + weight * 0.12}) saturate(${0.6 + weight * 0.4})`
+													: cat.color === 'olive'
+														? `brightness(${0.5 + weight * 0.4}) saturate(${0.4 + weight * 0.6})`
+														: `brightness(${0.5 + weight * 0.3}) saturate(${0.6 + weight * 0.4})`,
+											opacity:
+												cat.color === 'olive'
+													? 0.5 + weight * 0.22
+													: 0.5 + weight * 0.125,
+										}}
+									/>
 									<div>
-										<h3 className="font-medium">{cat.label}</h3>
+										<h3 className="text-sm font-medium">{cat.label}</h3>
 										<p className="text-muted-foreground text-xs">
 											{cat.description}
 										</p>
 									</div>
 								</div>
 								<span
-									className={`data-number border-${cat.color} bg-${cat.color}-tint text-${cat.color} flex h-8 w-8 items-center justify-center border text-sm font-bold`}
+									className={`data-number text-${cat.color} text-sm font-bold`}
+									style={{
+										filter:
+											cat.color === 'ochre'
+												? `brightness(${0.4 + weight * 0.12}) saturate(${0.6 + weight * 0.4})`
+												: cat.color === 'olive'
+													? `brightness(${0.5 + weight * 0.4}) saturate(${0.4 + weight * 0.6})`
+													: `brightness(${0.5 + weight * 0.3}) saturate(${0.6 + weight * 0.4})`,
+										opacity:
+											cat.color === 'olive'
+												? 0.5 + weight * 0.22
+												: 0.5 + weight * 0.125,
+									}}
 								>
 									{weight}
 								</span>

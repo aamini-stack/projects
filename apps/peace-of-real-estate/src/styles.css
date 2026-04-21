@@ -26,26 +26,26 @@
 	--input: #e8e6e1;
 	--ring: #1a1a1a;
 
-	/* Extended Accent Palette — disciplined pops of color */
-	--teal: #2d6b6b;
-	--teal-foreground: #fafaf8;
-	--teal-tint: rgba(45, 107, 107, 0.08);
-	--teal-muted: #4a8585;
+	/* Extended Accent Palette — emotion-matched colors */
+	--blue-cyan: #1e6091;
+	--blue-cyan-foreground: #fafaf8;
+	--blue-cyan-tint: rgba(30, 96, 145, 0.08);
+	--blue-cyan-muted: #2a7ab8;
 
-	--terracotta: #c4705a;
+	--terracotta: #c2410c;
 	--terracotta-foreground: #fafaf8;
-	--terracotta-tint: rgba(196, 112, 90, 0.08);
-	--terracotta-muted: #d48a76;
+	--terracotta-tint: rgba(194, 65, 12, 0.08);
+	--terracotta-muted: #ea580c;
 
-	--olive: #6b7b4a;
+	--olive: #15803d;
 	--olive-foreground: #fafaf8;
-	--olive-tint: rgba(107, 123, 74, 0.08);
-	--olive-muted: #82915e;
+	--olive-tint: rgba(21, 128, 61, 0.08);
+	--olive-muted: #16a34a;
 
-	--ochre: #b8956a;
+	--ochre: #eab308;
 	--ochre-foreground: #1a1a1a;
-	--ochre-tint: rgba(184, 149, 106, 0.08);
-	--ochre-muted: #c9a97e;
+	--ochre-tint: rgba(234, 179, 8, 0.08);
+	--ochre-muted: #facc15;
 }
 
 .dark {
@@ -314,8 +314,8 @@ body {
 }
 
 /* Extended color utilities */
-.text-teal {
-	color: var(--teal);
+.text-blue-cyan {
+	color: var(--blue-cyan);
 }
 .text-terracotta {
 	color: var(--terracotta);
@@ -327,8 +327,8 @@ body {
 	color: var(--ochre);
 }
 
-.bg-teal {
-	background-color: var(--teal);
+.bg-blue-cyan {
+	background-color: var(--blue-cyan);
 }
 .bg-terracotta {
 	background-color: var(--terracotta);
@@ -340,8 +340,8 @@ body {
 	background-color: var(--ochre);
 }
 
-.bg-teal-tint {
-	background-color: var(--teal-tint);
+.bg-blue-cyan-tint {
+	background-color: var(--blue-cyan-tint);
 }
 .bg-terracotta-tint {
 	background-color: var(--terracotta-tint);
@@ -353,8 +353,8 @@ body {
 	background-color: var(--ochre-tint);
 }
 
-.text-teal-muted {
-	color: var(--teal-muted);
+.text-blue-cyan-muted {
+	color: var(--blue-cyan-muted);
 }
 .text-terracotta-muted {
 	color: var(--terracotta-muted);
@@ -366,8 +366,8 @@ body {
 	color: var(--ochre-muted);
 }
 
-.border-teal {
-	border-color: var(--teal);
+.border-blue-cyan {
+	border-color: var(--blue-cyan);
 }
 .border-terracotta {
 	border-color: var(--terracotta);
@@ -390,8 +390,8 @@ body {
 }
 
 /* Colored score bar variants */
-.score-bar-teal {
-	background-color: var(--teal);
+.score-bar-blue-cyan {
+	background-color: var(--blue-cyan);
 }
 .score-bar-terracotta {
 	background-color: var(--terracotta);
@@ -404,9 +404,9 @@ body {
 }
 
 /* Colored badge */
-.badge-teal {
-	background: var(--teal);
-	color: var(--teal-foreground);
+.badge-blue-cyan {
+	background: var(--blue-cyan);
+	color: var(--blue-cyan-foreground);
 }
 
 .badge-terracotta {

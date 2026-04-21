@@ -156,22 +156,10 @@ function RootComponent() {
 					{/* Footer — Institutional (hidden on beta gate) */}
 					{!isBetaPage && (
 						<footer className="border-border bg-background border-t">
-							<div className="mx-auto max-w-7xl px-6 py-8">
-								<div className="flex flex-col items-center justify-between gap-4 md:flex-row">
-									<div className="flex items-center gap-2">
-										<img
-											src="/logomark-fullColor.svg"
-											alt=""
-											className="h-5 w-5"
-										/>
-										<span className="font-serif text-sm">
-											Peace of Real Estate
-										</span>
-									</div>
-									<p className="text-muted-foreground text-xs">
-										© 2026 Peace of Real Estate. All rights reserved.
-									</p>
-								</div>
+							<div className="mx-auto max-w-7xl px-6 py-4">
+								<p className="text-muted-foreground text-center text-xs">
+									© 2026 Peace of Real Estate. All rights reserved.
+								</p>
 							</div>
 						</footer>
 					)}

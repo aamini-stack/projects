@@ -25,7 +25,9 @@ function Home() {
 					<h1 className="mx-auto mb-10 max-w-3xl font-serif text-5xl leading-[1.05] font-normal tracking-tight text-balance md:text-6xl lg:text-7xl">
 						The most expensive decision
 						<br />
-						<span className="text-teal-muted">of your life, made right.</span>
+						<span className="text-blue-cyan-muted">
+							of your life, made right.
+						</span>
 					</h1>
 					<p className="text-muted-foreground mx-auto mb-12 max-w-2xl text-lg leading-relaxed text-balance md:text-xl">
 						PRE matches consumers with agents based on working style,
@@ -72,10 +74,12 @@ function Home() {
 					<div className="grid gap-6 md:grid-cols-2">
 						{/* Consumer Card */}
 						<div className="bg-card card-institutional p-8 md:p-10">
-							<div className="data-label text-teal mb-6">Consumer Journey</div>
+							<div className="data-label text-blue-cyan mb-6">
+								Consumer Journey
+							</div>
 							<div className="mb-6 flex items-center gap-4">
-								<div className="border-teal bg-teal-tint flex h-10 w-10 items-center justify-center border">
-									<Heart className="text-teal h-5 w-5" />
+								<div className="border-blue-cyan bg-blue-cyan-tint flex h-10 w-10 items-center justify-center border">
+									<Heart className="text-blue-cyan h-5 w-5" />
 								</div>
 								<h3 className="font-serif text-2xl font-normal">
 									For Consumers
@@ -94,7 +98,7 @@ function Home() {
 									'Peace Pact transparency',
 								].map((item) => (
 									<li key={item} className="flex items-center gap-3 text-sm">
-										<CheckCircle2 className="text-teal h-4 w-4 shrink-0" />
+										<CheckCircle2 className="text-blue-cyan h-4 w-4 shrink-0" />
 										<span>{item}</span>
 									</li>
 								))}
@@ -173,7 +177,7 @@ function Home() {
 								icon: Heart,
 								title: 'Working Style',
 								desc: 'How you prefer to work together, from hands-on to hands-off.',
-								color: 'teal',
+								color: 'blue-cyan',
 							},
 							{
 								icon: MessageCircle,
@@ -196,7 +200,7 @@ function Home() {
 						].map((pillar) => {
 							const Icon = pillar.icon
 							const colorClass = pillar.color as
-								| 'teal'
+								| 'blue-cyan'
 								| 'terracotta'
 								| 'olive'
 								| 'ochre'
