@@ -4,7 +4,7 @@
 	"private": true,
 	"type": "module",
 	"scripts": {
-		"dev": "vite dev --port 3000",
+		"dev": "vite dev",
 		"build": "vite build",
 		"serve": "vite preview",
 		"start": "node .output/server/index.mjs",
@@ -15,7 +15,6 @@
 		"test:integration": "vitest run --project browser --project server",
 		"test:watch": "vitest --watch",
 		"e2e": "node --experimental-strip-types ../../scripts/src/aamini.ts e2e peace-of-real-estate",
-		"e2e:ci": "node --experimental-strip-types ../../scripts/src/aamini.ts e2e peace-of-real-estate --docker",
 		"e2e:staging": "node --experimental-strip-types ../../scripts/src/aamini.ts e2e peace-of-real-estate --staging",
 		"e2e:update": "node --experimental-strip-types ../../scripts/src/aamini.ts e2e peace-of-real-estate --update-snapshots",
 		"report": "playwright show-report",
