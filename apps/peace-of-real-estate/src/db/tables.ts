@@ -1,67 +1,12 @@
-import { sql } from 'drizzle-orm'
 import {
 	boolean,
 	foreignKey,
 	index,
-	integer,
 	pgTable,
 	text,
 	timestamp,
 	uniqueIndex,
-	varchar,
 } from 'drizzle-orm/pg-core'
-
-export const listing = pgTable(
-	'listing',
-	{
-		id: varchar('id', { length: 64 }).primaryKey().notNull(),
-		slug: varchar('slug', { length: 128 }).notNull(),
-		title: text().notNull(),
-		city: varchar('city', { length: 80 }).notNull(),
-		state: varchar('state', { length: 2 }).notNull(),
-		propertyType: varchar('property_type', { length: 40 }).notNull(),
-		bedrooms: integer('bedrooms').notNull(),
-		bathrooms: integer('bathrooms').notNull(),
-		squareFeet: integer('square_feet').notNull(),
-		listPrice: integer('list_price').notNull(),
-		status: varchar('status', { length: 40 }).notNull(),
-		vibeSummary: text('vibe_summary').notNull(),
-		heroImageUrl: text('hero_image_url'),
-		swipeScore: integer('swipe_score').default(50).notNull(),
-	},
-	(table) => [
-		uniqueIndex('listing_slug_index').on(table.slug),
-		index('listing_swipe_score_index').using(
-			'btree',
-			table.swipeScore.desc().nullsLast().op('int4_ops'),
-		),
-		index('listing_price_index').using('btree', table.listPrice),
-		index('listing_search_trigram_index').using(
-			'gin',
-			sql`(title || ' ' || city || ' ' || state) gin_trgm_ops`,
-		),
-	],
-)
-
-export const pricePoint = pgTable(
-	'price_point',
-	{
-		id: varchar('id', { length: 64 }).primaryKey().notNull(),
-		listingId: varchar('listing_id', { length: 64 }).notNull(),
-		recordedAt: timestamp('recorded_at', { withTimezone: false }).notNull(),
-		price: integer('price').notNull(),
-		eventType: varchar('event_type', { length: 40 }).notNull(),
-		title: text().notNull(),
-	},
-	(table) => [
-		index('price_point_listing_id_index').using('btree', table.listingId),
-		foreignKey({
-			columns: [table.listingId],
-			foreignColumns: [listing.id],
-			name: 'price_point_listing_id_fk',
-		}),
-	],
-)
 
 export const user = pgTable(
 	'user',

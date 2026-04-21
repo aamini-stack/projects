@@ -1,6 +1,6 @@
 /// <reference types="vite/client" />
 import { authClient } from '@/lib/auth-client'
-import { clientEnv } from '@/env'
+import { checkBetaAuthClient, checkBetaAuthServer } from '@/lib/beta-auth'
 import type { QueryClient } from '@tanstack/react-query'
 import {
 	HeadContent,
@@ -8,14 +8,16 @@ import {
 	Outlet,
 	Scripts,
 	createRootRouteWithContext,
+	redirect,
 	useRouterState,
 } from '@tanstack/react-router'
 import posthog from 'posthog-js'
 import { ArrowRightLeft, User } from 'lucide-react'
 import appCss from '../styles.css?url'
+import { ENV } from 'varlock/env'
 
-if (import.meta.env.MODE !== 'development') {
-	posthog.init(clientEnv.VITE_PUBLIC_POSTHOG_KEY, {
+if (import.meta.env.MODE === 'production' && ENV.VITE_PUBLIC_POSTHOG_KEY) {
+	posthog.init(ENV.VITE_PUBLIC_POSTHOG_KEY, {
 		api_host: '/api/ingest',
 		ui_host: 'https://us.posthog.com',
 		defaults: '2025-11-30',
@@ -37,11 +39,27 @@ export const Route = createRootRouteWithContext<{
 			{ rel: 'icon', type: 'image/svg+xml', href: '/logomark-fullColor.svg' },
 		],
 	}),
+	beforeLoad: async ({ location }) => {
+		if (import.meta.env.DEV) return
+
+		const isAuthenticated =
+			typeof document !== 'undefined'
+				? checkBetaAuthClient()
+				: await checkBetaAuthServer()
+
+		if (!isAuthenticated && location.pathname !== '/beta') {
+			throw redirect({ to: '/beta' })
+		}
+
+		if (isAuthenticated && location.pathname === '/beta') {
+			throw redirect({ to: '/' })
+		}
+	},
 	component: RootComponent,
 })
 
 function RootComponent() {
-	const { data: session, isPending } = authClient.useSession()
+	const { data: session } = authClient.useSession()
 	const router = useRouterState()
 	const currentPath = router.location.pathname
 	const userInitials = session?.user.name
@@ -53,6 +71,8 @@ function RootComponent() {
 				.join('')
 		: null
 
+	const isBetaPage = currentPath === '/beta'
+
 	return (
 		<html lang="en">
 			<head>
@@ -60,97 +80,101 @@ function RootComponent() {
 			</head>
 			<body className="bg-background text-foreground min-w-80 antialiased">
 				<div className="flex min-h-dvh flex-col">
-					{/* Navigation — Institutional */}
-					<header className="border-border bg-background sticky top-0 z-50 border-b">
-						<div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
-							<Link to="/" className="flex items-center gap-3">
-								<img
-									src="/logomark-fullColor.svg"
-									alt="Peace of Real Estate"
-									className="h-7 w-7 shrink-0"
-								/>
-								<span className="font-serif text-base tracking-tight">
-									Peace of Real Estate
-								</span>
-							</Link>
+					{/* Navigation — Institutional (hidden on beta gate) */}
+					{!isBetaPage && (
+						<header className="border-border bg-background sticky top-0 z-50 border-b">
+							<div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
+								<Link to="/" className="flex items-center gap-3">
+									<img
+										src="/logomark-fullColor.svg"
+										alt="Peace of Real Estate"
+										className="h-7 w-7 shrink-0"
+									/>
+									<span className="font-serif text-base tracking-tight">
+										Peace of Real Estate
+									</span>
+								</Link>
 
-							<div className="flex items-center gap-1">
-								{session ? (
-									<>
+								<div className="flex items-center gap-1">
+									{session ? (
+										<>
+											<Link
+												to={'/matches' as any}
+												className={`hidden items-center gap-2 px-4 py-2 text-sm font-medium transition-colors md:inline-flex ${
+													currentPath === '/matches'
+														? 'text-foreground'
+														: 'text-muted-foreground hover:text-foreground'
+												}`}
+											>
+												<ArrowRightLeft className="h-4 w-4" />
+												Matches
+											</Link>
+											<div className="bg-border mx-2 h-4 w-px" />
+											<Link
+												to={'/account' as any}
+												className="hover:bg-secondary flex items-center gap-3 px-3 py-1.5 transition-colors"
+												aria-label="Open account"
+											>
+												<span className="border-border text-foreground flex h-8 w-8 items-center justify-center border text-xs font-semibold">
+													{userInitials ? (
+														userInitials
+													) : (
+														<User className="h-4 w-4" />
+													)}
+												</span>
+												<div className="hidden text-left md:block">
+													<p className="text-sm leading-none font-medium">
+														{session.user.name}
+													</p>
+													<p className="text-muted-foreground mt-1 text-xs">
+														Account
+													</p>
+												</div>
+											</Link>
+										</>
+									) : (
 										<Link
-											to="/matches"
-											className={`hidden items-center gap-2 px-4 py-2 text-sm font-medium transition-colors md:inline-flex ${
-												currentPath === '/matches'
-													? 'text-foreground'
-													: 'text-muted-foreground hover:text-foreground'
-											}`}
+											to="/login"
+											search={{ redirect: currentPath }}
+											className="btn-secondary inline-flex items-center gap-2"
+											aria-label="Sign in or create account"
 										>
-											<ArrowRightLeft className="h-4 w-4" />
-											Matches
+											<User className="h-4 w-4" />
+											<span>Sign in</span>
 										</Link>
-										<div className="bg-border mx-2 h-4 w-px" />
-										<Link
-											to="/account"
-											className="hover:bg-secondary flex items-center gap-3 px-3 py-1.5 transition-colors"
-											aria-label="Open account"
-										>
-											<span className="border-border text-foreground flex h-8 w-8 items-center justify-center border text-xs font-semibold">
-												{userInitials ? (
-													userInitials
-												) : (
-													<User className="h-4 w-4" />
-												)}
-											</span>
-											<div className="hidden text-left md:block">
-												<p className="text-sm leading-none font-medium">
-													{session.user.name}
-												</p>
-												<p className="text-muted-foreground mt-1 text-xs">
-													Account
-												</p>
-											</div>
-										</Link>
-									</>
-								) : (
-									<Link
-										to="/login"
-										search={{ redirect: currentPath }}
-										className="btn-secondary inline-flex items-center gap-2"
-										aria-label="Sign in or create account"
-									>
-										<User className="h-4 w-4" />
-										<span>{isPending ? 'Account' : 'Sign in'}</span>
-									</Link>
-								)}
+									)}
+								</div>
 							</div>
-						</div>
-					</header>
+						</header>
+					)}
 
 					{/* Main content */}
 					<main className="flex flex-1 flex-col">
 						<Outlet />
 					</main>
 
-					{/* Footer — Institutional */}
-					<footer className="border-border bg-background border-t">
-						<div className="mx-auto max-w-7xl px-6 py-8">
-							<div className="flex flex-col items-center justify-between gap-4 md:flex-row">
-								<div className="flex items-center gap-2">
-									<img
-										src="/logomark-fullColor.svg"
-										alt=""
-										className="h-5 w-5"
-									/>
-									<span className="font-serif text-sm">
-										Peace of Real Estate
-									</span>
+					{/* Footer — Institutional (hidden on beta gate) */}
+					{!isBetaPage && (
+						<footer className="border-border bg-background border-t">
+							<div className="mx-auto max-w-7xl px-6 py-8">
+								<div className="flex flex-col items-center justify-between gap-4 md:flex-row">
+									<div className="flex items-center gap-2">
+										<img
+											src="/logomark-fullColor.svg"
+											alt=""
+											className="h-5 w-5"
+										/>
+										<span className="font-serif text-sm">
+											Peace of Real Estate
+										</span>
+									</div>
+									<p className="text-muted-foreground text-xs">
+										© 2026 Peace of Real Estate. All rights reserved.
+									</p>
 								</div>
-								<p className="text-muted-foreground text-xs">
-									© 2026 Peace of Real Estate. All rights reserved.
-								</p>
 							</div>
-						</div>
-					</footer>
+						</footer>
+					)}
 				</div>
 				<Scripts />
 			</body>
