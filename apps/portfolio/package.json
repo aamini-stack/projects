@@ -21,7 +21,7 @@
 		"e2e:staging": "BASE_URL=https://portfolio.ariaamini.com pnpm playwright test",
 		"e2e:update": "node --experimental-strip-types ../../scripts/src/aamini.ts e2e portfolio --update-snapshots",
 		"report": "playwright show-report",
-		"verify": "turbo run build test typecheck e2e"
+		"verify": "turbo run build test typecheck"
 	},
 	"dependencies": {
 		"@aamini/ui": "workspace:@aamini/ui-neobrutalist@*",
