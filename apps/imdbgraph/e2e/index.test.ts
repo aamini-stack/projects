@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test'
 import { readFile } from 'node:fs/promises'
 
 test.beforeEach(async ({ page }) => {
-	await page.route('/api/suggestions**', async (route) => {
+	await page.route('**/api/suggestions**', async (route) => {
 		const body = await readFile(
 			new URL('../__mocks__/data/suggestions.json', import.meta.url),
 			'utf8',
