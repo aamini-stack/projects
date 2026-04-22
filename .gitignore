@@ -2,7 +2,6 @@
 
 # env files
 .env*.local
-env.d.ts
 .mise.local.toml
 
 # Build
@@ -10,6 +9,7 @@ env.d.ts
 .vercel
 .output
 .nitro
+.tanstack
 node_modules
 
 # System Files

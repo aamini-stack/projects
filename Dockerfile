@@ -19,6 +19,7 @@ RUN --mount=type=cache,id=s/a3fa7482-5e23-4db6-b445-b88167cc20e4-/pnpm/store,tar
 FROM base AS installer
 ARG APP_NAME
 ENV CI=true
+ENV APP_ENV=production
 WORKDIR /app
 COPY --from=pruner /repo/out/pnpm-lock.yaml ./pnpm-lock.yaml
 COPY --from=pruner /repo/out/pnpm-workspace.yaml ./pnpm-workspace.yaml
@@ -35,6 +36,7 @@ FROM base
 ARG APP_NAME
 ARG PORT=3000
 ENV NODE_ENV=production
+ENV APP_ENV=production
 ENV PORT=${PORT}
 WORKDIR /app
 RUN groupadd --system --gid 1001 nodejs \
