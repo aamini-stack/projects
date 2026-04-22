@@ -51,6 +51,7 @@ export function QuestionFlow({
 		useState<Record<string, AnswerValue>>(initialAnswers)
 	const [justSelected, setJustSelected] = useState<number | null>(null)
 	const [isTransitioning, setIsTransitioning] = useState(false)
+	const [wasContinueVisible, setWasContinueVisible] = useState(false)
 	const autoAdvanceTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 	const transitionTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
@@ -85,6 +86,7 @@ export function QuestionFlow({
 		}
 
 		if (currentQuestion < questions.length - 1) {
+			setWasContinueVisible(canShowContinue)
 			setIsTransitioning(true)
 			if (transitionTimer.current) {
 				clearTimeout(transitionTimer.current)
@@ -92,6 +94,7 @@ export function QuestionFlow({
 			transitionTimer.current = setTimeout(() => {
 				setCurrentQuestion((prev) => prev + 1)
 				setIsTransitioning(false)
+				setWasContinueVisible(false)
 			}, 250)
 		}
 	}
@@ -147,6 +150,7 @@ export function QuestionFlow({
 				if (autoAdvanceTimer.current) {
 					clearTimeout(autoAdvanceTimer.current)
 				}
+				setWasContinueVisible(canShowContinue)
 				setIsTransitioning(true)
 				autoAdvanceTimer.current = setTimeout(() => {
 					handleNext()
@@ -187,6 +191,7 @@ export function QuestionFlow({
 			if (autoAdvanceTimer.current) {
 				clearTimeout(autoAdvanceTimer.current)
 			}
+			setWasContinueVisible(canShowContinue)
 			setIsTransitioning(true)
 			autoAdvanceTimer.current = setTimeout(() => {
 				handleNext()
@@ -197,9 +202,12 @@ export function QuestionFlow({
 
 	const isComplete = currentQuestion === questions.length - 1 && canProceed
 	const isLastQuestion = currentQuestion === questions.length - 1
-	const showContinueButton =
+	const canShowContinue =
 		!isLastQuestion &&
 		(isMultipleChoice || currentQuestion < answeredQuestionCount)
+
+	const showContinueButton =
+		canShowContinue && (!isTransitioning || wasContinueVisible)
 
 	return (
 		<FlowPageShell
@@ -270,7 +278,7 @@ export function QuestionFlow({
 							type="button"
 							onClick={handleNext}
 							disabled={!canProceed || isTransitioning}
-							className={`${canProceed && !isTransitioning ? `${accentClassName} text-primary-foreground hover:opacity-90` : 'bg-muted text-muted-foreground opacity-70'} inline-flex items-center gap-2 px-4 py-2 text-sm font-medium transition-all disabled:cursor-not-allowed`}
+							className={`${canProceed && !isTransitioning ? `${accentClassName} text-primary-foreground hover:opacity-90` : 'bg-muted text-muted-foreground opacity-70'} inline-flex items-center gap-2 px-4 py-2 text-sm font-medium disabled:cursor-not-allowed`}
 						>
 							Continue
 							<ArrowRight className="h-4 w-4" />
