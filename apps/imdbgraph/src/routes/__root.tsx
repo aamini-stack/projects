@@ -1,5 +1,4 @@
 /// <reference types="vite/client" />
-import { clientEnv } from '@/env'
 import type { QueryClient } from '@tanstack/react-query'
 import {
 	ClientOnly,
@@ -11,10 +10,11 @@ import {
 import { useEffect } from 'react'
 import posthog from 'posthog-js'
 import appCss from '../styles.css?url'
+import { ENV } from 'varlock/env'
 
 function Analytics() {
 	useEffect(() => {
-		const posthogKey = clientEnv.VITE_PUBLIC_POSTHOG_KEY?.trim()
+		const posthogKey = ENV.VITE_PUBLIC_POSTHOG_KEY
 		if (import.meta.env.MODE === 'development' || !posthogKey) return
 
 		posthog.init(posthogKey, {

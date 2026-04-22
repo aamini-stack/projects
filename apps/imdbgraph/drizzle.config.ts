@@ -1,16 +1,13 @@
 import { defineConfig } from 'drizzle-kit'
 import 'varlock/auto-load'
 import { ENV } from 'varlock/env'
-
-if (!ENV.DATABASE_URL) {
-	throw Error('Missing DATABASE_URL')
-}
+import { requireEnv } from './src/env.ts'
 
 export default defineConfig({
 	schema: './src/db/tables.ts',
 	out: './src/db/migrations',
 	dialect: 'postgresql',
 	dbCredentials: {
-		url: ENV.DATABASE_URL,
+		url: requireEnv(ENV.DATABASE_URL, 'DATABASE_URL'),
 	},
 })

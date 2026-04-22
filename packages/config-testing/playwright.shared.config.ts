@@ -10,7 +10,7 @@ export const baseConfig = (
 	{ port }: { port: number },
 	overrides?: PlaywrightTestConfig,
 ) => {
-	const devUrl = `http://localhost:${port}`
+	const devUrl = `http://127.0.0.1:${port}`
 	const baseUrl = process.env.BASE_URL || devUrl
 	const useDevServer = !process.env.BASE_URL
 	const testDir = './e2e'
@@ -26,7 +26,7 @@ export const baseConfig = (
 			forbidOnly: !!process.env.CI,
 			retries: process.env.CI ? 3 : 0,
 			/* Reporter to use. See https://playwright.dev/docs/test-reporters */
-			reporter: [['html', { open: 'never' }]],
+			reporter: [['html', { outputFolder: '.playwright/report' }]],
 
 			/* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
 			use: {

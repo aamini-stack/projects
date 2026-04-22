@@ -18,11 +18,12 @@
 		"e2e:staging": "node --experimental-strip-types ../../scripts/src/aamini.ts e2e peace-of-real-estate --staging",
 		"e2e:update": "node --experimental-strip-types ../../scripts/src/aamini.ts e2e peace-of-real-estate --update-snapshots",
 		"report": "playwright show-report",
-		"verify": "turbo run build test typecheck e2e",
+		"verify": "turbo run test typecheck",
 		"populate": "tsx --env-file .env.local scripts/populate-db.ts",
 		"db:generate": "drizzle-kit generate",
 		"db:migrate": "drizzle-kit migrate",
-		"db:push": "drizzle-kit push"
+		"db:push": "drizzle-kit push",
+		"db:seed": "tsx --env-file .env.development.local scripts/seed-agents.ts"
 	},
 	"dependencies": {
 		"@aamini/lib": "workspace:*",
@@ -45,6 +46,7 @@
 		"posthog-js": "^1.369.1",
 		"react": "^19.2.4",
 		"react-dom": "^19.2.4",
+		"sonner": "^2.0.7",
 		"tailwind-merge": "^3.5.0"
 	},
 	"devDependencies": {

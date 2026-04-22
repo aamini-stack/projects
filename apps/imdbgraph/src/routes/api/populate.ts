@@ -1,5 +1,5 @@
 import { createDb } from '@/db/connection'
-import { getCronSecret } from '@/env.server'
+import { getCronSecret } from '@/env'
 import { update } from '@/lib/imdb/scraper'
 import { createFileRoute } from '@tanstack/react-router'
 import { waitUntil } from '@vercel/functions'
@@ -12,7 +12,7 @@ export const Route = createFileRoute('/api/populate')({
 
 				// Check Auth
 				const authHeader = request.headers.get('authorization') ?? ''
-				if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
+				if (authHeader !== `Bearer ${cronSecret}`) {
 					return new Response('Unauthorized request', {
 						status: 401,
 					})

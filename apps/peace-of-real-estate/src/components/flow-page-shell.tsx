@@ -1,5 +1,5 @@
 import { Link } from '@tanstack/react-router'
-import { ArrowLeft, type LucideIcon } from 'lucide-react'
+import { ChevronRight, type LucideIcon } from 'lucide-react'
 import type { ReactNode } from 'react'
 
 type FlowPageShellProps = {
@@ -22,16 +22,26 @@ export function FlowPageShell({
 	children,
 }: FlowPageShellProps) {
 	return (
-		<div className="mx-auto w-full max-w-[42rem] px-6 py-12">
-			<div className="mb-12">
-				<Link
-					to={backTo}
-					className="text-muted-foreground hover:text-foreground mb-8 inline-flex items-center gap-2 text-sm transition-colors"
-				>
-					<ArrowLeft className="h-4 w-4" />
-					{backLabel}
-				</Link>
-				<div className="hairline mb-6" />
+		<div className="mx-auto w-full max-w-[42rem] px-6 pt-4 pb-16 md:pb-24">
+			<nav aria-label="Breadcrumb" className="mb-4">
+				<ol className="flex items-center gap-2 text-sm">
+					<li>
+						<Link
+							to={backTo}
+							className="text-muted-foreground hover:text-foreground transition-colors"
+						>
+							{backLabel}
+						</Link>
+					</li>
+					<li aria-hidden="true">
+						<ChevronRight className="text-muted-foreground h-4 w-4" />
+					</li>
+					<li className="text-foreground font-medium" aria-current="page">
+						{title}
+					</li>
+				</ol>
+			</nav>
+			<div className="mt-16 mb-6">
 				<div className="flex items-center gap-4">
 					<div
 						className={`${iconClassName} border-border flex h-10 w-10 items-center justify-center border`}

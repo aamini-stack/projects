@@ -30,7 +30,7 @@ function MockRouter({ children }: { children: React.ReactNode }) {
 	)
 }
 
-test('question flow gates progress and completes on final answer', async () => {
+test('question flow auto-advances and completes on final answer', async () => {
 	const screen = await render(
 		<QuestionFlow
 			backTo="/"
@@ -62,13 +62,8 @@ test('question flow gates progress and completes on final answer', async () => {
 		{ wrapper: MockRouter },
 	)
 
-	const nextButton = screen.getByRole('button', { name: /next question/i })
-	await expect.element(nextButton).toBeDisabled()
-
 	await userEvent.click(screen.getByRole('button', { name: /same day/i }))
-	await expect.element(nextButton).toBeEnabled()
 
-	await userEvent.click(nextButton)
 	await expect.element(page.getByText('Question 2 of 2')).toBeVisible()
 	await expect
 		.element(screen.getByPlaceholder(/share a few details/i))
@@ -116,16 +111,124 @@ test('question flow supports multi-select before completion', async () => {
 		{ wrapper: MockRouter },
 	)
 
+	await expect.element(screen.getByText('0 of 2 selected')).toBeVisible()
+	await expect
+		.element(screen.getByText('Select up to 2 answers to continue.'))
+		.toBeVisible()
 	await expect
 		.element(screen.getByRole('button', { name: /finish/i }))
+		.toBeDisabled()
+
+	await expect
+		.element(screen.getByRole('link', { name: /finish/i }))
 		.not.toBeInTheDocument()
 	await userEvent.click(screen.getByRole('button', { name: /clarity/i }))
+	await expect.element(screen.getByText('1 of 2 selected')).toBeVisible()
 	await expect
 		.element(screen.getByRole('link', { name: /finish/i }))
 		.toBeVisible()
 	await userEvent.click(screen.getByRole('button', { name: /speed/i }))
 	await expect.element(screen.getByText('100%')).toBeVisible()
+	await expect.element(screen.getByText('2 of 2 selected')).toBeVisible()
 	await expect
 		.element(screen.getByRole('link', { name: /finish/i }))
 		.toBeVisible()
+	await expect
+		.element(screen.getByRole('button', { name: /finish/i }))
+		.not.toBeInTheDocument()
+})
+
+test('question flow shows continue when user goes back to answered question', async () => {
+	const screen = await render(
+		<QuestionFlow
+			backTo="/"
+			backLabel="Back"
+			stepLabel="Step 2 of 4"
+			accentClassName="bg-primary"
+			accentTextClassName="text-primary"
+			accentTintClassName="bg-primary/10"
+			accentHoverBorderClassName="hover:border-primary/30"
+			completeTo="/done"
+			completeLabel="Finish"
+			initialQuestionIndex={2}
+			initialAnswers={{ q1: 0, q2: 1 }}
+			questions={[
+				{
+					id: 'q1',
+					number: 1,
+					category: 'Working Style',
+					prompt: 'Question one',
+					options: ['A', 'B'],
+				},
+				{
+					id: 'q2',
+					number: 2,
+					category: 'Communication',
+					prompt: 'Question two',
+					options: ['A', 'B'],
+				},
+				{
+					id: 'q3',
+					number: 3,
+					category: 'Fit',
+					prompt: 'Question three',
+					options: ['A', 'B'],
+				},
+			]}
+		/>,
+		{ wrapper: MockRouter },
+	)
+
+	await expect.element(screen.getByText('Question 3 of 3')).toBeVisible()
+	await userEvent.click(
+		screen.getByRole('button', { name: /previous question/i }),
+	)
+	await expect.element(screen.getByText('Question 2 of 3')).toBeVisible()
+	await expect
+		.element(screen.getByRole('button', { name: /continue/i }))
+		.toBeVisible()
+	await expect
+		.element(screen.getByRole('button', { name: /continue/i }))
+		.toBeEnabled()
+	await userEvent.click(screen.getByRole('button', { name: /continue/i }))
+	await expect.element(screen.getByText('Question 3 of 3')).toBeVisible()
+})
+
+test('clicking selected multi-select option does nothing', async () => {
+	const screen = await render(
+		<QuestionFlow
+			backTo="/"
+			backLabel="Back"
+			stepLabel="Step 2 of 4"
+			accentClassName="bg-primary"
+			accentTextClassName="text-primary"
+			accentTintClassName="bg-primary/10"
+			accentHoverBorderClassName="hover:border-primary/30"
+			completeTo="/done"
+			completeLabel="Finish"
+			questions={[
+				{
+					id: 'q1',
+					number: 1,
+					categories: ['Communication', 'Transparency'],
+					prompt: 'Pick two priorities',
+					options: ['Clarity', 'Speed', 'Proactive updates'],
+					selection: {
+						type: 'multiple',
+						maxSelections: 2,
+					},
+				},
+			]}
+		/>,
+		{ wrapper: MockRouter },
+	)
+
+	await userEvent.click(screen.getByRole('button', { name: /clarity/i }))
+	await expect.element(screen.getByText('1 of 2 selected')).toBeVisible()
+	await userEvent.click(screen.getByRole('button', { name: /clarity/i }))
+	await expect.element(screen.getByText('1 of 2 selected')).toBeVisible()
+	await expect
+		.element(screen.getByRole('link', { name: /finish/i }))
+		.toBeVisible()
+	await expect.element(screen.getByText('100%')).toBeVisible()
 })
