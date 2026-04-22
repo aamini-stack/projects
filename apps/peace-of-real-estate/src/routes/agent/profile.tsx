@@ -1,27 +1,39 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
-import {
-	ArrowRight,
-	ArrowLeft,
-	User,
-	MapPin,
-	FileText,
-	Award,
-} from 'lucide-react'
+import { ArrowRight, User, MapPin, FileText, Award } from 'lucide-react'
 import { useState } from 'react'
+
+import { FlowPageShell } from '@/components/flow-page-shell'
+import {
+	getStoredIntakeDraftForRole,
+	saveStoredIntakeDraftForRole,
+} from '@/lib/intake-draft'
 
 export const Route = createFileRoute('/agent/profile')({
 	component: AgentProfile,
 })
 
 function AgentProfile() {
-	const [formData, setFormData] = useState({
-		experience: '',
-		zipCodes: '',
-		services: [] as string[],
-	})
+	const [formData, setFormData] = useState(
+		() =>
+			getStoredIntakeDraftForRole('agent').agentProfile ?? {
+				experience: '',
+				zipCodes: '',
+				services: [] as string[],
+			},
+	)
+
+	const updateFormData = (
+		updater: (prev: typeof formData) => typeof formData,
+	) => {
+		setFormData((prev) => {
+			const next = updater(prev)
+			saveStoredIntakeDraftForRole('agent', { agentProfile: next })
+			return next
+		})
+	}
 
 	const toggleService = (service: string) => {
-		setFormData((prev) => ({
+		updateFormData((prev) => ({
 			...prev,
 			services: prev.services.includes(service)
 				? prev.services.filter((s) => s !== service)
@@ -41,30 +53,14 @@ function AgentProfile() {
 	]
 
 	return (
-		<div className="mx-auto max-w-2xl px-6 py-12">
-			{/* Header */}
-			<div className="mb-12">
-				<Link
-					to="/agent/quiz"
-					className="text-muted-foreground hover:text-foreground mb-8 inline-flex items-center gap-2 text-sm transition-colors"
-				>
-					<ArrowLeft className="h-4 w-4" />
-					Back to questions
-				</Link>
-				<div className="hairline mb-6" />
-				<div className="flex items-center gap-4">
-					<div className="border-terracotta bg-terracotta-tint flex h-10 w-10 items-center justify-center border">
-						<User className="text-terracotta h-5 w-5" />
-					</div>
-					<div>
-						<div className="data-label mb-1">Step 3 of 4</div>
-						<h1 className="font-serif text-2xl font-normal tracking-tight">
-							Create Your Profile
-						</h1>
-					</div>
-				</div>
-			</div>
-
+		<FlowPageShell
+			backTo="/agent/quiz"
+			backLabel="Back to questions"
+			title="Create Your Profile"
+			subtitle="Step 3 of 4 — Tell us about your experience and services"
+			icon={User}
+			iconClassName="border-terracotta bg-terracotta-tint text-terracotta"
+		>
 			{/* Progress */}
 			<div className="mb-10">
 				<div className="mb-3 flex items-center justify-between text-xs">
@@ -80,7 +76,7 @@ function AgentProfile() {
 			</div>
 
 			{/* Form */}
-			<div className="border-border bg-card card-institutional space-y-8 p-8">
+			<div className="space-y-8">
 				{/* Experience */}
 				<div className="space-y-3">
 					<label
@@ -94,7 +90,10 @@ function AgentProfile() {
 						id="experience"
 						value={formData.experience}
 						onChange={(e) =>
-							setFormData((prev) => ({ ...prev, experience: e.target.value }))
+							updateFormData((prev) => ({
+								...prev,
+								experience: e.target.value,
+							}))
 						}
 						className="border-border bg-background focus:border-primary w-full border px-4 py-3 text-sm focus:outline-none"
 					>
@@ -123,7 +122,10 @@ function AgentProfile() {
 						placeholder="e.g. 78701, 78702, 78703"
 						value={formData.zipCodes}
 						onChange={(e) =>
-							setFormData((prev) => ({ ...prev, zipCodes: e.target.value }))
+							updateFormData((prev) => ({
+								...prev,
+								zipCodes: e.target.value,
+							}))
 						}
 						className="border-border bg-background focus:border-primary w-full border px-4 py-3 text-sm focus:outline-none"
 					/>
@@ -167,7 +169,6 @@ function AgentProfile() {
 					to="/agent/quiz"
 					className="text-muted-foreground hover:text-foreground inline-flex items-center gap-2 text-sm transition-colors"
 				>
-					<ArrowLeft className="h-4 w-4" />
 					Back
 				</Link>
 				<Link
@@ -178,6 +179,6 @@ function AgentProfile() {
 					<ArrowRight className="h-4 w-4" />
 				</Link>
 			</div>
-		</div>
+		</FlowPageShell>
 	)
 }

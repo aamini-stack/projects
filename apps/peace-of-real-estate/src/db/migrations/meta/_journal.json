@@ -15,6 +15,13 @@
 			"when": 1776607184914,
 			"tag": "0001_add_better_auth",
 			"breakpoints": true
+		},
+		{
+			"idx": 2,
+			"version": "7",
+			"when": 1776799135064,
+			"tag": "0002_add_profile_tables",
+			"breakpoints": true
 		}
 	]
 }

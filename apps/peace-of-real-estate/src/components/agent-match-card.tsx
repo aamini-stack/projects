@@ -14,7 +14,7 @@ export type AgentMatch = {
 }
 
 const categoryColors: Record<string, string> = {
-	'Working Style': 'score-bar-teal',
+	'Working Style': 'score-bar-blue-cyan',
 	Communication: 'score-bar-terracotta',
 	Transparency: 'score-bar-olive',
 	Fit: 'score-bar-ochre',
@@ -53,7 +53,7 @@ export function AgentMatchCard({
 			style={{ animationDelay: `${(index + 1) * 150}ms` }}
 		>
 			{match.topMatch ? (
-				<div className="bg-teal text-teal-foreground flex items-center gap-2 px-6 py-2 text-xs font-semibold">
+				<div className="bg-blue-cyan text-blue-cyan-foreground flex items-center gap-2 px-6 py-2 text-xs font-semibold">
 					<Star className="h-3 w-3 fill-current" />
 					Top Match
 				</div>
@@ -61,7 +61,7 @@ export function AgentMatchCard({
 
 			<div className="p-8">
 				<div className="mb-8 flex flex-col gap-6 md:flex-row md:items-start">
-					<div className="border-teal bg-teal-tint text-teal flex h-16 w-16 shrink-0 items-center justify-center border text-2xl font-bold">
+					<div className="border-blue-cyan bg-blue-cyan-tint text-blue-cyan flex h-16 w-16 shrink-0 items-center justify-center border text-2xl font-bold">
 						{match.name
 							.split(' ')
 							.map((n) => n[0])

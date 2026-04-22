@@ -1,6 +1,7 @@
 import type { Page } from '@playwright/test'
 
 import { expect, test } from './helpers/app'
+import { buildDummyAccount, signUpWithEmail } from './helpers/auth'
 
 test.setTimeout(30000)
 
@@ -14,9 +15,25 @@ async function answerCurrentQuestion(page: Page) {
 		return
 	}
 
+	const multiSelectHint = page.getByText(
+		/Select up to \d+ answers to continue\./,
+	)
+
+	if ((await multiSelectHint.count()) > 0) {
+		const optionButtons = page.getByRole('button').filter({
+			hasNotText: /^(Previous Question|Continue|Continue to Profile)$/,
+		})
+
+		await optionButtons.nth(0).click()
+		await optionButtons.nth(1).click()
+		return
+	}
+
 	await page
 		.getByRole('button')
-		.filter({ hasNotText: /^(Previous|Next)$/ })
+		.filter({
+			hasNotText: /^(Previous Question|Continue|Continue to Profile)$/,
+		})
 		.first()
 		.click()
 }
@@ -26,6 +43,8 @@ test.beforeEach(async ({ app }) => {
 })
 
 test('agent can complete onboarding flow', async ({ page }) => {
+	const account = buildDummyAccount('Agent Flow')
+
 	await page.getByRole('link', { name: "I'm an Agent" }).click()
 	await expect(page).toHaveURL(/\/agent$/)
 	await expect(
@@ -39,15 +58,12 @@ test('agent can complete onboarding flow', async ({ page }) => {
 	await expect(
 		page.getByRole('heading', { name: 'Core Questions' }),
 	).toBeVisible()
-	await expect(page).toHaveScreenshot('agent-flow-questionnaire.png', {
-		fullPage: true,
-	})
 
 	for (let index = 0; index < 12; index++) {
 		await answerCurrentQuestion(page)
 
 		if (index < 11) {
-			await page.getByRole('button', { name: 'Next Question' }).click()
+			await expect(page.getByText(`Question ${index + 2} of 12`)).toBeVisible()
 		}
 	}
 
@@ -71,9 +87,27 @@ test('agent can complete onboarding flow', async ({ page }) => {
 	await expect(
 		page.getByRole('heading', { name: 'Match Activity' }),
 	).toBeVisible()
-	await expect(page.getByText('Recent Introductions')).toBeVisible()
-	await expect(page.getByText('Alex M.')).toBeVisible()
-	await expect(page).toHaveScreenshot('agent-flow-results.png', {
-		fullPage: true,
-	})
+	// The match activity page shows real seeded agents from the database
+	// Just verify the page loads with matches
+	await expect(page.getByText('Total Matches')).toBeVisible()
+
+	await page.getByRole('link', { name: 'Sign in' }).click()
+	await expect(page).toHaveURL(/\/login/)
+	await page.getByRole('link', { name: 'Sign up' }).click()
+	await expect(page).toHaveURL(/\/signup/)
+	await expect(
+		page.getByRole('heading', { name: 'Create your account' }),
+	).toBeVisible()
+
+	await signUpWithEmail(page, account)
+	await page.goto('/account', { waitUntil: 'domcontentloaded' })
+
+	await expect(page.getByRole('heading', { name: account.name })).toBeVisible()
+	await expect(page.getByText(account.email)).toBeVisible()
+	await expect(page.getByText('agent', { exact: true })).toBeVisible()
+	await expect(page.getByText('6-10')).toBeVisible()
+	await expect(page.getByText('78701, 78702, 78704')).toBeVisible()
+	await expect(page.getByText('Buyer Representation')).toBeVisible()
+	await expect(page.getByText('Luxury Homes')).toBeVisible()
+	await expect(page.getByText('Relocation')).toBeVisible()
 })

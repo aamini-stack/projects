@@ -1,53 +1,47 @@
-import { createFileRoute, Link } from '@tanstack/react-router'
-import {
-	ArrowRight,
-	ArrowLeft,
-	Shield,
-	CheckCircle2,
-	DollarSign,
-	Users,
-} from 'lucide-react'
+import { createFileRoute, Link, Navigate } from '@tanstack/react-router'
+import { ArrowRight, ArrowLeft, Briefcase, Shield } from 'lucide-react'
 import { useState } from 'react'
 
+import { CategoryWeightSelector } from '@/components/category-weight-selector'
 import { FlowPageShell } from '@/components/flow-page-shell'
+import { categoryWeightOptions } from '@/lib/category-weight-options'
+import {
+	getStoredIntakeDraftForRole,
+	saveStoredIntakeDraftForRole,
+} from '@/lib/intake-draft'
+import type { CategoryWeights } from '@/lib/user-settings'
 
 export const Route = createFileRoute('/agent/')({
 	component: AgentFlow,
 })
 
-const categories = [
-	{
-		id: 'working-style',
-		label: 'Working Style',
-		description: 'How you prefer to work with clients',
-	},
-	{
-		id: 'communication',
-		label: 'Communication',
-		description: 'Your approach to client updates and interactions',
-	},
-	{
-		id: 'transparency',
-		label: 'Transparency',
-		description: 'How you handle fees, process, and expectations',
-	},
-	{
-		id: 'fit',
-		label: 'Overall Fit',
-		description: 'The type of client relationships you excel at',
-	},
-]
+const agentCategoryWeightOptions = categoryWeightOptions.map((category) =>
+	category.id === 'working-style'
+		? { ...category, icon: Briefcase }
+		: category.id === 'transparency'
+			? { ...category, icon: Shield }
+			: category,
+)
 
 function AgentFlow() {
-	const [weights, setWeights] = useState<Record<string, number>>({
-		'working-style': 3,
-		communication: 3,
-		transparency: 3,
-		fit: 3,
-	})
+	const [initialDraft] = useState(() => getStoredIntakeDraftForRole('agent'))
+	const [weights, setWeights] = useState<CategoryWeights>(
+		() => initialDraft.weights,
+	)
 
-	const updateWeight = (id: string, value: number) => {
-		setWeights((prev) => ({ ...prev, [id]: value }))
+	if (initialDraft.hasCompletedWeights) {
+		return <Navigate to="/agent/quiz" />
+	}
+
+	const updateWeight = (id: keyof CategoryWeights, value: number) => {
+		setWeights((prev) => {
+			const next = { ...prev, [id]: value } as CategoryWeights
+			saveStoredIntakeDraftForRole('agent', {
+				weights: next,
+				hasCompletedWeights: true,
+			})
+			return next
+		})
 	}
 
 	return (
@@ -59,74 +53,11 @@ function AgentFlow() {
 			icon={Shield}
 			iconClassName="border-terracotta bg-terracotta-tint text-terracotta"
 		>
-			{/* Value Props */}
-			<div className="bg-border mb-10 grid gap-px sm:grid-cols-3">
-				{[
-					{
-						icon: DollarSign,
-						label: 'No subscription',
-						desc: 'Pay only when matched',
-					},
-					{
-						icon: Users,
-						label: 'Quality leads',
-						desc: 'Pre-qualified consumers',
-					},
-					{
-						icon: CheckCircle2,
-						label: 'Peace Pact',
-						desc: 'Transparency from day one',
-					},
-				].map((item) => {
-					const Icon = item.icon
-					return (
-						<div key={item.label} className="bg-card p-5 text-center">
-							<Icon className="text-terracotta mx-auto mb-2 h-5 w-5" />
-							<div className="text-sm font-medium">{item.label}</div>
-							<div className="text-muted-foreground text-xs">{item.desc}</div>
-						</div>
-					)
-				})}
-			</div>
-
-			{/* Category Weighting */}
-			<div className="space-y-4">
-				{categories.map((cat, i) => {
-					const weight = weights[cat.id]
-					return (
-						<div
-							key={cat.id}
-							className="border-border bg-card card-institutional p-6"
-							style={{ animationDelay: `${(i + 1) * 100}ms` }}
-						>
-							<div className="mb-4 flex items-start justify-between">
-								<div>
-									<h3 className="font-medium">{cat.label}</h3>
-									<p className="text-muted-foreground text-xs">
-										{cat.description}
-									</p>
-								</div>
-								<span className="data-number border-terracotta bg-terracotta-tint text-terracotta flex h-8 w-8 items-center justify-center border text-sm font-bold">
-									{weight}
-								</span>
-							</div>
-
-							<div className="flex items-center gap-3">
-								<span className="text-muted-foreground text-xs">Low</span>
-								<input
-									type="range"
-									min={1}
-									max={5}
-									value={weight}
-									onChange={(e) => updateWeight(cat.id, Number(e.target.value))}
-									className="accent-foreground bg-border h-1 flex-1 cursor-pointer appearance-none"
-								/>
-								<span className="text-muted-foreground text-xs">High</span>
-							</div>
-						</div>
-					)
-				})}
-			</div>
+			<CategoryWeightSelector
+				categories={agentCategoryWeightOptions}
+				weights={weights}
+				onChange={updateWeight}
+			/>
 
 			{/* Navigation */}
 			<div className="mt-10 flex items-center justify-between">
