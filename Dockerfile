@@ -7,7 +7,7 @@ ENV TURBO_TELEMETRY_DISABLED=1
 ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0
 ENV PNPM_HOME=/tmp/pnpm
 ENV PATH="$PNPM_HOME:$PATH"
-RUN corepack enable && corepack install -g pnpm@10.29.3
+RUN corepack enable && corepack install -g pnpm@10.33.0
 
 FROM base AS pruner
 ARG APP_NAME
