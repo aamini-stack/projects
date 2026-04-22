@@ -211,7 +211,7 @@ function RootComponent() {
 					)}
 
 					{/* Main content */}
-					<main className="flex flex-1 flex-col">
+					<main className="flex flex-1 flex-col items-center">
 						<Outlet />
 					</main>
 

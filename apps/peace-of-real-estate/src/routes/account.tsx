@@ -202,179 +202,170 @@ function Account() {
 		: agentQuestionFlow.questions
 
 	return (
-		<div className="mx-auto flex w-full max-w-5xl flex-1 flex-col px-6 py-12">
-			{/* Header */}
-			<div className="mb-10 flex items-center gap-4">
-				<div className="border-border bg-secondary flex h-10 w-10 items-center justify-center border">
-					<User className="h-5 w-5" />
-				</div>
-				<div>
-					<div className="data-label mb-1">Account</div>
-					<h1 className="font-serif text-2xl font-normal tracking-tight">
-						{session.user.name ?? 'Your account'}
-					</h1>
-				</div>
-			</div>
-
-			<div className="grid gap-6 lg:grid-cols-[1fr_280px]">
-				{/* Main Content */}
-				<div className="space-y-6">
-					{/* Combined Profile Bar */}
-					<section className="border-border bg-card card-institutional p-8">
-						<div className="data-label mb-4">Profile</div>
-						<div className="grid gap-4 text-sm sm:grid-cols-3">
-							<div>
-								<p className="text-muted-foreground mb-1">Name</p>
-								<p className="font-medium">{session.user.name ?? 'Not set'}</p>
-							</div>
-							<div>
-								<p className="text-muted-foreground mb-1">Email</p>
-								<p className="font-medium">{session.user.email}</p>
-							</div>
-							<div>
-								<p className="text-muted-foreground mb-1">Role</p>
-								<p className="font-medium capitalize">{role}</p>
-							</div>
+		<div className="mx-auto max-w-3xl px-6 py-12">
+			<div className="space-y-6">
+				{/* Combined Profile Bar */}
+				<section className="border-border bg-card card-institutional p-8">
+					<div className="mb-6 flex items-center gap-4">
+						<div className="border-border bg-secondary flex h-12 w-12 items-center justify-center border">
+							<User className="h-6 w-6" />
 						</div>
+						<div>
+							<div className="data-label mb-1">Account</div>
+							<h1 className="font-serif text-2xl font-normal tracking-tight">
+								{session.user.name ?? 'Your account'}
+							</h1>
+						</div>
+					</div>
+					<div className="grid gap-4 text-sm sm:grid-cols-3">
+						<div>
+							<p className="text-muted-foreground mb-1">Name</p>
+							<p className="font-medium">{session.user.name ?? 'Not set'}</p>
+						</div>
+						<div>
+							<p className="text-muted-foreground mb-1">Email</p>
+							<p className="font-medium">{session.user.email}</p>
+						</div>
+						<div>
+							<p className="text-muted-foreground mb-1">Role</p>
+							<p className="font-medium capitalize">{role}</p>
+						</div>
+					</div>
 
-						{/* Agent Details */}
-						{!isConsumer && (
-							<div className="border-border mt-6 border-t pt-6">
-								<div className="grid gap-4 text-sm sm:grid-cols-2">
-									<div>
-										<p className="text-muted-foreground mb-1">
-											<Award className="mr-1 inline h-3.5 w-3.5" />
-											Experience
-										</p>
-										<p className="font-medium">
-											{agentProfile.experience || 'Not set'}
-										</p>
-									</div>
-									<div>
-										<p className="text-muted-foreground mb-1">
-											<MapPin className="mr-1 inline h-3.5 w-3.5" />
-											Zip Codes Served
-										</p>
-										<p className="font-medium">
-											{agentProfile.zipCodes || 'Not set'}
-										</p>
-									</div>
-								</div>
-								<div className="mt-4">
-									<p className="text-muted-foreground mb-2 text-sm">
-										<FileText className="mr-1 inline h-3.5 w-3.5" />
-										Services
-									</p>
-									<div className="flex flex-wrap gap-2">
-										{agentProfile.services.length > 0 ? (
-											agentProfile.services.map((s) => (
-												<span
-													key={s}
-													className="bg-terracotta-tint text-terracotta border-terracotta/20 border px-3 py-1 text-xs font-medium"
-												>
-													{s}
-												</span>
-											))
-										) : (
-											<span className="text-muted-foreground text-xs">
-												No services selected
-											</span>
-										)}
-									</div>
-								</div>
-							</div>
-						)}
-					</section>
-
-					{/* Match Preferences Card */}
-					<section className="border-border bg-card card-institutional p-8">
-						<div className="mb-6 flex items-center justify-between">
-							<div className="flex items-center gap-3">
-								<SlidersHorizontal className="text-muted-foreground h-5 w-5" />
+					{/* Agent Details */}
+					{!isConsumer && (
+						<div className="border-border mt-6 border-t pt-6">
+							<div className="grid gap-4 text-sm sm:grid-cols-2">
 								<div>
-									<div className="data-label">Match Preferences</div>
-									<p className="text-muted-foreground mt-1 text-sm">
-										Category weights determine how matches are ranked
+									<p className="text-muted-foreground mb-1">
+										<Award className="mr-1 inline h-3.5 w-3.5" />
+										Experience
+									</p>
+									<p className="font-medium">
+										{agentProfile.experience || 'Not set'}
+									</p>
+								</div>
+								<div>
+									<p className="text-muted-foreground mb-1">
+										<MapPin className="mr-1 inline h-3.5 w-3.5" />
+										Zip Codes Served
+									</p>
+									<p className="font-medium">
+										{agentProfile.zipCodes || 'Not set'}
 									</p>
 								</div>
 							</div>
-							<button
-								type="button"
-								onClick={() => setActiveModal('weights')}
-								className="text-muted-foreground hover:text-foreground inline-flex items-center gap-1 text-sm transition-colors"
-							>
-								<Pencil className="h-3.5 w-3.5" />
-								Edit
-							</button>
-						</div>
-
-						<div className="space-y-4">
-							{(isConsumer
-								? categoryWeightOptions
-								: agentCategoryWeightOptions
-							).map((cat) => {
-								const weight = weights[cat.id] ?? 3
-								const Icon = cat.icon
-								return (
-									<div
-										key={cat.id}
-										className="flex items-center justify-between border-b border-dashed pb-4 last:border-0 last:pb-0"
-									>
-										<div className="flex items-center gap-3">
-											<Icon className={`h-5 w-5 text-${cat.color}`} />
-											<div>
-												<p className="text-sm font-medium">{cat.label}</p>
-												<p className="text-muted-foreground text-xs">
-													{cat.description}
-												</p>
-											</div>
-										</div>
-										<div className="flex items-center gap-3">
-											<div className="bg-border h-1.5 w-24 overflow-hidden">
-												<div
-													className={`h-full bg-${cat.color}`}
-													style={{
-														width: `${(weight / 5) * 100}%`,
-													}}
-												/>
-											</div>
+							<div className="mt-4">
+								<p className="text-muted-foreground mb-2 text-sm">
+									<FileText className="mr-1 inline h-3.5 w-3.5" />
+									Services
+								</p>
+								<div className="flex flex-wrap gap-2">
+									{agentProfile.services.length > 0 ? (
+										agentProfile.services.map((s) => (
 											<span
-												className={`data-number text-${cat.color} text-sm font-bold`}
+												key={s}
+												className="bg-terracotta-tint text-terracotta border-terracotta/20 border px-3 py-1 text-xs font-medium"
 											>
-												{weight}
+												{s}
 											</span>
-										</div>
-									</div>
-								)
-							})}
-						</div>
-					</section>
-
-					{/* Questionnaire Card */}
-					<section className="border-border bg-card card-institutional p-8">
-						<div className="mb-6 flex items-center justify-between">
-							<div className="flex items-center gap-3">
-								<ListChecks className="text-muted-foreground h-5 w-5" />
-								<div>
-									<div className="data-label">Questionnaire</div>
-									<p className="text-muted-foreground mt-1 text-sm">
-										Review and update your responses
-									</p>
+										))
+									) : (
+										<span className="text-muted-foreground text-xs">
+											No services selected
+										</span>
+									)}
 								</div>
 							</div>
 						</div>
+					)}
+				</section>
 
-						<CollapsibleQuestionnaire
-							questions={questions}
-							answers={answers}
-							isConsumer={isConsumer}
-							onSave={handleAnswersUpdate}
-						/>
-					</section>
-				</div>
+				{/* Match Preferences Card */}
+				<section className="border-border bg-card card-institutional p-8">
+					<div className="mb-6 flex items-center justify-between">
+						<div className="flex items-center gap-3">
+							<SlidersHorizontal className="text-muted-foreground h-5 w-5" />
+							<div>
+								<div className="data-label">Match Preferences</div>
+								<p className="text-muted-foreground mt-1 text-sm">
+									Category weights determine how matches are ranked
+								</p>
+							</div>
+						</div>
+						<button
+							type="button"
+							onClick={() => setActiveModal('weights')}
+							className="text-muted-foreground hover:text-foreground inline-flex items-center gap-1 text-sm transition-colors"
+						>
+							<Pencil className="h-3.5 w-3.5" />
+							Edit
+						</button>
+					</div>
 
-				{/* Sidebar */}
-				<aside className="space-y-6">{/* Empty sidebar */}</aside>
+					<div className="space-y-4">
+						{(isConsumer
+							? categoryWeightOptions
+							: agentCategoryWeightOptions
+						).map((cat) => {
+							const weight = weights[cat.id] ?? 3
+							const Icon = cat.icon
+							return (
+								<div
+									key={cat.id}
+									className="flex items-center justify-between border-b border-dashed pb-4 last:border-0 last:pb-0"
+								>
+									<div className="flex items-center gap-3">
+										<Icon className={`h-5 w-5 text-${cat.color}`} />
+										<div>
+											<p className="text-sm font-medium">{cat.label}</p>
+											<p className="text-muted-foreground text-xs">
+												{cat.description}
+											</p>
+										</div>
+									</div>
+									<div className="flex items-center gap-3">
+										<div className="bg-border h-1.5 w-24 overflow-hidden">
+											<div
+												className={`h-full bg-${cat.color}`}
+												style={{
+													width: `${(weight / 5) * 100}%`,
+												}}
+											/>
+										</div>
+										<span
+											className={`data-number text-${cat.color} text-sm font-bold`}
+										>
+											{weight}
+										</span>
+									</div>
+								</div>
+							)
+						})}
+					</div>
+				</section>
+
+				{/* Questionnaire Card */}
+				<section className="border-border bg-card card-institutional p-8">
+					<div className="mb-6 flex items-center justify-between">
+						<div className="flex items-center gap-3">
+							<ListChecks className="text-muted-foreground h-5 w-5" />
+							<div>
+								<div className="data-label">Questionnaire</div>
+								<p className="text-muted-foreground mt-1 text-sm">
+									Review and update your responses
+								</p>
+							</div>
+						</div>
+					</div>
+
+					<CollapsibleQuestionnaire
+						questions={questions}
+						answers={answers}
+						isConsumer={isConsumer}
+						onSave={handleAnswersUpdate}
+					/>
+				</section>
 			</div>
 
 			{/* Edit Weights Modal */}
