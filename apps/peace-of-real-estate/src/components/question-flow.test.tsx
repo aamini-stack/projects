@@ -194,7 +194,7 @@ test('question flow shows continue when user goes back to answered question', as
 	await expect.element(screen.getByText('Question 3 of 3')).toBeVisible()
 })
 
-test('clicking selected multi-select option does nothing', async () => {
+test('clicking selected multi-select option deselects it', async () => {
 	const screen = await render(
 		<QuestionFlow
 			backTo="/"
@@ -226,9 +226,8 @@ test('clicking selected multi-select option does nothing', async () => {
 	await userEvent.click(screen.getByRole('button', { name: /clarity/i }))
 	await expect.element(screen.getByText('1 of 2 selected')).toBeVisible()
 	await userEvent.click(screen.getByRole('button', { name: /clarity/i }))
-	await expect.element(screen.getByText('1 of 2 selected')).toBeVisible()
+	await expect.element(screen.getByText('0 of 2 selected')).toBeVisible()
 	await expect
-		.element(screen.getByRole('link', { name: /finish/i }))
-		.toBeVisible()
-	await expect.element(screen.getByText('100%')).toBeVisible()
+		.element(screen.getByRole('button', { name: /finish/i }))
+		.toBeDisabled()
 })

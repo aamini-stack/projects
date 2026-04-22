@@ -60,11 +60,9 @@ export const Route = createRootRouteWithContext<{
 })
 
 function UserDropdown({
-	session,
 	userInitials,
 	currentPath,
 }: {
-	session: { user: { name: string; email: string } }
 	userInitials: string | null
 	currentPath: string
 }) {
@@ -105,14 +103,8 @@ function UserDropdown({
 				<span className="border-border text-foreground flex h-9 w-9 items-center justify-center border text-sm font-semibold">
 					{userInitials ? userInitials : <User className="h-5 w-5" />}
 				</span>
-				<div className="hidden text-left md:block">
-					<p className="text-sm leading-none font-medium">
-						{session.user.name}
-					</p>
-					<p className="text-muted-foreground mt-1 text-xs">Account</p>
-				</div>
 				<ChevronDown
-					className={`text-muted-foreground hidden h-3 w-3 transition-transform md:block ${isOpen ? 'rotate-180' : ''}`}
+					className={`text-muted-foreground h-3 w-3 transition-transform ${isOpen ? 'rotate-180' : ''}`}
 				/>
 			</button>
 
@@ -196,24 +188,10 @@ function RootComponent() {
 
 								<div className="flex items-center gap-1">
 									{session ? (
-										<>
-											<Link
-												to="/match-activity"
-												className={`hidden items-center gap-2 px-4 py-2 text-sm font-medium transition-colors md:inline-flex ${
-													currentPath === '/match-activity'
-														? 'text-foreground'
-														: 'text-muted-foreground hover:text-foreground'
-												}`}
-											>
-												<ArrowRightLeft className="h-4 w-4" />
-												Matches
-											</Link>
-											<UserDropdown
-												session={session}
-												userInitials={userInitials}
-												currentPath={currentPath}
-											/>
-										</>
+										<UserDropdown
+											userInitials={userInitials}
+											currentPath={currentPath}
+										/>
 									) : (
 										<Link
 											to="/login"
@@ -241,17 +219,7 @@ function RootComponent() {
 					{!isBetaPage && (
 						<footer className="border-border bg-background border-t">
 							<div className="mx-auto max-w-7xl px-6 py-8">
-								<div className="flex flex-col items-center justify-between gap-4 md:flex-row">
-									<div className="flex items-center gap-2">
-										<img
-											src="/logomark-fullColor.svg"
-											alt=""
-											className="h-5 w-5"
-										/>
-										<span className="font-serif text-sm">
-											Peace of Real Estate
-										</span>
-									</div>
+								<div className="flex flex-col items-center justify-center gap-4">
 									<p className="text-muted-foreground text-xs">
 										© 2026 Peace of Real Estate. All rights reserved.
 									</p>

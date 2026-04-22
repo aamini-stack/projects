@@ -2,19 +2,14 @@ import { createFileRoute } from '@tanstack/react-router'
 import {
 	ArrowRightLeft,
 	MapPin,
-	Calendar,
 	Star,
-	TrendingUp,
 	MessageCircle,
 	Shield,
-	CheckCircle2,
-	Award,
 	Zap,
 	Users,
-	Clock,
 	Phone,
 	Mail,
-	Sparkles,
+	Award,
 } from 'lucide-react'
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
@@ -80,36 +75,6 @@ const categoryColors: Record<
 		bg: 'bg-[var(--ochre-tint)]',
 		text: 'text-[var(--ochre)]',
 		bar: 'bg-[var(--ochre)]',
-	},
-}
-
-const statusConfig: Record<
-	MatchStatus,
-	{ label: string; color: string; bg: string; icon: typeof CheckCircle2 }
-> = {
-	new: {
-		label: 'New Match',
-		color: 'text-[var(--blue-cyan)]',
-		bg: 'bg-[var(--blue-cyan-tint)]',
-		icon: Sparkles,
-	},
-	pending: {
-		label: 'Pending',
-		color: 'text-[var(--ochre)]',
-		bg: 'bg-[var(--ochre-tint)]',
-		icon: Clock,
-	},
-	accepted: {
-		label: 'Accepted',
-		color: 'text-[var(--olive)]',
-		bg: 'bg-[var(--olive-tint)]',
-		icon: CheckCircle2,
-	},
-	completed: {
-		label: 'Completed',
-		color: 'text-[var(--muted-foreground)]',
-		bg: 'bg-[var(--muted)]',
-		icon: Award,
 	},
 }
 
@@ -197,8 +162,6 @@ function MatchCard({
 	isExpanded: boolean
 	onToggle: () => void
 }) {
-	const status = statusConfig[match.status]
-	const StatusIcon = status.icon
 	const initials = match.name
 		.split(' ')
 		.map((n) => n[0])
@@ -257,10 +220,6 @@ function MatchCard({
 									{match.experience}
 								</span>
 							)}
-							<span className="flex items-center gap-1">
-								<Calendar className="h-3.5 w-3.5" />
-								{match.date}
-							</span>
 						</div>
 
 						{/* Zip Codes */}
@@ -280,12 +239,6 @@ function MatchCard({
 					{/* Fit Score & Status */}
 					<div className="flex flex-col items-end gap-2">
 						<FitScoreRing score={match.fitScore} />
-						<div
-							className={`${status.bg} ${status.color} flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium`}
-						>
-							<StatusIcon className="h-3 w-3" />
-							{status.label}
-						</div>
 					</div>
 				</div>
 
@@ -429,32 +382,6 @@ function MatchCard({
 	)
 }
 
-function StatCard({
-	icon: Icon,
-	label,
-	value,
-	color,
-}: {
-	icon: typeof TrendingUp
-	label: string
-	value: string
-	color: string
-}) {
-	return (
-		<div className="bg-card card-institutional p-5">
-			<div className="flex items-center gap-3">
-				<div className={`flex h-10 w-10 items-center justify-center ${color}`}>
-					<Icon className="h-5 w-5" />
-				</div>
-				<div>
-					<div className="data-number text-xl font-bold">{value}</div>
-					<div className="text-muted-foreground text-xs">{label}</div>
-				</div>
-			</div>
-		</div>
-	)
-}
-
 // ─── Main Component ──────────────────────────────────────────────────
 
 function MatchActivity() {
@@ -468,15 +395,6 @@ function MatchActivity() {
 
 	const filteredMatches =
 		filter === 'all' ? matches : matches.filter((m) => m.status === filter)
-
-	const stats = {
-		total: matches.length,
-		new: matches.filter((m) => m.status === 'new').length,
-		avgFit: Math.round(
-			matches.reduce((acc, m) => acc + m.fitScore, 0) / (matches.length || 1),
-		),
-		accepted: matches.filter((m) => m.status === 'accepted').length,
-	}
 
 	return (
 		<div className="mx-auto max-w-5xl px-6 py-12">
@@ -497,34 +415,6 @@ function MatchActivity() {
 					Track your introductions, review compatibility scores, and manage your
 					agent matches all in one place.
 				</p>
-			</div>
-
-			{/* Stats Overview */}
-			<div className="mb-10 grid grid-cols-2 gap-4 md:grid-cols-4">
-				<StatCard
-					icon={Users}
-					label="Total Matches"
-					value={stats.total.toString()}
-					color="bg-[var(--blue-cyan-tint)] text-[var(--blue-cyan)]"
-				/>
-				<StatCard
-					icon={Sparkles}
-					label="New Today"
-					value={stats.new.toString()}
-					color="bg-[var(--ochre-tint)] text-[var(--ochre)]"
-				/>
-				<StatCard
-					icon={TrendingUp}
-					label="Avg. Fit Score"
-					value={`${stats.avgFit}%`}
-					color="bg-[var(--olive-tint)] text-[var(--olive)]"
-				/>
-				<StatCard
-					icon={CheckCircle2}
-					label="Accepted"
-					value={stats.accepted.toString()}
-					color="bg-[var(--terracotta-tint)] text-[var(--terracotta)]"
-				/>
 			</div>
 
 			{/* Filters */}
