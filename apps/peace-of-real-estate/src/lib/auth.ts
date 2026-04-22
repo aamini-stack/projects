@@ -18,7 +18,6 @@ export function getAuth() {
 					'localhost:*',
 					'peace-of-real-estate-production.up.railway.app',
 					'peace-of-real-estate-*.up.railway.app',
-					ENV.BETTER_AUTH_URL,
 				],
 				protocol: 'auto',
 				fallback: 'http://localhost:3000',
