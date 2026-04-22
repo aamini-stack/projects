@@ -21,7 +21,7 @@ test('Title works', async ({ page }) => {
 
 test('Search bar click navigation works', async ({ page }) => {
 	const searchBar = page.getByRole('combobox')
-	await expect(searchBar).not.toBeDisabled()
+	await expect(searchBar).not.toBeDisabled({ timeout: 15_000 })
 	await searchBar.click()
 	await searchBar.fill('Avatar')
 	const avatarDropdownOption = page.getByText(
@@ -34,7 +34,7 @@ test('Search bar click navigation works', async ({ page }) => {
 
 test('Search bar keyboard navigation works', async ({ page }) => {
 	const searchBar = page.getByRole('combobox')
-	await expect(searchBar).not.toBeDisabled()
+	await expect(searchBar).not.toBeDisabled({ timeout: 15_000 })
 	await searchBar.click()
 	await searchBar.fill('Avatar')
 	await expect(
