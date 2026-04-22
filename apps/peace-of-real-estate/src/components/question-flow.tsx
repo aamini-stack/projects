@@ -192,14 +192,13 @@ export function QuestionFlow({
 				handleNext()
 			}, 250)
 		}
+		return
 	}
 
 	const isComplete = currentQuestion === questions.length - 1 && canProceed
 	const isLastQuestion = currentQuestion === questions.length - 1
-	const isAutoAdvancing = autoAdvanceTimer.current !== null
 	const showContinueButton =
 		!isLastQuestion &&
-		!isAutoAdvancing &&
 		(isMultipleChoice || currentQuestion < answeredQuestionCount)
 
 	return (
