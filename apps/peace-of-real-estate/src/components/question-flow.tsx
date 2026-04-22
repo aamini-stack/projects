@@ -50,7 +50,9 @@ export function QuestionFlow({
 	const [answers, setAnswers] =
 		useState<Record<string, AnswerValue>>(initialAnswers)
 	const [justSelected, setJustSelected] = useState<number | null>(null)
+	const [isTransitioning, setIsTransitioning] = useState(false)
 	const autoAdvanceTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+	const transitionTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
 	const question = questions[currentQuestion]!
 	const progress = ((currentQuestion + 1) / questions.length) * 100
@@ -83,7 +85,14 @@ export function QuestionFlow({
 		}
 
 		if (currentQuestion < questions.length - 1) {
-			setCurrentQuestion((prev) => prev + 1)
+			setIsTransitioning(true)
+			if (transitionTimer.current) {
+				clearTimeout(transitionTimer.current)
+			}
+			transitionTimer.current = setTimeout(() => {
+				setCurrentQuestion((prev) => prev + 1)
+				setIsTransitioning(false)
+			}, 250)
 		}
 	}
 
@@ -102,6 +111,9 @@ export function QuestionFlow({
 			if (autoAdvanceTimer.current) {
 				clearTimeout(autoAdvanceTimer.current)
 			}
+			if (transitionTimer.current) {
+				clearTimeout(transitionTimer.current)
+			}
 		}
 	}, [])
 
@@ -116,8 +128,16 @@ export function QuestionFlow({
 	}
 
 	const toggleOption = (optionIndex: number) => {
+		if (isTransitioning) return
+
 		if (!isMultipleChoice) {
 			if (answer === optionIndex) {
+				updateAnswers((prev) => {
+					const next = { ...prev }
+					delete next[question.id]
+					return next
+				})
+				setJustSelected(null)
 				return
 			}
 
@@ -127,9 +147,10 @@ export function QuestionFlow({
 				if (autoAdvanceTimer.current) {
 					clearTimeout(autoAdvanceTimer.current)
 				}
+				setIsTransitioning(true)
 				autoAdvanceTimer.current = setTimeout(() => {
 					handleNext()
-				}, 600)
+				}, 250)
 			}
 			return
 		}
@@ -138,6 +159,17 @@ export function QuestionFlow({
 		const isSelected = existing.includes(optionIndex)
 
 		if (isSelected) {
+			const next = existing.filter((i) => i !== optionIndex)
+			updateAnswers((prev) => {
+				const updated = { ...prev }
+				if (next.length > 0) {
+					updated[question.id] = next
+				} else {
+					delete updated[question.id]
+				}
+				return updated
+			})
+			setJustSelected(null)
 			return
 		}
 
@@ -155,9 +187,10 @@ export function QuestionFlow({
 			if (autoAdvanceTimer.current) {
 				clearTimeout(autoAdvanceTimer.current)
 			}
+			setIsTransitioning(true)
 			autoAdvanceTimer.current = setTimeout(() => {
 				handleNext()
-			}, 600)
+			}, 250)
 		}
 	}
 
@@ -237,8 +270,8 @@ export function QuestionFlow({
 						<button
 							type="button"
 							onClick={handleNext}
-							disabled={!canProceed}
-							className={`${canProceed ? `${accentClassName} text-primary-foreground hover:opacity-90` : 'bg-muted text-muted-foreground opacity-70'} inline-flex items-center gap-2 px-4 py-2 text-sm font-medium transition-all disabled:cursor-not-allowed`}
+							disabled={!canProceed || isTransitioning}
+							className={`${canProceed && !isTransitioning ? `${accentClassName} text-primary-foreground hover:opacity-90` : 'bg-muted text-muted-foreground opacity-70'} inline-flex items-center gap-2 px-4 py-2 text-sm font-medium transition-all disabled:cursor-not-allowed`}
 						>
 							Continue
 							<ArrowRight className="h-4 w-4" />
@@ -290,7 +323,8 @@ export function QuestionFlow({
 									key={option}
 									type="button"
 									onClick={() => toggleOption(optionIndex)}
-									className={`flex w-full items-center gap-4 border p-4 text-left transition-all duration-200 ${
+									disabled={isTransitioning}
+									className={`flex w-full items-center gap-4 border p-4 text-left transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50 ${
 										isSelected
 											? `border-current ${accentTextClassName} ${accentTintClassName}`
 											: `border-border ${accentHoverBorderClassName} hover:bg-secondary`

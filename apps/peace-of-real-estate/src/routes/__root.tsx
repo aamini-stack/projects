@@ -112,7 +112,7 @@ function UserDropdown({
 					<p className="text-muted-foreground mt-1 text-xs">Account</p>
 				</div>
 				<ChevronDown
-					className={`text-muted-foreground hidden h-3 w-3 transition-transform md:block ${isOpen ? 'rotate-180' : ''}`}
+					className={`text-muted-foreground h-3 w-3 transition-transform ${isOpen ? 'rotate-180' : ''}`}
 				/>
 			</button>
 
@@ -241,17 +241,7 @@ function RootComponent() {
 					{!isBetaPage && (
 						<footer className="border-border bg-background border-t">
 							<div className="mx-auto max-w-7xl px-6 py-8">
-								<div className="flex flex-col items-center justify-between gap-4 md:flex-row">
-									<div className="flex items-center gap-2">
-										<img
-											src="/logomark-fullColor.svg"
-											alt=""
-											className="h-5 w-5"
-										/>
-										<span className="font-serif text-sm">
-											Peace of Real Estate
-										</span>
-									</div>
+								<div className="flex flex-col items-center justify-center gap-4">
 									<p className="text-muted-foreground text-xs">
 										© 2026 Peace of Real Estate. All rights reserved.
 									</p>
