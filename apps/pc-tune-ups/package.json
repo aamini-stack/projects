@@ -9,7 +9,7 @@
 	"scripts": {
 		"build": "vite build",
 		"dev": "vite dev",
-		"serve": "vite preview",
+		"preview": "vite preview",
 		"start": "node .output/server/index.mjs",
 		"typecheck": "tsc --noEmit",
 		"lint": "oxlint --type-aware --max-warnings=0",
@@ -20,7 +20,7 @@
 		"e2e": "node --experimental-strip-types ../../scripts/src/aamini.ts e2e pc-tune-ups",
 		"e2e:staging": "BASE_URL=https://pc-tune-ups.ariaamini.com pnpm playwright test",
 		"e2e:update": "node --experimental-strip-types ../../scripts/src/aamini.ts e2e pc-tune-ups --update-snapshots",
-		"report": "playwright show-report",
+		"report": "playwright show-report .playwright/report",
 		"verify": "turbo run build test typecheck"
 	},
 	"dependencies": {

@@ -331,7 +331,7 @@ export function QuestionFlow({
 									type="button"
 									onClick={() => toggleOption(optionIndex)}
 									disabled={isTransitioning}
-									className={`flex w-full items-center gap-4 border p-4 text-left transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50 ${
+									className={`flex w-full items-center gap-4 border p-4 text-left transition-all duration-200 disabled:cursor-default disabled:opacity-50 ${
 										isSelected
 											? `border-current ${accentTextClassName} ${accentTintClassName}`
 											: `border-border ${accentHoverBorderClassName} hover:bg-secondary`

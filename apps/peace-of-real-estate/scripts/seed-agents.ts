@@ -1,4 +1,10 @@
 import 'varlock/auto-load'
+import {
+	CreateBucketCommand,
+	HeadBucketCommand,
+	PutObjectCommand,
+	S3Client,
+} from '@aws-sdk/client-s3'
 import { getDb } from '../src/db/connection'
 import {
 	user,
@@ -9,8 +15,6 @@ import {
 	consumers,
 	consumerQuestionnaires,
 } from '../src/db/tables'
-import { writeFile } from 'fs/promises'
-import { join } from 'path'
 
 // Hardcoded seed data for deterministic tests
 const SEED_AGENTS = [
@@ -496,7 +500,43 @@ const SEED_AGENTS = [
 	},
 ]
 
-async function downloadPhoto(agentId: string, index: number): Promise<void> {
+function requireEnv(name: string): string {
+	const value = process.env[name]
+	if (!value) {
+		throw new Error(`Missing ${name}`)
+	}
+	return value
+}
+
+const avatarBucket = requireEnv('AVATAR_BUCKET')
+const avatarBaseUrl = requireEnv('AVATAR_BASE_URL')
+const storageClient = new S3Client({
+	region: process.env.AWS_REGION ?? 'auto',
+	endpoint: requireEnv('AWS_ENDPOINT_URL'),
+	credentials: {
+		accessKeyId: requireEnv('AWS_ACCESS_KEY_ID'),
+		secretAccessKey: requireEnv('AWS_SECRET_ACCESS_KEY'),
+	},
+	forcePathStyle: true,
+})
+
+async function ensureAvatarBucket(): Promise<void> {
+	try {
+		await storageClient.send(
+			new HeadBucketCommand({
+				Bucket: avatarBucket,
+			}),
+		)
+	} catch {
+		await storageClient.send(
+			new CreateBucketCommand({
+				Bucket: avatarBucket,
+			}),
+		)
+	}
+}
+
+async function uploadPhoto(agentId: string, index: number): Promise<string> {
 	const photoUrl = `https://i.pravatar.cc/300?img=${(index % 70) + 1}`
 	const response = await fetch(photoUrl)
 	if (!response.ok) {
@@ -505,15 +545,27 @@ async function downloadPhoto(agentId: string, index: number): Promise<void> {
 		)
 	}
 	const buffer = await response.arrayBuffer()
-	const filename = `${agentId}.jpg`
-	const filepath = join(process.cwd(), 'public', 'agents', filename)
-	await writeFile(filepath, Buffer.from(buffer))
+	const key = `agents/${agentId}.jpg`
+
+	await storageClient.send(
+		new PutObjectCommand({
+			Bucket: avatarBucket,
+			Key: key,
+			Body: Buffer.from(buffer),
+			ContentType: 'image/jpeg',
+			CacheControl: 'public, max-age=31536000, immutable',
+		}),
+	)
+
+	return new URL(key, avatarBaseUrl).toString()
 }
 
 async function seedAgents() {
 	const db = getDb()
 	const now = new Date()
 	const count = SEED_AGENTS.length
+
+	await ensureAvatarBucket()
 
 	console.log(`Clearing existing data...`)
 	await db.delete(consumerQuestionnaires)
@@ -537,7 +589,7 @@ async function seedAgents() {
 			name: agent.name,
 			email: `${agent.name.toLowerCase().replace(/\s+/g, '.')}@example.com`,
 			emailVerified: true,
-			image: null,
+			image: await uploadPhoto(agentId, agent.index),
 			createdAt: now,
 			updatedAt: now,
 		})
@@ -564,20 +616,6 @@ async function seedAgents() {
 			createdAt: now,
 			updatedAt: now,
 		})
-	}
-
-	// Download photos (only if they don't exist)
-	console.log('Downloading photos...')
-	for (let i = 0; i < count; i++) {
-		const agent = SEED_AGENTS[i]
-		if (!agent) continue
-		const agentId = `11111111-1111-1111-1111-${String(agent.index).padStart(12, '0')}`
-		try {
-			await downloadPhoto(agentId, i)
-			console.log(`  Photo ${i + 1}/${count} downloaded`)
-		} catch (err) {
-			console.log(`  Photo ${i + 1}/${count} failed: ${String(err)}`)
-		}
 	}
 
 	console.log(`Successfully seeded ${count} agents!`)

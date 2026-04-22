@@ -56,6 +56,7 @@ test('aamini e2e', () => {
 
 		Options:
 		  -d, --docker        Run local e2e in docker compose
+		  --local             Alias for --docker when running local e2e
 		  -p, --preview <pr>  Run e2e against preview deployment
 		  -s, --staging       Run e2e against staging
 		  -P, --production    Run e2e against production

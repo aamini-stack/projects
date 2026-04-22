@@ -4,6 +4,7 @@
 	"version": "0.0.0",
 	"type": "module",
 	"scripts": {
+		"aamini": "node --experimental-strip-types scripts/src/aamini.ts",
 		"build": "turbo build",
 		"format": "oxfmt --check",
 		"format:fix": "oxfmt",
@@ -12,10 +13,10 @@
 		"test": "turbo run test",
 		"test:unit": "turbo run test:unit",
 		"test:integration": "turbo run test:integration",
-		"e2e": "turbo run --continue=dependencies-successful e2e --concurrency 2",
-		"e2e:ci": "turbo run --continue=dependencies-successful e2e:ci",
-		"e2e:staging": "turbo run --continue=dependencies-successful e2e:staging",
-		"e2e:update": "turbo run --continue=dependencies-successful e2e:update",
+		"e2e": "turbo run --continue=dependencies-successful e2e --concurrency 1",
+		"e2e:ci": "turbo run --continue=dependencies-successful e2e:ci --concurrency 1",
+		"e2e:staging": "turbo run --continue=dependencies-successful e2e:staging --concurrency 1",
+		"e2e:update": "turbo run --continue=dependencies-successful e2e:update --concurrency 1",
 		"verify": "turbo run --continue=dependencies-successful build lint format test typecheck",
 		"verify:ci": "turbo run --continue=dependencies-successful build lint format test typecheck e2e:ci"
 	},

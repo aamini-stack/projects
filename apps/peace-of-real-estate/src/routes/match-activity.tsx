@@ -166,6 +166,8 @@ function MatchCard({
 		.split(' ')
 		.map((n) => n[0])
 		.join('')
+	const [avatarFailed, setAvatarFailed] = useState(false)
+	const showAvatar = Boolean(match.avatar) && !avatarFailed
 
 	return (
 		<div
@@ -186,17 +188,19 @@ function MatchCard({
 			<div className="p-6 md:p-8">
 				<div className="flex items-start gap-5">
 					{/* Avatar */}
-					<img
-						src={match.avatar || ''}
-						alt={match.name}
-						className="h-14 w-14 shrink-0 border border-[var(--blue-cyan)] object-cover"
-						loading="lazy"
-						onError={(e) => {
-							const target = e.target as HTMLImageElement
-							target.style.display = 'none'
-							target.parentElement!.innerHTML = `<div class="flex h-14 w-14 shrink-0 items-center justify-center border border-[var(--blue-cyan)] bg-[var(--blue-cyan-tint)] text-lg font-bold text-[var(--blue-cyan)]">${initials}</div>`
-						}}
-					/>
+					{showAvatar ? (
+						<img
+							src={match.avatar}
+							alt={match.name}
+							className="h-14 w-14 shrink-0 border border-[var(--blue-cyan)] object-cover"
+							loading="lazy"
+							onError={() => setAvatarFailed(true)}
+						/>
+					) : (
+						<div className="flex h-14 w-14 shrink-0 items-center justify-center border border-[var(--blue-cyan)] bg-[var(--blue-cyan-tint)] text-lg font-bold text-[var(--blue-cyan)]">
+							{initials}
+						</div>
+					)}
 
 					{/* Info */}
 					<div className="min-w-0 flex-1">

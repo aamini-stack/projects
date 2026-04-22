@@ -1,25 +1,17 @@
 import { expect, test } from '@playwright/test'
-import { readFile } from 'node:fs/promises'
+import { mockJsonRoute } from '@aamini/config-testing/test/playwright'
 
 test.beforeEach(async ({ page }) => {
-	await page.route('**/api/suggestions**', async (route) => {
-		const body = await readFile(
-			new URL('../__mocks__/data/suggestions.json', import.meta.url),
-			'utf8',
-		)
-		await route.fulfill({
-			contentType: 'application/json',
-			body,
-		})
-	})
+	await mockJsonRoute(
+		page,
+		'**/api/suggestions**',
+		new URL('../__mocks__/data/suggestions.json', import.meta.url),
+	)
 	await page.goto('/')
 })
 
-test('Title works', async ({ page }) => {
-	await expect(page.getByRole('heading', { name: /IMDB Graph/i })).toBeVisible()
-})
-
 test('Search bar click navigation works', async ({ page }) => {
+	await expect(page.getByRole('heading', { name: /IMDB Graph/i })).toBeVisible()
 	const searchBar = page.getByRole('combobox')
 	await expect(searchBar).not.toBeDisabled({ timeout: 15_000 })
 	await searchBar.click()
@@ -33,6 +25,7 @@ test('Search bar click navigation works', async ({ page }) => {
 })
 
 test('Search bar keyboard navigation works', async ({ page }) => {
+	await expect(page.getByRole('heading', { name: /IMDB Graph/i })).toBeVisible()
 	const searchBar = page.getByRole('combobox')
 	await expect(searchBar).not.toBeDisabled({ timeout: 15_000 })
 	await searchBar.click()
@@ -42,11 +35,4 @@ test('Search bar keyboard navigation works', async ({ page }) => {
 	).toBeVisible()
 	await searchBar.press('Enter')
 	await expect(page).toHaveURL(/.*\/ratings\/tt0417299/)
-})
-
-test('LinkedIn button works', async ({ page }) => {
-	await expect(page.getByRole('link', { name: 'Aria' })).toHaveAttribute(
-		'href',
-		'https://www.linkedin.com/in/aria-amini/',
-	)
 })

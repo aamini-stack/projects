@@ -22,7 +22,7 @@ export function FlowPageShell({
 	children,
 }: FlowPageShellProps) {
 	return (
-		<div className="mx-auto w-full max-w-[42rem] px-6 pt-4 pb-16 md:pb-24">
+		<div className="mx-auto w-full max-w-[40rem] px-6 pt-4 pb-16 md:pb-24">
 			<nav aria-label="Breadcrumb" className="mb-4">
 				<ol className="flex items-center gap-2 text-sm">
 					<li>

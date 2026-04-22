@@ -11,6 +11,18 @@ async function gotoHome(page: Page) {
 }
 
 export const test = base.extend<{ app: AppFixture }>({
+	page: async ({ page, baseURL }, use) => {
+		const url = new URL(baseURL || 'http://localhost:3000')
+		await page.context().addCookies([
+			{
+				name: 'beta_auth',
+				value: 'true',
+				path: '/',
+				domain: url.hostname,
+			},
+		])
+		await use(page)
+	},
 	app: async ({ page }, use) => {
 		await use({
 			gotoHome: () => gotoHome(page),

@@ -11,6 +11,7 @@ import {
 	redirect,
 	useRouterState,
 } from '@tanstack/react-router'
+import { NotFoundComponent } from '@/components/not-found'
 import posthog from 'posthog-js'
 import { ArrowRightLeft, User, LogOut, ChevronDown } from 'lucide-react'
 import { useState, useEffect, useRef } from 'react'
@@ -57,6 +58,7 @@ export const Route = createRootRouteWithContext<{
 		}
 	},
 	component: RootComponent,
+	notFoundComponent: NotFoundComponent,
 })
 
 function UserDropdown({

@@ -131,7 +131,7 @@ const getAgentMatchesServer = createServerFn({ method: 'GET' }).handler(
 					satisfaction: Number((Math.random() * 0.5 + 4.5).toFixed(1)),
 				},
 				isTopMatch: index === 0,
-				avatar: `/agents/${row.agent.id}.jpg`,
+				...(row.user.image ? { avatar: row.user.image } : {}),
 			}
 		})
 	},
