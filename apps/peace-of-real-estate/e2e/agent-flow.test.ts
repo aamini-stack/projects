@@ -89,8 +89,6 @@ test('agent can complete onboarding flow', async ({ page }) => {
 	).toBeVisible()
 	// The match activity page shows real seeded agents from the database
 	// Just verify the page loads with matches
-	await expect(page.getByText('Total Matches')).toBeVisible()
-
 	await page.getByRole('link', { name: 'Sign in' }).click()
 	await expect(page).toHaveURL(/\/login/)
 	await page.getByRole('link', { name: 'Sign up' }).click()

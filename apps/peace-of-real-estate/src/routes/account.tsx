@@ -202,7 +202,7 @@ function Account() {
 		: agentQuestionFlow.questions
 
 	return (
-		<div className="mx-auto max-w-3xl px-6 py-12">
+		<div className="mx-auto w-full max-w-3xl px-6 py-12">
 			<div className="space-y-6">
 				{/* Combined Profile Bar */}
 				<section className="border-border bg-card card-institutional p-8">
@@ -217,11 +217,7 @@ function Account() {
 							</h1>
 						</div>
 					</div>
-					<div className="grid gap-4 text-sm sm:grid-cols-3">
-						<div>
-							<p className="text-muted-foreground mb-1">Name</p>
-							<p className="font-medium">{session.user.name ?? 'Not set'}</p>
-						</div>
+					<div className="grid gap-4 text-sm sm:grid-cols-2">
 						<div>
 							<p className="text-muted-foreground mb-1">Email</p>
 							<p className="font-medium">{session.user.email}</p>
@@ -509,7 +505,7 @@ function CollapsibleQuestionnaire({
 					return (
 						<div
 							key={category}
-							className="border-border overflow-hidden rounded-lg border"
+							className="border-border w-full overflow-hidden rounded-lg border"
 						>
 							<button
 								type="button"
@@ -541,7 +537,7 @@ function CollapsibleQuestionnaire({
 										return (
 											<div
 												key={q.id}
-												className="border-border overflow-hidden border-b last:border-b-0"
+												className="border-border w-full overflow-hidden border-b last:border-b-0"
 											>
 												<button
 													type="button"
@@ -564,7 +560,7 @@ function CollapsibleQuestionnaire({
 												</button>
 
 												{isOpen && (
-													<div className="bg-secondary/20 border-t px-4 py-4">
+													<div className="bg-secondary/20 w-full border-t px-4 py-4">
 														<div className="space-y-2">
 															{q.options?.map((optLabel, optIdx) => {
 																const isSelected =

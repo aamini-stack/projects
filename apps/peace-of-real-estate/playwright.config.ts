@@ -1,3 +1,7 @@
 import { baseConfig } from '@aamini/config-testing/playwright'
 
-export default baseConfig({ port: 4102 })
+const config = baseConfig({ port: 4102 })
+
+config.globalSetup = './e2e/global-setup.ts'
+
+export default config

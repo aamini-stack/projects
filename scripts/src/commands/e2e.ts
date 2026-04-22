@@ -16,6 +16,7 @@ const E2E_COMPOSE_FILE = path.resolve(
 
 export type E2EOptions = {
 	docker?: boolean
+	local?: boolean
 	preview?: string
 	staging?: boolean
 	production?: boolean
@@ -33,6 +34,7 @@ export function createE2ECommand(): Command {
 		.argument('[app]', 'App name to run e2e for')
 		.argument('[playwrightArgs...]', 'Extra arguments forwarded to playwright')
 		.option('-d, --docker', 'Run local e2e in docker compose')
+		.option('--local', 'Alias for --docker when running local e2e')
 		.option('-p, --preview <pr>', 'Run e2e against preview deployment')
 		.option('-s, --staging', 'Run e2e against staging')
 		.option('-P, --production', 'Run e2e against production')
@@ -109,6 +111,11 @@ export async function runE2E(
 ): Promise<void> {
 	const mode = getMode(options)
 	const targetUrl = getTargetUrl(app, options) || process.env.BASE_URL || ''
+	const useDocker = options.docker || options.local
+	const playwrightArgs = options.playwrightArgs ?? []
+	const dockerPlaywrightArgs = playwrightArgs.filter(
+		(arg) => arg !== '--local' && !arg.startsWith('--add-host'),
+	)
 
 	assertAppExists(repoRoot, app)
 
@@ -130,23 +137,23 @@ export async function runE2E(
 	})
 	if (!mode && !targetUrl) {
 		if (options.updateSnapshots) {
-			if (options.docker) {
+			if (useDocker) {
 				await interactive`docker compose -f ${E2E_COMPOSE_FILE} run --build --rm e2e --update-snapshots`
 			} else {
 				await interactive`pnpm --dir ${path.join('apps', app)} exec playwright test --update-snapshots ${options.playwrightArgs ?? []}`
 			}
 		} else {
-			if (options.docker) {
-				await interactive`docker compose -f ${E2E_COMPOSE_FILE} run --build --rm e2e ${options.playwrightArgs ?? []}`
+			if (useDocker) {
+				await interactive`docker compose -f ${E2E_COMPOSE_FILE} run --build --rm e2e ${dockerPlaywrightArgs}`
 			} else {
-				await interactive`pnpm --dir ${path.join('apps', app)} exec playwright test ${options.playwrightArgs ?? []}`
+				await interactive`pnpm --dir ${path.join('apps', app)} exec playwright test ${playwrightArgs}`
 			}
 		}
 	} else {
 		if (options.updateSnapshots) {
-			await interactive`pnpm --dir ${path.join('apps', app)} exec playwright test --update-snapshots ${options.playwrightArgs ?? []}`
+			await interactive`pnpm --dir ${path.join('apps', app)} exec playwright test --update-snapshots ${playwrightArgs}`
 		} else {
-			await interactive`pnpm --dir ${path.join('apps', app)} exec playwright test ${options.playwrightArgs ?? []}`
+			await interactive`pnpm --dir ${path.join('apps', app)} exec playwright test ${playwrightArgs}`
 		}
 	}
 }

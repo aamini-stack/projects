@@ -32,6 +32,18 @@ COPY --from=pruner /repo/out/full/ ./
 
 RUN pnpm turbo run build --filter=${APP_NAME}
 
+FROM mcr.microsoft.com/playwright:v1.59.1-noble AS e2e
+ARG APP_NAME
+ARG CI=
+ENV CI=${CI}
+ENV PNPM_HOME=/tmp/pnpm
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable && corepack install -g pnpm@10.33.0
+WORKDIR /app
+COPY --from=installer /app /app
+WORKDIR /app/apps/${APP_NAME}
+CMD ["pnpm", "exec", "playwright", "test"]
+
 FROM base
 ARG APP_NAME
 ARG PORT=3000
@@ -47,7 +59,11 @@ RUN mkdir -p /home/app/.cache/node/corepack \
 # Install varlock globally for runtime env loading
 RUN pnpm add -g varlock
 
-# Copy the built app and env schema
+# Copy runtime app, migration assets, and deps needed for startup migrations
+COPY --from=installer --chown=app:nodejs /app/node_modules ./node_modules
+COPY --from=installer --chown=app:nodejs /app/apps/${APP_NAME}/package.json ./package.json
+COPY --from=installer --chown=app:nodejs /app/apps/${APP_NAME}/drizzle.config.ts ./drizzle.config.ts
+COPY --from=installer --chown=app:nodejs /app/apps/${APP_NAME}/src/db/migrations ./src/db/migrations
 COPY --from=installer --chown=app:nodejs /app/apps/${APP_NAME}/.output ./.output
 COPY --from=installer --chown=app:nodejs /app/apps/${APP_NAME}/.env.schema ./.env.schema
 

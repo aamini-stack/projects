@@ -1,8 +1,11 @@
 import { createAuthClient } from 'better-auth/react'
-import { ENV } from 'varlock/env'
+
+import { toAuthBaseURL } from '@/lib/auth-base-url'
 
 const authBaseURL =
-	typeof window !== 'undefined' ? window.location.origin : ENV.BETTER_AUTH_URL
+	typeof window !== 'undefined'
+		? toAuthBaseURL(window.location.origin)
+		: undefined
 
 export const authClient = createAuthClient({
 	baseURL: authBaseURL,

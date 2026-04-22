@@ -47,7 +47,7 @@ export const baseConfig = (
 			...(useDevServer
 				? {
 						webServer: {
-							command: `pnpm dev --port ${port} --strictPort`,
+							command: `pnpm preview --port ${port} --strictPort`,
 							url: devUrl,
 							reuseExistingServer: !process.env.CI,
 							timeout: 30_000,

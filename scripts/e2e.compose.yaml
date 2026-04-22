@@ -1,4 +1,16 @@
 services:
+  postgres:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: imdbgraph
+      POSTGRES_USER: imdbgraph
+      POSTGRES_PASSWORD: imdbgraph
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U imdbgraph -d imdbgraph']
+      interval: 2s
+      timeout: 5s
+      retries: 30
+
   e2e:
     image: ${APP_NAME}-e2e:latest
     build:
@@ -8,9 +20,15 @@ services:
       args:
         APP_NAME: ${APP_NAME}
         CI: ${CI:-}
+    depends_on:
+      postgres:
+        condition: service_healthy
     environment:
+      DATABASE_URL: postgres://imdbgraph:imdbgraph@postgres:5432/imdbgraph
       BASE_URL: ${BASE_URL:-}
       PLAYWRIGHT_HTML_OUTPUT_DIR: /app/apps/${APP_NAME}/playwright-report
+    extra_hosts:
+      - host.docker.internal:host-gateway
     volumes:
       - ../apps/${APP_NAME}/test-results:/app/apps/${APP_NAME}/test-results
       - ../apps/${APP_NAME}/playwright-report:/app/apps/${APP_NAME}/playwright-report
