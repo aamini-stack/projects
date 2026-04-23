@@ -17,9 +17,9 @@
 		"test:unit": "vitest run --project unit",
 		"test:integration": "vitest run --project browser --project server",
 		"test:watch": "vitest --watch",
-		"e2e": "node --experimental-strip-types ../../scripts/src/aamini.ts e2e dota-visualizer",
-		"e2e:staging": "BASE_URL=https://dota-visualizer.ariaamini.com pnpm playwright test",
-		"e2e:update": "node --experimental-strip-types ../../scripts/src/aamini.ts e2e dota-visualizer --update-snapshots",
+		"e2e": "playwright test",
+		"e2e:staging": "BASE_URL=https://dota-visualizer.ariaamini.com playwright test",
+		"e2e:update": "playwright test --update-snapshots",
 		"report": "playwright show-report .playwright/report",
 		"verify": "turbo run build test typecheck"
 	},

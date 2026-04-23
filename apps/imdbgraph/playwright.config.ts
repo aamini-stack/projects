@@ -5,7 +5,7 @@ const { databaseUrl } = await ensurePostgresContainer()
 
 process.env.DATABASE_URL = databaseUrl
 
-const config = baseConfig({ port: 4002 })
+const config = await baseConfig()
 
 config.globalSetup = './e2e/global-setup.ts'
 
