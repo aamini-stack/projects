@@ -7,7 +7,7 @@
 		"dev": "vite dev",
 		"build": "vite build",
 		"preview": "vite preview",
-		"start": "node .output/server/index.mjs",
+		"start": "varlock run -- node .output/server/index.mjs",
 		"typecheck": "tsc --noEmit",
 		"lint": "oxlint --type-aware --max-warnings=0",
 		"test": "vitest run",
