@@ -509,7 +509,6 @@ function requireEnv(name: string): string {
 }
 
 const avatarBucket = requireEnv('AVATAR_BUCKET')
-const avatarBaseUrl = requireEnv('AVATAR_BASE_URL')
 const storageClient = new S3Client({
 	region: process.env.AWS_REGION ?? 'auto',
 	endpoint: requireEnv('AWS_ENDPOINT_URL'),
@@ -557,7 +556,7 @@ async function uploadPhoto(agentId: string, index: number): Promise<string> {
 		}),
 	)
 
-	return new URL(key, avatarBaseUrl).toString()
+	return key
 }
 
 async function seedAgents() {
