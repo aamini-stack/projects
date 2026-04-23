@@ -1,7 +1,10 @@
 import { getDb } from '@/db/connection'
 import { user, agents, agentQuestionnaires } from '@/db/tables'
+import { GetObjectCommand, S3Client } from '@aws-sdk/client-s3'
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 import { createServerFn } from '@tanstack/react-start'
 import { eq } from 'drizzle-orm'
+import { ENV } from 'varlock/env'
 
 export interface AgentMatchData {
 	id: string
@@ -58,6 +61,41 @@ function sortByFitScoreDesc(
 	return 0
 }
 
+let storageClient: S3Client | undefined
+
+function getStorageClient() {
+	storageClient ??= new S3Client({
+		region: process.env.AWS_REGION ?? 'auto',
+		endpoint: ENV.AWS_ENDPOINT_URL ?? '',
+		credentials: {
+			accessKeyId: ENV.AWS_ACCESS_KEY_ID ?? '',
+			secretAccessKey: ENV.AWS_SECRET_ACCESS_KEY ?? '',
+		},
+		forcePathStyle: true,
+	})
+
+	return storageClient
+}
+
+async function resolveAvatarUrl(image?: string | null) {
+	if (!image) {
+		return undefined
+	}
+
+	if (/^https?:\/\//.test(image)) {
+		return image
+	}
+
+	return getSignedUrl(
+		getStorageClient(),
+		new GetObjectCommand({
+			Bucket: ENV.AVATAR_BUCKET,
+			Key: image,
+		}),
+		{ expiresIn: 60 * 60 },
+	)
+}
+
 const getAgentMatchesServer = createServerFn({ method: 'GET' }).handler(
 	async () => {
 		const db = getDb()
@@ -88,52 +126,55 @@ const getAgentMatchesServer = createServerFn({ method: 'GET' }).handler(
 		scored.sort(sortByFitScoreDesc)
 		const top5 = scored.slice(0, 5)
 
-		return top5.map(({ row, fitScore }, index) => {
-			const answers = row.questionnaire.answersJson
+		return Promise.all(
+			top5.map(async ({ row, fitScore }, index) => {
+				const answers = row.questionnaire.answersJson
+				const avatar = await resolveAvatarUrl(row.user.image)
 
-			// Calculate category scores from answers (0-2 scale -> 0-5)
-			const workingStyleAnswers = Object.entries(answers)
-				.filter(([key]) => key.startsWith('A.'))
-				.map(([, val]) => (typeof val === 'number' ? val : 0))
+				// Calculate category scores from answers (0-2 scale -> 0-5)
+				const workingStyleAnswers = Object.entries(answers)
+					.filter(([key]) => key.startsWith('A.'))
+					.map(([, val]) => (typeof val === 'number' ? val : 0))
 
-			const avgAnswer =
-				workingStyleAnswers.reduce((a, b) => a + b, 0) /
-				(workingStyleAnswers.length || 1)
-			const baseScore = (avgAnswer / 2) * 5
+				const avgAnswer =
+					workingStyleAnswers.reduce((a, b) => a + b, 0) /
+					(workingStyleAnswers.length || 1)
+				const baseScore = (avgAnswer / 2) * 5
 
-			return {
-				id: row.agent.id,
-				name: row.user.name,
-				role: 'agent' as const,
-				location: 'Austin, TX',
-				zipCodes: row.agent.zipCodesJson ?? [],
-				fitScore: Math.round((fitScore / 24) * 100), // normalize to 0-100
-				status: 'new' as const,
-				date: 'Just now',
-				experience: row.agent.experience ?? '',
-				agency: row.agent.agency ?? '',
-				specialties: row.agent.servicesJson ?? [],
-				about:
-					row.agent.bio ??
-					'Experienced real estate professional serving the local community.',
-				scores: {
-					'Working Style': Math.min(5, baseScore + Math.random() * 0.5),
-					Communication: Math.min(5, baseScore + Math.random() * 0.5),
-					Transparency: Math.min(5, baseScore + Math.random() * 0.5),
-					Fit: Math.min(5, baseScore + Math.random() * 0.5),
-				},
-				contact: {
-					email: row.user.email,
-				},
-				stats: {
-					transactions: Math.floor(Math.random() * 200) + 50,
-					avgDays: Math.floor(Math.random() * 20) + 10,
-					satisfaction: Number((Math.random() * 0.5 + 4.5).toFixed(1)),
-				},
-				isTopMatch: index === 0,
-				...(row.user.image ? { avatar: row.user.image } : {}),
-			}
-		})
+				return {
+					id: row.agent.id,
+					name: row.user.name,
+					role: 'agent' as const,
+					location: 'Austin, TX',
+					zipCodes: row.agent.zipCodesJson ?? [],
+					fitScore: Math.round((fitScore / 24) * 100), // normalize to 0-100
+					status: 'new' as const,
+					date: 'Just now',
+					experience: row.agent.experience ?? '',
+					agency: row.agent.agency ?? '',
+					specialties: row.agent.servicesJson ?? [],
+					about:
+						row.agent.bio ??
+						'Experienced real estate professional serving the local community.',
+					scores: {
+						'Working Style': Math.min(5, baseScore + Math.random() * 0.5),
+						Communication: Math.min(5, baseScore + Math.random() * 0.5),
+						Transparency: Math.min(5, baseScore + Math.random() * 0.5),
+						Fit: Math.min(5, baseScore + Math.random() * 0.5),
+					},
+					contact: {
+						email: row.user.email,
+					},
+					stats: {
+						transactions: Math.floor(Math.random() * 200) + 50,
+						avgDays: Math.floor(Math.random() * 20) + 10,
+						satisfaction: Number((Math.random() * 0.5 + 4.5).toFixed(1)),
+					},
+					isTopMatch: index === 0,
+					...(avatar ? { avatar } : {}),
+				}
+			}),
+		)
 	},
 )
 

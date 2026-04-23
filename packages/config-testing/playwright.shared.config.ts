@@ -3,16 +3,22 @@ import {
 	devices,
 	type PlaywrightTestConfig,
 } from '@playwright/test'
+import getPort from 'get-port'
 import { loadEnv } from 'vite'
 
+const PLAYWRIGHT_PORT = 'PLAYWRIGHT_PORT'
+
 /** See https://playwright.dev/docs/test-configuration. */
-export const baseConfig = (
-	{ port }: { port: number },
-	overrides?: PlaywrightTestConfig,
-) => {
-	const devUrl = `http://localhost:${port}`
+export const baseConfig = async (overrides?: PlaywrightTestConfig) => {
+	const resolvedPort = Number(
+		process.env[PLAYWRIGHT_PORT] ||
+			(process.env[PLAYWRIGHT_PORT] = String(await getPort())),
+	)
+	const devUrl = `http://localhost:${resolvedPort}`
 	const baseUrl = process.env.BASE_URL || devUrl
 	const useDevServer = !process.env.BASE_URL
+	const reuseExistingServer =
+		!process.env.CI && process.env.PLAYWRIGHT_REUSE_SERVER === 'true'
 	const testDir = './e2e'
 	return defineConfig(
 		{
@@ -47,9 +53,9 @@ export const baseConfig = (
 			...(useDevServer
 				? {
 						webServer: {
-							command: `pnpm preview --port ${port} --strictPort`,
+							command: `pnpm dev --port ${resolvedPort} --strictPort`,
 							url: devUrl,
-							reuseExistingServer: !process.env.CI,
+							reuseExistingServer,
 							timeout: 30_000,
 							env: loadEnv('development', process.cwd(), ''),
 							stdout: 'pipe',

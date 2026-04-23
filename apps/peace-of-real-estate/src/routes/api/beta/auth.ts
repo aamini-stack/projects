@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { requireEnv } from '@/env'
+import { ENV } from 'varlock/env'
 
 export const Route = createFileRoute('/api/beta/auth')({
 	server: {
@@ -8,7 +8,7 @@ export const Route = createFileRoute('/api/beta/auth')({
 				const body = await request.json()
 				const { password } = body
 
-				const isValid = password === requireEnv('BETA_PASSWORD')
+				const isValid = password === ENV.BETA_PASSWORD
 
 				const headers: Record<string, string> = {
 					'Content-Type': 'application/json',

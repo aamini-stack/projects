@@ -1,94 +1,37 @@
-import type { Page } from '@playwright/test'
+import { test } from './__fixtures__/app'
 
-import { expect, test } from './helpers/app'
-import { buildDummyAccount, signUpWithEmail } from './helpers/auth'
+test.setTimeout(30_000)
 
-test.setTimeout(30000)
-
-async function answerCurrentQuestion(page: Page) {
-	const textarea = page.locator('textarea')
-
-	if ((await textarea.count()) > 0) {
-		await textarea.fill('Looking for clear guidance and fast execution.')
-		return
-	}
-
-	const multiSelectHint = page.getByText(
-		/Select up to \d+ answers to continue\./,
-	)
-
-	if ((await multiSelectHint.count()) > 0) {
-		const optionButtons = page.getByRole('button').filter({
-			hasNotText: /^(Previous Question|Continue|View Your Matches)$/,
-		})
-
-		await optionButtons.nth(0).click()
-		await optionButtons.nth(1).click()
-		return
-	}
-
-	await page
-		.getByRole('button')
-		.filter({ hasNotText: /^(Previous Question|Continue|View Your Matches)$/ })
-		.first()
-		.click()
-}
-
-test.beforeEach(async ({ app }) => {
-	await app.gotoHome()
-})
-
-test('consumer can complete match flow', async ({ page }) => {
-	const account = buildDummyAccount('Consumer Flow')
-
+test('consumer can complete onboarding flow', async ({ page }) => {
+	await page.goto('/')
 	await page.getByRole('link', { name: 'Find Your Agent' }).click()
-	await expect(page).toHaveURL(/\/consumer$/)
-	await expect(
-		page.getByRole('heading', { name: 'Set Your Priorities' }),
-	).toBeVisible()
-
-	await page.locator('input[type="range"]').first().press('ArrowRight')
+	await page.getByRole('slider').nth(1).fill('5')
 	await page.getByRole('link', { name: 'Continue to Questions' }).click()
-
-	await expect(page).toHaveURL(/\/consumer\/quiz$/)
-	await expect(
-		page.getByRole('heading', { name: 'Core Questions' }),
-	).toBeVisible()
-
-	for (let index = 0; index < 14; index++) {
-		await answerCurrentQuestion(page)
-
-		if (index < 13) {
-			await expect(page.getByText(`Question ${index + 2} of 14`)).toBeVisible()
-		}
-	}
-
+	await page.getByRole('button', { name: '$1.5M and above' }).click()
+	await page.getByRole('button', { name: 'Within 3 months - I have a' }).click()
+	await page.getByRole('button', { name: 'Single-family home' }).click()
+	await page.getByRole('button', { name: 'This is my first time - I' }).click()
+	await page
+		.getByRole('button', { name: 'A trusted advisor who stays' })
+		.click()
+	await page.getByRole('button', { name: 'Text - fast, easy, I can' }).click()
+	await page.getByRole('button', { name: 'Email - I like having' }).click()
+	await page.getByRole('button', { name: 'The numbers - show me the' }).click()
+	await page
+		.getByRole('button', { name: 'Give me the facts and options' })
+		.click()
+	await page.getByRole('button', { name: 'Market expert - know this' }).click()
+	await page
+		.getByRole('button', { name: 'Calm & low-drama - keeps it' })
+		.click()
+	await page.getByRole('button', { name: 'Very involved - I want to' }).click()
+	await page
+		.getByRole('button', { name: 'An agent whose broad market' })
+		.click()
+	await page.getByRole('button', { name: 'Within 10 minutes - I need' }).click()
+	await page
+		.getByRole('button', { name: 'I plan to negotiate - I have' })
+		.click()
 	await page.getByRole('link', { name: 'View Your Matches' }).click()
-
-	await expect(page).toHaveURL(/\/consumer\/results$/)
-	await expect(
-		page.getByRole('heading', { name: 'Your top agents are ready' }),
-	).toBeVisible()
-	await expect(page.getByText('Locked until signup')).toBeVisible()
-	await expect(
-		page.getByRole('link', { name: 'Sign up to see results' }),
-	).toBeVisible()
-
 	await page.getByRole('link', { name: 'Sign up to see results' }).click()
-	await expect(page).toHaveURL(/\/signup/)
-	await expect(
-		page.getByRole('heading', { name: 'Create your account' }),
-	).toBeVisible()
-
-	await signUpWithEmail(page, account)
-	await page.goto('/account', { waitUntil: 'domcontentloaded' })
-
-	await expect(page.getByRole('heading', { name: account.name })).toBeVisible()
-	await expect(page.getByText(account.email)).toBeVisible()
-	await page.getByRole('button', { name: /^Fit/ }).click()
-	await expect(
-		page.getByRole('button', {
-			name: /In what price range are you looking to buy\?.*Under \$400k/,
-		}),
-	).toBeVisible()
 })

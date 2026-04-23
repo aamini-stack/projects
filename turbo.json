@@ -39,12 +39,6 @@
 			"persistent": true
 		},
 		"e2e": {
-			"dependsOn": ["build", "^build"],
-			"env": ["APP_ENV", "DATABASE_URL", "BASE_URL", "CI"],
-			"passThroughEnv": ["PLAYWRIGHT_*"]
-		},
-		"e2e:ci": {
-			"dependsOn": ["build", "^build"],
 			"env": ["APP_ENV", "DATABASE_URL", "BASE_URL", "CI"],
 			"passThroughEnv": ["PLAYWRIGHT_*"]
 		},
