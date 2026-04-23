@@ -20,6 +20,7 @@ import { Route as AgentIndexRouteImport } from './routes/agent/index'
 import { Route as ConsumerResultsRouteImport } from './routes/consumer/results'
 import { Route as ConsumerQuizRouteImport } from './routes/consumer/quiz'
 import { Route as ApiHealthRouteImport } from './routes/api/health'
+import { Route as ApiAgentMatchesRouteImport } from './routes/api/agent-matches'
 import { Route as AgentQuizRouteImport } from './routes/agent/quiz'
 import { Route as AgentProfileRouteImport } from './routes/agent/profile'
 import { Route as ApiIngestSplatRouteImport } from './routes/api/ingest/$'
@@ -82,6 +83,11 @@ const ApiHealthRoute = ApiHealthRouteImport.update({
   path: '/api/health',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiAgentMatchesRoute = ApiAgentMatchesRouteImport.update({
+  id: '/api/agent-matches',
+  path: '/api/agent-matches',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AgentQuizRoute = AgentQuizRouteImport.update({
   id: '/agent/quiz',
   path: '/agent/quiz',
@@ -122,6 +128,7 @@ export interface FileRoutesByFullPath {
   '/signup': typeof SignupRoute
   '/agent/profile': typeof AgentProfileRoute
   '/agent/quiz': typeof AgentQuizRoute
+  '/api/agent-matches': typeof ApiAgentMatchesRoute
   '/api/health': typeof ApiHealthRoute
   '/consumer/quiz': typeof ConsumerQuizRoute
   '/consumer/results': typeof ConsumerResultsRoute
@@ -141,6 +148,7 @@ export interface FileRoutesByTo {
   '/signup': typeof SignupRoute
   '/agent/profile': typeof AgentProfileRoute
   '/agent/quiz': typeof AgentQuizRoute
+  '/api/agent-matches': typeof ApiAgentMatchesRoute
   '/api/health': typeof ApiHealthRoute
   '/consumer/quiz': typeof ConsumerQuizRoute
   '/consumer/results': typeof ConsumerResultsRoute
@@ -161,6 +169,7 @@ export interface FileRoutesById {
   '/signup': typeof SignupRoute
   '/agent/profile': typeof AgentProfileRoute
   '/agent/quiz': typeof AgentQuizRoute
+  '/api/agent-matches': typeof ApiAgentMatchesRoute
   '/api/health': typeof ApiHealthRoute
   '/consumer/quiz': typeof ConsumerQuizRoute
   '/consumer/results': typeof ConsumerResultsRoute
@@ -182,6 +191,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/agent/profile'
     | '/agent/quiz'
+    | '/api/agent-matches'
     | '/api/health'
     | '/consumer/quiz'
     | '/consumer/results'
@@ -201,6 +211,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/agent/profile'
     | '/agent/quiz'
+    | '/api/agent-matches'
     | '/api/health'
     | '/consumer/quiz'
     | '/consumer/results'
@@ -220,6 +231,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/agent/profile'
     | '/agent/quiz'
+    | '/api/agent-matches'
     | '/api/health'
     | '/consumer/quiz'
     | '/consumer/results'
@@ -240,6 +252,7 @@ export interface RootRouteChildren {
   SignupRoute: typeof SignupRoute
   AgentProfileRoute: typeof AgentProfileRoute
   AgentQuizRoute: typeof AgentQuizRoute
+  ApiAgentMatchesRoute: typeof ApiAgentMatchesRoute
   ApiHealthRoute: typeof ApiHealthRoute
   ConsumerQuizRoute: typeof ConsumerQuizRoute
   ConsumerResultsRoute: typeof ConsumerResultsRoute
@@ -330,6 +343,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiHealthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/agent-matches': {
+      id: '/api/agent-matches'
+      path: '/api/agent-matches'
+      fullPath: '/api/agent-matches'
+      preLoaderRoute: typeof ApiAgentMatchesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/agent/quiz': {
       id: '/agent/quiz'
       path: '/agent/quiz'
@@ -384,6 +404,7 @@ const rootRouteChildren: RootRouteChildren = {
   SignupRoute: SignupRoute,
   AgentProfileRoute: AgentProfileRoute,
   AgentQuizRoute: AgentQuizRoute,
+  ApiAgentMatchesRoute: ApiAgentMatchesRoute,
   ApiHealthRoute: ApiHealthRoute,
   ConsumerQuizRoute: ConsumerQuizRoute,
   ConsumerResultsRoute: ConsumerResultsRoute,
