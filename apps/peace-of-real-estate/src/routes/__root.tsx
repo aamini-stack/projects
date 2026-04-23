@@ -179,7 +179,7 @@ function RootComponent() {
 									className="flex items-center gap-3"
 								>
 									<img
-										src="/logomark-fullColor.svg"
+										src="/favicon.svg"
 										alt="Peace of Real Estate"
 										className="h-7 w-7 shrink-0"
 									/>
