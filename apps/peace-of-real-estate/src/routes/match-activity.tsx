@@ -171,7 +171,7 @@ function MatchCard({
 
 	return (
 		<div
-			className="bg-card card-institutional group overflow-hidden transition-all duration-300 hover:border-[var(--foreground)]/20"
+			className="bg-card card-institutional group overflow-hidden transition-colors duration-300 hover:border-[var(--foreground)]/20"
 			style={{
 				animationDelay: `${index * 120}ms`,
 			}}
@@ -401,7 +401,7 @@ function MatchActivity() {
 		filter === 'all' ? matches : matches.filter((m) => m.status === filter)
 
 	return (
-		<div className="mx-auto max-w-5xl px-6 py-12">
+		<div className="mx-auto w-full max-w-5xl px-6 py-12">
 			{/* Header */}
 			<div className="mb-10">
 				<div className="flex items-center gap-4">
