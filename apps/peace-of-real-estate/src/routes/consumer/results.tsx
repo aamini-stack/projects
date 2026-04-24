@@ -79,9 +79,6 @@ function ConsumerResults() {
 			icon={Trophy}
 			iconClassName="border-blue-cyan bg-blue-cyan-tint text-blue-cyan"
 		>
-			<div className="data-label text-blue-cyan mb-3 text-center">
-				Results Ready
-			</div>
 			<h2 className="mx-auto max-w-xl text-center font-serif text-2xl font-normal tracking-tight md:text-3xl">
 				Your top agents are ready
 			</h2>
@@ -90,21 +87,14 @@ function ConsumerResults() {
 				fits your working style, communication needs, and transparency
 				expectations.
 			</p>
-			<div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+			<div className="mt-8 flex items-center justify-center">
 				<Link
 					to="/signup"
 					search={{ redirect: '/match-activity' }}
 					className="btn-primary inline-flex items-center justify-center gap-2"
 				>
-					Sign up to see results
+					Sign up
 					<ArrowRight className="h-4 w-4" />
-				</Link>
-				<Link
-					to="/login"
-					search={{ redirect: '/match-activity' }}
-					className="btn-secondary inline-flex items-center justify-center"
-				>
-					Already have account? Sign in
 				</Link>
 			</div>
 			<div className="border-border mt-10 border-t pt-6">

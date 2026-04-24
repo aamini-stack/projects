@@ -292,8 +292,8 @@ function MatchCard({
 
 						{/* Stats Grid */}
 						{match.stats && (
-							<div className="grid grid-cols-3 gap-4">
-								<div className="bg-[var(--secondary)] p-4 text-center">
+							<div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+								<div className="bg-[var(--secondary)] px-4 py-3 text-center sm:p-4">
 									<div className="data-number text-xl font-bold">
 										{match.stats.transactions}
 									</div>
@@ -301,7 +301,7 @@ function MatchCard({
 										Transactions
 									</div>
 								</div>
-								<div className="bg-[var(--secondary)] p-4 text-center">
+								<div className="bg-[var(--secondary)] px-4 py-3 text-center sm:p-4">
 									<div className="data-number text-xl font-bold">
 										{match.stats.avgDays}
 									</div>
@@ -309,7 +309,7 @@ function MatchCard({
 										Avg. Days
 									</div>
 								</div>
-								<div className="bg-[var(--secondary)] p-4 text-center">
+								<div className="bg-[var(--secondary)] px-4 py-3 text-center sm:p-4">
 									<div className="data-number text-xl font-bold">
 										{match.stats.satisfaction}
 									</div>
