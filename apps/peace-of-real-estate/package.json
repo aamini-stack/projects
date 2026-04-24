@@ -18,11 +18,10 @@
 		"e2e:update": "playwright test --update-snapshots",
 		"report": "playwright show-report .playwright/report",
 		"verify": "turbo run test typecheck",
-		"db:seed:test": "APP_ENV=test tsx --env-file .env.test scripts/seed-agents.ts",
 		"db:generate": "drizzle-kit generate",
 		"db:migrate": "drizzle-kit migrate",
 		"db:push": "drizzle-kit push",
-		"db:seed": "tsx --env-file .env.development.local scripts/seed-agents.ts"
+		"db:seed": "tsx scripts/seed-agents.ts"
 	},
 	"dependencies": {
 		"@aamini/lib": "workspace:*",
