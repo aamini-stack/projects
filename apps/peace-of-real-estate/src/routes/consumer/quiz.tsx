@@ -28,7 +28,7 @@ function ConsumerQuiz() {
 
 	return (
 		<QuestionFlow
-			backTo="/consumer"
+			backTo="/consumer/priorities"
 			backLabel="Back to priorities"
 			stepLabel="Step 2 of 4 - Help us understand your preferences"
 			accentClassName="bg-blue-cyan"

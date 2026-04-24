@@ -19,10 +19,12 @@ import { Route as ConsumerIndexRouteImport } from './routes/consumer/index'
 import { Route as AgentIndexRouteImport } from './routes/agent/index'
 import { Route as ConsumerResultsRouteImport } from './routes/consumer/results'
 import { Route as ConsumerQuizRouteImport } from './routes/consumer/quiz'
+import { Route as ConsumerPrioritiesRouteImport } from './routes/consumer/priorities'
 import { Route as ApiHealthRouteImport } from './routes/api/health'
 import { Route as ApiAgentMatchesRouteImport } from './routes/api/agent-matches'
 import { Route as AgentQuizRouteImport } from './routes/agent/quiz'
 import { Route as AgentProfileRouteImport } from './routes/agent/profile'
+import { Route as AgentPrioritiesRouteImport } from './routes/agent/priorities'
 import { Route as ApiIngestSplatRouteImport } from './routes/api/ingest/$'
 import { Route as ApiBetaAuthRouteImport } from './routes/api/beta/auth'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
@@ -78,6 +80,11 @@ const ConsumerQuizRoute = ConsumerQuizRouteImport.update({
   path: '/consumer/quiz',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ConsumerPrioritiesRoute = ConsumerPrioritiesRouteImport.update({
+  id: '/consumer/priorities',
+  path: '/consumer/priorities',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiHealthRoute = ApiHealthRouteImport.update({
   id: '/api/health',
   path: '/api/health',
@@ -96,6 +103,11 @@ const AgentQuizRoute = AgentQuizRouteImport.update({
 const AgentProfileRoute = AgentProfileRouteImport.update({
   id: '/agent/profile',
   path: '/agent/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AgentPrioritiesRoute = AgentPrioritiesRouteImport.update({
+  id: '/agent/priorities',
+  path: '/agent/priorities',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiIngestSplatRoute = ApiIngestSplatRouteImport.update({
@@ -126,10 +138,12 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/match-activity': typeof MatchActivityRoute
   '/signup': typeof SignupRoute
+  '/agent/priorities': typeof AgentPrioritiesRoute
   '/agent/profile': typeof AgentProfileRoute
   '/agent/quiz': typeof AgentQuizRoute
   '/api/agent-matches': typeof ApiAgentMatchesRoute
   '/api/health': typeof ApiHealthRoute
+  '/consumer/priorities': typeof ConsumerPrioritiesRoute
   '/consumer/quiz': typeof ConsumerQuizRoute
   '/consumer/results': typeof ConsumerResultsRoute
   '/agent/': typeof AgentIndexRoute
@@ -146,10 +160,12 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/match-activity': typeof MatchActivityRoute
   '/signup': typeof SignupRoute
+  '/agent/priorities': typeof AgentPrioritiesRoute
   '/agent/profile': typeof AgentProfileRoute
   '/agent/quiz': typeof AgentQuizRoute
   '/api/agent-matches': typeof ApiAgentMatchesRoute
   '/api/health': typeof ApiHealthRoute
+  '/consumer/priorities': typeof ConsumerPrioritiesRoute
   '/consumer/quiz': typeof ConsumerQuizRoute
   '/consumer/results': typeof ConsumerResultsRoute
   '/agent': typeof AgentIndexRoute
@@ -167,10 +183,12 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/match-activity': typeof MatchActivityRoute
   '/signup': typeof SignupRoute
+  '/agent/priorities': typeof AgentPrioritiesRoute
   '/agent/profile': typeof AgentProfileRoute
   '/agent/quiz': typeof AgentQuizRoute
   '/api/agent-matches': typeof ApiAgentMatchesRoute
   '/api/health': typeof ApiHealthRoute
+  '/consumer/priorities': typeof ConsumerPrioritiesRoute
   '/consumer/quiz': typeof ConsumerQuizRoute
   '/consumer/results': typeof ConsumerResultsRoute
   '/agent/': typeof AgentIndexRoute
@@ -189,10 +207,12 @@ export interface FileRouteTypes {
     | '/login'
     | '/match-activity'
     | '/signup'
+    | '/agent/priorities'
     | '/agent/profile'
     | '/agent/quiz'
     | '/api/agent-matches'
     | '/api/health'
+    | '/consumer/priorities'
     | '/consumer/quiz'
     | '/consumer/results'
     | '/agent/'
@@ -209,10 +229,12 @@ export interface FileRouteTypes {
     | '/login'
     | '/match-activity'
     | '/signup'
+    | '/agent/priorities'
     | '/agent/profile'
     | '/agent/quiz'
     | '/api/agent-matches'
     | '/api/health'
+    | '/consumer/priorities'
     | '/consumer/quiz'
     | '/consumer/results'
     | '/agent'
@@ -229,10 +251,12 @@ export interface FileRouteTypes {
     | '/login'
     | '/match-activity'
     | '/signup'
+    | '/agent/priorities'
     | '/agent/profile'
     | '/agent/quiz'
     | '/api/agent-matches'
     | '/api/health'
+    | '/consumer/priorities'
     | '/consumer/quiz'
     | '/consumer/results'
     | '/agent/'
@@ -250,10 +274,12 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   MatchActivityRoute: typeof MatchActivityRoute
   SignupRoute: typeof SignupRoute
+  AgentPrioritiesRoute: typeof AgentPrioritiesRoute
   AgentProfileRoute: typeof AgentProfileRoute
   AgentQuizRoute: typeof AgentQuizRoute
   ApiAgentMatchesRoute: typeof ApiAgentMatchesRoute
   ApiHealthRoute: typeof ApiHealthRoute
+  ConsumerPrioritiesRoute: typeof ConsumerPrioritiesRoute
   ConsumerQuizRoute: typeof ConsumerQuizRoute
   ConsumerResultsRoute: typeof ConsumerResultsRoute
   AgentIndexRoute: typeof AgentIndexRoute
@@ -336,6 +362,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ConsumerQuizRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/consumer/priorities': {
+      id: '/consumer/priorities'
+      path: '/consumer/priorities'
+      fullPath: '/consumer/priorities'
+      preLoaderRoute: typeof ConsumerPrioritiesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/health': {
       id: '/api/health'
       path: '/api/health'
@@ -362,6 +395,13 @@ declare module '@tanstack/react-router' {
       path: '/agent/profile'
       fullPath: '/agent/profile'
       preLoaderRoute: typeof AgentProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/agent/priorities': {
+      id: '/agent/priorities'
+      path: '/agent/priorities'
+      fullPath: '/agent/priorities'
+      preLoaderRoute: typeof AgentPrioritiesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/ingest/$': {
@@ -402,10 +442,12 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   MatchActivityRoute: MatchActivityRoute,
   SignupRoute: SignupRoute,
+  AgentPrioritiesRoute: AgentPrioritiesRoute,
   AgentProfileRoute: AgentProfileRoute,
   AgentQuizRoute: AgentQuizRoute,
   ApiAgentMatchesRoute: ApiAgentMatchesRoute,
   ApiHealthRoute: ApiHealthRoute,
+  ConsumerPrioritiesRoute: ConsumerPrioritiesRoute,
   ConsumerQuizRoute: ConsumerQuizRoute,
   ConsumerResultsRoute: ConsumerResultsRoute,
   AgentIndexRoute: AgentIndexRoute,

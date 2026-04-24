@@ -17,7 +17,7 @@ function AgentQuiz() {
 
 	return (
 		<QuestionFlow
-			backTo="/agent"
+			backTo="/agent/priorities"
 			backLabel="Back to priorities"
 			stepLabel="Step 2 of 4 - Show how you work with clients"
 			accentClassName="bg-terracotta"
