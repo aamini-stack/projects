@@ -1,4 +1,4 @@
-import { createFileRoute, Link, Navigate } from '@tanstack/react-router'
+import { createFileRoute, Link } from '@tanstack/react-router'
 import { ArrowRight, ArrowLeft, Briefcase, Shield } from 'lucide-react'
 import { useState } from 'react'
 
@@ -28,10 +28,6 @@ function AgentFlow() {
 	const [weights, setWeights] = useState<CategoryWeights>(
 		() => initialDraft.weights,
 	)
-
-	if (initialDraft.hasCompletedWeights) {
-		return <Navigate to="/agent/quiz" />
-	}
 
 	const updateWeight = (id: keyof CategoryWeights, value: number) => {
 		setWeights((prev) => {

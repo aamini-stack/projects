@@ -1,4 +1,4 @@
-import { createFileRoute, Link, Navigate } from '@tanstack/react-router'
+import { createFileRoute, Link } from '@tanstack/react-router'
 import { ArrowRight, ArrowLeft, SlidersHorizontal } from 'lucide-react'
 import { useState } from 'react'
 
@@ -20,10 +20,6 @@ function ConsumerFlow() {
 	const [weights, setWeights] = useState<CategoryWeights>(
 		() => initialDraft.weights,
 	)
-
-	if (initialDraft.hasCompletedWeights) {
-		return <Navigate to="/consumer/quiz" />
-	}
 
 	const updateWeight = (id: keyof CategoryWeights, value: number) => {
 		setWeights((prev) => {
