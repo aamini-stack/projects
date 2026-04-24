@@ -179,7 +179,7 @@ function Account() {
 	}
 
 	if (!session) {
-		return <Navigate to="/login" search={{ redirect: '/account' }} />
+		return <Navigate to="/login" search={{ redirect: '/match-activity' }} />
 	}
 
 	const role = settings?.role ?? 'consumer'

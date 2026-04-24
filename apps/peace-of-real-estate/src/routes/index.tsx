@@ -23,7 +23,7 @@ function Home() {
 	}
 
 	if (session) {
-		return <Navigate to="/account" />
+		return <Navigate to="/match-activity" />
 	}
 
 	return (
