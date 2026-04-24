@@ -171,7 +171,7 @@ function MatchCard({
 
 	return (
 		<div
-			className="bg-card card-institutional group overflow-hidden transition-all duration-300 hover:border-[var(--foreground)]/20"
+			className="bg-card card-institutional group overflow-hidden transition-colors duration-300 hover:border-[var(--foreground)]/20"
 			style={{
 				animationDelay: `${index * 120}ms`,
 			}}
@@ -292,8 +292,8 @@ function MatchCard({
 
 						{/* Stats Grid */}
 						{match.stats && (
-							<div className="grid grid-cols-3 gap-4">
-								<div className="bg-[var(--secondary)] p-4 text-center">
+							<div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+								<div className="bg-[var(--secondary)] px-4 py-3 text-center sm:p-4">
 									<div className="data-number text-xl font-bold">
 										{match.stats.transactions}
 									</div>
@@ -301,7 +301,7 @@ function MatchCard({
 										Transactions
 									</div>
 								</div>
-								<div className="bg-[var(--secondary)] p-4 text-center">
+								<div className="bg-[var(--secondary)] px-4 py-3 text-center sm:p-4">
 									<div className="data-number text-xl font-bold">
 										{match.stats.avgDays}
 									</div>
@@ -309,7 +309,7 @@ function MatchCard({
 										Avg. Days
 									</div>
 								</div>
-								<div className="bg-[var(--secondary)] p-4 text-center">
+								<div className="bg-[var(--secondary)] px-4 py-3 text-center sm:p-4">
 									<div className="data-number text-xl font-bold">
 										{match.stats.satisfaction}
 									</div>
@@ -401,7 +401,7 @@ function MatchActivity() {
 		filter === 'all' ? matches : matches.filter((m) => m.status === filter)
 
 	return (
-		<div className="mx-auto max-w-5xl px-6 py-12">
+		<div className="mx-auto w-full max-w-5xl px-6 py-12">
 			{/* Header */}
 			<div className="mb-10">
 				<div className="flex items-center gap-4">

@@ -49,14 +49,14 @@ function Home() {
 							</p>
 							<div className="flex flex-col gap-4 sm:flex-row">
 								<Link
-									to="/consumer"
+									to="/consumer/priorities"
 									className="btn-primary inline-flex items-center gap-2"
 								>
 									Find Your Agent
 									<ArrowRight className="h-4 w-4" />
 								</Link>
 								<Link
-									to="/agent"
+									to="/agent/priorities"
 									className="btn-secondary !bg-background inline-flex items-center gap-2"
 								>
 									I'm an Agent
@@ -218,7 +218,7 @@ function Home() {
 								about finding the right property.
 							</p>
 							<Link
-								to="/consumer"
+								to="/consumer/priorities"
 								className="btn-primary inline-flex items-center gap-2"
 							>
 								Get Started Free

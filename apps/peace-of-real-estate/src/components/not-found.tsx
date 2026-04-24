@@ -34,7 +34,7 @@ export function NotFoundComponent() {
 						Back to Home
 					</Link>
 					<Link
-						to="/consumer"
+						to="/consumer/priorities"
 						className="btn-secondary inline-flex items-center gap-2"
 					>
 						<MapPin className="h-4 w-4" />

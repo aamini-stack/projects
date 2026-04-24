@@ -3,11 +3,11 @@ import type { ComponentType } from 'react'
 
 import './__mocks__/browser-mocks'
 
-import { Route as AgentRoute } from '@/routes/agent/index'
+import { Route as AgentPrioritiesRoute } from '@/routes/agent/priorities'
 import { Route as AgentProfileRoute } from '@/routes/agent/profile'
 import { Route as AgentQuizRoute } from '@/routes/agent/quiz'
 import { Route as BetaRoute } from '@/routes/beta'
-import { Route as ConsumerRoute } from '@/routes/consumer/index'
+import { Route as ConsumerPrioritiesRoute } from '@/routes/consumer/priorities'
 import { Route as ConsumerQuizRoute } from '@/routes/consumer/quiz'
 import { Route as ConsumerResultsRoute } from '@/routes/consumer/results'
 import { Route as HomeRoute } from '@/routes/index'
@@ -26,8 +26,8 @@ const pages = [
 	},
 	{
 		name: 'consumer-priorities',
-		path: '/consumer',
-		component: ConsumerRoute.options.component as ComponentType,
+		path: '/consumer/priorities',
+		component: ConsumerPrioritiesRoute.options.component as ComponentType,
 		heading: /set your priorities/i,
 	},
 	{
@@ -44,8 +44,8 @@ const pages = [
 	},
 	{
 		name: 'agent-priorities',
-		path: '/agent',
-		component: AgentRoute.options.component as ComponentType,
+		path: '/agent/priorities',
+		component: AgentPrioritiesRoute.options.component as ComponentType,
 		heading: /agent onboarding/i,
 	},
 	{
