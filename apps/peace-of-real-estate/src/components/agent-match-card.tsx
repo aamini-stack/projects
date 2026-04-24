@@ -14,10 +14,10 @@ export type AgentMatch = {
 }
 
 const categoryColors: Record<string, string> = {
-	'Working Style': 'score-bar-blue-cyan',
-	Communication: 'score-bar-terracotta',
-	Transparency: 'score-bar-olive',
-	Fit: 'score-bar-ochre',
+	'Working Style': 'bg-blue-cyan',
+	Communication: 'bg-terracotta',
+	Transparency: 'bg-olive',
+	Fit: 'bg-ochre',
 }
 
 function ScoreBar({ label, score }: { label: string; score: number }) {

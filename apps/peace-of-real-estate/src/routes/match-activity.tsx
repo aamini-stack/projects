@@ -57,24 +57,24 @@ const categoryColors: Record<
 	{ bg: string; text: string; bar: string }
 > = {
 	'Working Style': {
-		bg: 'bg-[var(--blue-cyan-tint)]',
-		text: 'text-[var(--blue-cyan)]',
-		bar: 'bg-[var(--blue-cyan)]',
+		bg: 'bg-blue-cyan-tint',
+		text: 'text-blue-cyan',
+		bar: 'bg-blue-cyan',
 	},
 	Communication: {
-		bg: 'bg-[var(--terracotta-tint)]',
-		text: 'text-[var(--terracotta)]',
-		bar: 'bg-[var(--terracotta)]',
+		bg: 'bg-terracotta-tint',
+		text: 'text-terracotta',
+		bar: 'bg-terracotta',
 	},
 	Transparency: {
-		bg: 'bg-[var(--olive-tint)]',
-		text: 'text-[var(--olive)]',
-		bar: 'bg-[var(--olive)]',
+		bg: 'bg-olive-tint',
+		text: 'text-olive',
+		bar: 'bg-olive',
 	},
 	Fit: {
-		bg: 'bg-[var(--ochre-tint)]',
-		text: 'text-[var(--ochre)]',
-		bar: 'bg-[var(--ochre)]',
+		bg: 'bg-ochre-tint',
+		text: 'text-ochre',
+		bar: 'bg-ochre',
 	},
 }
 
@@ -85,10 +85,10 @@ function FitScoreRing({ score, size = 56 }: { score: number; size?: number }) {
 	const offset = circumference - (score / 100) * circumference
 	const color =
 		score >= 90
-			? 'var(--blue-cyan)'
+			? 'var(--color-blue-cyan)'
 			: score >= 80
-				? 'var(--olive)'
-				: 'var(--ochre)'
+				? 'var(--color-olive)'
+				: 'var(--color-ochre)'
 
 	return (
 		<div
@@ -178,7 +178,7 @@ function MatchCard({
 		>
 			{/* Top Match Banner */}
 			{match.isTopMatch && (
-				<div className="flex items-center gap-2 bg-[var(--blue-cyan)] px-6 py-2 text-xs font-semibold tracking-wide text-[var(--blue-cyan-foreground)]">
+				<div className="bg-blue-cyan text-blue-cyan-foreground flex items-center gap-2 px-6 py-2 text-xs font-semibold tracking-wide">
 					<Star className="h-3.5 w-3.5 fill-current" />
 					Top Match — Highest Compatibility
 				</div>
@@ -192,12 +192,12 @@ function MatchCard({
 						<img
 							src={match.avatar}
 							alt={match.name}
-							className="h-14 w-14 shrink-0 border border-[var(--blue-cyan)] object-cover"
+							className="border-blue-cyan h-14 w-14 shrink-0 border object-cover"
 							loading="lazy"
 							onError={() => setAvatarFailed(true)}
 						/>
 					) : (
-						<div className="flex h-14 w-14 shrink-0 items-center justify-center border border-[var(--blue-cyan)] bg-[var(--blue-cyan-tint)] text-lg font-bold text-[var(--blue-cyan)]">
+						<div className="border-blue-cyan bg-blue-cyan-tint text-blue-cyan flex h-14 w-14 shrink-0 items-center justify-center border text-lg font-bold">
 							{initials}
 						</div>
 					)}
@@ -481,7 +481,7 @@ function MatchActivity() {
 			<div className="border-border bg-card card-institutional mt-8 p-8">
 				<div className="flex flex-col items-center justify-between gap-4 md:flex-row">
 					<div>
-						<div className="data-label mb-2 text-[var(--blue-cyan)]">
+						<div className="data-label text-blue-cyan mb-2">
 							Improve Your Matches
 						</div>
 						<h3 className="font-serif text-lg">
