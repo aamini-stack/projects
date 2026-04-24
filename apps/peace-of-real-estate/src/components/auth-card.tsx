@@ -9,6 +9,8 @@ import { authClient } from '@/lib/auth-client'
 
 type AuthMode = 'sign-in' | 'sign-up'
 
+const DEFAULT_POST_AUTH_REDIRECT = '/match-activity'
+
 export function AuthCard({
 	mode,
 	redirect,
@@ -16,6 +18,8 @@ export function AuthCard({
 	mode: AuthMode
 	redirect?: string
 }) {
+	const resolvedRedirect =
+		redirect && redirect !== '/account' ? redirect : DEFAULT_POST_AUTH_REDIRECT
 	const isSignUp = mode === 'sign-up'
 	const title = isSignUp ? 'Create your account' : 'Welcome Back'
 	const primaryLabel = isSignUp ? 'Create account' : 'Sign in'
@@ -31,8 +35,8 @@ export function AuthCard({
 
 	const callbackURL =
 		typeof window !== 'undefined'
-			? new URL(redirect ?? '/', window.location.origin).toString()
-			: (redirect ?? '/')
+			? new URL(resolvedRedirect, window.location.origin).toString()
+			: resolvedRedirect
 
 	const handleGoogleSignIn = async () => {
 		setIsGoogleLoading(true)
@@ -47,7 +51,7 @@ export function AuthCard({
 				throw error
 			}
 
-			window.location.assign(data?.url ?? redirect ?? '/')
+			window.location.assign(data?.url ?? resolvedRedirect)
 		} catch (error) {
 			if (
 				error &&
@@ -90,7 +94,7 @@ export function AuthCard({
 					throw error
 				}
 
-				window.location.assign(redirect ?? '/')
+				window.location.assign(resolvedRedirect)
 				return
 			}
 
@@ -104,7 +108,7 @@ export function AuthCard({
 				throw error
 			}
 
-			window.location.assign(data?.url ?? redirect ?? '/')
+			window.location.assign(data?.url ?? resolvedRedirect)
 		} catch (error) {
 			const message =
 				error && typeof error === 'object' && 'message' in error

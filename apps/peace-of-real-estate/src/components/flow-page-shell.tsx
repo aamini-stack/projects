@@ -21,6 +21,10 @@ export function FlowPageShell({
 	iconClassName,
 	children,
 }: FlowPageShellProps) {
+	const iconBorderClassName = iconClassName.includes('border-')
+		? ''
+		: 'border-border'
+
 	return (
 		<div className="mx-auto w-full max-w-[40rem] px-6 pt-4 pb-16 md:pb-24">
 			<nav aria-label="Breadcrumb" className="mb-4">
@@ -44,7 +48,7 @@ export function FlowPageShell({
 			<div className="mt-16 mb-6">
 				<div className="flex items-center gap-4">
 					<div
-						className={`${iconClassName} border-border flex h-10 w-10 items-center justify-center border`}
+						className={`${iconBorderClassName} ${iconClassName} flex h-10 w-10 items-center justify-center border`}
 					>
 						<Icon className="h-5 w-5" />
 					</div>
