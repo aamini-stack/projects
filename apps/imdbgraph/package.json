@@ -13,6 +13,7 @@
 		"test": "vitest run",
 		"test:unit": "vitest run --project unit",
 		"test:integration": "vitest run --project browser --project server",
+		"test:update": "playwright test --update-snapshots",
 		"test:watch": "vitest --watch",
 		"e2e": "playwright test",
 		"e2e:staging": "BASE_URL=https://imdbgraph.ariaamini.com playwright test",

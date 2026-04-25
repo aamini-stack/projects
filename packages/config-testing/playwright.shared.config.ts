@@ -3,26 +3,12 @@ import {
 	devices,
 	type PlaywrightTestConfig,
 } from '@playwright/test'
-import getPort from 'get-port'
-import { loadEnv } from 'vite'
-
-const PLAYWRIGHT_PORT = 'PLAYWRIGHT_PORT'
 
 /** See https://playwright.dev/docs/test-configuration. */
 export const baseConfig = async (overrides?: PlaywrightTestConfig) => {
-	const resolvedPort = Number(
-		process.env[PLAYWRIGHT_PORT] ||
-			(process.env[PLAYWRIGHT_PORT] = String(await getPort())),
-	)
-	const devUrl = `http://localhost:${resolvedPort}`
-	const baseUrl = process.env.BASE_URL || devUrl
-	const useDevServer = !process.env.BASE_URL
-	const reuseExistingServer =
-		!process.env.CI && process.env.PLAYWRIGHT_REUSE_SERVER === 'true'
-	const testDir = './e2e'
 	return defineConfig(
 		{
-			testDir: testDir,
+			testDir: './e2e',
 			outputDir: '.playwright/test-results',
 			/* Run tests in files in parallel */
 			fullyParallel: true,
@@ -41,7 +27,7 @@ export const baseConfig = async (overrides?: PlaywrightTestConfig) => {
 				colorScheme: 'dark',
 
 				/* Base URL to use in actions like `await page.goto('/')`. */
-				baseURL: baseUrl,
+				baseURL: process.env.BASE_URL,
 
 				/* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
 				trace: 'retain-on-first-failure',
@@ -49,27 +35,9 @@ export const baseConfig = async (overrides?: PlaywrightTestConfig) => {
 				video: 'retain-on-failure',
 			},
 
-			/* Run your local dev server when running tests locally */
-			...(useDevServer
-				? {
-						webServer: {
-							command: `pnpm dev --port ${resolvedPort} --strictPort`,
-							url: devUrl,
-							reuseExistingServer,
-							timeout: 30_000,
-							env: loadEnv('development', process.cwd(), ''),
-							stdout: 'pipe',
-							stderr: 'pipe',
-						},
-					}
-				: {}),
-
 			timeout: 15_000,
 			expect: {
 				timeout: 5_000,
-				toHaveScreenshot: {
-					stylePath: `${testDir}/screenshot.css`,
-				},
 			},
 
 			/* Configure projects for major browsers */
@@ -83,22 +51,6 @@ export const baseConfig = async (overrides?: PlaywrightTestConfig) => {
 						},
 					},
 				},
-
-				// {
-				// 	name: 'firefox',
-				// 	use: { ...devices['Desktop Firefox'] },
-				// },
-
-				// {
-				// 	name: 'webkit',
-				// 	use: { ...devices['Desktop Safari'] },
-				// },
-
-				/* Test against mobile viewports. */
-				// {
-				//   name: 'Mobile Chrome',
-				//   use: { ...devices['Pixel 5'] },
-				// },
 				{
 					name: 'mobile',
 					use: {
@@ -112,16 +64,6 @@ export const baseConfig = async (overrides?: PlaywrightTestConfig) => {
 						},
 					},
 				},
-
-				/* Test against branded browsers. */
-				// {
-				//   name: 'Microsoft Edge',
-				//   use: { ...devices['Desktop Edge'], channel: 'msedge' },
-				// },
-				// {
-				//   name: 'Google Chrome',
-				//   use: { ...devices['Desktop Chrome'], channel: 'chrome' },
-				// },
 			],
 		},
 		overrides ?? {},
