@@ -102,8 +102,8 @@ function UserDropdown({
 				className="hover:bg-secondary flex items-center gap-2 px-3 py-1.5 transition-colors"
 				aria-label="Open account menu"
 			>
-				<span className="border-border text-foreground flex h-9 w-9 items-center justify-center border text-sm font-semibold">
-					{userInitials ? userInitials : <User className="h-5 w-5" />}
+				<span className="border-border text-foreground flex h-9 w-9 items-center justify-center border text-sm font-medium">
+					{userInitials ? userInitials : <User className="h-4 w-4" />}
 				</span>
 				<ChevronDown
 					className={`text-muted-foreground h-3 w-3 transition-transform ${isOpen ? 'rotate-180' : ''}`}
@@ -172,8 +172,8 @@ function RootComponent() {
 				<div className="flex min-h-dvh flex-col">
 					{/* Navigation — Institutional (hidden on beta gate) */}
 					{!isBetaPage && (
-						<header className="border-border bg-background sticky top-0 z-50 border-b">
-							<div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
+						<header className="border-border bg-background/95 sticky top-0 z-50 border-b backdrop-blur-sm">
+							<div className="mx-auto flex h-[4.5rem] max-w-7xl items-center justify-between px-6">
 								<Link
 									to={session ? '/match-activity' : '/'}
 									className="flex items-center gap-3"
@@ -183,7 +183,7 @@ function RootComponent() {
 										alt="Peace of Real Estate"
 										className="h-7 w-7 shrink-0"
 									/>
-									<span className="font-serif text-base tracking-tight">
+									<span className="font-serif text-base font-normal tracking-tight">
 										Peace of Real Estate
 									</span>
 								</Link>
@@ -202,7 +202,7 @@ function RootComponent() {
 											aria-label="Sign in or create account"
 										>
 											<span>Sign in</span>
-											<span className="border-border text-foreground flex h-8 w-8 items-center justify-center border text-sm font-semibold">
+											<span className="border-border text-foreground flex h-9 w-9 items-center justify-center border text-sm font-medium">
 												<User className="h-4 w-4" />
 											</span>
 										</Link>
@@ -220,9 +220,16 @@ function RootComponent() {
 					{/* Footer — Institutional (hidden on beta gate) */}
 					{!isBetaPage && (
 						<footer className="border-border bg-background border-t">
-							<div className="mx-auto max-w-7xl px-6 py-8">
-								<div className="flex flex-col items-center justify-center gap-4">
-									<p className="text-muted-foreground text-xs">
+							<div className="mx-auto max-w-7xl px-6 py-12">
+								<div className="flex flex-col items-center justify-center gap-6">
+									<div className="flex items-center gap-3">
+										<div className="accent-line accent-line-sand" />
+										<span className="font-serif text-sm tracking-tight">
+											Peace of Real Estate
+										</span>
+										<div className="accent-line accent-line-sand" />
+									</div>
+									<p className="text-muted-foreground text-xs tracking-wide">
 										© 2026 Peace of Real Estate. All rights reserved.
 									</p>
 								</div>

@@ -1,72 +1,62 @@
 @import '@fontsource-variable/dm-sans';
 @import '@aamini/ui/globals.css';
 
-@source inline('{bg,border,text}-{blue-cyan,terracotta,olive,ochre}');
+@source inline('{bg,border,text}-{sage,sand,terracotta}');
 
 :root {
 	--font-family-sans: 'DM Sans Variable', system-ui, sans-serif;
 	--font-family-serif: Georgia, 'Times New Roman', Cambria, serif;
 
-	--radius: 0.125rem;
-	--background: #fafaf8;
-	--foreground: #1a1a1a;
+	--radius: 0px;
+	--background: #ffffff;
+	--foreground: #1c1917;
 	--card: #ffffff;
-	--card-foreground: #1a1a1a;
+	--card-foreground: #1c1917;
 	--popover: #ffffff;
-	--popover-foreground: #1a1a1a;
-	--primary: #1a1a1a;
-	--primary-foreground: #fafaf8;
-	--secondary: #f5f5f0;
-	--secondary-foreground: #1a1a1a;
-	--muted: #f0efea;
-	--muted-foreground: #6b6b6b;
-	--accent: #b8956a;
-	--accent-foreground: #1a1a1a;
-	--destructive: #8b3a3a;
-	--border: #d4d0c8;
-	--input: #e8e6e1;
-	--ring: #1a1a1a;
+	--popover-foreground: #1c1917;
+	--primary: #1c1917;
+	--primary-foreground: #ffffff;
+	--secondary: #fafaf9;
+	--secondary-foreground: #1c1917;
+	--muted: #f5f5f4;
+	--muted-foreground: #78716c;
+	--accent: #c9a08c;
+	--accent-foreground: #1c1917;
+	--destructive: #991b1b;
+	--border: #e7e5e4;
+	--input: #f5f5f4;
+	--ring: #1c1917;
 
-	--blue-cyan: #1e6091;
-	--terracotta: #c2410c;
-	--olive: #15803d;
-	--ochre: #eab308;
-	--blue-cyan-foreground: #fafaf8;
-	--terracotta-foreground: #fafaf8;
-	--olive-foreground: #fafaf8;
-	--ochre-foreground: #1a1a1a;
-	--blue-cyan-muted: #2a7ab8;
-	--terracotta-muted: #ea580c;
-	--olive-muted: #16a34a;
-	--ochre-muted: #facc15;
-	--blue-cyan-tint: rgba(30, 96, 145, 0.08);
-	--terracotta-tint: rgba(194, 65, 12, 0.08);
-	--olive-tint: rgba(21, 128, 61, 0.08);
-	--ochre-tint: rgba(234, 179, 8, 0.08);
-	--warm-gradient-stop: #f5f0e8;
+	--sage: #9db89a;
+	--sand: #dccbb8;
+	--terracotta: #c9a08c;
+	--sage-foreground: #1c1917;
+	--sand-foreground: #1c1917;
+	--terracotta-foreground: #1c1917;
+	--sage-muted: #b8d4b5;
+	--sand-muted: #e8ddd0;
+	--terracotta-muted: #d4b5a5;
+	--sage-tint: rgba(157, 184, 154, 0.08);
+	--sand-tint: rgba(220, 203, 184, 0.08);
+	--terracotta-tint: rgba(201, 160, 140, 0.08);
 }
 
 @theme inline {
 	--font-serif: var(--font-family-serif);
-	--color-blue-cyan: var(--blue-cyan);
-	--color-blue-cyan-foreground: var(--blue-cyan-foreground);
-	--color-blue-cyan-tint: var(--blue-cyan-tint);
-	--color-blue-cyan-muted: var(--blue-cyan-muted);
+	--color-sage: var(--sage);
+	--color-sage-foreground: var(--sage-foreground);
+	--color-sage-tint: var(--sage-tint);
+	--color-sage-muted: var(--sage-muted);
+	--color-sand: var(--sand);
+	--color-sand-foreground: var(--sand-foreground);
+	--color-sand-tint: var(--sand-tint);
+	--color-sand-muted: var(--sand-muted);
 	--color-terracotta: var(--terracotta);
 	--color-terracotta-foreground: var(--terracotta-foreground);
 	--color-terracotta-tint: var(--terracotta-tint);
 	--color-terracotta-muted: var(--terracotta-muted);
-	--color-olive: var(--olive);
-	--color-olive-foreground: var(--olive-foreground);
-	--color-olive-tint: var(--olive-tint);
-	--color-olive-muted: var(--olive-muted);
-	--color-ochre: var(--ochre);
-	--color-ochre-foreground: var(--ochre-foreground);
-	--color-ochre-tint: var(--ochre-tint);
-	--color-ochre-muted: var(--ochre-muted);
-	--animate-fade-in: fade-in 0.4s ease-out forwards;
-	--animate-pop-in: pop-in 0.3s ease-out forwards;
-	--animate-sparkle: sparkle 0.5s ease-out forwards;
+	--animate-fade-in: fade-in 0.5s ease-out forwards;
+	--animate-slide-up: slide-up 0.6s ease-out forwards;
 }
 
 @layer base {
@@ -79,10 +69,11 @@
 	body {
 		letter-spacing: -0.01em;
 		line-height: 1.6;
+		font-weight: 400;
 	}
 
 	*:focus-visible {
-		outline: 2px solid var(--primary);
+		outline: 1px solid var(--primary);
 		outline-offset: 2px;
 	}
 
@@ -92,7 +83,7 @@
 	}
 
 	::-webkit-scrollbar {
-		width: 4px;
+		width: 3px;
 	}
 
 	::-webkit-scrollbar-track {
@@ -110,28 +101,28 @@
 
 @layer utilities {
 	.font-serif {
-		letter-spacing: -0.02em;
-		line-height: 1.15;
+		letter-spacing: -0.03em;
+		line-height: 1.1;
 	}
 
 	:where(.data-label) {
 		color: var(--muted-foreground);
 		font-size: 0.6875rem;
-		font-weight: 600;
-		letter-spacing: 0.1em;
+		font-weight: 500;
+		letter-spacing: 0.12em;
 		text-transform: uppercase;
 	}
 }
 
-@utility card-institutional {
+@utility card-editorial {
 	border: 1px solid var(--border);
 	border-radius: var(--radius);
-}
+	background: var(--card);
+	transition: border-color 0.2s ease;
 
-@utility data-number {
-	font-variant-numeric: tabular-nums;
-	font-feature-settings: 'tnum';
-	letter-spacing: -0.03em;
+	&:hover {
+		border-color: var(--muted-foreground);
+	}
 }
 
 @utility hairline {
@@ -139,37 +130,25 @@
 	background: var(--border);
 }
 
-@utility grid-pattern {
-	background-image:
-		linear-gradient(to right, var(--border) 1px, transparent 1px),
-		linear-gradient(to bottom, var(--border) 1px, transparent 1px);
-	background-position: center top;
-	background-size: 4rem 4rem;
-}
-
-@utility warm-gradient {
-	background: linear-gradient(
-		135deg,
-		var(--background) 0%,
-		var(--warm-gradient-stop) 50%,
-		var(--background) 100%
-	);
+@utility hairline-vertical {
+	width: 1px;
+	background: var(--border);
 }
 
 @utility btn-primary {
 	background: var(--primary);
 	border: 1px solid var(--primary);
 	color: var(--primary-foreground);
-	font-size: 0.8125rem;
-	font-weight: 600;
-	letter-spacing: 0.02em;
-	padding: 0.75rem 1.5rem;
+	font-size: 0.75rem;
+	font-weight: 500;
+	letter-spacing: 0.08em;
+	padding: 0.875rem 2rem;
 	text-transform: uppercase;
-	transition: all 0.15s ease;
+	transition: all 0.2s ease;
 
 	&:hover {
-		background: var(--foreground);
-		border-color: var(--foreground);
+		background: transparent;
+		color: var(--primary);
 	}
 }
 
@@ -177,17 +156,43 @@
 	background: transparent;
 	border: 1px solid var(--border);
 	color: var(--foreground);
-	font-size: 0.8125rem;
-	font-weight: 600;
-	letter-spacing: 0.02em;
-	padding: 0.75rem 1.5rem;
+	font-size: 0.75rem;
+	font-weight: 500;
+	letter-spacing: 0.08em;
+	padding: 0.875rem 2rem;
 	text-transform: uppercase;
-	transition: all 0.15s ease;
+	transition: all 0.2s ease;
 
 	&:hover {
 		background: var(--secondary);
 		border-color: var(--foreground);
 	}
+}
+
+@utility grid-strict {
+	background-image:
+		linear-gradient(to right, var(--border) 1px, transparent 1px),
+		linear-gradient(to bottom, var(--border) 1px, transparent 1px);
+	background-position: center top;
+	background-size: 5rem 5rem;
+	opacity: 0.25;
+}
+
+@utility accent-line {
+	height: 1px;
+	width: 3rem;
+}
+
+@utility accent-line-sage {
+	background: var(--sage);
+}
+
+@utility accent-line-sand {
+	background: var(--sand);
+}
+
+@utility accent-line-terracotta {
+	background: var(--terracotta);
 }
 
 @keyframes fade-in {
@@ -199,32 +204,13 @@
 	}
 }
 
-@keyframes pop-in {
-	0% {
+@keyframes slide-up {
+	from {
 		opacity: 0;
-		transform: scale(0.5);
+		transform: translateY(20px);
 	}
-	60% {
+	to {
 		opacity: 1;
-		transform: scale(1.2);
-	}
-	100% {
-		opacity: 1;
-		transform: scale(1);
-	}
-}
-
-@keyframes sparkle {
-	0% {
-		opacity: 1;
-		transform: scale(0) rotate(0deg);
-	}
-	50% {
-		opacity: 0.8;
-		transform: scale(1.5) rotate(180deg);
-	}
-	100% {
-		opacity: 0;
-		transform: scale(0) rotate(360deg);
+		transform: translateY(0);
 	}
 }
