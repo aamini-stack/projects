@@ -5,10 +5,10 @@ import {
 	RouterContextProvider,
 } from '@tanstack/react-router'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { expectComponentScreenshot } from '@aamini/config-testing/test/visual-page'
 import type { ComponentType, ReactNode } from 'react'
-import { expect } from 'vitest'
-import { page, type Locator } from 'vitest/browser'
-import { render, type RenderResult } from 'vitest-browser-react'
+import type { Locator } from 'vitest/browser'
+import type { RenderResult } from 'vitest-browser-react'
 
 function createMockRouter(path: string, component: ComponentType) {
 	const rootRoute = createRootRoute()
@@ -59,25 +59,11 @@ export async function expectPageScreenshot({
 	waitFor: (screen: RenderResult) => Locator
 	setup?: () => void
 }) {
-	localStorage.clear()
-	setup?.()
-	await page.viewport(1280, 720)
-	expect(window.innerWidth).toBe(1280)
-
-	const container = document.body.appendChild(document.createElement('div'))
-	container.style.width = '100vw'
-	container.style.minHeight = '100vh'
-	const Component = component
-
-	const screen = await render(<Component />, {
-		container,
+	await expectComponentScreenshot({
+		component,
+		name,
+		waitFor,
+		setup,
 		wrapper: createWrapper(path, component),
-	})
-
-	await expect.element(waitFor(screen)).toBeVisible()
-	await document.fonts.ready
-	await page.viewport(1280, Math.ceil(container.scrollHeight))
-	await expect.element(screen.locator).toMatchScreenshot(`${name}.png`, {
-		screenshotOptions: { scale: 'css' },
 	})
 }

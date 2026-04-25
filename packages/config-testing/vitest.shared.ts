@@ -158,7 +158,7 @@ export const createBaseConfig = (
 							plugins: [mswHandlersPlugin(), stylesPlugin()],
 							test: {
 								name: 'browser',
-								include: ['src/**/*.test.tsx'],
+								include: ['src/**/*.test.tsx', 'tests/**/*.test.tsx'],
 								setupFiles: [stylesSetup],
 								browser: {
 									instances: [

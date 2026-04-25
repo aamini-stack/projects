@@ -16,11 +16,8 @@
 		"test": "vitest run",
 		"test:unit": "vitest run --project unit",
 		"test:integration": "vitest run --project browser --project server",
+		"test:update": "vitest run --project browser tests/pages.test.tsx --update",
 		"test:watch": "vitest --watch",
-		"e2e": "playwright test",
-		"e2e:staging": "BASE_URL=https://dota-visualizer.ariaamini.com playwright test",
-		"e2e:update": "playwright test --update-snapshots",
-		"report": "playwright show-report .playwright/report",
 		"verify": "turbo run build test typecheck"
 	},
 	"dependencies": {
@@ -47,7 +44,6 @@
 		"@aamini/config-testing": "workspace:*",
 		"@aamini/config-typescript": "workspace:*",
 		"@aamini/config-vite": "workspace:*",
-		"@playwright/test": "^1.59.1",
 		"@tailwindcss/vite": "^4.2.1",
 		"@tanstack/devtools-vite": "^0.6.0",
 		"@types/node": "^25.4.0",
