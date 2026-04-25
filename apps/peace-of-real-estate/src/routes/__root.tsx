@@ -39,6 +39,16 @@ export const Route = createRootRouteWithContext<{
 		links: [
 			{ rel: 'stylesheet', href: appCss },
 			{ rel: 'icon', type: 'image/svg+xml', href: '/logomark-fullColor.svg' },
+			{ rel: 'preconnect', href: 'https://fonts.googleapis.com' },
+			{
+				rel: 'preconnect',
+				href: 'https://fonts.gstatic.com',
+				crossOrigin: 'anonymous',
+			},
+			{
+				rel: 'stylesheet',
+				href: 'https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&display=swap',
+			},
 		],
 	}),
 	beforeLoad: async ({ location }) => {
@@ -99,11 +109,11 @@ function UserDropdown({
 			<button
 				type="button"
 				onClick={() => setIsOpen(!isOpen)}
-				className="hover:bg-secondary flex items-center gap-2 px-3 py-1.5 transition-colors"
+				className="hover:bg-secondary flex items-center gap-2 px-2 py-1.5 transition-colors"
 				aria-label="Open account menu"
 			>
-				<span className="border-border text-foreground flex h-9 w-9 items-center justify-center border text-sm font-semibold">
-					{userInitials ? userInitials : <User className="h-5 w-5" />}
+				<span className="border-border text-foreground flex h-8 w-8 items-center justify-center border text-xs font-medium">
+					{userInitials ? userInitials : <User className="h-4 w-4" />}
 				</span>
 				<ChevronDown
 					className={`text-muted-foreground h-3 w-3 transition-transform ${isOpen ? 'rotate-180' : ''}`}
@@ -111,7 +121,7 @@ function UserDropdown({
 			</button>
 
 			{isOpen && (
-				<div className="border-border bg-background absolute right-0 z-50 mt-1 w-56 border shadow-lg">
+				<div className="border-border bg-card absolute right-0 z-50 mt-1 w-56 border shadow-lg">
 					<div className="py-1">
 						<Link
 							to="/account"
@@ -172,18 +182,18 @@ function RootComponent() {
 				<div className="flex min-h-dvh flex-col">
 					{/* Navigation — Institutional (hidden on beta gate) */}
 					{!isBetaPage && (
-						<header className="border-border bg-background sticky top-0 z-50 border-b">
-							<div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
+						<header className="bg-background/80 border-border/50 sticky top-0 z-50 border-b backdrop-blur-sm">
+							<div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-6">
 								<Link
 									to={session ? '/match-activity' : '/'}
 									className="flex items-center gap-3"
 								>
 									<img
 										src="/favicon.svg"
-										alt="Peace of Real Estate"
-										className="h-7 w-7 shrink-0"
+										alt=""
+										className="h-6 w-6 shrink-0 opacity-80"
 									/>
-									<span className="font-serif text-base tracking-tight">
+									<span className="font-serif text-sm tracking-wide">
 										Peace of Real Estate
 									</span>
 								</Link>
@@ -198,13 +208,10 @@ function RootComponent() {
 										<Link
 											to="/login"
 											search={{ redirect: currentPath }}
-											className="hover:bg-secondary inline-flex items-center gap-2 px-3 py-1.5 transition-colors"
+											className="text-muted-foreground hover:text-foreground inline-flex items-center px-3 py-1.5 text-xs tracking-wide uppercase transition-colors"
 											aria-label="Sign in or create account"
 										>
-											<span>Sign in</span>
-											<span className="border-border text-foreground flex h-8 w-8 items-center justify-center border text-sm font-semibold">
-												<User className="h-4 w-4" />
-											</span>
+											Sign in
 										</Link>
 									)}
 								</div>
@@ -213,16 +220,19 @@ function RootComponent() {
 					)}
 
 					{/* Main content */}
-					<main className="flex flex-1 flex-col items-center">
+					<main className="flex flex-1 flex-col">
 						<Outlet />
 					</main>
 
 					{/* Footer — Institutional (hidden on beta gate) */}
 					{!isBetaPage && (
-						<footer className="border-border bg-background border-t">
-							<div className="mx-auto max-w-7xl px-6 py-8">
-								<div className="flex flex-col items-center justify-center gap-4">
-									<p className="text-muted-foreground text-xs">
+						<footer className="border-border/50 border-t">
+							<div className="mx-auto max-w-7xl px-6 py-12">
+								<div className="flex flex-col items-center justify-center gap-3">
+									<span className="font-serif text-sm tracking-wide">
+										Peace of Real Estate
+									</span>
+									<p className="text-muted-foreground text-xs tracking-wide">
 										© 2026 Peace of Real Estate. All rights reserved.
 									</p>
 								</div>
