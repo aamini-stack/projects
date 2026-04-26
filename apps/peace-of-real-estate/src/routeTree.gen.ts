@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SignupRouteImport } from './routes/signup'
+import { Route as ShowcaseRouteImport } from './routes/showcase'
 import { Route as MatchActivityRouteImport } from './routes/match-activity'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as BetaRouteImport } from './routes/beta'
@@ -17,6 +18,7 @@ import { Route as AccountRouteImport } from './routes/account'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ConsumerIndexRouteImport } from './routes/consumer/index'
 import { Route as AgentIndexRouteImport } from './routes/agent/index'
+import { Route as ThemesThemeNameRouteImport } from './routes/themes/$themeName'
 import { Route as ConsumerResultsRouteImport } from './routes/consumer/results'
 import { Route as ConsumerQuizRouteImport } from './routes/consumer/quiz'
 import { Route as ConsumerPrioritiesRouteImport } from './routes/consumer/priorities'
@@ -33,6 +35,11 @@ import { Route as ApiIngestStaticSplatRouteImport } from './routes/api/ingest/st
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
   path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ShowcaseRoute = ShowcaseRouteImport.update({
+  id: '/showcase',
+  path: '/showcase',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MatchActivityRoute = MatchActivityRouteImport.update({
@@ -68,6 +75,11 @@ const ConsumerIndexRoute = ConsumerIndexRouteImport.update({
 const AgentIndexRoute = AgentIndexRouteImport.update({
   id: '/agent/',
   path: '/agent/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ThemesThemeNameRoute = ThemesThemeNameRouteImport.update({
+  id: '/themes/$themeName',
+  path: '/themes/$themeName',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ConsumerResultsRoute = ConsumerResultsRouteImport.update({
@@ -137,6 +149,7 @@ export interface FileRoutesByFullPath {
   '/beta': typeof BetaRoute
   '/login': typeof LoginRoute
   '/match-activity': typeof MatchActivityRoute
+  '/showcase': typeof ShowcaseRoute
   '/signup': typeof SignupRoute
   '/agent/priorities': typeof AgentPrioritiesRoute
   '/agent/profile': typeof AgentProfileRoute
@@ -146,6 +159,7 @@ export interface FileRoutesByFullPath {
   '/consumer/priorities': typeof ConsumerPrioritiesRoute
   '/consumer/quiz': typeof ConsumerQuizRoute
   '/consumer/results': typeof ConsumerResultsRoute
+  '/themes/$themeName': typeof ThemesThemeNameRoute
   '/agent/': typeof AgentIndexRoute
   '/consumer/': typeof ConsumerIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -159,6 +173,7 @@ export interface FileRoutesByTo {
   '/beta': typeof BetaRoute
   '/login': typeof LoginRoute
   '/match-activity': typeof MatchActivityRoute
+  '/showcase': typeof ShowcaseRoute
   '/signup': typeof SignupRoute
   '/agent/priorities': typeof AgentPrioritiesRoute
   '/agent/profile': typeof AgentProfileRoute
@@ -168,6 +183,7 @@ export interface FileRoutesByTo {
   '/consumer/priorities': typeof ConsumerPrioritiesRoute
   '/consumer/quiz': typeof ConsumerQuizRoute
   '/consumer/results': typeof ConsumerResultsRoute
+  '/themes/$themeName': typeof ThemesThemeNameRoute
   '/agent': typeof AgentIndexRoute
   '/consumer': typeof ConsumerIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -182,6 +198,7 @@ export interface FileRoutesById {
   '/beta': typeof BetaRoute
   '/login': typeof LoginRoute
   '/match-activity': typeof MatchActivityRoute
+  '/showcase': typeof ShowcaseRoute
   '/signup': typeof SignupRoute
   '/agent/priorities': typeof AgentPrioritiesRoute
   '/agent/profile': typeof AgentProfileRoute
@@ -191,6 +208,7 @@ export interface FileRoutesById {
   '/consumer/priorities': typeof ConsumerPrioritiesRoute
   '/consumer/quiz': typeof ConsumerQuizRoute
   '/consumer/results': typeof ConsumerResultsRoute
+  '/themes/$themeName': typeof ThemesThemeNameRoute
   '/agent/': typeof AgentIndexRoute
   '/consumer/': typeof ConsumerIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -206,6 +224,7 @@ export interface FileRouteTypes {
     | '/beta'
     | '/login'
     | '/match-activity'
+    | '/showcase'
     | '/signup'
     | '/agent/priorities'
     | '/agent/profile'
@@ -215,6 +234,7 @@ export interface FileRouteTypes {
     | '/consumer/priorities'
     | '/consumer/quiz'
     | '/consumer/results'
+    | '/themes/$themeName'
     | '/agent/'
     | '/consumer/'
     | '/api/auth/$'
@@ -228,6 +248,7 @@ export interface FileRouteTypes {
     | '/beta'
     | '/login'
     | '/match-activity'
+    | '/showcase'
     | '/signup'
     | '/agent/priorities'
     | '/agent/profile'
@@ -237,6 +258,7 @@ export interface FileRouteTypes {
     | '/consumer/priorities'
     | '/consumer/quiz'
     | '/consumer/results'
+    | '/themes/$themeName'
     | '/agent'
     | '/consumer'
     | '/api/auth/$'
@@ -250,6 +272,7 @@ export interface FileRouteTypes {
     | '/beta'
     | '/login'
     | '/match-activity'
+    | '/showcase'
     | '/signup'
     | '/agent/priorities'
     | '/agent/profile'
@@ -259,6 +282,7 @@ export interface FileRouteTypes {
     | '/consumer/priorities'
     | '/consumer/quiz'
     | '/consumer/results'
+    | '/themes/$themeName'
     | '/agent/'
     | '/consumer/'
     | '/api/auth/$'
@@ -273,6 +297,7 @@ export interface RootRouteChildren {
   BetaRoute: typeof BetaRoute
   LoginRoute: typeof LoginRoute
   MatchActivityRoute: typeof MatchActivityRoute
+  ShowcaseRoute: typeof ShowcaseRoute
   SignupRoute: typeof SignupRoute
   AgentPrioritiesRoute: typeof AgentPrioritiesRoute
   AgentProfileRoute: typeof AgentProfileRoute
@@ -282,6 +307,7 @@ export interface RootRouteChildren {
   ConsumerPrioritiesRoute: typeof ConsumerPrioritiesRoute
   ConsumerQuizRoute: typeof ConsumerQuizRoute
   ConsumerResultsRoute: typeof ConsumerResultsRoute
+  ThemesThemeNameRoute: typeof ThemesThemeNameRoute
   AgentIndexRoute: typeof AgentIndexRoute
   ConsumerIndexRoute: typeof ConsumerIndexRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
@@ -297,6 +323,13 @@ declare module '@tanstack/react-router' {
       path: '/signup'
       fullPath: '/signup'
       preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/showcase': {
+      id: '/showcase'
+      path: '/showcase'
+      fullPath: '/showcase'
+      preLoaderRoute: typeof ShowcaseRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/match-activity': {
@@ -346,6 +379,13 @@ declare module '@tanstack/react-router' {
       path: '/agent'
       fullPath: '/agent/'
       preLoaderRoute: typeof AgentIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/themes/$themeName': {
+      id: '/themes/$themeName'
+      path: '/themes/$themeName'
+      fullPath: '/themes/$themeName'
+      preLoaderRoute: typeof ThemesThemeNameRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/consumer/results': {
@@ -441,6 +481,7 @@ const rootRouteChildren: RootRouteChildren = {
   BetaRoute: BetaRoute,
   LoginRoute: LoginRoute,
   MatchActivityRoute: MatchActivityRoute,
+  ShowcaseRoute: ShowcaseRoute,
   SignupRoute: SignupRoute,
   AgentPrioritiesRoute: AgentPrioritiesRoute,
   AgentProfileRoute: AgentProfileRoute,
@@ -450,6 +491,7 @@ const rootRouteChildren: RootRouteChildren = {
   ConsumerPrioritiesRoute: ConsumerPrioritiesRoute,
   ConsumerQuizRoute: ConsumerQuizRoute,
   ConsumerResultsRoute: ConsumerResultsRoute,
+  ThemesThemeNameRoute: ThemesThemeNameRoute,
   AgentIndexRoute: AgentIndexRoute,
   ConsumerIndexRoute: ConsumerIndexRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
