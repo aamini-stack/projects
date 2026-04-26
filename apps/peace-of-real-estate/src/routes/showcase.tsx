@@ -96,10 +96,10 @@ function Showcase() {
 							01
 						</span>
 						<div>
-							<h2 className="text-3xl font-semibold text-[#2D3A25] font-fairway-head">
+							<h2 className="font-fairway-head text-3xl font-semibold text-[#2D3A25]">
 								Fairway Fresh
 							</h2>
-							<p className="mt-1 text-sm text-[#6B7F5E] font-fairway-body">
+							<p className="font-fairway-body mt-1 text-sm text-[#6B7F5E]">
 								Mowed-grass precision. Sage, cream, sky.
 							</p>
 						</div>
@@ -149,23 +149,23 @@ function Showcase() {
 						{/* Component preview */}
 						<div className="rounded-2xl border border-[#E8EBE3] bg-white p-8 shadow-sm">
 							<div className="mb-8 flex items-center justify-between">
-								<span className="text-xs tracking-[0.2em] text-[#6B7F5E] uppercase font-fairway-body">
+								<span className="font-fairway-body text-xs tracking-[0.2em] text-[#6B7F5E] uppercase">
 									Portfolio
 								</span>
 								<span className="h-[1px] w-8 bg-[#6B7F5E]" />
 							</div>
-							<h3 className="mb-3 text-4xl leading-tight text-[#2D3A25] font-fairway-head">
+							<h3 className="font-fairway-head mb-3 text-4xl leading-tight text-[#2D3A25]">
 								Built with
 								<br />
 								precision.
 							</h3>
-							<p className="mb-6 text-sm leading-relaxed text-[#6B7F5E] font-fairway-body">
+							<p className="font-fairway-body mb-6 text-sm leading-relaxed text-[#6B7F5E]">
 								Every project starts on a clean tee box. No clutter, no noise —
 								just the work, presented honestly.
 							</p>
 							<a
 								href="/showcase"
-								className="inline-flex items-center gap-2 text-sm font-medium text-[#2D3A25] transition-colors hover:text-[#6B7F5E] font-fairway-body"
+								className="font-fairway-body inline-flex items-center gap-2 text-sm font-medium text-[#2D3A25] transition-colors hover:text-[#6B7F5E]"
 							>
 								View selected work
 								<svg
@@ -199,10 +199,10 @@ function Showcase() {
 							02
 						</span>
 						<div>
-							<h2 className="text-3xl font-medium text-[#3D3832] font-links-head">
+							<h2 className="font-links-head text-3xl font-medium text-[#3D3832]">
 								Links Minimal
 							</h2>
-							<p className="mt-1 text-sm text-[#9E9386] font-links-body">
+							<p className="font-links-body mt-1 text-sm text-[#9E9386]">
 								Coastal sand, fog, and driftwood. Texture without weight.
 							</p>
 						</div>
@@ -231,9 +231,7 @@ function Showcase() {
 							<div className="flex items-center gap-4">
 								<div className="h-16 w-16 rounded-full bg-[#8BA89B] shadow-sm" />
 								<div>
-									<p className="text-sm font-medium text-[#3D3832]">
-										Seafoam
-									</p>
+									<p className="text-sm font-medium text-[#3D3832]">Seafoam</p>
 									<p className="font-mono text-xs text-[#9E9386]">#8BA89B</p>
 								</div>
 							</div>
@@ -251,16 +249,15 @@ function Showcase() {
 						<div className="rounded-sm border border-[#D8D0C8] bg-[#F5F2EE] p-8 shadow-sm">
 							<div className="mb-8 flex items-center gap-3">
 								<div className="h-8 w-8 rounded-sm bg-[#3D3832]" />
-								<span className="text-xs tracking-[0.15em] text-[#9E9386] uppercase font-links-body">
+								<span className="font-links-body text-xs tracking-[0.15em] text-[#9E9386] uppercase">
 									Available for projects
 								</span>
 							</div>
-							<h3 className="mb-4 text-3xl leading-snug text-[#3D3832] font-links-head">
+							<h3 className="font-links-head mb-4 text-3xl leading-snug text-[#3D3832]">
 								Freelance developer
-								<br />
-								& technical lead
+								<br />& technical lead
 							</h3>
-							<p className="mb-8 max-w-sm text-sm leading-relaxed text-[#9E9386] font-links-body">
+							<p className="font-links-body mb-8 max-w-sm text-sm leading-relaxed text-[#9E9386]">
 								Ten years shipping products. I work with teams who value clarity
 								over complexity and users who deserve interfaces that simply
 								work.
@@ -268,13 +265,13 @@ function Showcase() {
 							<div className="flex gap-3">
 								<a
 									href="/showcase"
-									className="rounded-sm bg-[#3D3832] px-5 py-2.5 text-sm font-medium text-[#F5F2EE] transition-colors hover:bg-[#5A534A] font-links-body"
+									className="font-links-body rounded-sm bg-[#3D3832] px-5 py-2.5 text-sm font-medium text-[#F5F2EE] transition-colors hover:bg-[#5A534A]"
 								>
 									Start a conversation
 								</a>
 								<a
 									href="/showcase"
-									className="rounded-sm border border-[#C9C0B6] px-5 py-2.5 text-sm text-[#3D3832] transition-colors hover:border-[#3D3832] font-links-body"
+									className="font-links-body rounded-sm border border-[#C9C0B6] px-5 py-2.5 text-sm text-[#3D3832] transition-colors hover:border-[#3D3832]"
 								>
 									Read case studies
 								</a>
@@ -297,10 +294,10 @@ function Showcase() {
 							03
 						</span>
 						<div>
-							<h2 className="text-3xl font-semibold text-[#1A1A1A] font-tee-head">
+							<h2 className="font-tee-head text-3xl font-semibold text-[#1A1A1A]">
 								Tee Box Classic
 							</h2>
-							<p className="mt-1 text-sm text-[#8B7E6A] font-tee-body">
+							<p className="font-tee-body mt-1 text-sm text-[#8B7E6A]">
 								Crisp white, warm stone, forest green accent. Maximum breathing
 								room.
 							</p>
@@ -348,23 +345,23 @@ function Showcase() {
 						</div>
 
 						<div className="rounded-3xl border border-[#EDE9E2] bg-[#FAFAF8] p-10">
-							<p className="mb-6 text-xs tracking-[0.25em] text-[#8B7E6A] uppercase font-tee-body">
+							<p className="font-tee-body mb-6 text-xs tracking-[0.25em] text-[#8B7E6A] uppercase">
 								Hello, I'm Alex
 							</p>
-							<h3 className="mb-6 text-5xl leading-[1.1] text-[#1A1A1A] font-tee-head">
+							<h3 className="font-tee-head mb-6 text-5xl leading-[1.1] text-[#1A1A1A]">
 								I build
 								<br />
 								digital products.
 							</h3>
 							<div className="mb-6 h-[2px] w-12 bg-[#1B4332]" />
-							<p className="mb-8 leading-relaxed text-[#8B7E6A] font-tee-body">
+							<p className="font-tee-body mb-8 leading-relaxed text-[#8B7E6A]">
 								Full-stack engineer with a designer's eye. Currently taking on
 								select projects for Q2 2026.
 							</p>
 							<div className="space-y-3">
 								<a
 									href="/showcase"
-									className="flex items-center justify-between border-b border-[#EDE9E2] py-3 text-[#1A1A1A] transition-colors hover:text-[#1B4332] font-tee-body"
+									className="font-tee-body flex items-center justify-between border-b border-[#EDE9E2] py-3 text-[#1A1A1A] transition-colors hover:text-[#1B4332]"
 								>
 									<span className="text-sm">View my work</span>
 									<svg
@@ -383,7 +380,7 @@ function Showcase() {
 								</a>
 								<a
 									href="/showcase"
-									className="flex items-center justify-between border-b border-[#EDE9E2] py-3 text-[#1A1A1A] transition-colors hover:text-[#1B4332] font-tee-body"
+									className="font-tee-body flex items-center justify-between border-b border-[#EDE9E2] py-3 text-[#1A1A1A] transition-colors hover:text-[#1B4332]"
 								>
 									<span className="text-sm">About my process</span>
 									<svg
@@ -402,7 +399,7 @@ function Showcase() {
 								</a>
 								<a
 									href="/showcase"
-									className="flex items-center justify-between py-3 text-[#1A1A1A] transition-colors hover:text-[#1B4332] font-tee-body"
+									className="font-tee-body flex items-center justify-between py-3 text-[#1A1A1A] transition-colors hover:text-[#1B4332]"
 								>
 									<span className="text-sm">Get in touch</span>
 									<svg
@@ -435,10 +432,10 @@ function Showcase() {
 							04
 						</span>
 						<div>
-							<h2 className="text-3xl font-semibold text-[#2C3E3E] font-dew-head">
+							<h2 className="font-dew-head text-3xl font-semibold text-[#2C3E3E]">
 								Dew Point
 							</h2>
-							<p className="mt-1 text-sm text-[#7A9191] font-dew-body">
+							<p className="font-dew-body mt-1 text-sm text-[#7A9191]">
 								Morning mist, silvery blues, pale mint. Serene and luminous.
 							</p>
 						</div>
@@ -487,11 +484,11 @@ function Showcase() {
 						<div className="rounded-2xl border border-white bg-white/60 p-8 shadow-sm backdrop-blur-sm">
 							<div className="mb-6 flex items-center gap-2">
 								<div className="h-2 w-2 rounded-full bg-[#A8C5BF]" />
-								<span className="text-xs tracking-[0.2em] text-[#7A9191] uppercase font-dew-body">
+								<span className="font-dew-body text-xs tracking-[0.2em] text-[#7A9191] uppercase">
 									Services
 								</span>
 							</div>
-							<h3 className="mb-6 text-3xl leading-tight text-[#2C3E3E] font-dew-head">
+							<h3 className="font-dew-head mb-6 text-3xl leading-tight text-[#2C3E3E]">
 								What I can
 								<br />
 								help you with
@@ -514,10 +511,10 @@ function Showcase() {
 										</svg>
 									</div>
 									<div>
-										<p className="text-sm font-medium text-[#2C3E3E] font-dew-body">
+										<p className="font-dew-body text-sm font-medium text-[#2C3E3E]">
 											Frontend Architecture
 										</p>
-										<p className="mt-0.5 text-xs text-[#7A9191] font-dew-body">
+										<p className="font-dew-body mt-0.5 text-xs text-[#7A9191]">
 											React, TypeScript, design systems
 										</p>
 									</div>
@@ -539,10 +536,10 @@ function Showcase() {
 										</svg>
 									</div>
 									<div>
-										<p className="text-sm font-medium text-[#2C3E3E] font-dew-body">
+										<p className="font-dew-body text-sm font-medium text-[#2C3E3E]">
 											Full-Stack Products
 										</p>
-										<p className="mt-0.5 text-xs text-[#7A9191] font-dew-body">
+										<p className="font-dew-body mt-0.5 text-xs text-[#7A9191]">
 											End-to-end from database to UI
 										</p>
 									</div>
@@ -564,10 +561,10 @@ function Showcase() {
 										</svg>
 									</div>
 									<div>
-										<p className="text-sm font-medium text-[#2C3E3E] font-dew-body">
+										<p className="font-dew-body text-sm font-medium text-[#2C3E3E]">
 											Performance & Scale
 										</p>
-										<p className="mt-0.5 text-xs text-[#7A9191] font-dew-body">
+										<p className="font-dew-body mt-0.5 text-xs text-[#7A9191]">
 											Speed audits, infrastructure
 										</p>
 									</div>
@@ -586,10 +583,10 @@ function Showcase() {
 							05
 						</span>
 						<div>
-							<h2 className="text-3xl font-medium text-[#2B2824] font-caddie-head">
+							<h2 className="font-caddie-head text-3xl font-medium text-[#2B2824]">
 								Caddie Notebook
 							</h2>
-							<p className="mt-1 text-sm text-[#8C857B] font-caddie-body">
+							<p className="font-caddie-body mt-1 text-sm text-[#8C857B]">
 								Utility and warmth. Cream paper, pencil marks, grid lines.
 							</p>
 						</div>
@@ -645,13 +642,13 @@ function Showcase() {
 						>
 							<div className="absolute top-0 bottom-0 left-8 w-[1px] bg-[#E8E4DE]" />
 							<div className="pl-6">
-								<p className="mb-6 text-xs tracking-[0.15em] text-[#8C857B] uppercase font-caddie-body">
+								<p className="font-caddie-body mb-6 text-xs tracking-[0.15em] text-[#8C857B] uppercase">
 									Yardage Book
 								</p>
-								<h3 className="mb-2 text-2xl text-[#2B2824] font-caddie-head">
+								<h3 className="font-caddie-head mb-2 text-2xl text-[#2B2824]">
 									Project Notes
 								</h3>
-								<p className="mb-8 text-sm text-[#8C857B] font-caddie-body">
+								<p className="font-caddie-body mb-8 text-sm text-[#8C857B]">
 									A running log of work, thoughts, and useful tools.
 								</p>
 
@@ -661,10 +658,10 @@ function Showcase() {
 											01
 										</span>
 										<div>
-											<p className="text-sm font-medium text-[#2B2824] font-caddie-body">
+											<p className="font-caddie-body text-sm font-medium text-[#2B2824]">
 												E-commerce Platform Rebuild
 											</p>
-											<p className="mt-1 text-xs text-[#8C857B] font-caddie-body">
+											<p className="font-caddie-body mt-1 text-xs text-[#8C857B]">
 												Next.js, Stripe, headless CMS — 40% faster checkout
 											</p>
 										</div>
@@ -674,10 +671,10 @@ function Showcase() {
 											02
 										</span>
 										<div>
-											<p className="text-sm font-medium text-[#2B2824] font-caddie-body">
+											<p className="font-caddie-body text-sm font-medium text-[#2B2824]">
 												Design System for Fintech
 											</p>
-											<p className="mt-1 text-xs text-[#8C857B] font-caddie-body">
+											<p className="font-caddie-body mt-1 text-xs text-[#8C857B]">
 												40+ components, Storybook, accessibility-first
 											</p>
 										</div>
@@ -687,10 +684,10 @@ function Showcase() {
 											03
 										</span>
 										<div>
-											<p className="text-sm font-medium text-[#2B2824] font-caddie-body">
+											<p className="font-caddie-body text-sm font-medium text-[#2B2824]">
 												Real-Time Dashboard
 											</p>
-											<p className="mt-1 text-xs text-[#8C857B] font-caddie-body">
+											<p className="font-caddie-body mt-1 text-xs text-[#8C857B]">
 												WebSockets, D3 charts, 10k concurrent users
 											</p>
 										</div>
@@ -700,7 +697,7 @@ function Showcase() {
 								<div className="mt-8 border-t border-[#E8E4DE] pt-4">
 									<a
 										href="/showcase"
-										className="flex items-center gap-2 text-sm text-[#2B2824] transition-colors hover:text-[#B8A99A] font-caddie-body"
+										className="font-caddie-body flex items-center gap-2 text-sm text-[#2B2824] transition-colors hover:text-[#B8A99A]"
 									>
 										See full yardage book
 										<span className="text-lg">→</span>
