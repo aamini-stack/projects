@@ -1,15 +1,6 @@
 import { expect, test } from '@playwright/test'
 import { mockJsonRoute } from '@aamini/config-testing/test/playwright'
 
-test.beforeEach(async ({ page }) => {
-	await mockJsonRoute(
-		page,
-		'**/api/suggestions**',
-		new URL('../__mocks__/data/suggestions.json', import.meta.url),
-	)
-	await page.goto('/')
-})
-
 test('Search bar click navigation works', async ({ page }) => {
 	await expect(page.getByRole('heading', { name: /IMDB Graph/i })).toBeVisible()
 	const searchBar = page.getByRole('combobox')
