@@ -1,8 +1,8 @@
 import { getDb } from '@/db/connection'
 import { account, session, user, verification } from '@/db/tables'
+import { env } from '@/env'
 
 import { toAuthBaseURL } from '@/lib/auth-base-url'
-import { ENV } from 'varlock/env'
 import { drizzleAdapter } from '@better-auth/drizzle-adapter'
 import { createAuthMiddleware } from 'better-auth/api'
 import { betterAuth } from 'better-auth'
@@ -88,16 +88,11 @@ function forwardedHostOAuthShim() {
 
 export function getAuth() {
 	if (!authInstance) {
-		const betterAuthUrl = ENV.BETTER_AUTH_URL ?? process.env.BETTER_AUTH_URL
-		const betterAuthSecret =
-			ENV.BETTER_AUTH_SECRET ?? process.env.BETTER_AUTH_SECRET
-		const oAuthProxySecret =
-			ENV.OAUTH_PROXY_SECRET ??
-			process.env.OAUTH_PROXY_SECRET ??
-			betterAuthSecret
-		const googleClientId = ENV.GOOGLE_CLIENT_ID ?? process.env.GOOGLE_CLIENT_ID
-		const googleClientSecret =
-			ENV.GOOGLE_CLIENT_SECRET ?? process.env.GOOGLE_CLIENT_SECRET
+		const betterAuthUrl = env.BETTER_AUTH_URL
+		const betterAuthSecret = env.BETTER_AUTH_SECRET
+		const oAuthProxySecret = env.OAUTH_PROXY_SECRET ?? betterAuthSecret
+		const googleClientId = env.GOOGLE_CLIENT_ID
+		const googleClientSecret = env.GOOGLE_CLIENT_SECRET
 
 		const productionAppOrigin = betterAuthUrl
 			? new URL(betterAuthUrl).origin

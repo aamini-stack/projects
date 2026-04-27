@@ -10,12 +10,11 @@ import {
 } from '@tanstack/react-router'
 import { useEffect } from 'react'
 import posthog from 'posthog-js'
-import { ENV } from 'varlock/env'
 import appCss from '../styles.css?url'
 
 function Analytics() {
 	useEffect(() => {
-		const posthogKey = ENV.VITE_PUBLIC_POSTHOG_KEY?.trim()
+		const posthogKey = import.meta.env.VITE_PUBLIC_POSTHOG_KEY?.trim()
 		if (import.meta.env.MODE === 'development' || !posthogKey) return
 
 		posthog.init(posthogKey, {

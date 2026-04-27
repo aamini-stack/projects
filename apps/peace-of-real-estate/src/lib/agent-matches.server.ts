@@ -1,10 +1,10 @@
 import { getDb } from '@/db/connection'
 import { user, agents, agentQuestionnaires } from '@/db/tables'
+import { env } from '@/env'
 import type { AgentMatchData } from '@/lib/agent-matches'
 import { GetObjectCommand, S3Client } from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 import { eq } from 'drizzle-orm'
-import { ENV } from 'varlock/env'
 
 function calculateFitScore(
 	agentWeights: Record<string, number>,
@@ -37,12 +37,11 @@ let storageClient: S3Client | undefined
 
 function getStorageClient() {
 	storageClient ??= new S3Client({
-		region: process.env.AWS_REGION ?? 'auto',
-		endpoint: ENV.AWS_ENDPOINT_URL ?? process.env.AWS_ENDPOINT_URL ?? '',
+		region: env.AWS_REGION ?? 'auto',
+		endpoint: env.AWS_ENDPOINT_URL ?? '',
 		credentials: {
-			accessKeyId: ENV.AWS_ACCESS_KEY_ID ?? process.env.AWS_ACCESS_KEY_ID ?? '',
-			secretAccessKey:
-				ENV.AWS_SECRET_ACCESS_KEY ?? process.env.AWS_SECRET_ACCESS_KEY ?? '',
+			accessKeyId: env.AWS_ACCESS_KEY_ID ?? '',
+			secretAccessKey: env.AWS_SECRET_ACCESS_KEY ?? '',
 		},
 		forcePathStyle: false,
 	})
@@ -59,7 +58,7 @@ async function resolveAvatarUrl(image?: string | null) {
 		return image
 	}
 
-	const avatarBucket = ENV.AVATAR_BUCKET ?? process.env.AVATAR_BUCKET
+	const avatarBucket = env.AVATAR_BUCKET
 	if (!avatarBucket) {
 		return undefined
 	}

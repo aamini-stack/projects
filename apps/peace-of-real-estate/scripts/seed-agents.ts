@@ -1,10 +1,11 @@
-import 'varlock/auto-load'
+import 'dotenv/config'
 import {
 	CreateBucketCommand,
 	HeadBucketCommand,
 	PutObjectCommand,
 	S3Client,
 } from '@aws-sdk/client-s3'
+import { env } from '../src/env'
 import { getDb } from '../src/db/connection'
 import {
 	user,
@@ -500,8 +501,8 @@ const SEED_AGENTS = [
 	},
 ]
 
-function requireEnv(name: string): string {
-	const value = process.env[name]
+function requireEnv(name: keyof typeof env): string {
+	const value = env[name]
 	if (!value) {
 		throw new Error(`Missing ${name}`)
 	}
@@ -510,7 +511,7 @@ function requireEnv(name: string): string {
 
 const avatarBucket = requireEnv('AVATAR_BUCKET')
 const storageClient = new S3Client({
-	region: process.env.AWS_REGION ?? 'auto',
+	region: env.AWS_REGION ?? 'auto',
 	endpoint: requireEnv('AWS_ENDPOINT_URL'),
 	credentials: {
 		accessKeyId: requireEnv('AWS_ACCESS_KEY_ID'),
