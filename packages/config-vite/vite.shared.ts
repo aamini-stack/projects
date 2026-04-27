@@ -1,7 +1,6 @@
 import tailwindcss from '@tailwindcss/vite'
 import { devtools } from '@tanstack/devtools-vite'
 import { tanstackStart } from '@tanstack/react-start/plugin/vite'
-import { varlockVitePlugin } from '@varlock/vite-integration'
 import viteReact, { reactCompilerPreset } from '@vitejs/plugin-react'
 import { nitro } from 'nitro/vite'
 import { defineConfig } from 'vite'
@@ -21,7 +20,6 @@ export const baseConfig = defineConfig({
 		nitro(),
 		tailwindcss(),
 		tanstackStart(),
-		varlockVitePlugin({ ssrInjectMode: 'auto-load' }),
 		viteReact(),
 		babel({ presets: [reactCompilerPreset()] }),
 		svgr({
