@@ -1,0 +1,116 @@
+@import '@fontsource-variable/dm-sans';
+@import '@fontsource/playfair-display/400.css';
+@import '@fontsource/playfair-display/700.css';
+@import '@fontsource/playfair-display/900.css';
+@import '@fontsource/space-grotesk/400.css';
+@import '@fontsource/space-grotesk/700.css';
+@import 'tailwindcss';
+
+@theme inline {
+	--font-sans: 'DM Sans Variable', ui-sans-serif, system-ui, sans-serif;
+	--font-serif: 'Playfair Display', ui-serif, Georgia, serif;
+	--font-display: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+
+	/* The Gentlemen's Chair — Main Theme */
+	--color-bg-primary: #f2f0ec;
+	--color-bg-secondary: #ffffff;
+	--color-bg-accent: #1a2744;
+	--color-text-primary: #0d1117;
+	--color-text-secondary: #4a4f55;
+	--color-text-inverse: #f2f0ec;
+	--color-accent-red: #b91c3a;
+	--color-accent-blue: #1a2744;
+	--color-accent-gold: #c9a96e;
+	--color-border-color: #d4d0c8;
+	--color-stripe-red: #b91c3a;
+	--color-stripe-blue: #1a2744;
+	--color-stripe-white: #f2f0ec;
+}
+
+@layer base {
+	body {
+		font-family: var(--font-sans);
+		background-color: var(--color-bg-primary);
+		color: var(--color-text-primary);
+	}
+}
+
+@utility theme-bg-primary {
+	background-color: var(--color-bg-primary);
+}
+
+@utility theme-bg-secondary {
+	background-color: var(--color-bg-secondary);
+}
+
+@utility theme-bg-accent {
+	background-color: var(--color-bg-accent);
+}
+
+@utility theme-text-primary {
+	color: var(--color-text-primary);
+}
+
+@utility theme-text-secondary {
+	color: var(--color-text-secondary);
+}
+
+@utility theme-text-inverse {
+	color: var(--color-text-inverse);
+}
+
+@utility theme-accent-red {
+	color: var(--color-accent-red);
+}
+
+@utility theme-accent-blue {
+	color: var(--color-accent-blue);
+}
+
+@utility theme-accent-gold {
+	color: var(--color-accent-gold);
+}
+
+@utility theme-bg-accent-red {
+	background-color: var(--color-accent-red);
+}
+
+@utility theme-bg-accent-blue {
+	background-color: var(--color-accent-blue);
+}
+
+@utility theme-bg-accent-gold {
+	background-color: var(--color-accent-gold);
+}
+
+@utility theme-border {
+	border-color: var(--color-border-color);
+}
+
+@utility barber-stripes {
+	background: repeating-linear-gradient(
+		45deg,
+		var(--color-stripe-red),
+		var(--color-stripe-red) 10px,
+		var(--color-stripe-white) 10px,
+		var(--color-stripe-white) 20px,
+		var(--color-stripe-blue) 20px,
+		var(--color-stripe-blue) 30px,
+		var(--color-stripe-white) 30px,
+		var(--color-stripe-white) 40px
+	);
+}
+
+@utility barber-stripes-vertical {
+	background: repeating-linear-gradient(
+		90deg,
+		var(--color-stripe-red),
+		var(--color-stripe-red) 8px,
+		var(--color-stripe-white) 8px,
+		var(--color-stripe-white) 16px,
+		var(--color-stripe-blue) 16px,
+		var(--color-stripe-blue) 24px,
+		var(--color-stripe-white) 24px,
+		var(--color-stripe-white) 32px
+	);
+}

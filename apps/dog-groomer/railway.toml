@@ -1,0 +1,20 @@
+[build]
+builder = "RAILPACK"
+buildCommand = "pnpm --filter dog-groomer build"
+watchPatterns = [
+	"/apps/dog-groomer/**",
+	"/packages/**",
+	"package.json",
+	"pnpm-lock.yaml",
+]
+
+[deploy]
+multiRegionConfig = { "us-west2" = { numReplicas = 1 } }
+runtime = "V2"
+numReplicas = 1
+startCommand = "cd apps/dog-groomer && node .output/server/index.mjs"
+healthcheckPath = "/"
+sleepApplication = true
+ipv6EgressEnabled = false
+restartPolicyType = "ALWAYS"
+healthcheckTimeout = 300
