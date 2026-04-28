@@ -68,15 +68,9 @@ function Navbar() {
 
 				<div className="hidden items-center gap-8 text-sm font-medium md:flex">
 					<a href="/" className="theme-text-secondary hover:theme-accent-red transition-colors">Home</a>
-					<a href="/services" className="theme-text-secondary hover:theme-accent-red transition-colors">Services</a>
+					<a href="/#services" className="theme-text-secondary hover:theme-accent-red transition-colors">Services</a>
 					<a href="/gallery" className="theme-text-secondary hover:theme-accent-red transition-colors">Gallery</a>
 					<a href="/#contact" className="theme-text-secondary hover:theme-accent-red transition-colors">Contact</a>
-				</div>
-
-				<div className="hidden md:block">
-					<a href="tel:5048104320" className="theme-bg-accent-red theme-text-inverse rounded-full px-5 py-2.5 text-sm font-semibold transition-opacity hover:opacity-90 inline-flex items-center gap-2">
-						<Phone className="h-4 w-4" /> (504) 810-4320
-					</a>
 				</div>
 
 				<button className="theme-text-primary md:hidden" onClick={() => setOpen(!open)} aria-label="Toggle menu">
@@ -88,12 +82,9 @@ function Navbar() {
 				<div className="theme-border border-t px-6 py-4 md:hidden">
 					<div className="flex flex-col gap-3 text-sm font-medium">
 						<a href="/" onClick={() => setOpen(false)} className="theme-text-secondary py-1">Home</a>
-						<a href="/services" onClick={() => setOpen(false)} className="theme-text-secondary py-1">Services</a>
+						<a href="/#services" onClick={() => setOpen(false)} className="theme-text-secondary py-1">Services</a>
 						<a href="/gallery" onClick={() => setOpen(false)} className="theme-text-secondary py-1">Gallery</a>
 						<a href="/#contact" onClick={() => setOpen(false)} className="theme-text-secondary py-1">Contact</a>
-						<a href="tel:5048104320" className="theme-bg-accent-red theme-text-inverse mt-2 w-full rounded-full px-5 py-2.5 text-sm font-semibold text-center inline-flex items-center justify-center gap-2">
-							<Phone className="h-4 w-4" /> (504) 810-4320
-						</a>
 					</div>
 				</div>
 			)}
