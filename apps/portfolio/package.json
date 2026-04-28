@@ -21,6 +21,7 @@
 		"verify": "turbo run build test typecheck"
 	},
 	"dependencies": {
+		"@aamini/lib": "workspace:*",
 		"@aamini/ui": "workspace:@aamini/ui-neobrutalist@*",
 		"@fontsource-variable/dm-sans": "^5.2.8",
 		"@hookform/resolvers": "^5.2.2",
