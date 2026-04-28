@@ -519,7 +519,7 @@ function Footer() {
 						<Mail className="h-5 w-5" />
 					</a>
 					<a
-						href="#"
+						href="https://www.facebook.com/PawPawsPuppyParlor"
 						className="theme-text-secondary hover:theme-accent-red transition-colors"
 						aria-label="Facebook"
 					>
