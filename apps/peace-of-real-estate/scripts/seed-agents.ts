@@ -504,7 +504,7 @@ const SEED_AGENTS = [
 function requireEnv(name: keyof typeof env): string {
 	const value = env[name]
 	if (!value) {
-		throw new Error(`Missing ${name}`)
+		throw new Error(`Missing ${String(name)}`)
 	}
 	return value
 }
