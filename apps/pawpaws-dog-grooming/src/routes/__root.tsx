@@ -14,7 +14,8 @@ export const Route = createRootRoute({
 			{ title: 'Pawlished Pups | Premium Dog Grooming' },
 			{
 				name: 'description',
-				content: 'Professional dog grooming with barbershop soul. Where every pup gets the gentleman\'s treatment.',
+				content:
+					"Professional dog grooming with barbershop soul. Where every pup gets the gentleman's treatment.",
 			},
 		],
 		links: [
@@ -31,7 +32,7 @@ function RootComponent() {
 			<head>
 				<HeadContent />
 			</head>
-			<body className="antialiased theme-bg-primary theme-text-primary">
+			<body className="theme-bg-primary theme-text-primary antialiased">
 				<Outlet />
 				<Scripts />
 			</body>
