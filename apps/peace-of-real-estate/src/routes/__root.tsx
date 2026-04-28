@@ -16,10 +16,7 @@ import posthog from 'posthog-js'
 import { ArrowRightLeft, User, LogOut, ChevronDown } from 'lucide-react'
 import { useState, useEffect, useRef } from 'react'
 import appCss from '../styles.css?url'
-if (
-	import.meta.env.MODE === 'production' &&
-	import.meta.env.VITE_PUBLIC_POSTHOG_KEY
-) {
+if (import.meta.env.MODE === 'production' && import.meta.env.VITE_PUBLIC_POSTHOG_KEY) {
 	posthog.init(import.meta.env.VITE_PUBLIC_POSTHOG_KEY, {
 		api_host: '/api/ingest',
 		ui_host: 'https://us.posthog.com',
