@@ -13,7 +13,7 @@ export const Route = createFileRoute('/showcase')({
 			},
 			{
 				rel: 'stylesheet',
-				href: 'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=Space+Grotesk:wght@300;400;500;600&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300&family=Work+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap',
+				href: 'https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=Fredoka:wght@400;500;600&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300&family=Nunito:wght@400;600;700&family=Poppins:wght@400;500;600&family=Quicksand:wght@400;500;600;700&family=Space+Grotesk:wght@300;400;500;600&family=Work+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap',
 			},
 		],
 	}),
@@ -33,6 +33,16 @@ function Showcase() {
 				.font-dew-body { font-family: 'Work Sans', sans-serif; }
 				.font-caddie-head { font-family: 'Space Grotesk', sans-serif; }
 				.font-caddie-body { font-family: 'DM Sans', sans-serif; }
+				.font-soda-head { font-family: 'Fredoka', sans-serif; }
+				.font-soda-body { font-family: 'Nunito', sans-serif; }
+				.font-sticker-head { font-family: 'Quicksand', sans-serif; }
+				.font-sticker-body { font-family: 'Quicksand', sans-serif; }
+				.font-bubble-head { font-family: 'Fredoka', sans-serif; }
+				.font-bubble-body { font-family: 'Poppins', sans-serif; }
+				.font-confetti-head { font-family: 'Poppins', sans-serif; }
+				.font-confetti-body { font-family: 'DM Sans', sans-serif; }
+				.font-play-head { font-family: 'Nunito', sans-serif; }
+				.font-play-body { font-family: 'Quicksand', sans-serif; }
 
 				.stripe-bg {
 					background: repeating-linear-gradient(
@@ -67,6 +77,9 @@ function Showcase() {
 					position: relative;
 					z-index: 2;
 				}
+				.sticker-shadow {
+					box-shadow: 4px 4px 0px 0px rgba(0,0,0,0.15);
+				}
 			`}</style>
 
 			{/* Header */}
@@ -78,12 +91,12 @@ function Showcase() {
 					className="mb-6 text-5xl font-light text-neutral-900 md:text-6xl"
 					style={{ fontFamily: "'Cormorant Garamond', serif" }}
 				>
-					Five Directions
+					Ten Directions
 				</h1>
 				<p className="mx-auto max-w-xl text-lg leading-relaxed text-neutral-500">
-					Clean, light, and precise — like a well-kept course at dawn. No luxury
-					fashion noise. Just breathing room, good typography, and quiet
-					confidence.
+					From quiet fairways to carnival confetti — ten distinct visual
+					directions for the same product. The first five breathe. The next five
+					bounce.
 				</p>
 			</header>
 
@@ -709,6 +722,550 @@ function Showcase() {
 				</div>
 			</section>
 
+			{/* Theme 6: Soda Pop */}
+			<section className="relative overflow-hidden bg-[#FFF9F0] px-6 py-24">
+				<div className="absolute top-10 right-10 h-40 w-40 rounded-full bg-[#FFE66D] opacity-30 blur-2xl" />
+				<div className="absolute bottom-10 left-10 h-48 w-48 rounded-full bg-[#4ECDC4] opacity-20 blur-3xl" />
+				<div className="relative z-10 mx-auto max-w-5xl">
+					<div className="mb-12 flex items-baseline gap-4">
+						<span className="rounded-full bg-[#FF6B6B] px-3 py-1 text-xs font-bold tracking-wider text-white uppercase">
+							06
+						</span>
+						<div>
+							<h2 className="font-soda-head text-4xl font-semibold text-[#1A535C]">
+								Soda Pop
+							</h2>
+							<p className="font-soda-body mt-1 text-sm text-[#FF6B6B]">
+								Fizzy, bright, and impossible to ignore. Coral, mint, and
+								sunshine.
+							</p>
+						</div>
+					</div>
+
+					<div className="grid gap-8 md:grid-cols-2">
+						<div className="space-y-4">
+							<div className="flex items-center gap-4">
+								<div className="h-16 w-16 rounded-2xl bg-[#FFF9F0] shadow-md ring-2 ring-[#FFE66D]" />
+								<div>
+									<p className="text-sm font-bold text-[#1A535C]">
+										Vanilla Cream
+									</p>
+									<p className="font-mono text-xs text-[#FF6B6B]">#FFF9F0</p>
+								</div>
+							</div>
+							<div className="flex items-center gap-4">
+								<div className="h-16 w-16 rounded-2xl bg-[#FF6B6B] shadow-md" />
+								<div>
+									<p className="text-sm font-bold text-[#1A535C]">
+										Electric Coral
+									</p>
+									<p className="font-mono text-xs text-[#FF6B6B]">#FF6B6B</p>
+								</div>
+							</div>
+							<div className="flex items-center gap-4">
+								<div className="h-16 w-16 rounded-2xl bg-[#4ECDC4] shadow-md" />
+								<div>
+									<p className="text-sm font-bold text-[#1A535C]">
+										Mint Burst
+									</p>
+									<p className="font-mono text-xs text-[#FF6B6B]">#4ECDC4</p>
+								</div>
+							</div>
+							<div className="flex items-center gap-4">
+								<div className="h-16 w-16 rounded-2xl bg-[#1A535C] shadow-md" />
+								<div>
+									<p className="text-sm font-bold text-[#1A535C]">
+										Deep Ocean
+									</p>
+									<p className="font-mono text-xs text-[#FF6B6B]">#1A535C</p>
+								</div>
+							</div>
+						</div>
+
+						<div className="rounded-3xl border-2 border-[#FFE66D] bg-white p-8 shadow-lg">
+							<div className="mb-6 flex items-center gap-3">
+								<div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#4ECDC4] text-lg">
+									🍹
+								</div>
+								<span className="font-soda-body text-xs font-bold tracking-wider text-[#FF6B6B] uppercase">
+									Refreshingly Different
+								</span>
+							</div>
+							<h3 className="font-soda-head mb-3 text-4xl leading-tight text-[#1A535C]">
+								Make work
+								<br />
+								feel like play.
+							</h3>
+							<p className="font-soda-body mb-6 text-sm leading-relaxed text-[#1A535C]/70">
+								Who says professional can't be fun? We bring energy, color, and
+								a little bit of fizz to every project.
+							</p>
+							<div className="flex flex-wrap gap-3">
+								<a
+									href="/showcase"
+									className="font-soda-body inline-flex items-center gap-2 rounded-full bg-[#FF6B6B] px-6 py-3 text-sm font-bold text-white shadow-md transition-transform hover:scale-105"
+								>
+									Get Started
+									<svg
+										className="h-4 w-4"
+										fill="none"
+										stroke="currentColor"
+										viewBox="0 0 24 24"
+									>
+										<path
+											strokeLinecap="round"
+											strokeLinejoin="round"
+											strokeWidth={2.5}
+											d="M17 8l4 4m0 0l-4 4m4-4H3"
+										/>
+									</svg>
+								</a>
+								<a
+									href="/showcase"
+									className="font-soda-body inline-flex items-center gap-2 rounded-full border-2 border-[#4ECDC4] px-6 py-3 text-sm font-bold text-[#1A535C] transition-colors hover:bg-[#4ECDC4]/10"
+								>
+									See the Menu
+								</a>
+							</div>
+							<div className="mt-8 flex gap-3">
+								<div className="h-20 flex-1 rounded-2xl bg-[#FFE66D]/30" />
+								<div className="h-20 flex-1 rounded-2xl bg-[#4ECDC4]/20" />
+								<div className="h-20 flex-1 rounded-2xl bg-[#FF6B6B]/20" />
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			{/* Theme 7: Sticker Pack */}
+			<section className="relative bg-[#F1FAEE] px-6 py-24">
+				<div
+					className="absolute inset-0 opacity-30"
+					style={{
+						backgroundImage:
+							'radial-gradient(circle, rgba(0,0,0,0.06) 1px, transparent 1px)',
+						backgroundSize: '20px 20px',
+					}}
+				/>
+				<div className="relative z-10 mx-auto max-w-5xl">
+					<div className="mb-12 flex items-baseline gap-4">
+						<span className="rounded-lg bg-[#1D3557] px-3 py-1 text-xs font-bold tracking-wider text-[#F1FAEE] uppercase">
+							07
+						</span>
+						<div>
+							<h2 className="font-sticker-head text-4xl font-bold text-[#1D3557]">
+								Sticker Pack
+							</h2>
+							<p className="font-sticker-body mt-1 text-sm text-[#457B9D]">
+								Thick borders, bold shapes, and a little bit of peel-and-stick
+								joy.
+							</p>
+						</div>
+					</div>
+
+					<div className="grid gap-8 md:grid-cols-2">
+						<div className="space-y-4">
+							<div className="flex items-center gap-4">
+								<div className="h-16 w-16 rounded-xl border-4 border-[#457B9D] bg-[#F1FAEE] shadow-[4px_4px_0px_0px_rgba(69,123,157,0.3)]" />
+								<div>
+									<p className="text-sm font-bold text-[#1D3557]">
+										Mint Sticker
+									</p>
+									<p className="font-mono text-xs text-[#457B9D]">#F1FAEE</p>
+								</div>
+							</div>
+							<div className="flex items-center gap-4">
+								<div className="h-16 w-16 rounded-xl bg-[#E63946] shadow-[4px_4px_0px_0px_rgba(29,53,87,0.3)]" />
+								<div>
+									<p className="text-sm font-bold text-[#1D3557]">
+										Cherry Red
+									</p>
+									<p className="font-mono text-xs text-[#457B9D]">#E63946</p>
+								</div>
+							</div>
+							<div className="flex items-center gap-4">
+								<div className="h-16 w-16 rounded-xl bg-[#457B9D] shadow-[4px_4px_0px_0px_rgba(29,53,87,0.3)]" />
+								<div>
+									<p className="text-sm font-bold text-[#1D3557]">
+										Denim Blue
+									</p>
+									<p className="font-mono text-xs text-[#457B9D]">#457B9D</p>
+								</div>
+							</div>
+							<div className="flex items-center gap-4">
+								<div className="h-16 w-16 rounded-xl bg-[#1D3557] shadow-[4px_4px_0px_0px_rgba(29,53,87,0.5)]" />
+								<div>
+									<p className="text-sm font-bold text-[#1D3557]">
+										Navy Backing
+									</p>
+									<p className="font-mono text-xs text-[#457B9D]">#1D3557</p>
+								</div>
+							</div>
+						</div>
+
+						<div className="rounded-2xl border-4 border-[#1D3557] bg-white p-8 shadow-[8px_8px_0px_0px_rgba(29,53,87,0.15)]">
+							<div className="mb-6 flex items-center gap-3">
+								<div className="flex h-10 w-10 items-center justify-center rounded-lg border-2 border-[#1D3557] bg-[#FFE66D]">
+									⭐
+								</div>
+								<span className="font-sticker-body text-xs font-bold tracking-wider text-[#457B9D] uppercase">
+									Collect Them All
+								</span>
+							</div>
+							<h3 className="font-sticker-head mb-4 text-3xl leading-snug text-[#1D3557]">
+								Stick with
+								<br />
+								something great.
+							</h3>
+							<p className="font-sticker-body mb-6 max-w-sm text-sm leading-relaxed text-[#457B9D]">
+								Bold ideas deserve bold presentation. We design products that
+								stick in your memory — and your heart.
+							</p>
+							<div className="flex flex-wrap gap-3">
+								<a
+									href="/showcase"
+									className="font-sticker-body rounded-xl border-2 border-[#1D3557] bg-[#E63946] px-5 py-2.5 text-sm font-bold text-white shadow-[4px_4px_0px_0px_#1D3557] transition-transform hover:-translate-y-0.5"
+								>
+									Peel Here →
+								</a>
+							</div>
+							<div className="mt-8 flex gap-4">
+								<div className="h-16 flex-1 -rotate-2 rounded-xl border-2 border-[#457B9D] bg-[#F1FAEE] shadow-[3px_3px_0px_0px_rgba(69,123,157,0.3)]" />
+								<div className="h-16 flex-1 rotate-1 rounded-xl border-2 border-[#E63946] bg-[#FFE66D] shadow-[3px_3px_0px_0px_rgba(230,57,70,0.3)]" />
+								<div className="h-16 flex-1 -rotate-1 rounded-xl border-2 border-[#1D3557] bg-[#A8DADC] shadow-[3px_3px_0px_0px_rgba(29,53,87,0.3)]" />
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			{/* Theme 8: Bubblegum */}
+			<section className="relative overflow-hidden bg-[#FFF0F5] px-6 py-24">
+				<div className="absolute -top-20 -right-20 h-64 w-64 rounded-full bg-[#FF85A1] opacity-20 blur-3xl" />
+				<div className="absolute -bottom-20 -left-20 h-64 w-64 rounded-full bg-[#C77DFF] opacity-20 blur-3xl" />
+				<div className="relative z-10 mx-auto max-w-5xl">
+					<div className="mb-12 flex items-baseline gap-4">
+						<span className="rounded-full bg-[#FF85A1] px-4 py-1.5 text-xs font-bold tracking-wider text-white uppercase">
+							08
+						</span>
+						<div>
+							<h2 className="font-bubble-head text-4xl font-semibold text-[#240046]">
+								Bubblegum
+							</h2>
+							<p className="font-bubble-body mt-1 text-sm text-[#C77DFF]">
+								Soft pastels with bold outlines. Sweet, playful, and totally
+								chewy.
+							</p>
+						</div>
+					</div>
+
+					<div className="grid gap-8 md:grid-cols-2">
+						<div className="space-y-4">
+							<div className="flex items-center gap-4">
+								<div className="h-16 w-16 rounded-full border-4 border-[#FF85A1] bg-[#FFF0F5] shadow-lg" />
+								<div>
+									<p className="text-sm font-bold text-[#240046]">
+										Cotton Candy
+									</p>
+									<p className="font-mono text-xs text-[#C77DFF]">#FFF0F5</p>
+								</div>
+							</div>
+							<div className="flex items-center gap-4">
+								<div className="h-16 w-16 rounded-full bg-[#FF85A1] shadow-lg" />
+								<div>
+									<p className="text-sm font-bold text-[#240046]">
+										Bubblegum Pink
+									</p>
+									<p className="font-mono text-xs text-[#C77DFF]">#FF85A1</p>
+								</div>
+							</div>
+							<div className="flex items-center gap-4">
+								<div className="h-16 w-16 rounded-full bg-[#C77DFF] shadow-lg" />
+								<div>
+									<p className="text-sm font-bold text-[#240046]">
+										Grape Pop
+									</p>
+									<p className="font-mono text-xs text-[#C77DFF]">#C77DFF</p>
+								</div>
+							</div>
+							<div className="flex items-center gap-4">
+								<div className="h-16 w-16 rounded-full bg-[#240046] shadow-lg" />
+								<div>
+									<p className="text-sm font-bold text-[#240046]">
+										Midnight Ink
+									</p>
+									<p className="font-mono text-xs text-[#C77DFF]">#240046</p>
+								</div>
+							</div>
+						</div>
+
+						<div className="rounded-[2rem] border-4 border-[#FF85A1] bg-white p-8 shadow-xl">
+							<div className="mb-6 flex items-center gap-3">
+								<div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#FF85A1] text-xl">
+									🍬
+								</div>
+								<span className="font-bubble-body text-xs font-bold tracking-wider text-[#C77DFF] uppercase">
+									Sugar Rush
+								</span>
+							</div>
+							<h3 className="font-bubble-head mb-3 text-3xl leading-tight text-[#240046]">
+								Design that
+								<br />
+								pops & sticks.
+							</h3>
+							<p className="font-bubble-body mb-6 text-sm leading-relaxed text-[#240046]/70">
+								Bold outlines, soft fills, and a whole lot of personality. This
+								is what happens when you let your creative sweet tooth run wild.
+							</p>
+							<div className="flex gap-3">
+								<a
+									href="/showcase"
+									className="font-bubble-body inline-flex items-center gap-2 rounded-full bg-[#FF85A1] px-6 py-3 text-sm font-bold text-white shadow-lg transition-transform hover:scale-105"
+								>
+									Chew on This
+								</a>
+								<a
+									href="/showcase"
+									className="font-bubble-body inline-flex items-center gap-2 rounded-full border-4 border-[#C77DFF] px-6 py-3 text-sm font-bold text-[#240046] transition-colors hover:bg-[#C77DFF]/10"
+								>
+									More Flavors
+								</a>
+							</div>
+							<div className="mt-8 flex gap-4">
+								<div className="h-24 flex-1 rounded-3xl bg-[#90E0EF]/30" />
+								<div className="h-24 flex-1 rounded-3xl bg-[#FF85A1]/20" />
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			{/* Theme 9: Confetti */}
+			<section className="relative overflow-hidden bg-white px-6 py-24">
+				<div className="absolute top-12 left-[10%] h-8 w-8 rotate-12 rounded-sm bg-[#FF0054]" />
+				<div className="absolute top-24 right-[15%] h-6 w-6 -rotate-12 rounded-full bg-[#00F5D4]" />
+				<div className="absolute bottom-20 left-[20%] h-10 w-10 rotate-45 rounded-sm bg-[#FEE440]" />
+				<div className="absolute top-1/2 right-[8%] h-5 w-5 rotate-12 rounded-full bg-[#FF0054]" />
+				<div className="absolute bottom-32 right-[25%] h-7 w-7 -rotate-45 rounded-sm bg-[#00F5D4]" />
+				<div className="relative z-10 mx-auto max-w-5xl">
+					<div className="mb-12 flex items-baseline gap-4">
+						<span className="rounded-lg bg-[#1B1B1E] px-3 py-1 text-xs font-bold tracking-wider text-[#FEE440] uppercase">
+							09
+						</span>
+						<div>
+							<h2 className="font-confetti-head text-4xl font-semibold text-[#1B1B1E]">
+								Confetti
+							</h2>
+							<p className="font-confetti-body mt-1 text-sm text-[#FF0054]">
+								Clean white canvas with sudden bursts of joy. Party-ready
+								energy.
+							</p>
+						</div>
+					</div>
+
+					<div className="grid gap-8 md:grid-cols-2">
+						<div className="space-y-4">
+							<div className="flex items-center gap-4">
+								<div className="h-16 w-16 rounded-full border-2 border-[#E5E5E5] bg-white shadow-md" />
+								<div>
+									<p className="text-sm font-bold text-[#1B1B1E]">
+										Clean White
+									</p>
+									<p className="font-mono text-xs text-[#FF0054]">#FFFFFF</p>
+								</div>
+							</div>
+							<div className="flex items-center gap-4">
+								<div className="h-16 w-16 rounded-full bg-[#FF0054] shadow-md" />
+								<div>
+									<p className="text-sm font-bold text-[#1B1B1E]">
+										Party Red
+									</p>
+									<p className="font-mono text-xs text-[#FF0054]">#FF0054</p>
+								</div>
+							</div>
+							<div className="flex items-center gap-4">
+								<div className="h-16 w-16 rounded-full bg-[#00F5D4] shadow-md" />
+								<div>
+									<p className="text-sm font-bold text-[#1B1B1E]">
+										Neon Aqua
+									</p>
+									<p className="font-mono text-xs text-[#FF0054]">#00F5D4</p>
+								</div>
+							</div>
+							<div className="flex items-center gap-4">
+								<div className="h-16 w-16 rounded-full bg-[#1B1B1E] shadow-md" />
+								<div>
+									<p className="text-sm font-bold text-[#1B1B1E]">
+										Charcoal
+									</p>
+									<p className="font-mono text-xs text-[#FF0054]">#1B1B1E</p>
+								</div>
+							</div>
+						</div>
+
+						<div className="relative rounded-3xl bg-[#1B1B1E] p-8 text-white shadow-xl">
+							<div className="absolute -top-3 -right-3 h-16 w-16 rounded-full bg-[#FEE440]" />
+							<div className="absolute -bottom-3 -left-3 h-12 w-12 rounded-full bg-[#FF0054]" />
+							<div className="relative z-10">
+								<div className="mb-6 flex items-center gap-3">
+									<div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#00F5D4] text-lg">
+										🎉
+									</div>
+									<span className="font-confetti-body text-xs font-bold tracking-wider text-[#00F5D4] uppercase">
+										Celebrate Good Work
+									</span>
+								</div>
+								<h3 className="font-confetti-head mb-3 text-4xl leading-tight">
+									Launch day
+									<br />
+									<span className="text-[#FEE440]">every day.</span>
+								</h3>
+								<p className="font-confetti-body mb-6 text-sm leading-relaxed text-white/70">
+									Every milestone deserves confetti. We build products that make
+									users feel like they just won something.
+								</p>
+								<a
+									href="/showcase"
+									className="font-confetti-body inline-flex items-center gap-2 rounded-full bg-[#FF0054] px-6 py-3 text-sm font-bold text-white shadow-lg transition-transform hover:scale-105"
+								>
+									Let's Party
+									<svg
+										className="h-4 w-4"
+										fill="none"
+										stroke="currentColor"
+										viewBox="0 0 24 24"
+									>
+										<path
+											strokeLinecap="round"
+											strokeLinejoin="round"
+											strokeWidth={2.5}
+											d="M17 8l4 4m0 0l-4 4m4-4H3"
+										/>
+									</svg>
+								</a>
+								<div className="mt-8 flex gap-4">
+									<div className="h-20 flex-1 rounded-2xl bg-[#FF0054]/20" />
+									<div className="h-20 flex-1 rounded-2xl bg-[#00F5D4]/20" />
+									<div className="h-20 flex-1 rounded-2xl bg-[#FEE440]/20" />
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			{/* Theme 10: Playground */}
+			<section className="relative overflow-hidden bg-[#FFF5F0] px-6 py-24">
+				<div
+					className="absolute inset-0 opacity-30"
+					style={{
+						backgroundImage:
+							'radial-gradient(circle at 2px 2px, rgba(6,214,160,0.15) 1.5px, transparent 0)',
+						backgroundSize: '32px 32px',
+					}}
+				/>
+				<div className="relative z-10 mx-auto max-w-5xl">
+					<div className="mb-12 flex items-baseline gap-4">
+						<span className="rounded-full bg-[#FF9F1C] px-4 py-1.5 text-xs font-bold tracking-wider text-white uppercase">
+							10
+						</span>
+						<div>
+							<h2 className="font-play-head text-4xl font-bold text-[#2D1B2E]">
+								Playground
+							</h2>
+							<p className="font-play-body mt-1 text-sm text-[#9B5DE5]">
+								Casual modern. Asymmetric, friendly, and unapologetically fun.
+							</p>
+						</div>
+					</div>
+
+					<div className="grid gap-8 md:grid-cols-2">
+						<div className="space-y-4">
+							<div className="flex items-center gap-4">
+								<div className="h-16 w-16 rounded-2xl bg-[#FFF5F0] shadow-md ring-2 ring-[#FF9F1C]" />
+								<div>
+									<p className="text-sm font-bold text-[#2D1B2E]">
+										Peach Cream
+									</p>
+									<p className="font-mono text-xs text-[#9B5DE5]">#FFF5F0</p>
+								</div>
+							</div>
+							<div className="flex items-center gap-4">
+								<div className="h-16 w-16 rounded-2xl bg-[#06D6A0] shadow-md" />
+								<div>
+									<p className="text-sm font-bold text-[#2D1B2E]">
+										Jungle Green
+									</p>
+									<p className="font-mono text-xs text-[#9B5DE5]">#06D6A0</p>
+								</div>
+							</div>
+							<div className="flex items-center gap-4">
+								<div className="h-16 w-16 rounded-2xl bg-[#FF9F1C] shadow-md" />
+								<div>
+									<p className="text-sm font-bold text-[#2D1B2E]">
+										Sunset Orange
+									</p>
+									<p className="font-mono text-xs text-[#9B5DE5]">#FF9F1C</p>
+								</div>
+							</div>
+							<div className="flex items-center gap-4">
+								<div className="h-16 w-16 rounded-2xl bg-[#9B5DE5] shadow-md" />
+								<div>
+									<p className="text-sm font-bold text-[#2D1B2E]">
+										Grape Soda
+									</p>
+									<p className="font-mono text-xs text-[#9B5DE5]">#9B5DE5</p>
+								</div>
+							</div>
+						</div>
+
+						<div className="relative rounded-3xl bg-white p-8 shadow-xl">
+							<div className="absolute -top-4 -right-4 h-20 w-20 rounded-full bg-[#06D6A0]/20" />
+							<div className="absolute -bottom-4 -left-4 h-16 w-16 rounded-full bg-[#FF9F1C]/20" />
+							<div className="relative z-10">
+								<div className="mb-6 flex items-center gap-3">
+									<div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#FF9F1C] text-2xl">
+										🛝
+									</div>
+									<span className="font-play-body text-xs font-bold tracking-wider text-[#9B5DE5] uppercase">
+										Recess Never Ends
+									</span>
+								</div>
+								<h3 className="font-play-head mb-3 text-3xl leading-tight text-[#2D1B2E]">
+									Work hard.
+									<br />
+									<span className="text-[#06D6A0]">Play harder.</span>
+								</h3>
+								<p className="font-play-body mb-6 text-sm leading-relaxed text-[#2D1B2E]/70">
+									The best ideas come from the sandbox. We bring a playful
+									mindset to serious problems — and the results speak for
+									themselves.
+								</p>
+								<div className="flex flex-wrap gap-3">
+									<a
+										href="/showcase"
+										className="font-play-body inline-flex items-center gap-2 rounded-2xl bg-[#06D6A0] px-6 py-3 text-sm font-bold text-white shadow-lg transition-transform hover:scale-105"
+									>
+										Jump In
+									</a>
+									<a
+										href="/showcase"
+										className="font-play-body inline-flex items-center gap-2 rounded-2xl border-2 border-[#9B5DE5] bg-white px-6 py-3 text-sm font-bold text-[#2D1B2E] shadow-sm transition-colors hover:bg-[#9B5DE5]/10"
+									>
+										Read the Rules
+									</a>
+								</div>
+								<div className="mt-8 flex gap-3">
+									<div className="h-24 flex-1 rounded-2xl bg-[#FF9F1C]/20" />
+									<div className="h-24 flex-1 rounded-2xl bg-[#9B5DE5]/20" />
+									<div className="h-24 flex-1 rounded-2xl bg-[#06D6A0]/20" />
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+
 			{/* Comparison / Recommendation */}
 			<section className="bg-[#1A1A1A] px-6 py-24 text-white">
 				<div className="mx-auto max-w-4xl text-center">
@@ -719,16 +1276,14 @@ function Showcase() {
 						className="mb-8 text-4xl font-light"
 						style={{ fontFamily: "'Cormorant Garamond', serif" }}
 					>
-						Start with <em className="text-[#A8C5BF]">Dew Point</em> or{' '}
-						<em className="text-[#6B7F5E]">Fairway Fresh</em>
+						Five ways to breathe. Five ways to bounce.
 					</h2>
 					<p className="mx-auto mb-12 max-w-2xl leading-relaxed text-neutral-400">
-						Both feel unmistakably &quot;golf course&quot; without being
-						on-the-nose. Dew Point leans ethereal and memorable. Fairway Fresh
-						is the safest crowd-pleaser — clean, friendly, and confident. Tee
-						Box Classic if you want maximum professionalism with zero risk.
-						Links Minimal if you want texture and edge. Caddie Notebook if you
-						want to stand out as the thinking-person&apos;s developer.
+						The first five — Fairway Fresh through Caddie Notebook — are quiet,
+						light, and grounded. Perfect if you want calm confidence and crisp
+						professionalism. The next five — Soda Pop through Playground — turn
+						up the energy with bold color, playful shapes, and unapologetic
+						personality. Choose your vibe.
 					</p>
 					<div className="flex flex-wrap justify-center gap-4 text-sm">
 						<span className="rounded-full border border-neutral-700 px-4 py-2 text-neutral-400">
@@ -738,10 +1293,10 @@ function Showcase() {
 							Crisp typography ✓
 						</span>
 						<span className="rounded-full border border-neutral-700 px-4 py-2 text-neutral-400">
-							Not fashion-luxury ✓
+							Bold & bubbly ✓
 						</span>
 						<span className="rounded-full border border-neutral-700 px-4 py-2 text-neutral-400">
-							Golf course soul ✓
+							Playful energy ✓
 						</span>
 					</div>
 				</div>
