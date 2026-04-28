@@ -6,7 +6,6 @@ import {
 	Heart,
 	Phone,
 	MapPin,
-	Star,
 	CheckCircle2,
 	Menu,
 	X,
@@ -60,27 +59,6 @@ const services = [
 	},
 ]
 
-const testimonials = [
-	{
-		name: 'Sarah M.',
-		pet: 'Winston the Corgi',
-		stars: 5,
-		text: "The attention to detail is unreal. Winston always comes home looking like a million bucks.",
-	},
-	{
-		name: 'James T.',
-		pet: 'Bentley the Poodle',
-		stars: 5,
-		text: "Finally, a groomer that treats my dog like family. The atmosphere is unmatched.",
-	},
-	{
-		name: 'Maria L.',
-		pet: 'Luna the Shih Tzu',
-		stars: 5,
-		text: "Luna used to hate grooming. Now she practically pulls me through the door.",
-	},
-]
-
 function Navbar() {
 	const [open, setOpen] = useState(false)
 
@@ -104,7 +82,7 @@ function Navbar() {
 				<div className="hidden md:block">
 					<a
 						href="tel:5048104320"
-						className="theme-bg-accent-red theme-text-inverse rounded-full px-5 py-2.5 text-sm font-semibold transition-opacity hover:opacity-90 inline-flex items-center gap-2"
+						className="theme-bg-accent-red theme-text-inverse rounded-lg px-5 py-2.5 text-sm font-semibold transition-opacity hover:opacity-90 inline-flex items-center gap-2"
 					>
 						<Phone className="h-4 w-4" />
 						(504) 810-4320
@@ -129,7 +107,7 @@ function Navbar() {
 						<a href="#contact" onClick={() => setOpen(false)} className="theme-text-secondary py-1">Contact</a>
 						<a
 							href="tel:5048104320"
-							className="theme-bg-accent-red theme-text-inverse mt-2 w-full rounded-full px-5 py-2.5 text-sm font-semibold text-center inline-flex items-center justify-center gap-2"
+							className="theme-bg-accent-red theme-text-inverse mt-2 w-full rounded-lg px-5 py-2.5 text-sm font-semibold text-center inline-flex items-center justify-center gap-2"
 						>
 							<Phone className="h-4 w-4" />
 							(504) 810-4320
@@ -148,11 +126,6 @@ function Hero() {
 			<div className="theme-bg-secondary relative">
 				<div className="mx-auto flex max-w-6xl flex-col items-center px-6 py-16 text-center md:flex-row md:gap-12 md:py-24 md:text-left">
 					<div className="flex-1">
-						<div className="mb-6 inline-flex items-center gap-2 rounded-full bg-[#b91c3a]/10 px-4 py-1.5 text-xs font-semibold tracking-wide uppercase theme-accent-red">
-							<Heart className="h-3.5 w-3.5" />
-							Family-Owned in Kenner, LA
-						</div>
-
 						<h1 className="font-serif mb-6 text-5xl font-black leading-[1.1] md:text-6xl">
 							At Paw Paw's,
 							<br />
@@ -164,24 +137,20 @@ function Hero() {
 							our door gets the love and care they deserve.
 						</p>
 
-						<div className="flex flex-wrap justify-center gap-4 md:justify-start">
-							<a
-								href="tel:5048104320"
-								className="theme-bg-accent-red theme-text-inverse rounded-full px-8 py-3.5 text-base font-bold shadow-lg shadow-[#b91c3a]/20 transition-transform hover:scale-[1.02] inline-flex items-center gap-2"
-							>
-								<Phone className="h-5 w-5" />
-								Call (504) 810-4320
-							</a>
+						<div className="flex flex-col items-center gap-3 md:items-start">
 							<a
 								href="#contact"
-								className="theme-border theme-text-primary rounded-full border-2 px-8 py-3.5 text-base font-bold transition-colors hover:bg-[#1a2744] hover:text-[#f2f0ec] inline-flex items-center gap-2"
+								className="theme-bg-accent-red theme-text-inverse rounded-lg px-8 py-3.5 text-base font-bold shadow-lg shadow-[#b91c3a]/20 transition-transform hover:scale-[1.02] inline-flex items-center gap-2"
 							>
 								<CalendarDays className="h-5 w-5" />
 								Client Forms
 							</a>
+							<p className="theme-text-secondary text-sm">
+								or call <a href="tel:5048104320" className="theme-accent-red font-semibold hover:underline">(504) 810-4320</a>
+							</p>
 						</div>
 
-						<div className="theme-text-secondary mt-10 flex flex-wrap items-center justify-center gap-6 text-xs font-medium md:justify-start">
+						<div className="theme-text-secondary mt-8 flex flex-col items-center gap-2 text-xs font-medium md:items-start">
 							<span className="flex items-center gap-1.5">
 								<CheckCircle2 className="theme-accent-gold h-3.5 w-3.5" />
 								Experienced Groomers
@@ -193,6 +162,10 @@ function Hero() {
 							<span className="flex items-center gap-1.5">
 								<CheckCircle2 className="theme-accent-gold h-3.5 w-3.5" />
 								Calm Environment
+							</span>
+							<span className="flex items-center gap-1.5">
+								<CheckCircle2 className="theme-accent-gold h-3.5 w-3.5" />
+								Family Owned in Kenner, LA
 							</span>
 						</div>
 					</div>
@@ -229,17 +202,17 @@ function Services() {
 				</p>
 			</div>
 
-			<div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+			<div className="grid grid-cols-2 gap-4">
 				{services.map(({ icon: Icon, title, desc, price }) => (
 					<div
 						key={title}
-						className="theme-bg-secondary theme-border group relative overflow-hidden rounded-2xl border p-7 transition-all hover:-translate-y-1 hover:shadow-xl"
+						className="theme-bg-secondary theme-border group relative overflow-hidden rounded-xl border p-5 transition-all hover:-translate-y-1 hover:shadow-lg"
 					>
-						<div className="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-[#b91c3a]/10">
-							<Icon className="theme-accent-red h-6 w-6" />
+						<div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-[#b91c3a]/10">
+							<Icon className="theme-accent-red h-5 w-5" />
 						</div>
-						<h3 className="mb-2 text-lg font-bold">{title}</h3>
-						<p className="theme-text-secondary mb-5 text-sm leading-relaxed">
+						<h3 className="mb-1 text-base font-bold">{title}</h3>
+						<p className="theme-text-secondary mb-3 text-sm leading-relaxed">
 							{desc}
 						</p>
 						<div className="flex items-center justify-between">
@@ -306,47 +279,6 @@ function Experience() {
 				</div>
 			</div>
 			<div className="barber-stripes h-1.5 w-full mt-20" />
-		</section>
-	)
-}
-
-function Reviews() {
-	return (
-		<section id="reviews" className="mx-auto max-w-6xl px-6 py-20 md:py-28">
-			<div className="mb-14 text-center">
-				<p className="mb-2 text-xs font-bold tracking-widest uppercase theme-accent-red">
-					Testimonials
-				</p>
-				<h2 className="font-serif mb-3 text-4xl font-bold md:text-5xl">
-					From the Pack
-				</h2>
-				<p className="theme-text-secondary mx-auto max-w-lg">
-					Don't just take our word for it — hear from the humans who trust us
-					with their best friends.
-				</p>
-			</div>
-
-			<div className="grid gap-6 md:grid-cols-3">
-				{testimonials.map((t) => (
-					<div
-						key={t.name}
-						className="theme-bg-secondary theme-border relative rounded-2xl border p-7"
-					>
-						<div className="mb-4 flex gap-0.5">
-							{Array.from({ length: t.stars }).map((_, i) => (
-								<Star key={i} className="theme-accent-gold h-4 w-4 fill-current" />
-							))}
-						</div>
-						<p className="theme-text-primary mb-6 text-sm leading-relaxed">
-							"{t.text}"
-						</p>
-						<div>
-							<p className="text-sm font-bold">{t.name}</p>
-							<p className="theme-text-secondary text-xs">{t.pet}</p>
-						</div>
-					</div>
-				))}
-			</div>
 		</section>
 	)
 }
@@ -444,14 +376,14 @@ function ContactCTA() {
 				<div className="flex flex-wrap justify-center gap-4">
 					<a
 						href="#"
-						className="theme-bg-accent-gold theme-text-primary rounded-full px-8 py-3.5 text-base font-bold shadow-lg transition-transform hover:scale-[1.02] inline-flex items-center gap-2"
+						className="theme-bg-accent-gold theme-text-primary rounded-lg px-8 py-3.5 text-base font-bold shadow-lg transition-transform hover:scale-[1.02] inline-flex items-center gap-2"
 					>
 						<ArrowRight className="h-5 w-5" />
 						New Client Form
 					</a>
 					<a
 						href="#"
-						className="theme-border theme-text-inverse rounded-full border-2 px-8 py-3.5 text-base font-bold transition-colors hover:bg-white hover:text-[#1a2744] inline-flex items-center gap-2"
+						className="theme-border theme-text-inverse rounded-lg border-2 px-8 py-3.5 text-base font-bold transition-colors hover:bg-white hover:text-[#1a2744] inline-flex items-center gap-2"
 					>
 						<ArrowRight className="h-5 w-5" />
 						Returning Client Form
@@ -493,8 +425,7 @@ function Index() {
 			<Hero />
 			<Services />
 			<Experience />
-			<Reviews />
-			<Location />
+				<Location />
 			<ContactCTA />
 			<Footer />
 		</div>
