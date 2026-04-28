@@ -7,28 +7,68 @@ export const Route = createFileRoute('/gallery')({
 })
 
 const galleryImages = [
-	{ id: 1, src: '/images/randie-and-riley.jpg', alt: 'Randie and Riley with two happy Shelties', size: 'large' },
-	{ id: 2, src: '/images/dadys-puppy.jpg', alt: 'A happy pup getting some love', size: 'medium' },
+	{
+		id: 1,
+		src: '/images/randie-and-riley.jpg',
+		alt: 'Randie and Riley with two happy Shelties',
+		size: 'large',
+	},
+	{
+		id: 2,
+		src: '/images/dadys-puppy.jpg',
+		alt: 'A happy pup getting some love',
+		size: 'medium',
+	},
 ]
 
 function Navbar() {
 	const [open, setOpen] = useState(false)
 	return (
-		<nav className="theme-bg-secondary/80 theme-border border-b backdrop-blur-md sticky top-0 z-50">
+		<nav className="theme-bg-secondary/80 theme-border sticky top-0 z-50 border-b backdrop-blur-md">
 			<div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
 				<a href="/" className="flex items-center gap-3">
-					<img src="/images/logo.png" alt="Paw Paws Dog Grooming" className="h-10 w-10 rounded-full object-cover" />
-					<span className="font-serif text-xl font-bold tracking-tight">Paw Paws</span>
+					<img
+						src="/images/logo.png"
+						alt="Paw Paws Dog Grooming"
+						className="h-10 w-10 rounded-full object-cover"
+					/>
+					<span className="font-serif text-xl font-bold tracking-tight">
+						Paw Paws
+					</span>
 				</a>
 
 				<div className="hidden items-center gap-8 text-sm font-medium md:flex">
-					<a href="/" className="theme-text-secondary hover:theme-accent-red transition-colors">Home</a>
-					<a href="/#services" className="theme-text-secondary hover:theme-accent-red transition-colors">Services</a>
-					<a href="/gallery" className="theme-text-secondary hover:theme-accent-red transition-colors">Gallery</a>
-					<a href="/#contact" className="theme-text-secondary hover:theme-accent-red transition-colors">Contact</a>
+					<a
+						href="/"
+						className="theme-text-secondary hover:theme-accent-red transition-colors"
+					>
+						Home
+					</a>
+					<a
+						href="/#services"
+						className="theme-text-secondary hover:theme-accent-red transition-colors"
+					>
+						Services
+					</a>
+					<a
+						href="/gallery"
+						className="theme-text-secondary hover:theme-accent-red transition-colors"
+					>
+						Gallery
+					</a>
+					<a
+						href="/#contact"
+						className="theme-text-secondary hover:theme-accent-red transition-colors"
+					>
+						Contact
+					</a>
 				</div>
 
-				<button className="theme-text-primary md:hidden" onClick={() => setOpen(!open)} aria-label="Toggle menu">
+				<button
+					className="theme-text-primary md:hidden"
+					onClick={() => setOpen(!open)}
+					aria-label="Toggle menu"
+				>
 					{open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
 				</button>
 			</div>
@@ -36,10 +76,34 @@ function Navbar() {
 			{open && (
 				<div className="theme-border border-t px-6 py-4 md:hidden">
 					<div className="flex flex-col gap-3 text-sm font-medium">
-						<a href="/" onClick={() => setOpen(false)} className="theme-text-secondary py-1">Home</a>
-						<a href="/#services" onClick={() => setOpen(false)} className="theme-text-secondary py-1">Services</a>
-						<a href="/gallery" onClick={() => setOpen(false)} className="theme-text-secondary py-1">Gallery</a>
-						<a href="/#contact" onClick={() => setOpen(false)} className="theme-text-secondary py-1">Contact</a>
+						<a
+							href="/"
+							onClick={() => setOpen(false)}
+							className="theme-text-secondary py-1"
+						>
+							Home
+						</a>
+						<a
+							href="/#services"
+							onClick={() => setOpen(false)}
+							className="theme-text-secondary py-1"
+						>
+							Services
+						</a>
+						<a
+							href="/gallery"
+							onClick={() => setOpen(false)}
+							className="theme-text-secondary py-1"
+						>
+							Gallery
+						</a>
+						<a
+							href="/#contact"
+							onClick={() => setOpen(false)}
+							className="theme-text-secondary py-1"
+						>
+							Contact
+						</a>
 					</div>
 				</div>
 			)}
@@ -49,19 +113,25 @@ function Navbar() {
 
 function GalleryPage() {
 	return (
-		<div className="min-h-screen theme-bg-primary">
+		<div className="theme-bg-primary min-h-screen">
 			<Navbar />
 
 			<header className="relative overflow-hidden">
 				<div className="barber-stripes h-2 w-full" />
 				<div className="theme-bg-secondary">
 					<div className="mx-auto max-w-6xl px-6 py-16 text-center md:py-20">
-						<a href="/" className="theme-text-secondary mb-4 inline-flex items-center gap-1 text-sm hover:theme-accent-red transition-colors">
+						<a
+							href="/"
+							className="theme-text-secondary hover:theme-accent-red mb-4 inline-flex items-center gap-1 text-sm transition-colors"
+						>
 							<ArrowLeft className="h-4 w-4" /> Back to Home
 						</a>
-						<h1 className="font-serif mb-4 text-4xl font-bold md:text-5xl">Gallery</h1>
+						<h1 className="mb-4 font-serif text-4xl font-bold md:text-5xl">
+							Gallery
+						</h1>
 						<p className="theme-text-secondary mx-auto max-w-lg">
-							A glimpse into our shop — happy dogs, fresh cuts, and the faces behind the scissors.
+							A glimpse into our shop — happy dogs, fresh cuts, and the faces
+							behind the scissors.
 						</p>
 					</div>
 				</div>
@@ -69,7 +139,7 @@ function GalleryPage() {
 			</header>
 
 			<main className="mx-auto max-w-6xl px-6 py-16 md:py-20">
-				<div className="mb-10 flex items-center justify-center gap-2 text-sm theme-text-secondary">
+				<div className="theme-text-secondary mb-10 flex items-center justify-center gap-2 text-sm">
 					<Camera className="h-4 w-4" />
 					<span>More photos coming soon!</span>
 				</div>
@@ -97,10 +167,18 @@ function GalleryPage() {
 			<footer className="theme-bg-primary theme-border border-t py-10">
 				<div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-6 md:flex-row">
 					<div className="flex items-center gap-2">
-						<img src="/images/logo.png" alt="Paw Paws" className="h-8 w-8 rounded-full object-cover" />
-						<span className="font-serif text-sm font-bold">Paw Paws Dog Grooming, LLC</span>
+						<img
+							src="/images/logo.png"
+							alt="Paw Paws"
+							className="h-8 w-8 rounded-full object-cover"
+						/>
+						<span className="font-serif text-sm font-bold">
+							Paw Paws Dog Grooming, LLC
+						</span>
 					</div>
-					<p className="theme-text-secondary text-xs">© {new Date().getFullYear()} All rights reserved.</p>
+					<p className="theme-text-secondary text-xs">
+						© {new Date().getFullYear()} All rights reserved.
+					</p>
 				</div>
 			</footer>
 		</div>
