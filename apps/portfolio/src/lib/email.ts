@@ -1,7 +1,7 @@
 import { RateLimiter } from '@/lib/rate-limiter'
 import FormData from 'form-data'
 import Mailgun from 'mailgun.js'
-import { ENV } from 'varlock/env'
+import { env } from '@/env'
 
 const rateLimiter = new RateLimiter()
 const mailgun = new Mailgun(FormData)
@@ -24,8 +24,8 @@ export async function sendEmail({
 		throw new Error('TOO_MANY_REQUESTS: Rate limit exceeded')
 	}
 
-	const mailgunApiKey = ENV.MAILGUN_API_KEY
-	const mailgunDomain = ENV.MAILGUN_DOMAIN
+	const mailgunApiKey = env.MAILGUN_API_KEY
+	const mailgunDomain = env.MAILGUN_DOMAIN
 	if (!mailgunApiKey || !mailgunDomain) {
 		throw new Error('INTERNAL_SERVER_ERROR: Email service is not configured')
 	}

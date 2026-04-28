@@ -8,9 +8,6 @@ config({
 	quiet: true,
 })
 
-const schema = z.object({
-	DATABASE_URL: z.string().min(1),
-	CRON_SECRET: z.string().min(1),
-})
+const schema = z.object({})
 
 export const env = schema.parse(process.env)

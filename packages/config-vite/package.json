@@ -7,17 +7,18 @@
 		".": "./vite.shared.ts"
 	},
 	"devDependencies": {
-		"@aamini/config-typescript": "workspace:*"
+		"@aamini/config-typescript": "workspace:*",
+		"@babel/core": "^7.29.0",
+		"@rolldown/plugin-babel": "^0.2.3",
+		"@types/babel__core": "^7.20.5",
+		"babel-plugin-react-compiler": "^1.0.0"
 	},
 	"dependencies": {
 		"@tailwindcss/vite": "^4.2.1",
 		"@tanstack/devtools-vite": "^0.6.0",
 		"@tanstack/react-start": "^1.166.7",
-		"@varlock/vite-integration": "^0.2.10",
 		"@vitejs/plugin-react": "^6.0.1",
-		"babel-plugin-react-compiler": "^1.0.0",
 		"nitro": "latest",
-		"varlock": "^0.7.2",
 		"vite": "^8.0.8",
 		"vite-plugin-svgr": "^5.2.0"
 	}

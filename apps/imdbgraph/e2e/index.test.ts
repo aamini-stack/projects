@@ -1,5 +1,4 @@
 import { expect, test } from '@playwright/test'
-import { mockJsonRoute } from '@aamini/config-testing/test/playwright'
 
 test('Search bar click navigation works', async ({ page }) => {
 	await expect(page.getByRole('heading', { name: /IMDB Graph/i })).toBeVisible()

@@ -9,8 +9,8 @@ config({
 })
 
 const schema = z.object({
-	DATABASE_URL: z.string().min(1),
-	CRON_SECRET: z.string().min(1),
+	MAILGUN_API_KEY: z.string().min(1).optional(),
+	MAILGUN_DOMAIN: z.string().min(1).optional(),
 })
 
 export const env = schema.parse(process.env)

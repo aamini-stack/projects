@@ -82,7 +82,7 @@ function ThemeShowcase() {
 						<div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-1 xl:gap-5">
 							{/* Consumer Card */}
 							<div className="flex flex-col rounded-sm border border-[#D8D0C8] bg-[#F5F2EE] p-6 shadow-sm xl:p-8">
-								<div className="mb-4 text-xs font-semibold uppercase tracking-[0.15em] text-[#8BA89B]">
+								<div className="mb-4 text-xs font-semibold tracking-[0.15em] text-[#8BA89B] uppercase">
 									Consumer Journey
 								</div>
 								<div className="mb-4 flex items-center gap-3">
@@ -108,143 +108,140 @@ function ThemeShowcase() {
 											<span>{item}</span>
 										</li>
 									))}
-									</ul>
-								</div>
+								</ul>
+							</div>
 
-								{/* Agent Card */}
-								<div className="flex flex-col rounded-sm border border-[#D8D0C8] bg-[#F5F2EE] p-6 shadow-sm xl:p-8">
-									<div className="mb-4 text-xs font-semibold uppercase tracking-[0.15em] text-[#9E9386]">
-										Agent Journey
-									</div>
-									<div className="mb-4 flex items-center gap-3">
-										<div className="flex h-9 w-9 items-center justify-center border border-[#9E9386] bg-[#9E9386]/10">
-											<Shield className="h-4 w-4 text-[#9E9386]" />
-										</div>
-										<h3 className="text-xl font-normal">For Agents</h3>
-									</div>
-									<p className="mb-6 text-sm leading-relaxed text-[#9E9386]">
-										Create your profile, complete 12 questions, and get introduced
-										to consumers who actually fit how you work. No subscription
-										during pilot.
-									</p>
-									<ul className="space-y-2">
-										{[
-											'No pilot subscription fee',
-											'Pay only on accepted match ($199–$399)',
-											'Bilateral fit scoring',
-											'Peace Pact signature',
-										].map((item) => (
-											<li key={item} className="flex items-center gap-2 text-sm">
-												<CheckCircle2 className="h-4 w-4 shrink-0 text-[#9E9386]" />
-												<span>{item}</span>
-											</li>
-										))}
-										</ul>
-									</div>
+							{/* Agent Card */}
+							<div className="flex flex-col rounded-sm border border-[#D8D0C8] bg-[#F5F2EE] p-6 shadow-sm xl:p-8">
+								<div className="mb-4 text-xs font-semibold tracking-[0.15em] text-[#9E9386] uppercase">
+									Agent Journey
 								</div>
+								<div className="mb-4 flex items-center gap-3">
+									<div className="flex h-9 w-9 items-center justify-center border border-[#9E9386] bg-[#9E9386]/10">
+										<Shield className="h-4 w-4 text-[#9E9386]" />
+									</div>
+									<h3 className="text-xl font-normal">For Agents</h3>
+								</div>
+								<p className="mb-6 text-sm leading-relaxed text-[#9E9386]">
+									Create your profile, complete 12 questions, and get introduced
+									to consumers who actually fit how you work. No subscription
+									during pilot.
+								</p>
+								<ul className="space-y-2">
+									{[
+										'No pilot subscription fee',
+										'Pay only on accepted match ($199–$399)',
+										'Bilateral fit scoring',
+										'Peace Pact signature',
+									].map((item) => (
+										<li key={item} className="flex items-center gap-2 text-sm">
+											<CheckCircle2 className="h-4 w-4 shrink-0 text-[#9E9386]" />
+											<span>{item}</span>
+										</li>
+									))}
+								</ul>
 							</div>
 						</div>
-					</section>
+					</div>
+				</div>
+			</section>
 
-					{/* Four Pillars — Table-like grid */}
-					<section className="border-b border-[#D8D0C8]">
-						<div className="mx-auto max-w-7xl px-6 py-20">
-							<div className="mb-16 grid gap-8 lg:grid-cols-12">
-								<div className="lg:col-span-4">
-									<div className="mb-3 text-xs font-semibold uppercase tracking-[0.15em] text-[#9E9386]">
-										01 — Framework
+			{/* Four Pillars — Table-like grid */}
+			<section className="border-b border-[#D8D0C8]">
+				<div className="mx-auto max-w-7xl px-6 py-20">
+					<div className="mb-16 grid gap-8 lg:grid-cols-12">
+						<div className="lg:col-span-4">
+							<div className="mb-3 text-xs font-semibold tracking-[0.15em] text-[#9E9386] uppercase">
+								01 — Framework
+							</div>
+							<h2 className="text-3xl font-normal tracking-tight md:text-4xl">
+								Built on Transparency
+							</h2>
+						</div>
+						<div className="lg:col-span-8">
+							<p className="max-w-2xl text-lg leading-relaxed text-[#9E9386]">
+								Four pillars of a great working relationship. Each dimension is
+								weighted and scored bilaterally.
+							</p>
+						</div>
+					</div>
+
+					<div className="grid gap-px bg-[#D8D0C8] sm:grid-cols-2 lg:grid-cols-4">
+						{[
+							{
+								icon: Heart,
+								title: 'Working Style',
+								desc: 'How you prefer to work together, from hands-on to hands-off.',
+								color: '#8BA89B',
+							},
+							{
+								icon: MessageCircle,
+								title: 'Communication',
+								desc: 'Frequency, channels, and style that work for both sides.',
+								color: '#9E9386',
+							},
+							{
+								icon: Eye,
+								title: 'Transparency',
+								desc: 'Clear expectations around fees, process, and timeline.',
+								color: '#C9C0B6',
+							},
+							{
+								icon: Star,
+								title: 'Overall Fit',
+								desc: 'The holistic chemistry that makes a partnership succeed.',
+								color: '#3D3832',
+							},
+						].map((pillar) => {
+							const Icon = pillar.icon
+							return (
+								<div key={pillar.title} className="bg-[#F5F2EE] p-8">
+									<div
+										className="mb-6 flex h-10 w-10 items-center justify-center border"
+										style={{
+											borderColor: pillar.color,
+											backgroundColor: `${pillar.color}14`,
+										}}
+									>
+										<Icon className="h-5 w-5" style={{ color: pillar.color }} />
 									</div>
-									<h2 className="text-3xl font-normal tracking-tight md:text-4xl">
-										Built on Transparency
-									</h2>
-								</div>
-								<div className="lg:col-span-8">
-									<p className="max-w-2xl text-lg leading-relaxed text-[#9E9386]">
-										Four pillars of a great working relationship. Each dimension is
-										weighted and scored bilaterally.
+									<h4 className="mb-3 text-lg">{pillar.title}</h4>
+									<p className="text-sm leading-relaxed text-[#9E9386]">
+										{pillar.desc}
 									</p>
 								</div>
-							</div>
-
-							<div className="grid gap-px bg-[#D8D0C8] sm:grid-cols-2 lg:grid-cols-4">
-								{[
-									{
-										icon: Heart,
-										title: 'Working Style',
-										desc: 'How you prefer to work together, from hands-on to hands-off.',
-										color: '#8BA89B',
-									},
-									{
-										icon: MessageCircle,
-										title: 'Communication',
-										desc: 'Frequency, channels, and style that work for both sides.',
-										color: '#9E9386',
-									},
-									{
-										icon: Eye,
-										title: 'Transparency',
-										desc: 'Clear expectations around fees, process, and timeline.',
-										color: '#C9C0B6',
-									},
-									{
-										icon: Star,
-										title: 'Overall Fit',
-										desc: 'The holistic chemistry that makes a partnership succeed.',
-										color: '#3D3832',
-									},
-								].map((pillar) => {
-									const Icon = pillar.icon
-									return (
-										<div key={pillar.title} className="bg-[#F5F2EE] p-8">
-											<div
-												className="mb-6 flex h-10 w-10 items-center justify-center border"
-												style={{
-													borderColor: pillar.color,
-													backgroundColor: `${pillar.color}14`,
-												}}
-											>
-												<Icon
-													className="h-5 w-5"
-													style={{ color: pillar.color }}
-												/>
-											</div>
-											<h4 className="mb-3 text-lg">{pillar.title}</h4>
-											<p className="text-sm leading-relaxed text-[#9E9386]">
-												{pillar.desc}
-											</p>
-										</div>
-									)
-									})}
-								</div>
-							</div>
-						</section>
-
-						{/* CTA Section */}
-						<section>
-							<div className="mx-auto max-w-7xl px-6 py-20">
-								<div className="mx-auto max-w-3xl rounded-sm border border-[#D8D0C8] bg-[#F5F2EE] p-12 shadow-sm md:p-16">
-									<div className="text-center">
-										<div className="mb-6 text-xs font-semibold uppercase tracking-[0.15em] text-[#9E9386]">
-											Get Started
-										</div>
-										<h2 className="mb-6 text-3xl font-normal tracking-tight md:text-4xl">
-											Ready to find your match?
-										</h2>
-										<p className="mx-auto mb-10 max-w-lg leading-relaxed text-[#9E9386]">
-											Join the first platform that cares as much about fit as you do
-											about finding the right property.
-										</p>
-										<Link
-											to="/consumer/priorities"
-											className="inline-flex items-center gap-2 rounded-sm bg-[#3D3832] px-6 py-3 text-sm font-semibold tracking-wide text-[#F5F2EE] uppercase transition-colors hover:bg-[#5A534A]"
-										>
-											Get Started Free
-											<ArrowRight className="h-4 w-4" />
-										</Link>
-									</div>
-								</div>
-							</div>
-						</section>
+							)
+						})}
 					</div>
+				</div>
+			</section>
+
+			{/* CTA Section */}
+			<section>
+				<div className="mx-auto max-w-7xl px-6 py-20">
+					<div className="mx-auto max-w-3xl rounded-sm border border-[#D8D0C8] bg-[#F5F2EE] p-12 shadow-sm md:p-16">
+						<div className="text-center">
+							<div className="mb-6 text-xs font-semibold tracking-[0.15em] text-[#9E9386] uppercase">
+								Get Started
+							</div>
+							<h2 className="mb-6 text-3xl font-normal tracking-tight md:text-4xl">
+								Ready to find your match?
+							</h2>
+							<p className="mx-auto mb-10 max-w-lg leading-relaxed text-[#9E9386]">
+								Join the first platform that cares as much about fit as you do
+								about finding the right property.
+							</p>
+							<Link
+								to="/consumer/priorities"
+								className="inline-flex items-center gap-2 rounded-sm bg-[#3D3832] px-6 py-3 text-sm font-semibold tracking-wide text-[#F5F2EE] uppercase transition-colors hover:bg-[#5A534A]"
+							>
+								Get Started Free
+								<ArrowRight className="h-4 w-4" />
+							</Link>
+						</div>
+					</div>
+				</div>
+			</section>
+		</div>
 	)
 }

@@ -1,6 +1,7 @@
 # Setup
 
-Create, link, and organize Railway projects, services, databases, and workspaces.
+Create, link, and organize Railway projects, services, databases, and
+workspaces.
 
 ## Projects
 
@@ -14,14 +15,16 @@ railway whoami --json              # current user, workspace memberships
 
 ### Link to an existing project
 
-Linking sets the working context for all subsequent CLI commands in this directory.
+Linking sets the working context for all subsequent CLI commands in this
+directory.
 
 ```bash
 railway link --project <project-id-or-name>
 railway status --json              # confirm linked context
 ```
 
-Without `--project`, `railway link` runs interactively. For scripted or CI use, always pass explicit flags.
+Without `--project`, `railway link` runs interactively. For scripted or CI use,
+always pass explicit flags.
 
 ### Link to a specific service
 
@@ -39,11 +42,13 @@ railway init --name <project-name>
 railway init --name <project-name> --workspace <workspace-id-or-name>
 ```
 
-`railway init` both creates and links in one step. In CI or multi-workspace setups, pass `--workspace` explicitly to avoid ambiguity.
+`railway init` both creates and links in one step. In CI or multi-workspace
+setups, pass `--workspace` explicitly to avoid ambiguity.
 
 ### Update project settings
 
-Settings like project name, PR deploys, and visibility aren't exposed through the CLI. Use the GraphQL API helper (see [request.md](request.md)):
+Settings like project name, PR deploys, and visibility aren't exposed through
+the CLI. Use the GraphQL API helper (see [request.md](request.md)):
 
 ```bash
 scripts/railway-api.sh \
@@ -63,47 +68,59 @@ railway add --database postgres               # managed database (postgres, redi
 railway add                                   # interactive, prompts for type
 ```
 
-Before adding a database, check for existing database services to avoid duplicates. Run `railway environment config --json` and inspect `source.image` for each service:
+Before adding a database, check for existing database services to avoid
+duplicates. Run `railway environment config --json` and inspect `source.image`
+for each service:
 
-| Image pattern | Database |
-|---|---|
+| Image pattern                               | Database |
+| ------------------------------------------- | -------- |
 | `ghcr.io/railway/postgres*` or `postgres:*` | Postgres |
-| `ghcr.io/railway/redis*` or `redis:*` | Redis |
-| `ghcr.io/railway/mysql*` or `mysql:*` | MySQL |
-| `ghcr.io/railway/mongo*` or `mongo:*` | MongoDB |
+| `ghcr.io/railway/redis*` or `redis:*`       | Redis    |
+| `ghcr.io/railway/mysql*` or `mysql:*`       | MySQL    |
+| `ghcr.io/railway/mongo*` or `mongo:*`       | MongoDB  |
 
-If a matching database already exists, skip creation and wire the existing service's variables to the app.
+If a matching database already exists, skip creation and wire the existing
+service's variables to the app.
 
-Empty services have no source until you configure one. This is the right pattern when you need to set source repo, branch, or build config before the first deploy.
+Empty services have no source until you configure one. This is the right pattern
+when you need to set source repo, branch, or build config before the first
+deploy.
 
 ### Connect a database to a service
 
-After `railway add --database <type>`, the database creates connection variables automatically. Wire them to your app service using variable references:
+After `railway add --database <type>`, the database creates connection variables
+automatically. Wire them to your app service using variable references:
 
-| Database | Connection variable |
-|---|---|
+| Database | Connection variable          |
+| -------- | ---------------------------- |
 | Postgres | `${{Postgres.DATABASE_URL}}` |
-| Redis | `${{Redis.REDIS_URL}}` |
-| MySQL | `${{MySQL.MYSQL_URL}}` |
-| MongoDB | `${{MongoDB.MONGO_URL}}` |
+| Redis    | `${{Redis.REDIS_URL}}`       |
+| MySQL    | `${{MySQL.MYSQL_URL}}`       |
+| MongoDB  | `${{MongoDB.MONGO_URL}}`     |
 
 ```bash
 railway variable set DATABASE_URL='${{Postgres.DATABASE_URL}}' --service <app-service>
 ```
 
-Service names in variable references are case-sensitive and must match exactly. For full wiring details including public/private networking decisions, see [configure.md](configure.md).
+Service names in variable references are case-sensitive and must match exactly.
+For full wiring details including public/private networking decisions, see
+[configure.md](configure.md).
 
-When creating new service instances via JSON config patches, include `isCreated: true` in the service block to mark it as a new service.
+When creating new service instances via JSON config patches, include
+`isCreated: true` in the service block to mark it as a new service.
 
 ### Deploy from a template
 
-Templates provision pre-configured services with sensible defaults, faster than creating an empty service and configuring it manually:
+Templates provision pre-configured services with sensible defaults, faster than
+creating an empty service and configuring it manually:
 
 ```bash
 railway deploy --template <template-code>
 ```
 
-Common template codes: `postgres`, `redis`, `mysql`, `mongodb`, `minio`, `umami`. For the full list, search via the GraphQL API (see [request.md](request.md)).
+Common template codes: `postgres`, `redis`, `mysql`, `mongodb`, `minio`,
+`umami`. For the full list, search via the GraphQL API (see
+[request.md](request.md)).
 
 Template deployments typically create:
 
@@ -123,17 +140,20 @@ railway environment edit --service-config <service> source.branch <branch>
 
 ### Deploy a Docker image
 
-When you have a built image (for example, from a private registry or Docker Hub), skip source builds entirely:
+When you have a built image (for example, from a private registry or Docker
+Hub), skip source builds entirely:
 
 ```bash
 railway environment edit --service-config <service> source.image <image:tag>
 ```
 
-This sets the service to pull from a container registry instead of building from source.
+This sets the service to pull from a container registry instead of building from
+source.
 
 ## Buckets
 
-Buckets are S3-compatible object storage. They are created at the project level and deployed to environments via config patches.
+Buckets are S3-compatible object storage. They are created at the project level
+and deployed to environments via config patches.
 
 ### List buckets
 
@@ -151,14 +171,15 @@ railway bucket create --region iad --json                 # auto-named, JSON out
 
 Available regions:
 
-| Code | Location |
-|---|---|
-| `sjc` | US West (California) |
-| `iad` | US East (Virginia) |
-| `ams` | EU West (Amsterdam) |
+| Code  | Location                 |
+| ----- | ------------------------ |
+| `sjc` | US West (California)     |
+| `iad` | US East (Virginia)       |
+| `ams` | EU West (Amsterdam)      |
 | `sin` | Asia Pacific (Singapore) |
 
-Without `--region`, the CLI prompts interactively. For scripted use, always pass `--region`.
+Without `--region`, the CLI prompts interactively. For scripted use, always pass
+`--region`.
 
 ### Delete a bucket
 
@@ -193,9 +214,11 @@ Get S3-compatible credentials for connecting your app to a bucket:
 railway bucket credentials --bucket my-bucket --json
 ```
 
-Returns: `endpoint`, `accessKeyId`, `secretAccessKey`, `bucketName`, `region`, `urlStyle`.
+Returns: `endpoint`, `accessKeyId`, `secretAccessKey`, `bucketName`, `region`,
+`urlStyle`.
 
-Without `--json`, output uses `AWS_*=value` lines suitable for `eval $(railway bucket credentials)` or piping into `.env` files.
+Without `--json`, output uses `AWS_*=value` lines suitable for
+`eval $(railway bucket credentials)` or piping into `.env` files.
 
 To reset credentials (invalidates existing ones):
 
@@ -206,7 +229,8 @@ railway bucket credentials --bucket my-bucket --reset --yes --2fa-code 123456  #
 
 ### Connect a bucket to a service
 
-After creating a bucket, wire the S3 credentials to your app service as environment variables:
+After creating a bucket, wire the S3 credentials to your app service as
+environment variables:
 
 ```bash
 # Get credentials
@@ -222,32 +246,36 @@ railway variable set \
   --service <app-service>
 ```
 
-All subcommands support `--bucket (-b)` and `--environment (-e)` as global flags to skip interactive prompts.
+All subcommands support `--bucket (-b)` and `--environment (-e)` as global flags
+to skip interactive prompts.
 
 ## Analyze codebase before setup
 
-When setting up a new service from source, detect the project type from marker files:
+When setting up a new service from source, detect the project type from marker
+files:
 
-| Marker file | Type |
-|---|---|
-| `package.json` | Node.js |
-| `requirements.txt` or `pyproject.toml` | Python |
-| `go.mod` | Go |
-| `Cargo.toml` | Rust |
-| `index.html` (no package.json) | Static site |
+| Marker file                            | Type        |
+| -------------------------------------- | ----------- |
+| `package.json`                         | Node.js     |
+| `requirements.txt` or `pyproject.toml` | Python      |
+| `go.mod`                               | Go          |
+| `Cargo.toml`                           | Rust        |
+| `index.html` (no package.json)         | Static site |
 
 ### Monorepo detection
 
-| Marker | Monorepo type |
-|---|---|
-| `pnpm-workspace.yaml` | pnpm workspace (shared) |
-| `package.json` with `workspaces` field | npm/yarn workspace (shared) |
-| `turbo.json` | Turborepo (shared) |
-| Multiple subdirectories with separate `package.json`, no workspace config | Isolated monorepo |
+| Marker                                                                    | Monorepo type               |
+| ------------------------------------------------------------------------- | --------------------------- |
+| `pnpm-workspace.yaml`                                                     | pnpm workspace (shared)     |
+| `package.json` with `workspaces` field                                    | npm/yarn workspace (shared) |
+| `turbo.json`                                                              | Turborepo (shared)          |
+| Multiple subdirectories with separate `package.json`, no workspace config | Isolated monorepo           |
 
-**Isolated monorepo** (apps don't share code): set `rootDirectory` to the app's subdirectory (for example, `/apps/api`).
+**Isolated monorepo** (apps don't share code): set `rootDirectory` to the app's
+subdirectory (for example, `/apps/api`).
 
-**Shared monorepo** (TypeScript workspaces, shared packages): do not set `rootDirectory`. Set custom build and start commands instead:
+**Shared monorepo** (TypeScript workspaces, shared packages): do not set
+`rootDirectory`. Set custom build and start commands instead:
 
 - pnpm: `pnpm --filter <package> build`
 - npm: `npm run build --workspace=packages/<package>`
@@ -260,29 +288,49 @@ When no code exists, minimal starting points for common types:
 
 - **Static site**: create `index.html` in the root directory.
 - **Vite React**: `npm create vite@latest . -- --template react`
-- **Python FastAPI**: create `main.py` with a FastAPI app and `requirements.txt` with `fastapi` and `uvicorn`.
-- **Go**: create `main.go` with an HTTP server that reads `PORT` from the environment.
+- **Python FastAPI**: create `main.py` with a FastAPI app and `requirements.txt`
+  with `fastapi` and `uvicorn`.
+- **Go**: create `main.go` with an HTTP server that reads `PORT` from the
+  environment.
 
 ## Workspaces
 
-Workspaces scope billing and team access. Most users have one personal workspace and possibly team workspaces.
+Workspaces scope billing and team access. Most users have one personal workspace
+and possibly team workspaces.
 
 ```bash
 railway whoami --json              # lists workspace memberships
 ```
 
-When creating projects, Railway uses the default workspace unless `--workspace` is specified.
+When creating projects, Railway uses the default workspace unless `--workspace`
+is specified.
 
 ## Troubleshoot setup issues
 
-- **CLI missing**: install via `brew install railway` or `curl -fsSL https://railway.com/install.sh | sh`
+- **CLI missing**: install via `brew install railway` or
+  `curl -fsSL https://railway.com/install.sh | sh`
 - **Not authenticated**: `railway login`
-- **Project not found**: verify with `railway project list --json`, check workspace context
-- **Service not found**: `railway service status --all --json` to list all services in the project
-- **Wrong workspace**: inspect `railway whoami --json`, re-run with explicit `--workspace`
-- **Permission denied**: check workspace role, mutations require member or admin access
+- **Project not found**: verify with `railway project list --json`, check
+  workspace context
+- **Service not found**: `railway service status --all --json` to list all
+  services in the project
+- **Wrong workspace**: inspect `railway whoami --json`, re-run with explicit
+  `--workspace`
+- **Permission denied**: check workspace role, mutations require member or admin
+  access
 
 ## Validated against
 
-- Docs: [cli.md](https://docs.railway.com/cli), [init.md](https://docs.railway.com/cli/init), [add.md](https://docs.railway.com/cli/add), [link.md](https://docs.railway.com/cli/link), [project.md](https://docs.railway.com/cli/project), [list.md](https://docs.railway.com/cli/list), [whoami.md](https://docs.railway.com/cli/whoami)
-- CLI source: [init.rs](https://github.com/railwayapp/cli/blob/a8a5afe/src/commands/init.rs), [add.rs](https://github.com/railwayapp/cli/blob/a8a5afe/src/commands/add.rs), [project.rs](https://github.com/railwayapp/cli/blob/a8a5afe/src/commands/project.rs), [list.rs](https://github.com/railwayapp/cli/blob/a8a5afe/src/commands/list.rs), [bucket.rs](https://github.com/railwayapp/cli/blob/feat/bucket-command/src/commands/bucket.rs)
+- Docs: [cli.md](https://docs.railway.com/cli),
+  [init.md](https://docs.railway.com/cli/init),
+  [add.md](https://docs.railway.com/cli/add),
+  [link.md](https://docs.railway.com/cli/link),
+  [project.md](https://docs.railway.com/cli/project),
+  [list.md](https://docs.railway.com/cli/list),
+  [whoami.md](https://docs.railway.com/cli/whoami)
+- CLI source:
+  [init.rs](https://github.com/railwayapp/cli/blob/a8a5afe/src/commands/init.rs),
+  [add.rs](https://github.com/railwayapp/cli/blob/a8a5afe/src/commands/add.rs),
+  [project.rs](https://github.com/railwayapp/cli/blob/a8a5afe/src/commands/project.rs),
+  [list.rs](https://github.com/railwayapp/cli/blob/a8a5afe/src/commands/list.rs),
+  [bucket.rs](https://github.com/railwayapp/cli/blob/feat/bucket-command/src/commands/bucket.rs)
