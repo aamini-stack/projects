@@ -40,6 +40,14 @@ export const Route = createRootRouteWithContext<{
 		links: [
 			{ rel: 'stylesheet', href: appCss },
 			{ rel: 'icon', type: 'image/svg+xml', href: '/logomark-fullColor.svg' },
+			{
+				rel: 'stylesheet',
+				href: 'https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap',
+			},
+			{
+				rel: 'stylesheet',
+				href: 'https://use.typekit.net/whm7mgx.css',
+			},
 		],
 	}),
 	beforeLoad: async ({ location }) => {
@@ -170,23 +178,20 @@ function RootComponent() {
 				<HeadContent />
 			</head>
 			<body className="bg-background text-foreground min-w-80 antialiased">
-				<div className="flex min-h-dvh flex-col">
+				<div className="relative z-10 flex min-h-dvh flex-col">
 					{/* Navigation — Institutional (hidden on beta gate) */}
 					{!isBetaPage && (
-						<header className="border-border bg-background sticky top-0 z-50 border-b">
+						<header className="border-border/80 sticky top-0 z-50 border-b bg-white/82 backdrop-blur-xl">
 							<div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
 								<Link
 									to={session ? '/match-activity' : '/'}
-									className="flex items-center gap-3"
+									className="flex items-center"
 								>
 									<img
-										src="/favicon.svg"
+										src="/logo-fullColor.svg"
 										alt="Peace of Real Estate"
-										className="h-7 w-7 shrink-0"
+										className="h-9 w-auto shrink-0"
 									/>
-									<span className="font-serif text-base tracking-tight">
-										Peace of Real Estate
-									</span>
 								</Link>
 
 								<div className="flex items-center gap-1">
@@ -220,7 +225,7 @@ function RootComponent() {
 
 					{/* Footer — Institutional (hidden on beta gate) */}
 					{!isBetaPage && (
-						<footer className="border-border bg-background border-t">
+						<footer className="border-border/80 border-t bg-white/70 backdrop-blur-xl">
 							<div className="mx-auto max-w-7xl px-6 py-8">
 								<div className="flex flex-col items-center justify-center gap-4">
 									<p className="text-muted-foreground text-xs">

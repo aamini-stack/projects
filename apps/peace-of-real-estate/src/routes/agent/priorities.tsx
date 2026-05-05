@@ -1,77 +1,97 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
-import { ArrowRight, ArrowLeft, Briefcase, Shield } from 'lucide-react'
+import { ArrowRight, Briefcase, CheckCircle2, Shield } from 'lucide-react'
 import { useState } from 'react'
 
-import { CategoryWeightSelector } from '@/components/category-weight-selector'
 import { FlowPageShell } from '@/components/flow-page-shell'
-import { categoryWeightOptions } from '@/lib/category-weight-options'
 import {
 	getStoredIntakeDraftForRole,
 	saveStoredIntakeDraftForRole,
 } from '@/lib/intake-draft'
-import type { CategoryWeights } from '@/lib/user-settings'
 
 export const Route = createFileRoute('/agent/priorities')({
 	component: AgentPriorities,
 })
 
-const agentCategoryWeightOptions = categoryWeightOptions.map((category) =>
-	category.id === 'working-style'
-		? { ...category, icon: Briefcase }
-		: category.id === 'transparency'
-			? { ...category, icon: Shield }
-			: category,
-)
-
 function AgentPriorities() {
-	const [initialDraft] = useState(() => getStoredIntakeDraftForRole('agent'))
-	const [weights, setWeights] = useState<CategoryWeights>(
-		() => initialDraft.weights,
+	const draft = getStoredIntakeDraftForRole('agent')
+	const [representation, setRepresentation] = useState(
+		draft.agentRepresentation ?? '',
 	)
-
-	const updateWeight = (id: keyof CategoryWeights, value: number) => {
-		setWeights((prev) => {
-			const next = { ...prev, [id]: value } as CategoryWeights
-			saveStoredIntakeDraftForRole('agent', {
-				weights: next,
-				hasCompletedWeights: true,
-			})
-			return next
-		})
-	}
 
 	return (
 		<FlowPageShell
 			backTo="/"
 			backLabel="Back to home"
-			title="Agent Onboarding"
-			subtitle="Step 1 of 4 — Set your priority weights"
+			title="Tell Us About Yourself"
+			subtitle="Agent onboarding — profile, verification, Pax"
 			icon={Shield}
-			iconClassName="border-terracotta bg-terracotta-tint text-terracotta"
+			iconClassName="border-amber bg-amber-tint text-amber"
 		>
-			<CategoryWeightSelector
-				categories={agentCategoryWeightOptions}
-				weights={weights}
-				onChange={updateWeight}
-			/>
+			<p className="text-muted-foreground text-sm leading-relaxed">
+				Answer questions about your working style, communication preferences,
+				and transaction approach. Then we'll verify your license, collect your
+				contact details, and capture what makes you stand out to clients.
+			</p>
 
-			{/* Navigation */}
-			<div className="mt-10 flex items-center justify-between">
-				<Link
-					to="/"
-					className="text-muted-foreground hover:text-foreground inline-flex items-center gap-2 text-sm transition-colors"
-				>
-					<ArrowLeft className="h-4 w-4" />
-					Back
-				</Link>
+			<div className="mt-8 grid gap-3 sm:grid-cols-2">
+				{['Buyer representation', 'Seller representation'].map((option) => (
+					<button
+						key={option}
+						type="button"
+						onClick={() => setRepresentation(option)}
+						className={`rounded-xl border p-4 text-left text-sm transition-all ${
+							representation === option
+								? 'border-amber bg-amber-tint text-foreground'
+								: 'border-border hover:border-amber/40 hover:bg-secondary'
+						}`}
+					>
+						<Briefcase className="text-amber mb-3 h-4 w-4" />
+						{option}
+					</button>
+				))}
+			</div>
+
+			<div className="border-border bg-background mt-8 rounded-2xl border p-5">
+				<h2 className="font-heading text-xl font-normal">
+					Here's how it works — and what it costs.
+				</h2>
+				<p className="text-muted-foreground mt-2 text-sm leading-relaxed">
+					PRE connects agents with pre-matched consumers who already fit your
+					working style. No cold leads. No bidding wars.
+				</p>
+				<div className="mt-5 space-y-3">
+					{[
+						'Step 1 — Build Your Profile',
+						'Step 2 — Pax Deep Dive',
+						'Step 3 — Get Matched',
+						'$99 / month — keeps your profile active',
+						'Selection fees: Shared intro $199 · Exclusive intro $399',
+					].map((item) => (
+						<div key={item} className="flex gap-3 text-sm">
+							<CheckCircle2 className="text-amber mt-0.5 h-4 w-4 shrink-0" />
+							<span>{item}</span>
+						</div>
+					))}
+				</div>
+			</div>
+
+			<div className="mt-10 flex justify-end">
 				<Link
 					to="/agent/quiz"
-					className="btn-primary inline-flex items-center gap-2"
+					onClick={() =>
+						saveStoredIntakeDraftForRole('agent', {
+							agentRepresentation: representation,
+						})
+					}
+					className={`${representation ? 'btn-primary' : 'bg-muted text-muted-foreground pointer-events-none'} inline-flex items-center gap-2 rounded-[10px] px-4 py-2 text-sm font-medium`}
 				>
-					Continue to Questions
+					I'm in — build my profile
 					<ArrowRight className="h-4 w-4" />
 				</Link>
 			</div>
+			<p className="text-muted-foreground mt-4 text-center text-xs">
+				No payment required until you're ready to go live.
+			</p>
 		</FlowPageShell>
 	)
 }

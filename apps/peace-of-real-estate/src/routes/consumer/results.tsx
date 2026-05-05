@@ -69,7 +69,7 @@ const matches: AgentMatch[] = [
 	},
 ]
 
-function ConsumerResults() {
+export function ConsumerResults() {
 	return (
 		<FlowPageShell
 			backTo="/consumer/quiz"
@@ -77,9 +77,9 @@ function ConsumerResults() {
 			title="Your Matches"
 			subtitle="Step 3 of 4 — Review your ranked agent matches"
 			icon={Trophy}
-			iconClassName="border-blue-cyan bg-blue-cyan-tint text-blue-cyan"
+			iconClassName="border-navy bg-navy-tint text-navy"
 		>
-			<h2 className="mx-auto max-w-xl text-center font-serif text-2xl font-normal tracking-tight md:text-3xl">
+			<h2 className="font-heading mx-auto max-w-xl text-center text-2xl font-normal tracking-tight md:text-3xl">
 				Your top agents are ready
 			</h2>
 			<p className="text-muted-foreground mx-auto mt-4 max-w-xl text-center text-sm leading-relaxed md:text-base">

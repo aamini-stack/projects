@@ -31,10 +31,10 @@ function ConsumerQuiz() {
 			backTo="/consumer/priorities"
 			backLabel="Back to priorities"
 			stepLabel="Step 2 of 4 - Help us understand your preferences"
-			accentClassName="bg-blue-cyan"
-			accentTextClassName="text-blue-cyan"
-			accentTintClassName="bg-blue-cyan-tint"
-			accentHoverBorderClassName="hover:border-blue-cyan/30"
+			accentClassName="bg-navy"
+			accentTextClassName="text-navy"
+			accentTintClassName="bg-navy-tint"
+			accentHoverBorderClassName="hover:border-navy/30"
 			questions={buyerQuestionFlow.questions}
 			initialAnswers={draft.answers}
 			initialQuestionIndex={getNextUnansweredQuestionIndex(

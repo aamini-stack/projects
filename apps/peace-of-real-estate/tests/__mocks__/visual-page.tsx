@@ -8,7 +8,8 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { expectComponentScreenshot } from '@aamini/config-testing/test/visual-page'
 import type { ComponentType, ReactNode } from 'react'
 import type { Locator } from 'vitest/browser'
-import type { RenderResult } from 'vitest-browser-react'
+import { expect } from 'vitest'
+import { render, type RenderResult } from 'vitest-browser-react'
 
 function createMockRouter(path: string, component: ComponentType) {
 	const rootRoute = createRootRoute()
@@ -52,13 +53,25 @@ export async function expectPageScreenshot({
 	name,
 	waitFor,
 	setup,
+	visual = true,
 }: {
 	component: ComponentType
 	path: string
 	name: string
 	waitFor: (screen: RenderResult) => Locator
 	setup?: () => void
+	visual?: boolean
 }) {
+	if (!visual) {
+		setup?.()
+		const Component = component
+		const screen = await render(<Component />, {
+			wrapper: createWrapper(path, component),
+		})
+		await expect.element(waitFor(screen)).toBeVisible()
+		return
+	}
+
 	await expectComponentScreenshot({
 		component,
 		name,

@@ -19,11 +19,11 @@ function AgentQuiz() {
 		<QuestionFlow
 			backTo="/agent/priorities"
 			backLabel="Back to priorities"
-			stepLabel="Step 2 of 4 - Show how you work with clients"
-			accentClassName="bg-terracotta"
-			accentTextClassName="text-terracotta"
-			accentTintClassName="bg-terracotta-tint"
-			accentHoverBorderClassName="hover:border-terracotta/30"
+			stepLabel="Step 2 — Show how you work with clients"
+			accentClassName="bg-amber"
+			accentTextClassName="text-amber"
+			accentTintClassName="bg-amber-tint"
+			accentHoverBorderClassName="hover:border-amber/30"
 			questions={agentQuestionFlow.questions}
 			initialAnswers={draft.answers}
 			initialQuestionIndex={getNextUnansweredQuestionIndex(
@@ -34,7 +34,7 @@ function AgentQuiz() {
 				saveStoredIntakeDraftForRole('agent', { answers })
 			}}
 			completeTo="/agent/profile"
-			completeLabel="Continue to Profile"
+			completeLabel="Continue to Details"
 		/>
 	)
 }

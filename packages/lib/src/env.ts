@@ -9,6 +9,7 @@ export function createEnv<T extends ZodTypeAny>(schema: T): z.infer<T> {
 	const environmentName = /(?:^|-)pr-\d+$/.test(rawEnvironmentName)
 		? 'staging'
 		: rawEnvironmentName
+	const fileEnvironment: Record<string, string> = {}
 
 	config({
 		path: [
@@ -19,7 +20,12 @@ export function createEnv<T extends ZodTypeAny>(schema: T): z.infer<T> {
 		],
 		quiet: true,
 		override: true,
+		processEnv: fileEnvironment,
 	})
 
-	return schema.parse(process.env)
+	for (const [key, value] of Object.entries(fileEnvironment)) {
+		process.env[key] ??= value
+	}
+
+	return schema.parse({ ...fileEnvironment, ...process.env })
 }

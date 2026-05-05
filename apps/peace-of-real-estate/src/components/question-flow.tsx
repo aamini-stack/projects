@@ -288,7 +288,7 @@ export function QuestionFlow({
 			</div>
 
 			<div>
-				<h2 className="mb-2 font-serif text-xl leading-relaxed font-normal">
+				<h2 className="font-heading mb-2 text-xl leading-relaxed font-normal">
 					{question.prompt}
 				</h2>
 				{isMultipleChoice ? (
@@ -315,7 +315,7 @@ export function QuestionFlow({
 						}
 						placeholder="Share a few details"
 						rows={6}
-						className="border-border bg-background focus:border-primary w-full border px-4 py-3 text-sm leading-relaxed focus:outline-none"
+						className="border-border bg-background focus:border-primary w-full rounded-xl border px-4 py-3 text-sm leading-relaxed focus:outline-none"
 					/>
 				) : (
 					<div className="space-y-3">
@@ -331,14 +331,14 @@ export function QuestionFlow({
 									type="button"
 									onClick={() => toggleOption(optionIndex)}
 									disabled={isTransitioning}
-									className={`flex w-full items-center gap-4 border p-4 text-left transition-all duration-200 disabled:cursor-default disabled:opacity-50 ${
+									className={`flex w-full items-center gap-4 rounded-xl border p-4 text-left transition-all duration-200 disabled:cursor-default disabled:opacity-50 ${
 										isSelected
 											? `border-current ${accentTextClassName} ${accentTintClassName}`
 											: `border-border ${accentHoverBorderClassName} hover:bg-secondary`
 									}`}
 								>
 									<div
-										className={`relative flex h-5 w-5 shrink-0 items-center justify-center border transition-colors ${
+										className={`relative flex h-5 w-5 shrink-0 items-center justify-center rounded-full border transition-colors ${
 											isSelected
 												? `border-current ${accentClassName}`
 												: 'border-border'

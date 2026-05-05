@@ -48,22 +48,20 @@ export function FlowPageShell({
 			<div className="mt-16 mb-6">
 				<div className="flex items-center gap-4">
 					<div
-						className={`${iconBorderClassName} ${iconClassName} flex h-10 w-10 items-center justify-center border`}
+						className={`${iconBorderClassName} ${iconClassName} flex h-10 w-10 items-center justify-center rounded-full border`}
 					>
 						<Icon className="h-5 w-5" />
 					</div>
 					<div>
 						<div className="data-label mb-1">{subtitle}</div>
-						<h1 className="font-serif text-2xl font-normal tracking-tight">
+						<h1 className="font-heading text-2xl font-normal tracking-tight">
 							{title}
 						</h1>
 					</div>
 				</div>
 			</div>
 
-			<div className="border-border bg-card card-institutional p-8 md:p-10">
-				{children}
-			</div>
+			<div className="soft-panel p-8 md:p-10">{children}</div>
 		</div>
 	)
 }

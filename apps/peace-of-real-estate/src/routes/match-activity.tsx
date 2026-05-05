@@ -57,24 +57,24 @@ const categoryColors: Record<
 	{ bg: string; text: string; bar: string }
 > = {
 	'Working Style': {
-		bg: 'bg-blue-cyan-tint',
-		text: 'text-blue-cyan',
-		bar: 'bg-blue-cyan',
+		bg: 'bg-navy-tint',
+		text: 'text-navy',
+		bar: 'bg-navy',
 	},
 	Communication: {
-		bg: 'bg-terracotta-tint',
-		text: 'text-terracotta',
-		bar: 'bg-terracotta',
+		bg: 'bg-amber-tint',
+		text: 'text-amber',
+		bar: 'bg-amber',
 	},
 	Transparency: {
-		bg: 'bg-olive-tint',
-		text: 'text-olive',
-		bar: 'bg-olive',
+		bg: 'bg-success-tint',
+		text: 'text-success',
+		bar: 'bg-success',
 	},
 	Fit: {
-		bg: 'bg-ochre-tint',
-		text: 'text-ochre',
-		bar: 'bg-ochre',
+		bg: 'bg-warning-tint',
+		text: 'text-warning',
+		bar: 'bg-warning',
 	},
 }
 
@@ -85,10 +85,10 @@ function FitScoreRing({ score, size = 56 }: { score: number; size?: number }) {
 	const offset = circumference - (score / 100) * circumference
 	const color =
 		score >= 90
-			? 'var(--color-blue-cyan)'
+			? 'var(--color-navy)'
 			: score >= 80
-				? 'var(--color-olive)'
-				: 'var(--color-ochre)'
+				? 'var(--color-success)'
+				: 'var(--color-warning)'
 
 	return (
 		<div
@@ -178,7 +178,7 @@ function MatchCard({
 		>
 			{/* Top Match Banner */}
 			{match.isTopMatch && (
-				<div className="bg-blue-cyan text-blue-cyan-foreground flex items-center gap-2 px-6 py-2 text-xs font-semibold tracking-wide">
+				<div className="bg-navy text-navy-foreground flex items-center gap-2 px-6 py-2 text-xs font-semibold tracking-wide">
 					<Star className="h-3.5 w-3.5 fill-current" />
 					Top Match — Highest Compatibility
 				</div>
@@ -192,12 +192,12 @@ function MatchCard({
 						<img
 							src={match.avatar}
 							alt={match.name}
-							className="border-blue-cyan h-14 w-14 shrink-0 border object-cover"
+							className="border-navy h-14 w-14 shrink-0 border object-cover"
 							loading="lazy"
 							onError={() => setAvatarFailed(true)}
 						/>
 					) : (
-						<div className="border-blue-cyan bg-blue-cyan-tint text-blue-cyan flex h-14 w-14 shrink-0 items-center justify-center border text-lg font-bold">
+						<div className="border-navy bg-navy-tint text-navy flex h-14 w-14 shrink-0 items-center justify-center border text-lg font-bold">
 							{initials}
 						</div>
 					)}
@@ -205,7 +205,7 @@ function MatchCard({
 					{/* Info */}
 					<div className="min-w-0 flex-1">
 						<div className="flex flex-wrap items-center gap-2">
-							<h3 className="font-serif text-lg">{match.name}</h3>
+							<h3 className="font-heading text-lg">{match.name}</h3>
 							{match.agency && (
 								<span className="text-muted-foreground text-sm">
 									{match.agency}
@@ -410,7 +410,7 @@ function MatchActivity() {
 					</div>
 					<div>
 						<div className="data-label mb-1">Dashboard</div>
-						<h1 className="font-serif text-3xl font-normal tracking-tight">
+						<h1 className="font-heading text-3xl font-normal tracking-tight">
 							Match Activity
 						</h1>
 					</div>
@@ -481,10 +481,10 @@ function MatchActivity() {
 			<div className="border-border bg-card card-institutional mt-8 p-8">
 				<div className="flex flex-col items-center justify-between gap-4 md:flex-row">
 					<div>
-						<div className="data-label text-blue-cyan mb-2">
+						<div className="data-label text-navy mb-2">
 							Improve Your Matches
 						</div>
-						<h3 className="font-serif text-lg">
+						<h3 className="font-heading text-lg">
 							Complete your Pax AI Deep Dive
 						</h3>
 						<p className="text-muted-foreground mt-1 max-w-md text-sm">

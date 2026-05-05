@@ -1,75 +1,150 @@
-# Theme: "Links Minimal"
+# Peace of Real Estate Theme
 
-A coastal, textured minimalism — sand, fog, and driftwood. Quiet confidence
-without weight. Every surface has subtle grain; nothing screams.
+Visual identity for Peace of Real Estate. The direction is **Calm Precision**:
+professional, trustworthy, human, and quietly premium. This theme is a product
+expression of the PRE brand guide in `PRE.md`, so colors and type should stay
+inside the official brand palette whenever possible.
+
+## Logo
+
+### Primary Logo
+
+The primary logo combines the logomark with the logotype. Use this version
+whenever space allows.
+
+- **Full Color on Light**: For white, porcelain, or light gray backgrounds
+- **Light on Dark**: For navy or dark backgrounds
+
+### Logo Variants
+
+- **Logomark Only**: For small spaces, favicons, app icons
+- **Logomark Light**: For dark backgrounds
+
+Maintain clear space around the logo equal to the height of the "P" in
+"Peace". Never stretch, rotate, or alter the logo colors outside approved
+variants.
 
 ## Color Palette
 
-| Token      | Hex       | Usage                                           |
-| ---------- | --------- | ----------------------------------------------- |
-| Sand Trap  | `#EDE8E0` | Page background                                 |
-| Card Cream | `#F5F2EE` | Card / elevated surfaces                        |
-| Driftwood  | `#C9C0B6` | Secondary borders, dividers, subtle fills       |
-| Wet Stone  | `#3D3832` | Primary text, solid buttons, logos              |
-| Fog        | `#9E9386` | Muted text, captions, secondary labels          |
-| Seafoam    | `#8BA89B` | Accent color for highlights, badges, indicators |
+### Brand Colors
 
-**Border colors**
+| Name  | Hex       | Usage |
+| ----- | --------- | ----- |
+| Navy  | `#024A70` | Primary actions, trust anchors, selected states |
+| Sky   | `#74D4FF` | Atmospheric accents, soft highlights, links |
+| Amber | `#FFB86A` | Human warmth, agent accents, gentle emphasis |
+| Gray  | `#CAD5E2` | Supporting neutral only |
 
-- Light border on cards: `#D8D0C8`
-- Subtle internal borders: `#C9C0B6`
+### Theme Surfaces
+
+| Name       | Hex       | Usage |
+| ---------- | --------- | ----- |
+| Porcelain  | `#F8FAFC` | App background |
+| White      | `#FFFFFF` | Cards, nav, forms |
+| Sky Wash   | `#F0F9FF` | Secondary surfaces, hover states |
+| Ink        | `#0F172A` | Primary text |
+| Slate      | `#64748B` | Secondary text |
+| Border     | `#E2E8F0` | Soft separators and card borders |
+
+### Extended Sky Scale
+
+| Shade | Hex       |
+| ----- | --------- |
+| 50    | `#F0F9FF` |
+| 100   | `#E0F2FE` |
+| 200   | `#BAE6FD` |
+| 300   | `#7DD3FC` |
+| 400   | `#38BDF8` |
+| 500   | `#0EA5E9` |
+| 600   | `#0284C7` |
+| 700   | `#0369A1` |
+| 800   | `#075985` |
+| 900   | `#0C4A6E` |
+
+### Extended Slate Scale
+
+| Shade | Hex       |
+| ----- | --------- |
+| 50    | `#F8FAFC` |
+| 100   | `#F1F5F9` |
+| 200   | `#E2E8F0` |
+| 300   | `#CBD5E1` |
+| 400   | `#94A3B8` |
+| 500   | `#64748B` |
+| 600   | `#475569` |
+| 700   | `#334155` |
+| 800   | `#1E293B` |
+| 900   | `#0F172A` |
+
+### Semantic Colors
+
+| Name             | Hex       |
+| ---------------- | --------- |
+| Success          | `#22c55e` |
+| Warning/Negative | `#f97316` |
 
 ## Typography
 
-- **Headings**: _Space Grotesk_ (weights 300–600) — geometric, modern, slightly
-  techy but restrained.
-- **Body**: _Work Sans_ (weights 300–500, italic) — humanist sans, warm and
-  readable.
-- **Scale**: Headings are medium weight (not overly bold), body is light to
-  regular. Generous line-height (`leading-relaxed` / `leading-snug`).
-- **Letter-spacing**: Uppercase labels use `tracking-[0.15em]` to
-  `tracking-[0.2em]`.
+### Typefaces
 
-## Shape & Radii
+- **TT Commons Pro**: Headings, buttons, navigation. Weight: 500-600. Source: Adobe Typekit. Feature: `ss02`.
+- **DM Sans**: Body text, paragraphs, UI elements. Weight: 400-600. Source: Google Fonts.
 
-- Prefer `rounded-sm` (2 px) for cards, buttons, and containers — sharp enough
-  to feel architectural, soft enough to avoid harshness.
-- Avoid large radii (`rounded-2xl`, `rounded-3xl`) — this theme is flatter and
-  more editorial.
+If TT Commons Pro is unavailable, the theme should still feel close to showcase
+direction #1: clean, soft, precise, with generous spacing and low visual noise.
 
-## Surface & Texture
+### Type Scale
 
-- **Grain overlay**: A subtle SVG noise layer (`opacity: 0.03`) sits over the
-  main background. The `.grain` class applies `position: relative` to the parent
-  and renders the noise via a `::before` pseudo-element with
-  `pointer-events: none`.
-- **Shadows**: Very light — `shadow-sm` at most. Surfaces feel pressed into the
-  page rather than floating.
+| Element | Size | Line Height | Letter Spacing |
+| ------- | ---- | ----------- | -------------- |
+| H1 | 48 / 36 / 30px | 1.05-1.2 | -0.02em |
+| H2 | 30 / 24px | 1.2 | -0.02em |
+| H3 | 24 / 20px | 1.2 | -0.02em |
+| Body | 18px | 1.7 | -0.01em |
+| Small | 14px | 1.5 | - |
+| Nav | 15px | - | - |
 
-## Components
+## Shape And Layout
 
-### Buttons
+- Default radius: `12px`.
+- Large panels: `16px`.
+- Icon tokens: circular, softly tinted, bordered at low opacity.
+- Cards: white or translucent white, soft border, subtle shadow.
+- Backgrounds: porcelain with sky/amber radial glows using official PRE colors.
+- Avoid hard table grids, blueprint grids, construction motifs, sharp boxes, and noisy patterns.
 
-- **Primary**: `bg-[#3D3832]`, `text-[#F5F2EE]`, `rounded-sm`,
-  `hover:bg-[#5A534A]`
-- **Secondary / Outline**: `border border-[#C9C0B6]`, `text-[#3D3832]`,
-  `rounded-sm`, `hover:border-[#3D3832]`
+## Component Language
 
-### Cards
+- Primary buttons use navy, white text, `10px` radius, and subtle lift on hover.
+- Secondary buttons use white translucent surfaces and soft borders.
+- Forms and quiz options use rounded cards with calm selected states.
+- Selected states should feel like a good match, not an engineering checkbox.
+- Beta/private access should feel invitational, not "under construction".
 
-- Background: `bg-[#F5F2EE]`
-- Border: `border border-[#D8D0C8]`
-- Shadow: `shadow-sm` (optional)
-- Padding: generous (`p-8` typical)
+## CSS Variables
 
-### Links
+```css
+--brand-navy: #024A70;
+--brand-sky: #74D4FF;
+--brand-amber: #FFB86A;
+--brand-gray: #CAD5E2;
 
-- Default: `text-[#3D3832]` with no underline
-- Hover: shift to muted tone or underline subtly
+--background: #F8FAFC;
+--surface: #FFFFFF;
+--surface-warm: #F8FAFC;
+--surface-cool: #F0F9FF;
+--foreground: #0F172A;
+--muted-foreground: #64748B;
+--border: #E2E8F0;
+--radius: 0.75rem;
 
-## Overall Vibe
+--font-heading: "tt-commons-pro", system-ui, sans-serif;
+--font-body: "DM Sans", system-ui, sans-serif;
+```
 
-- Earthy, quiet, editorial
-- Texture without clutter
-- Every element feels intentional and grounded
-- Color is desaturated; contrast comes from tone, not saturation
+## Font Imports
+
+```html
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://use.typekit.net/whm7mgx.css">
+```
