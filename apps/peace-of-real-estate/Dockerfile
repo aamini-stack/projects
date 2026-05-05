@@ -16,7 +16,7 @@ FROM base AS pruner
 ARG APP_NAME
 WORKDIR /repo
 COPY . .
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
+RUN --mount=type=cache,id=s/a3fa7482-5e23-4db6-b445-b88167cc20e4-/pnpm/store,target=/pnpm/store \
 	pnpm dlx turbo@^2 prune ${APP_NAME} --docker
 
 FROM base AS builder
@@ -24,10 +24,10 @@ ARG APP_NAME
 WORKDIR /app
 COPY --from=pruner /repo/out/pnpm-lock.yaml ./pnpm-lock.yaml
 COPY --from=pruner /repo/out/pnpm-workspace.yaml ./pnpm-workspace.yaml
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
+RUN --mount=type=cache,id=s/a3fa7482-5e23-4db6-b445-b88167cc20e4-/pnpm/store,target=/pnpm/store \
 	pnpm fetch --frozen-lockfile
 COPY --from=pruner /repo/out/json/ ./
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
+RUN --mount=type=cache,id=s/a3fa7482-5e23-4db6-b445-b88167cc20e4-/pnpm/store,target=/pnpm/store \
 	pnpm install --frozen-lockfile --offline
 COPY --from=pruner /repo/out/full/ ./
 RUN pnpm turbo run build --filter=${APP_NAME}
