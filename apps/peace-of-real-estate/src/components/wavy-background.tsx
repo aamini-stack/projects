@@ -95,7 +95,7 @@ export function WavyBackground() {
 
 		const animate = () => {
 			ctx.clearRect(0, 0, canvas.width, canvas.height)
-			time += 0.015
+			time += 0.002
 
 			const w = canvas.width
 			const h = canvas.height
