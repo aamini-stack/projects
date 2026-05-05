@@ -39,7 +39,7 @@ function ConsumerPriorities() {
 			title="Set Your Priorities"
 			subtitle="Step 1 of 4 — Weight what matters most to you"
 			icon={SlidersHorizontal}
-			iconClassName="border-blue-cyan bg-blue-cyan-tint text-blue-cyan"
+			iconClassName="border-navy bg-navy-tint text-navy"
 		>
 			<CategoryWeightSelector
 				categories={categoryWeightOptions}

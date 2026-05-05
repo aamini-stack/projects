@@ -54,7 +54,7 @@ export function FlowPageShell({
 					</div>
 					<div>
 						<div className="data-label mb-1">{subtitle}</div>
-						<h1 className="font-serif text-2xl font-normal tracking-tight">
+						<h1 className="font-heading text-2xl font-normal tracking-tight">
 							{title}
 						</h1>
 					</div>

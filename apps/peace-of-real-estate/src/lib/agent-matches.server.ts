@@ -43,7 +43,7 @@ function getStorageClient() {
 			accessKeyId: env.AWS_ACCESS_KEY_ID ?? '',
 			secretAccessKey: env.AWS_SECRET_ACCESS_KEY ?? '',
 		},
-		forcePathStyle: false,
+		forcePathStyle: true,
 	})
 
 	return storageClient

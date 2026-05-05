@@ -14,10 +14,10 @@ export type AgentMatch = {
 }
 
 const categoryColors: Record<string, string> = {
-	'Working Style': 'bg-blue-cyan',
-	Communication: 'bg-terracotta',
-	Transparency: 'bg-olive',
-	Fit: 'bg-ochre',
+	'Working Style': 'bg-navy',
+	Communication: 'bg-amber',
+	Transparency: 'bg-success',
+	Fit: 'bg-warning',
 }
 
 function ScoreBar({ label, score }: { label: string; score: number }) {
@@ -53,7 +53,7 @@ export function AgentMatchCard({
 			style={{ animationDelay: `${(index + 1) * 150}ms` }}
 		>
 			{match.topMatch ? (
-				<div className="bg-blue-cyan text-blue-cyan-foreground flex items-center gap-2 px-6 py-2 text-xs font-semibold">
+				<div className="bg-navy text-navy-foreground flex items-center gap-2 px-6 py-2 text-xs font-semibold">
 					<Star className="h-3 w-3 fill-current" />
 					Top Match
 				</div>
@@ -61,7 +61,7 @@ export function AgentMatchCard({
 
 			<div className="p-8">
 				<div className="mb-8 flex flex-col gap-6 md:flex-row md:items-start">
-					<div className="border-blue-cyan bg-blue-cyan-tint text-blue-cyan flex h-16 w-16 shrink-0 items-center justify-center border text-2xl font-bold">
+					<div className="border-navy bg-navy-tint text-navy flex h-16 w-16 shrink-0 items-center justify-center border text-2xl font-bold">
 						{match.name
 							.split(' ')
 							.map((n) => n[0])
@@ -70,7 +70,7 @@ export function AgentMatchCard({
 
 					<div className="flex-1">
 						<div className="mb-1 flex items-center gap-3">
-							<h3 className="font-serif text-xl">{match.name}</h3>
+							<h3 className="font-heading text-xl">{match.name}</h3>
 							<span className="text-muted-foreground text-sm">
 								{match.agency}
 							</span>
@@ -104,7 +104,7 @@ export function AgentMatchCard({
 					</div>
 
 					<div className="flex flex-col items-center gap-1 md:items-end">
-						<div className="border-ochre bg-ochre-tint text-ochre flex h-16 w-16 items-center justify-center border text-2xl font-bold">
+						<div className="border-warning bg-warning-tint text-warning flex h-16 w-16 items-center justify-center border text-2xl font-bold">
 							{match.overall.toFixed(1)}
 						</div>
 						<span className="text-muted-foreground text-xs">Overall Fit</span>

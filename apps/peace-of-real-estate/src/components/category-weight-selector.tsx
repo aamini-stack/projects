@@ -19,9 +19,9 @@ type CategoryWeightSelectorProps = {
 function getAccentStyle(color: string, weight: number) {
 	return {
 		filter:
-			color === 'ochre'
+			color === 'warning'
 				? `brightness(${0.72 + weight * 0.035}) saturate(${0.78 + weight * 0.04})`
-				: color === 'olive'
+				: color === 'success'
 					? `brightness(${0.68 + weight * 0.045}) saturate(${0.72 + weight * 0.05})`
 					: `brightness(${0.74 + weight * 0.03}) saturate(${0.8 + weight * 0.035})`,
 		opacity: 0.76 + weight * 0.035,

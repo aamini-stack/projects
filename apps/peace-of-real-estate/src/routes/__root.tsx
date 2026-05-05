@@ -40,6 +40,14 @@ export const Route = createRootRouteWithContext<{
 		links: [
 			{ rel: 'stylesheet', href: appCss },
 			{ rel: 'icon', type: 'image/svg+xml', href: '/logomark-fullColor.svg' },
+			{
+				rel: 'stylesheet',
+				href: 'https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap',
+			},
+			{
+				rel: 'stylesheet',
+				href: 'https://use.typekit.net/whm7mgx.css',
+			},
 		],
 	}),
 	beforeLoad: async ({ location }) => {
@@ -184,7 +192,7 @@ function RootComponent() {
 										alt="Peace of Real Estate"
 										className="h-7 w-7 shrink-0"
 									/>
-									<span className="font-serif text-base tracking-tight">
+									<span className="font-heading text-base tracking-tight">
 										Peace of Real Estate
 									</span>
 								</Link>

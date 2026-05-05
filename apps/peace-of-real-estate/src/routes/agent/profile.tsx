@@ -59,17 +59,17 @@ function AgentProfile() {
 			title="Create Your Profile"
 			subtitle="Step 3 of 4 — Tell us about your experience and services"
 			icon={User}
-			iconClassName="border-terracotta bg-terracotta-tint text-terracotta"
+			iconClassName="border-amber bg-amber-tint text-amber"
 		>
 			{/* Progress */}
 			<div className="mb-10">
 				<div className="mb-3 flex items-center justify-between text-xs">
-					<span className="data-label text-terracotta">Profile Creation</span>
+					<span className="data-label text-amber">Profile Creation</span>
 					<span className="data-number text-muted-foreground">75%</span>
 				</div>
 				<div className="bg-border h-1 overflow-hidden">
 					<div
-						className="bg-terracotta h-full transition-all duration-500"
+						className="bg-amber h-full transition-all duration-500"
 						style={{ width: '75%' }}
 					/>
 				</div>
@@ -151,8 +151,8 @@ function AgentProfile() {
 									onClick={() => toggleService(service)}
 									className={`border px-4 py-2 text-sm transition-all ${
 										isSelected
-											? 'border-terracotta bg-terracotta text-terracotta-foreground'
-											: 'border-border text-muted-foreground hover:border-terracotta hover:text-terracotta'
+											? 'border-amber bg-amber text-amber-foreground'
+											: 'border-border text-muted-foreground hover:border-amber hover:text-amber'
 									}`}
 								>
 									{service}

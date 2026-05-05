@@ -47,7 +47,7 @@ function AgentPriorities() {
 			title="Agent Onboarding"
 			subtitle="Step 1 of 4 — Set your priority weights"
 			icon={Shield}
-			iconClassName="border-terracotta bg-terracotta-tint text-terracotta"
+			iconClassName="border-amber bg-amber-tint text-amber"
 		>
 			<CategoryWeightSelector
 				categories={agentCategoryWeightOptions}

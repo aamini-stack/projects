@@ -28,19 +28,20 @@ function Home() {
 
 	return (
 		<div className="flex flex-col">
-			{/* Hero + Cards — Split layout on large screens */}
-			<section className="border-border relative border-b">
+			<section className="border-border relative overflow-hidden border-b">
 				<div className="warm-gradient absolute inset-0" />
-				<div className="grid-pattern absolute inset-0 opacity-[0.35]" />
+				<div className="bg-sky/20 absolute -top-28 right-8 h-80 w-80 rounded-full blur-3xl" />
+				<div className="bg-amber/15 absolute bottom-0 left-8 h-72 w-72 rounded-full blur-3xl" />
 				<div className="relative mx-auto max-w-7xl px-6 py-16 lg:py-24">
 					<div className="grid items-start gap-10 xl:grid-cols-2 xl:gap-16">
-						{/* Left: Hero */}
 						<div className="flex flex-col justify-center pt-2 xl:pt-8">
-							<h1 className="mb-8 font-serif text-4xl leading-[1.05] font-normal tracking-tight text-balance sm:text-5xl lg:text-6xl">
+							<div className="data-label text-navy mb-5">
+								Bilateral Agent Matching
+							</div>
+							<h1 className="font-heading mb-8 text-4xl leading-[1.05] font-normal tracking-tight text-balance sm:text-5xl lg:text-6xl">
 								The most expensive decision
 								<br />
-								of your life,{' '}
-								<span className="text-blue-cyan-muted">made right.</span>
+								of your life, <span className="text-navy">made right.</span>
 							</h1>
 							<p className="text-muted-foreground mb-10 max-w-xl text-lg leading-relaxed text-balance">
 								PRE matches consumers with agents based on working style,
@@ -65,18 +66,16 @@ function Home() {
 							</div>
 						</div>
 
-						{/* Right: Journey Cards */}
 						<div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-1 xl:gap-5">
-							{/* Consumer Card */}
-							<div className="bg-card card-institutional flex flex-col p-6 xl:p-8">
-								<div className="data-label text-blue-cyan mb-4">
+							<div className="soft-panel flex flex-col p-6 xl:p-8">
+								<div className="data-label text-navy mb-4">
 									Consumer Journey
 								</div>
 								<div className="mb-4 flex items-center gap-3">
-									<div className="border-blue-cyan bg-blue-cyan-tint flex h-9 w-9 items-center justify-center border">
-										<Heart className="text-blue-cyan h-4 w-4" />
+									<div className="border-navy/20 bg-navy-tint flex h-10 w-10 items-center justify-center rounded-full border">
+										<Heart className="text-navy h-4 w-4" />
 									</div>
-									<h3 className="font-serif text-xl font-normal">
+									<h3 className="font-heading text-xl font-normal">
 										For Consumers
 									</h3>
 								</div>
@@ -93,23 +92,22 @@ function Home() {
 										'Peace Pact transparency',
 									].map((item) => (
 										<li key={item} className="flex items-center gap-2 text-sm">
-											<CheckCircle2 className="text-blue-cyan h-4 w-4 shrink-0" />
+											<CheckCircle2 className="text-navy h-4 w-4 shrink-0" />
 											<span>{item}</span>
 										</li>
 									))}
 								</ul>
 							</div>
 
-							{/* Agent Card */}
-							<div className="bg-card card-institutional flex flex-col p-6 xl:p-8">
-								<div className="data-label text-terracotta mb-4">
-									Agent Journey
-								</div>
+							<div className="soft-panel flex flex-col p-6 xl:p-8">
+								<div className="data-label text-amber mb-4">Agent Journey</div>
 								<div className="mb-4 flex items-center gap-3">
-									<div className="border-terracotta bg-terracotta-tint flex h-9 w-9 items-center justify-center border">
-										<Shield className="text-terracotta h-4 w-4" />
+									<div className="border-amber/30 bg-amber-tint flex h-10 w-10 items-center justify-center rounded-full border">
+										<Shield className="text-amber h-4 w-4" />
 									</div>
-									<h3 className="font-serif text-xl font-normal">For Agents</h3>
+									<h3 className="font-heading text-xl font-normal">
+										For Agents
+									</h3>
 								</div>
 								<p className="text-muted-foreground mb-6 text-sm leading-relaxed">
 									Create your profile, complete 12 questions, and get introduced
@@ -124,7 +122,7 @@ function Home() {
 										'Peace Pact signature',
 									].map((item) => (
 										<li key={item} className="flex items-center gap-2 text-sm">
-											<CheckCircle2 className="text-terracotta h-4 w-4 shrink-0" />
+											<CheckCircle2 className="text-amber h-4 w-4 shrink-0" />
 											<span>{item}</span>
 										</li>
 									))}
@@ -135,13 +133,12 @@ function Home() {
 				</div>
 			</section>
 
-			{/* Four Pillars — Table-like grid */}
 			<section className="border-border border-b">
 				<div className="mx-auto max-w-7xl px-6 py-20">
 					<div className="mb-16 grid gap-8 lg:grid-cols-12">
 						<div className="lg:col-span-4">
 							<div className="data-label mb-3">01 — Framework</div>
-							<h2 className="font-serif text-3xl font-normal tracking-tight md:text-4xl">
+							<h2 className="font-heading text-3xl font-normal tracking-tight md:text-4xl">
 								Built on Transparency
 							</h2>
 						</div>
@@ -153,47 +150,47 @@ function Home() {
 						</div>
 					</div>
 
-					<div className="bg-border grid gap-px sm:grid-cols-2 lg:grid-cols-4">
+					<div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
 						{[
 							{
 								icon: Heart,
 								title: 'Working Style',
 								desc: 'How you prefer to work together, from hands-on to hands-off.',
-								color: 'blue-cyan',
+								color: 'navy',
 							},
 							{
 								icon: MessageCircle,
 								title: 'Communication',
 								desc: 'Frequency, channels, and style that work for both sides.',
-								color: 'terracotta',
+								color: 'amber',
 							},
 							{
 								icon: Eye,
 								title: 'Transparency',
 								desc: 'Clear expectations around fees, process, and timeline.',
-								color: 'olive',
+								color: 'success',
 							},
 							{
 								icon: Star,
 								title: 'Overall Fit',
 								desc: 'The holistic chemistry that makes a partnership succeed.',
-								color: 'ochre',
+								color: 'warning',
 							},
 						].map((pillar) => {
 							const Icon = pillar.icon
 							const colorClass = pillar.color as
-								| 'blue-cyan'
-								| 'terracotta'
-								| 'olive'
-								| 'ochre'
+								| 'navy'
+								| 'amber'
+								| 'success'
+								| 'warning'
 							return (
-								<div key={pillar.title} className="bg-card p-8">
+								<div key={pillar.title} className="soft-panel p-8">
 									<div
-										className={`border-${colorClass} bg-${colorClass}-tint mb-6 flex h-10 w-10 items-center justify-center border`}
+										className={`border-${colorClass} bg-${colorClass}-tint mb-6 flex h-11 w-11 items-center justify-center rounded-full border`}
 									>
 										<Icon className={`text-${colorClass} h-5 w-5`} />
 									</div>
-									<h4 className="mb-3 font-serif text-lg">{pillar.title}</h4>
+									<h4 className="font-heading mb-3 text-lg">{pillar.title}</h4>
 									<p className="text-muted-foreground text-sm leading-relaxed">
 										{pillar.desc}
 									</p>
@@ -207,10 +204,10 @@ function Home() {
 			{/* CTA Section */}
 			<section>
 				<div className="mx-auto max-w-7xl px-6 py-20">
-					<div className="border-border bg-card card-institutional mx-auto max-w-3xl p-12 md:p-16">
+					<div className="soft-panel mx-auto max-w-3xl bg-linear-to-br from-[#FFFDF8] to-sky-50 p-12 md:p-16">
 						<div className="text-center">
 							<div className="data-label mb-6">Get Started</div>
-							<h2 className="mb-6 font-serif text-3xl font-normal tracking-tight md:text-4xl">
+							<h2 className="font-heading mb-6 text-3xl font-normal tracking-tight md:text-4xl">
 								Ready to find your match?
 							</h2>
 							<p className="text-muted-foreground mx-auto mb-10 max-w-lg leading-relaxed">

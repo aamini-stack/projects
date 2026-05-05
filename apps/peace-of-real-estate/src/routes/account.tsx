@@ -212,7 +212,7 @@ function Account() {
 						</div>
 						<div>
 							<div className="data-label mb-1">Account</div>
-							<h1 className="font-serif text-2xl font-normal tracking-tight">
+							<h1 className="font-heading text-2xl font-normal tracking-tight">
 								{session.user.name ?? 'Your account'}
 							</h1>
 						</div>
@@ -261,7 +261,7 @@ function Account() {
 										agentProfile.services.map((s) => (
 											<span
 												key={s}
-												className="bg-terracotta-tint text-terracotta border-terracotta/20 border px-3 py-1 text-xs font-medium"
+												className="bg-amber-tint text-amber border-amber/20 border px-3 py-1 text-xs font-medium"
 											>
 												{s}
 											</span>
@@ -457,7 +457,7 @@ function CollapsibleQuestionnaire({
 	const [confirmError, setConfirmError] = useState<string | null>(null)
 
 	const grouped = groupQuestionsByCategory(questions)
-	const accentColor = isConsumer ? 'blue-cyan' : 'terracotta'
+	const accentColor = isConsumer ? 'navy' : 'amber'
 
 	useEffect(() => {
 		setLocalAnswers(answers)
@@ -770,8 +770,8 @@ function EditAgentProfileModal({
 									onClick={() => toggleService(service)}
 									className={`border px-4 py-2 text-sm transition-all ${
 										isSelected
-											? 'border-terracotta bg-terracotta text-terracotta-foreground'
-											: 'border-border text-muted-foreground hover:border-terracotta hover:text-terracotta'
+											? 'border-amber bg-amber text-amber-foreground'
+											: 'border-border text-muted-foreground hover:border-amber hover:text-amber'
 									}`}
 								>
 									{service}
@@ -831,7 +831,7 @@ function Modal({
 				</button>
 				<div className="p-8">
 					<div className="mb-6">
-						<h2 className="font-serif text-xl font-normal">{title}</h2>
+						<h2 className="font-heading text-xl font-normal">{title}</h2>
 						{subtitle && (
 							<p className="text-muted-foreground mt-1 text-sm">{subtitle}</p>
 						)}

@@ -288,7 +288,7 @@ export function QuestionFlow({
 			</div>
 
 			<div>
-				<h2 className="mb-2 font-serif text-xl leading-relaxed font-normal">
+				<h2 className="font-heading mb-2 text-xl leading-relaxed font-normal">
 					{question.prompt}
 				</h2>
 				{isMultipleChoice ? (

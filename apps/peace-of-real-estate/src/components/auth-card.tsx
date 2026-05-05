@@ -154,10 +154,10 @@ export function AuthCard({
 		<div className="flex h-full w-full flex-1 items-center justify-center px-6 py-12">
 			<div className="flex w-full max-w-md flex-col items-center gap-8">
 				<div className="text-center">
-					<div className="data-label text-ochre mb-3">
+					<div className="data-label text-amber mb-3">
 						{isSignUp ? 'New Account' : 'Authentication'}
 					</div>
-					<h1 className="font-serif text-3xl font-normal">{title}</h1>
+					<h1 className="font-heading text-3xl font-normal">{title}</h1>
 				</div>
 
 				<Card className="border-border w-full">

@@ -17,7 +17,7 @@ export function NotFoundComponent() {
 				<div className="data-label mb-4">Error 404</div>
 
 				{/* Heading */}
-				<h1 className="mb-6 font-serif text-4xl font-normal tracking-tight md:text-5xl">
+				<h1 className="font-heading mb-6 text-4xl font-normal tracking-tight md:text-5xl">
 					Page Not Found
 				</h1>
 
