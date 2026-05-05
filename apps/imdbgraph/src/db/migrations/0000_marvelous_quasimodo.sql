@@ -1,3 +1,5 @@
+CREATE EXTENSION IF NOT EXISTS "pg_trgm";
+--> statement-breakpoint
 CREATE TABLE "show" (
 	"imdb_id" varchar(10) PRIMARY KEY NOT NULL,
 	"title" text NOT NULL,
