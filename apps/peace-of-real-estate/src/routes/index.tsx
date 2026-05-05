@@ -1,10 +1,12 @@
 import { authClient } from '@/lib/auth-client'
+import { WavyBackground } from '@/components/wavy-background'
 import { createFileRoute, Link, Navigate } from '@tanstack/react-router'
 import {
 	ArrowRight,
 	Shield,
 	MessageCircle,
 	Heart,
+	Home as HomeIcon,
 	Eye,
 	Star,
 	CheckCircle2,
@@ -29,7 +31,8 @@ function Home() {
 	return (
 		<div className="flex flex-col">
 			<section className="border-border relative overflow-hidden border-b">
-				<div className="warm-gradient absolute inset-0" />
+				<WavyBackground />
+				<div className="absolute inset-0 bg-white/80 backdrop-blur-[2px]" />
 				<div className="relative mx-auto max-w-7xl px-6 py-16 lg:py-24">
 					<div className="grid items-start gap-10 xl:grid-cols-2 xl:gap-16">
 						<div className="flex flex-col justify-center pt-2 xl:pt-8">
@@ -42,17 +45,24 @@ function Home() {
 								of your life, <span className="text-navy">made right.</span>
 							</h1>
 							<p className="text-muted-foreground mb-10 max-w-xl text-lg leading-relaxed text-balance">
-								PRE matches consumers with agents based on working style,
+								PRE matches buyers, sellers, and agents based on working style,
 								communication expectations, transparency, and fit — not just
 								availability.
 							</p>
-							<div className="flex flex-col gap-4 sm:flex-row">
+							<div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap">
 								<Link
-									to="/consumer/priorities"
+									to="/buyer/intro"
 									className="btn-primary inline-flex items-center gap-2"
 								>
-									Find Your Agent
+									I'm a Buyer
 									<ArrowRight className="h-4 w-4" />
+								</Link>
+								<Link
+									to="/seller/intro"
+									className="btn-secondary !bg-background inline-flex items-center gap-2"
+								>
+									I'm a Seller
+									<HomeIcon className="h-4 w-4" />
 								</Link>
 								<Link
 									to="/agent/priorities"
@@ -65,7 +75,7 @@ function Home() {
 						</div>
 
 						<div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-1 xl:gap-5">
-							<div className="soft-panel flex flex-col p-6 xl:p-8">
+							<div className="border-border shadow-card flex flex-col rounded-2xl border bg-white p-6 xl:p-8">
 								<div className="data-label text-navy mb-4">
 									Consumer Journey
 								</div>
@@ -74,19 +84,18 @@ function Home() {
 										<Heart className="text-navy h-4 w-4" />
 									</div>
 									<h3 className="font-heading text-xl font-normal">
-										For Consumers
+										For Buyers
 									</h3>
 								</div>
 								<p className="text-muted-foreground mb-6 text-sm leading-relaxed">
-									Answer 16 questions across working style, communication,
-									transparency, and fit. Get a ranked list of matched agents.
-									Free.
+									Share your search area, buying intent, and fit preferences.
+									Unlock verified matches for a one-time $19.99 fee.
 								</p>
 								<ul className="space-y-2">
 									{[
-										'Free compatibility assessment',
-										'Ranked agent matches',
-										'Optional $19.99 AI Deep Dive',
+										'Free fit snapshot',
+										'Ranked buyer-agent matches',
+										'Optional Pax deep dive',
 										'Peace Pact transparency',
 									].map((item) => (
 										<li key={item} className="flex items-center gap-2 text-sm">
@@ -97,7 +106,37 @@ function Home() {
 								</ul>
 							</div>
 
-							<div className="soft-panel flex flex-col p-6 xl:p-8">
+							<div className="border-border shadow-card flex flex-col rounded-2xl border bg-white p-6 xl:p-8">
+								<div className="data-label text-navy mb-4">Seller Journey</div>
+								<div className="mb-4 flex items-center gap-3">
+									<div className="border-navy/20 bg-navy-tint flex h-10 w-10 items-center justify-center rounded-full border">
+										<HomeIcon className="text-navy h-4 w-4" />
+									</div>
+									<h3 className="font-heading text-xl font-normal">
+										For Sellers
+									</h3>
+								</div>
+								<p className="text-muted-foreground mb-6 text-sm leading-relaxed">
+									Start with property area and selling intent. Get matched with
+									listing agents who fit your timeline, communication style, and
+									commission expectations.
+								</p>
+								<ul className="space-y-2">
+									{[
+										'Seller-specific fit questions',
+										'Ranked listing-agent matches',
+										'Pax seller prep',
+										'Offer-compensation reminder',
+									].map((item) => (
+										<li key={item} className="flex items-center gap-2 text-sm">
+											<CheckCircle2 className="text-navy h-4 w-4 shrink-0" />
+											<span>{item}</span>
+										</li>
+									))}
+								</ul>
+							</div>
+
+							<div className="border-border shadow-card flex flex-col rounded-2xl border bg-white p-6 xl:p-8">
 								<div className="data-label text-amber mb-4">Agent Journey</div>
 								<div className="mb-4 flex items-center gap-3">
 									<div className="border-amber/30 bg-amber-tint flex h-10 w-10 items-center justify-center rounded-full border">
@@ -108,13 +147,12 @@ function Home() {
 									</h3>
 								</div>
 								<p className="text-muted-foreground mb-6 text-sm leading-relaxed">
-									Create your profile, complete 12 questions, and get introduced
-									to consumers who actually fit how you work. No subscription
-									during pilot.
+									Create your profile, complete verification, sign the Peace
+									Pact, and subscribe to receive pre-matched introductions.
 								</p>
 								<ul className="space-y-2">
 									{[
-										'No pilot subscription fee',
+										'$99 / month profile visibility',
 										'Pay only on accepted match ($199–$399)',
 										'Bilateral fit scoring',
 										'Peace Pact signature',
@@ -213,7 +251,7 @@ function Home() {
 								about finding the right property.
 							</p>
 							<Link
-								to="/consumer/priorities"
+								to="/buyer/intro"
 								className="btn-primary inline-flex items-center gap-2"
 							>
 								Get Started Free

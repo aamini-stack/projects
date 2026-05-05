@@ -69,7 +69,7 @@ const matches: AgentMatch[] = [
 	},
 ]
 
-function ConsumerResults() {
+export function ConsumerResults() {
 	return (
 		<FlowPageShell
 			backTo="/consumer/quiz"

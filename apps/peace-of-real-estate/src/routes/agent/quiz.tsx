@@ -19,7 +19,7 @@ function AgentQuiz() {
 		<QuestionFlow
 			backTo="/agent/priorities"
 			backLabel="Back to priorities"
-			stepLabel="Step 2 of 4 - Show how you work with clients"
+			stepLabel="Step 2 — Show how you work with clients"
 			accentClassName="bg-amber"
 			accentTextClassName="text-amber"
 			accentTintClassName="bg-amber-tint"
@@ -34,7 +34,7 @@ function AgentQuiz() {
 				saveStoredIntakeDraftForRole('agent', { answers })
 			}}
 			completeTo="/agent/profile"
-			completeLabel="Continue to Profile"
+			completeLabel="Continue to Details"
 		/>
 	)
 }

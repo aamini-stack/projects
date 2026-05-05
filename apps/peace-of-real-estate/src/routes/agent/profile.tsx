@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
-import { ArrowRight, User, MapPin, FileText, Award } from 'lucide-react'
+import { ArrowRight, User } from 'lucide-react'
 import { useState } from 'react'
 
 import { FlowPageShell } from '@/components/flow-page-shell'
@@ -7,175 +7,172 @@ import {
 	getStoredIntakeDraftForRole,
 	saveStoredIntakeDraftForRole,
 } from '@/lib/intake-draft'
+import type { AgentProfileData } from '@/lib/user-settings'
 
 export const Route = createFileRoute('/agent/profile')({
 	component: AgentProfile,
 })
 
+const textFields = [
+	['firstName', 'First name'],
+	['lastName', 'Last name'],
+	['brokerageName', 'Brokerage name'],
+	['email', 'Email address'],
+	['phone', 'Telephone number'],
+	['businessAddress', 'Business address'],
+	['billingAddress', 'Billing address'],
+	['licenseNumberState', 'License number & state'],
+	['serviceArea1', 'Service area 1'],
+	['serviceArea2', 'Service area 2'],
+	['serviceArea3', 'Service area 3'],
+	['yearsLicensed', 'Years licensed'],
+	['averageTransactions', 'Avg transactions / year (last 3 years)'],
+	['licenseProof', 'Proof of current license URL or note'],
+	['introVideo', 'Short introduction video link'],
+] as const
+
+const emptyProfile = {
+	firstName: '',
+	lastName: '',
+	brokerageName: '',
+	email: '',
+	phone: '',
+	businessAddress: '',
+	billingAddress: '',
+	licenseNumberState: '',
+	serviceArea1: '',
+	serviceArea2: '',
+	serviceArea3: '',
+	yearsLicensed: '',
+	averageTransactions: '',
+	employmentStatus: '',
+	licenseProof: '',
+	clientFirstTerms: '',
+	valueProposition: '',
+	usePaxWriter: true,
+	introVideo: '',
+	experience: '',
+	zipCodes: '',
+	services: [],
+} satisfies AgentProfileData
+
 function AgentProfile() {
-	const [formData, setFormData] = useState(
-		() =>
-			getStoredIntakeDraftForRole('agent').agentProfile ?? {
-				experience: '',
-				zipCodes: '',
-				services: [] as string[],
-			},
-	)
+	const [formData, setFormData] = useState<AgentProfileData>(() => ({
+		...emptyProfile,
+		...getStoredIntakeDraftForRole('agent').agentProfile,
+	}))
 
-	const updateFormData = (
-		updater: (prev: typeof formData) => typeof formData,
+	const updateField = (
+		field: keyof AgentProfileData,
+		value: string | boolean,
 	) => {
-		setFormData((prev) => {
-			const next = updater(prev)
-			saveStoredIntakeDraftForRole('agent', { agentProfile: next })
-			return next
-		})
+		setFormData((prev) => ({ ...prev, [field]: value }))
 	}
 
-	const toggleService = (service: string) => {
-		updateFormData((prev) => ({
-			...prev,
-			services: prev.services.includes(service)
-				? prev.services.filter((s) => s !== service)
-				: [...prev.services, service],
-		}))
+	const saveProfile = () => {
+		saveStoredIntakeDraftForRole('agent', { agentProfile: formData })
 	}
-
-	const services = [
-		'Buyer Representation',
-		'Seller Representation',
-		'Investment Properties',
-		'Luxury Homes',
-		'First-time Buyers',
-		'Relocation',
-		'Commercial',
-		'Property Management',
-	]
 
 	return (
 		<FlowPageShell
 			backTo="/agent/quiz"
 			backLabel="Back to questions"
-			title="Create Your Profile"
-			subtitle="Step 3 of 4 — Tell us about your experience and services"
+			title="Your Details"
+			subtitle="Step 3 — Registration profile"
 			icon={User}
 			iconClassName="border-amber bg-amber-tint text-amber"
 		>
-			{/* Progress */}
-			<div className="mb-10">
-				<div className="mb-3 flex items-center justify-between text-xs">
-					<span className="data-label text-amber">Profile Creation</span>
-					<span className="data-number text-muted-foreground">75%</span>
-				</div>
-				<div className="bg-border h-1 overflow-hidden">
-					<div
-						className="bg-amber h-full transition-all duration-500"
-						style={{ width: '75%' }}
-					/>
-				</div>
+			<p className="text-muted-foreground mb-8 text-sm leading-relaxed">
+				Complete your registration. All fields are optional for the prototype.
+				License # appears on your profile as a link to your state's verification
+				database.
+			</p>
+
+			<div className="grid gap-4 sm:grid-cols-2">
+				{textFields.map(([field, label]) => (
+					<label
+						key={field}
+						className="text-muted-foreground space-y-2 text-xs font-medium tracking-[0.14em] uppercase"
+					>
+						{label}
+						<input
+							value={String(formData[field] ?? '')}
+							onChange={(event) => updateField(field, event.target.value)}
+							className="border-border bg-background focus:border-primary text-foreground w-full rounded-xl border px-4 py-3 text-sm tracking-normal normal-case focus:outline-none"
+						/>
+					</label>
+				))}
 			</div>
 
-			{/* Form */}
-			<div className="space-y-8">
-				{/* Experience */}
-				<div className="space-y-3">
-					<label
-						htmlFor="experience"
-						className="flex items-center gap-2 text-sm font-medium"
-					>
-						<Award className="h-4 w-4" />
-						Years of Experience
-					</label>
-					<select
-						id="experience"
-						value={formData.experience}
-						onChange={(e) =>
-							updateFormData((prev) => ({
-								...prev,
-								experience: e.target.value,
-							}))
-						}
-						className="border-border bg-background focus:border-primary w-full border px-4 py-3 text-sm focus:outline-none"
-					>
-						<option value="">Select experience range...</option>
-						<option value="0-2">0-2 years</option>
-						<option value="3-5">3-5 years</option>
-						<option value="6-10">6-10 years</option>
-						<option value="10+">10+ years</option>
-					</select>
-				</div>
+			<label className="text-muted-foreground mt-6 block space-y-2 text-xs font-medium tracking-[0.14em] uppercase">
+				Full or part time
+				<select
+					value={formData.employmentStatus ?? ''}
+					onChange={(event) =>
+						updateField('employmentStatus', event.target.value)
+					}
+					className="border-border bg-background focus:border-primary text-foreground w-full rounded-xl border px-4 py-3 text-sm tracking-normal normal-case focus:outline-none"
+				>
+					<option value="">Select...</option>
+					<option value="Full time">Full time</option>
+					<option value="Part time">Part time</option>
+				</select>
+			</label>
 
-				<div className="hairline" />
+			<label className="text-muted-foreground mt-6 block space-y-2 text-xs font-medium tracking-[0.14em] uppercase">
+				What contract terms do you offer that put clients first?
+				<textarea
+					value={formData.clientFirstTerms ?? ''}
+					onChange={(event) =>
+						updateField('clientFirstTerms', event.target.value)
+					}
+					rows={5}
+					placeholder="Shorter commitments, easy exit clauses, communication guarantees, or anything else in your agreements."
+					className="border-border bg-background focus:border-primary text-foreground w-full rounded-xl border px-4 py-3 text-sm tracking-normal normal-case focus:outline-none"
+				/>
+			</label>
 
-				{/* Zip Codes */}
-				<div className="space-y-3">
-					<label
-						htmlFor="zipCodes"
-						className="flex items-center gap-2 text-sm font-medium"
-					>
-						<MapPin className="h-4 w-4" />
-						Zip Codes Served
-					</label>
+			<div className="border-border bg-background mt-6 rounded-2xl border p-5">
+				<div className="flex items-start gap-3">
 					<input
-						id="zipCodes"
-						type="text"
-						placeholder="e.g. 78701, 78702, 78703"
-						value={formData.zipCodes}
-						onChange={(e) =>
-							updateFormData((prev) => ({
-								...prev,
-								zipCodes: e.target.value,
-							}))
+						id="use-pax-writer"
+						type="checkbox"
+						checked={Boolean(formData.usePaxWriter)}
+						onChange={(event) =>
+							updateField('usePaxWriter', event.target.checked)
 						}
-						className="border-border bg-background focus:border-primary w-full border px-4 py-3 text-sm focus:outline-none"
+						className="mt-1"
 					/>
-					<p className="text-muted-foreground text-xs">
-						Separate multiple zip codes with commas
-					</p>
+					<label htmlFor="use-pax-writer" className="text-sm leading-relaxed">
+						Use Pax AI writer for my value proposition. After you complete your
+						profile Pax will get to know you through a short conversation and
+						write the copy shown on your matched agent card.
+					</label>
 				</div>
-
-				<div className="hairline" />
-
-				{/* Services */}
-				<div className="space-y-3">
-					<div className="flex items-center gap-2 text-sm font-medium">
-						<FileText className="h-4 w-4" />
-						Services Offered
-					</div>
-					<div className="flex flex-wrap gap-2">
-						{services.map((service) => {
-							const isSelected = formData.services.includes(service)
-							return (
-								<button
-									key={service}
-									onClick={() => toggleService(service)}
-									className={`border px-4 py-2 text-sm transition-all ${
-										isSelected
-											? 'border-amber bg-amber text-amber-foreground'
-											: 'border-border text-muted-foreground hover:border-amber hover:text-amber'
-									}`}
-								>
-									{service}
-								</button>
-							)
-						})}
-					</div>
-				</div>
+				<textarea
+					value={formData.valueProposition ?? ''}
+					onChange={(event) =>
+						updateField('valueProposition', event.target.value)
+					}
+					rows={5}
+					placeholder="Already have one? Paste your value proposition here."
+					className="border-border bg-surface focus:border-primary mt-4 w-full rounded-xl border px-4 py-3 text-sm focus:outline-none"
+				/>
 			</div>
 
-			{/* Navigation */}
 			<div className="mt-10 flex items-center justify-between">
 				<Link
 					to="/agent/quiz"
-					className="text-muted-foreground hover:text-foreground inline-flex items-center gap-2 text-sm transition-colors"
+					className="text-muted-foreground hover:text-foreground text-sm"
 				>
 					Back
 				</Link>
 				<Link
-					to={'/match-activity' as any}
+					to="/agent/compliance"
+					onClick={saveProfile}
 					className="btn-primary inline-flex items-center gap-2"
 				>
-					View Match Demo
+					Continue to Compliance Checklist
 					<ArrowRight className="h-4 w-4" />
 				</Link>
 			</div>

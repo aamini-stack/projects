@@ -177,8 +177,8 @@ function RootComponent() {
 			<head>
 				<HeadContent />
 			</head>
-			<body className="theme-glow text-foreground min-w-80 antialiased">
-				<div className="flex min-h-dvh flex-col">
+			<body className="bg-background text-foreground min-w-80 antialiased">
+				<div className="relative z-10 flex min-h-dvh flex-col">
 					{/* Navigation — Institutional (hidden on beta gate) */}
 					{!isBetaPage && (
 						<header className="border-border/80 sticky top-0 z-50 border-b bg-white/82 backdrop-blur-xl">

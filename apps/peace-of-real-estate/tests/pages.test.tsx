@@ -23,6 +23,7 @@ const pages = [
 		path: '/',
 		component: HomeRoute.options.component as ComponentType,
 		heading: /the most expensive decision of your life, made right/i,
+		visual: false,
 	},
 	{
 		name: 'consumer-priorities',
@@ -46,19 +47,22 @@ const pages = [
 		name: 'agent-priorities',
 		path: '/agent/priorities',
 		component: AgentPrioritiesRoute.options.component as ComponentType,
-		heading: /agent onboarding/i,
+		heading: /tell us about yourself/i,
+		visual: false,
 	},
 	{
 		name: 'agent-quiz',
 		path: '/agent/quiz',
 		component: AgentQuizRoute.options.component as ComponentType,
 		heading: /which side of the transaction do you primarily represent/i,
+		visual: false,
 	},
 	{
 		name: 'agent-profile',
 		path: '/agent/profile',
 		component: AgentProfileRoute.options.component as ComponentType,
-		heading: /create your profile/i,
+		heading: /your details/i,
+		visual: false,
 	},
 	{
 		name: 'match-activity',
@@ -99,6 +103,7 @@ test.each(pages)(
 	async (visualPage) => {
 		await expectPageScreenshot({
 			...visualPage,
+			visual: 'visual' in visualPage ? visualPage.visual : true,
 			waitFor: (screen) =>
 				screen.getByRole('heading', { name: visualPage.heading }),
 		})

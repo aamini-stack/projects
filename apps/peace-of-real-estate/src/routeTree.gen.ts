@@ -16,17 +16,40 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as BetaRouteImport } from './routes/beta'
 import { Route as AccountRouteImport } from './routes/account'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as SellerIndexRouteImport } from './routes/seller/index'
 import { Route as ConsumerIndexRouteImport } from './routes/consumer/index'
+import { Route as BuyerIndexRouteImport } from './routes/buyer/index'
 import { Route as AgentIndexRouteImport } from './routes/agent/index'
 import { Route as ThemesThemeNameRouteImport } from './routes/themes/$themeName'
+import { Route as SellerUnlockRouteImport } from './routes/seller/unlock'
+import { Route as SellerSummaryRouteImport } from './routes/seller/summary'
+import { Route as SellerResultsRouteImport } from './routes/seller/results'
+import { Route as SellerQuizRouteImport } from './routes/seller/quiz'
+import { Route as SellerIntroRouteImport } from './routes/seller/intro'
+import { Route as SellerEmailRouteImport } from './routes/seller/email'
+import { Route as SellerDetailsRouteImport } from './routes/seller/details'
+import { Route as SellerChatRouteImport } from './routes/seller/chat'
 import { Route as ConsumerResultsRouteImport } from './routes/consumer/results'
 import { Route as ConsumerQuizRouteImport } from './routes/consumer/quiz'
 import { Route as ConsumerPrioritiesRouteImport } from './routes/consumer/priorities'
+import { Route as BuyerUnlockRouteImport } from './routes/buyer/unlock'
+import { Route as BuyerSummaryRouteImport } from './routes/buyer/summary'
+import { Route as BuyerResultsRouteImport } from './routes/buyer/results'
+import { Route as BuyerQuizRouteImport } from './routes/buyer/quiz'
+import { Route as BuyerIntroRouteImport } from './routes/buyer/intro'
+import { Route as BuyerEmailRouteImport } from './routes/buyer/email'
+import { Route as BuyerDetailsRouteImport } from './routes/buyer/details'
+import { Route as BuyerChatRouteImport } from './routes/buyer/chat'
 import { Route as ApiHealthRouteImport } from './routes/api/health'
 import { Route as ApiAgentMatchesRouteImport } from './routes/api/agent-matches'
+import { Route as AgentSubscribeRouteImport } from './routes/agent/subscribe'
 import { Route as AgentQuizRouteImport } from './routes/agent/quiz'
 import { Route as AgentProfileRouteImport } from './routes/agent/profile'
 import { Route as AgentPrioritiesRouteImport } from './routes/agent/priorities'
+import { Route as AgentPeacePactRouteImport } from './routes/agent/peace-pact'
+import { Route as AgentDeepDiveRouteImport } from './routes/agent/deep-dive'
+import { Route as AgentComplianceRouteImport } from './routes/agent/compliance'
+import { Route as AgentChatRouteImport } from './routes/agent/chat'
 import { Route as ApiIngestSplatRouteImport } from './routes/api/ingest/$'
 import { Route as ApiBetaAuthRouteImport } from './routes/api/beta/auth'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
@@ -67,9 +90,19 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SellerIndexRoute = SellerIndexRouteImport.update({
+  id: '/seller/',
+  path: '/seller/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ConsumerIndexRoute = ConsumerIndexRouteImport.update({
   id: '/consumer/',
   path: '/consumer/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BuyerIndexRoute = BuyerIndexRouteImport.update({
+  id: '/buyer/',
+  path: '/buyer/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AgentIndexRoute = AgentIndexRouteImport.update({
@@ -80,6 +113,46 @@ const AgentIndexRoute = AgentIndexRouteImport.update({
 const ThemesThemeNameRoute = ThemesThemeNameRouteImport.update({
   id: '/themes/$themeName',
   path: '/themes/$themeName',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SellerUnlockRoute = SellerUnlockRouteImport.update({
+  id: '/seller/unlock',
+  path: '/seller/unlock',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SellerSummaryRoute = SellerSummaryRouteImport.update({
+  id: '/seller/summary',
+  path: '/seller/summary',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SellerResultsRoute = SellerResultsRouteImport.update({
+  id: '/seller/results',
+  path: '/seller/results',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SellerQuizRoute = SellerQuizRouteImport.update({
+  id: '/seller/quiz',
+  path: '/seller/quiz',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SellerIntroRoute = SellerIntroRouteImport.update({
+  id: '/seller/intro',
+  path: '/seller/intro',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SellerEmailRoute = SellerEmailRouteImport.update({
+  id: '/seller/email',
+  path: '/seller/email',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SellerDetailsRoute = SellerDetailsRouteImport.update({
+  id: '/seller/details',
+  path: '/seller/details',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SellerChatRoute = SellerChatRouteImport.update({
+  id: '/seller/chat',
+  path: '/seller/chat',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ConsumerResultsRoute = ConsumerResultsRouteImport.update({
@@ -97,6 +170,46 @@ const ConsumerPrioritiesRoute = ConsumerPrioritiesRouteImport.update({
   path: '/consumer/priorities',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BuyerUnlockRoute = BuyerUnlockRouteImport.update({
+  id: '/buyer/unlock',
+  path: '/buyer/unlock',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BuyerSummaryRoute = BuyerSummaryRouteImport.update({
+  id: '/buyer/summary',
+  path: '/buyer/summary',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BuyerResultsRoute = BuyerResultsRouteImport.update({
+  id: '/buyer/results',
+  path: '/buyer/results',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BuyerQuizRoute = BuyerQuizRouteImport.update({
+  id: '/buyer/quiz',
+  path: '/buyer/quiz',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BuyerIntroRoute = BuyerIntroRouteImport.update({
+  id: '/buyer/intro',
+  path: '/buyer/intro',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BuyerEmailRoute = BuyerEmailRouteImport.update({
+  id: '/buyer/email',
+  path: '/buyer/email',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BuyerDetailsRoute = BuyerDetailsRouteImport.update({
+  id: '/buyer/details',
+  path: '/buyer/details',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BuyerChatRoute = BuyerChatRouteImport.update({
+  id: '/buyer/chat',
+  path: '/buyer/chat',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiHealthRoute = ApiHealthRouteImport.update({
   id: '/api/health',
   path: '/api/health',
@@ -105,6 +218,11 @@ const ApiHealthRoute = ApiHealthRouteImport.update({
 const ApiAgentMatchesRoute = ApiAgentMatchesRouteImport.update({
   id: '/api/agent-matches',
   path: '/api/agent-matches',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AgentSubscribeRoute = AgentSubscribeRouteImport.update({
+  id: '/agent/subscribe',
+  path: '/agent/subscribe',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AgentQuizRoute = AgentQuizRouteImport.update({
@@ -120,6 +238,26 @@ const AgentProfileRoute = AgentProfileRouteImport.update({
 const AgentPrioritiesRoute = AgentPrioritiesRouteImport.update({
   id: '/agent/priorities',
   path: '/agent/priorities',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AgentPeacePactRoute = AgentPeacePactRouteImport.update({
+  id: '/agent/peace-pact',
+  path: '/agent/peace-pact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AgentDeepDiveRoute = AgentDeepDiveRouteImport.update({
+  id: '/agent/deep-dive',
+  path: '/agent/deep-dive',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AgentComplianceRoute = AgentComplianceRouteImport.update({
+  id: '/agent/compliance',
+  path: '/agent/compliance',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AgentChatRoute = AgentChatRouteImport.update({
+  id: '/agent/chat',
+  path: '/agent/chat',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiIngestSplatRoute = ApiIngestSplatRouteImport.update({
@@ -151,17 +289,40 @@ export interface FileRoutesByFullPath {
   '/match-activity': typeof MatchActivityRoute
   '/showcase': typeof ShowcaseRoute
   '/signup': typeof SignupRoute
+  '/agent/chat': typeof AgentChatRoute
+  '/agent/compliance': typeof AgentComplianceRoute
+  '/agent/deep-dive': typeof AgentDeepDiveRoute
+  '/agent/peace-pact': typeof AgentPeacePactRoute
   '/agent/priorities': typeof AgentPrioritiesRoute
   '/agent/profile': typeof AgentProfileRoute
   '/agent/quiz': typeof AgentQuizRoute
+  '/agent/subscribe': typeof AgentSubscribeRoute
   '/api/agent-matches': typeof ApiAgentMatchesRoute
   '/api/health': typeof ApiHealthRoute
+  '/buyer/chat': typeof BuyerChatRoute
+  '/buyer/details': typeof BuyerDetailsRoute
+  '/buyer/email': typeof BuyerEmailRoute
+  '/buyer/intro': typeof BuyerIntroRoute
+  '/buyer/quiz': typeof BuyerQuizRoute
+  '/buyer/results': typeof BuyerResultsRoute
+  '/buyer/summary': typeof BuyerSummaryRoute
+  '/buyer/unlock': typeof BuyerUnlockRoute
   '/consumer/priorities': typeof ConsumerPrioritiesRoute
   '/consumer/quiz': typeof ConsumerQuizRoute
   '/consumer/results': typeof ConsumerResultsRoute
+  '/seller/chat': typeof SellerChatRoute
+  '/seller/details': typeof SellerDetailsRoute
+  '/seller/email': typeof SellerEmailRoute
+  '/seller/intro': typeof SellerIntroRoute
+  '/seller/quiz': typeof SellerQuizRoute
+  '/seller/results': typeof SellerResultsRoute
+  '/seller/summary': typeof SellerSummaryRoute
+  '/seller/unlock': typeof SellerUnlockRoute
   '/themes/$themeName': typeof ThemesThemeNameRoute
   '/agent/': typeof AgentIndexRoute
+  '/buyer/': typeof BuyerIndexRoute
   '/consumer/': typeof ConsumerIndexRoute
+  '/seller/': typeof SellerIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/beta/auth': typeof ApiBetaAuthRoute
   '/api/ingest/$': typeof ApiIngestSplatRoute
@@ -175,17 +336,40 @@ export interface FileRoutesByTo {
   '/match-activity': typeof MatchActivityRoute
   '/showcase': typeof ShowcaseRoute
   '/signup': typeof SignupRoute
+  '/agent/chat': typeof AgentChatRoute
+  '/agent/compliance': typeof AgentComplianceRoute
+  '/agent/deep-dive': typeof AgentDeepDiveRoute
+  '/agent/peace-pact': typeof AgentPeacePactRoute
   '/agent/priorities': typeof AgentPrioritiesRoute
   '/agent/profile': typeof AgentProfileRoute
   '/agent/quiz': typeof AgentQuizRoute
+  '/agent/subscribe': typeof AgentSubscribeRoute
   '/api/agent-matches': typeof ApiAgentMatchesRoute
   '/api/health': typeof ApiHealthRoute
+  '/buyer/chat': typeof BuyerChatRoute
+  '/buyer/details': typeof BuyerDetailsRoute
+  '/buyer/email': typeof BuyerEmailRoute
+  '/buyer/intro': typeof BuyerIntroRoute
+  '/buyer/quiz': typeof BuyerQuizRoute
+  '/buyer/results': typeof BuyerResultsRoute
+  '/buyer/summary': typeof BuyerSummaryRoute
+  '/buyer/unlock': typeof BuyerUnlockRoute
   '/consumer/priorities': typeof ConsumerPrioritiesRoute
   '/consumer/quiz': typeof ConsumerQuizRoute
   '/consumer/results': typeof ConsumerResultsRoute
+  '/seller/chat': typeof SellerChatRoute
+  '/seller/details': typeof SellerDetailsRoute
+  '/seller/email': typeof SellerEmailRoute
+  '/seller/intro': typeof SellerIntroRoute
+  '/seller/quiz': typeof SellerQuizRoute
+  '/seller/results': typeof SellerResultsRoute
+  '/seller/summary': typeof SellerSummaryRoute
+  '/seller/unlock': typeof SellerUnlockRoute
   '/themes/$themeName': typeof ThemesThemeNameRoute
   '/agent': typeof AgentIndexRoute
+  '/buyer': typeof BuyerIndexRoute
   '/consumer': typeof ConsumerIndexRoute
+  '/seller': typeof SellerIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/beta/auth': typeof ApiBetaAuthRoute
   '/api/ingest/$': typeof ApiIngestSplatRoute
@@ -200,17 +384,40 @@ export interface FileRoutesById {
   '/match-activity': typeof MatchActivityRoute
   '/showcase': typeof ShowcaseRoute
   '/signup': typeof SignupRoute
+  '/agent/chat': typeof AgentChatRoute
+  '/agent/compliance': typeof AgentComplianceRoute
+  '/agent/deep-dive': typeof AgentDeepDiveRoute
+  '/agent/peace-pact': typeof AgentPeacePactRoute
   '/agent/priorities': typeof AgentPrioritiesRoute
   '/agent/profile': typeof AgentProfileRoute
   '/agent/quiz': typeof AgentQuizRoute
+  '/agent/subscribe': typeof AgentSubscribeRoute
   '/api/agent-matches': typeof ApiAgentMatchesRoute
   '/api/health': typeof ApiHealthRoute
+  '/buyer/chat': typeof BuyerChatRoute
+  '/buyer/details': typeof BuyerDetailsRoute
+  '/buyer/email': typeof BuyerEmailRoute
+  '/buyer/intro': typeof BuyerIntroRoute
+  '/buyer/quiz': typeof BuyerQuizRoute
+  '/buyer/results': typeof BuyerResultsRoute
+  '/buyer/summary': typeof BuyerSummaryRoute
+  '/buyer/unlock': typeof BuyerUnlockRoute
   '/consumer/priorities': typeof ConsumerPrioritiesRoute
   '/consumer/quiz': typeof ConsumerQuizRoute
   '/consumer/results': typeof ConsumerResultsRoute
+  '/seller/chat': typeof SellerChatRoute
+  '/seller/details': typeof SellerDetailsRoute
+  '/seller/email': typeof SellerEmailRoute
+  '/seller/intro': typeof SellerIntroRoute
+  '/seller/quiz': typeof SellerQuizRoute
+  '/seller/results': typeof SellerResultsRoute
+  '/seller/summary': typeof SellerSummaryRoute
+  '/seller/unlock': typeof SellerUnlockRoute
   '/themes/$themeName': typeof ThemesThemeNameRoute
   '/agent/': typeof AgentIndexRoute
+  '/buyer/': typeof BuyerIndexRoute
   '/consumer/': typeof ConsumerIndexRoute
+  '/seller/': typeof SellerIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/beta/auth': typeof ApiBetaAuthRoute
   '/api/ingest/$': typeof ApiIngestSplatRoute
@@ -226,17 +433,40 @@ export interface FileRouteTypes {
     | '/match-activity'
     | '/showcase'
     | '/signup'
+    | '/agent/chat'
+    | '/agent/compliance'
+    | '/agent/deep-dive'
+    | '/agent/peace-pact'
     | '/agent/priorities'
     | '/agent/profile'
     | '/agent/quiz'
+    | '/agent/subscribe'
     | '/api/agent-matches'
     | '/api/health'
+    | '/buyer/chat'
+    | '/buyer/details'
+    | '/buyer/email'
+    | '/buyer/intro'
+    | '/buyer/quiz'
+    | '/buyer/results'
+    | '/buyer/summary'
+    | '/buyer/unlock'
     | '/consumer/priorities'
     | '/consumer/quiz'
     | '/consumer/results'
+    | '/seller/chat'
+    | '/seller/details'
+    | '/seller/email'
+    | '/seller/intro'
+    | '/seller/quiz'
+    | '/seller/results'
+    | '/seller/summary'
+    | '/seller/unlock'
     | '/themes/$themeName'
     | '/agent/'
+    | '/buyer/'
     | '/consumer/'
+    | '/seller/'
     | '/api/auth/$'
     | '/api/beta/auth'
     | '/api/ingest/$'
@@ -250,17 +480,40 @@ export interface FileRouteTypes {
     | '/match-activity'
     | '/showcase'
     | '/signup'
+    | '/agent/chat'
+    | '/agent/compliance'
+    | '/agent/deep-dive'
+    | '/agent/peace-pact'
     | '/agent/priorities'
     | '/agent/profile'
     | '/agent/quiz'
+    | '/agent/subscribe'
     | '/api/agent-matches'
     | '/api/health'
+    | '/buyer/chat'
+    | '/buyer/details'
+    | '/buyer/email'
+    | '/buyer/intro'
+    | '/buyer/quiz'
+    | '/buyer/results'
+    | '/buyer/summary'
+    | '/buyer/unlock'
     | '/consumer/priorities'
     | '/consumer/quiz'
     | '/consumer/results'
+    | '/seller/chat'
+    | '/seller/details'
+    | '/seller/email'
+    | '/seller/intro'
+    | '/seller/quiz'
+    | '/seller/results'
+    | '/seller/summary'
+    | '/seller/unlock'
     | '/themes/$themeName'
     | '/agent'
+    | '/buyer'
     | '/consumer'
+    | '/seller'
     | '/api/auth/$'
     | '/api/beta/auth'
     | '/api/ingest/$'
@@ -274,17 +527,40 @@ export interface FileRouteTypes {
     | '/match-activity'
     | '/showcase'
     | '/signup'
+    | '/agent/chat'
+    | '/agent/compliance'
+    | '/agent/deep-dive'
+    | '/agent/peace-pact'
     | '/agent/priorities'
     | '/agent/profile'
     | '/agent/quiz'
+    | '/agent/subscribe'
     | '/api/agent-matches'
     | '/api/health'
+    | '/buyer/chat'
+    | '/buyer/details'
+    | '/buyer/email'
+    | '/buyer/intro'
+    | '/buyer/quiz'
+    | '/buyer/results'
+    | '/buyer/summary'
+    | '/buyer/unlock'
     | '/consumer/priorities'
     | '/consumer/quiz'
     | '/consumer/results'
+    | '/seller/chat'
+    | '/seller/details'
+    | '/seller/email'
+    | '/seller/intro'
+    | '/seller/quiz'
+    | '/seller/results'
+    | '/seller/summary'
+    | '/seller/unlock'
     | '/themes/$themeName'
     | '/agent/'
+    | '/buyer/'
     | '/consumer/'
+    | '/seller/'
     | '/api/auth/$'
     | '/api/beta/auth'
     | '/api/ingest/$'
@@ -299,17 +575,40 @@ export interface RootRouteChildren {
   MatchActivityRoute: typeof MatchActivityRoute
   ShowcaseRoute: typeof ShowcaseRoute
   SignupRoute: typeof SignupRoute
+  AgentChatRoute: typeof AgentChatRoute
+  AgentComplianceRoute: typeof AgentComplianceRoute
+  AgentDeepDiveRoute: typeof AgentDeepDiveRoute
+  AgentPeacePactRoute: typeof AgentPeacePactRoute
   AgentPrioritiesRoute: typeof AgentPrioritiesRoute
   AgentProfileRoute: typeof AgentProfileRoute
   AgentQuizRoute: typeof AgentQuizRoute
+  AgentSubscribeRoute: typeof AgentSubscribeRoute
   ApiAgentMatchesRoute: typeof ApiAgentMatchesRoute
   ApiHealthRoute: typeof ApiHealthRoute
+  BuyerChatRoute: typeof BuyerChatRoute
+  BuyerDetailsRoute: typeof BuyerDetailsRoute
+  BuyerEmailRoute: typeof BuyerEmailRoute
+  BuyerIntroRoute: typeof BuyerIntroRoute
+  BuyerQuizRoute: typeof BuyerQuizRoute
+  BuyerResultsRoute: typeof BuyerResultsRoute
+  BuyerSummaryRoute: typeof BuyerSummaryRoute
+  BuyerUnlockRoute: typeof BuyerUnlockRoute
   ConsumerPrioritiesRoute: typeof ConsumerPrioritiesRoute
   ConsumerQuizRoute: typeof ConsumerQuizRoute
   ConsumerResultsRoute: typeof ConsumerResultsRoute
+  SellerChatRoute: typeof SellerChatRoute
+  SellerDetailsRoute: typeof SellerDetailsRoute
+  SellerEmailRoute: typeof SellerEmailRoute
+  SellerIntroRoute: typeof SellerIntroRoute
+  SellerQuizRoute: typeof SellerQuizRoute
+  SellerResultsRoute: typeof SellerResultsRoute
+  SellerSummaryRoute: typeof SellerSummaryRoute
+  SellerUnlockRoute: typeof SellerUnlockRoute
   ThemesThemeNameRoute: typeof ThemesThemeNameRoute
   AgentIndexRoute: typeof AgentIndexRoute
+  BuyerIndexRoute: typeof BuyerIndexRoute
   ConsumerIndexRoute: typeof ConsumerIndexRoute
+  SellerIndexRoute: typeof SellerIndexRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
   ApiBetaAuthRoute: typeof ApiBetaAuthRoute
   ApiIngestSplatRoute: typeof ApiIngestSplatRoute
@@ -367,11 +666,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/seller/': {
+      id: '/seller/'
+      path: '/seller'
+      fullPath: '/seller/'
+      preLoaderRoute: typeof SellerIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/consumer/': {
       id: '/consumer/'
       path: '/consumer'
       fullPath: '/consumer/'
       preLoaderRoute: typeof ConsumerIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/buyer/': {
+      id: '/buyer/'
+      path: '/buyer'
+      fullPath: '/buyer/'
+      preLoaderRoute: typeof BuyerIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/agent/': {
@@ -386,6 +699,62 @@ declare module '@tanstack/react-router' {
       path: '/themes/$themeName'
       fullPath: '/themes/$themeName'
       preLoaderRoute: typeof ThemesThemeNameRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/seller/unlock': {
+      id: '/seller/unlock'
+      path: '/seller/unlock'
+      fullPath: '/seller/unlock'
+      preLoaderRoute: typeof SellerUnlockRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/seller/summary': {
+      id: '/seller/summary'
+      path: '/seller/summary'
+      fullPath: '/seller/summary'
+      preLoaderRoute: typeof SellerSummaryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/seller/results': {
+      id: '/seller/results'
+      path: '/seller/results'
+      fullPath: '/seller/results'
+      preLoaderRoute: typeof SellerResultsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/seller/quiz': {
+      id: '/seller/quiz'
+      path: '/seller/quiz'
+      fullPath: '/seller/quiz'
+      preLoaderRoute: typeof SellerQuizRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/seller/intro': {
+      id: '/seller/intro'
+      path: '/seller/intro'
+      fullPath: '/seller/intro'
+      preLoaderRoute: typeof SellerIntroRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/seller/email': {
+      id: '/seller/email'
+      path: '/seller/email'
+      fullPath: '/seller/email'
+      preLoaderRoute: typeof SellerEmailRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/seller/details': {
+      id: '/seller/details'
+      path: '/seller/details'
+      fullPath: '/seller/details'
+      preLoaderRoute: typeof SellerDetailsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/seller/chat': {
+      id: '/seller/chat'
+      path: '/seller/chat'
+      fullPath: '/seller/chat'
+      preLoaderRoute: typeof SellerChatRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/consumer/results': {
@@ -409,6 +778,62 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ConsumerPrioritiesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/buyer/unlock': {
+      id: '/buyer/unlock'
+      path: '/buyer/unlock'
+      fullPath: '/buyer/unlock'
+      preLoaderRoute: typeof BuyerUnlockRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/buyer/summary': {
+      id: '/buyer/summary'
+      path: '/buyer/summary'
+      fullPath: '/buyer/summary'
+      preLoaderRoute: typeof BuyerSummaryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/buyer/results': {
+      id: '/buyer/results'
+      path: '/buyer/results'
+      fullPath: '/buyer/results'
+      preLoaderRoute: typeof BuyerResultsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/buyer/quiz': {
+      id: '/buyer/quiz'
+      path: '/buyer/quiz'
+      fullPath: '/buyer/quiz'
+      preLoaderRoute: typeof BuyerQuizRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/buyer/intro': {
+      id: '/buyer/intro'
+      path: '/buyer/intro'
+      fullPath: '/buyer/intro'
+      preLoaderRoute: typeof BuyerIntroRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/buyer/email': {
+      id: '/buyer/email'
+      path: '/buyer/email'
+      fullPath: '/buyer/email'
+      preLoaderRoute: typeof BuyerEmailRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/buyer/details': {
+      id: '/buyer/details'
+      path: '/buyer/details'
+      fullPath: '/buyer/details'
+      preLoaderRoute: typeof BuyerDetailsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/buyer/chat': {
+      id: '/buyer/chat'
+      path: '/buyer/chat'
+      fullPath: '/buyer/chat'
+      preLoaderRoute: typeof BuyerChatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/health': {
       id: '/api/health'
       path: '/api/health'
@@ -421,6 +846,13 @@ declare module '@tanstack/react-router' {
       path: '/api/agent-matches'
       fullPath: '/api/agent-matches'
       preLoaderRoute: typeof ApiAgentMatchesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/agent/subscribe': {
+      id: '/agent/subscribe'
+      path: '/agent/subscribe'
+      fullPath: '/agent/subscribe'
+      preLoaderRoute: typeof AgentSubscribeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/agent/quiz': {
@@ -442,6 +874,34 @@ declare module '@tanstack/react-router' {
       path: '/agent/priorities'
       fullPath: '/agent/priorities'
       preLoaderRoute: typeof AgentPrioritiesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/agent/peace-pact': {
+      id: '/agent/peace-pact'
+      path: '/agent/peace-pact'
+      fullPath: '/agent/peace-pact'
+      preLoaderRoute: typeof AgentPeacePactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/agent/deep-dive': {
+      id: '/agent/deep-dive'
+      path: '/agent/deep-dive'
+      fullPath: '/agent/deep-dive'
+      preLoaderRoute: typeof AgentDeepDiveRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/agent/compliance': {
+      id: '/agent/compliance'
+      path: '/agent/compliance'
+      fullPath: '/agent/compliance'
+      preLoaderRoute: typeof AgentComplianceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/agent/chat': {
+      id: '/agent/chat'
+      path: '/agent/chat'
+      fullPath: '/agent/chat'
+      preLoaderRoute: typeof AgentChatRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/ingest/$': {
@@ -483,17 +943,40 @@ const rootRouteChildren: RootRouteChildren = {
   MatchActivityRoute: MatchActivityRoute,
   ShowcaseRoute: ShowcaseRoute,
   SignupRoute: SignupRoute,
+  AgentChatRoute: AgentChatRoute,
+  AgentComplianceRoute: AgentComplianceRoute,
+  AgentDeepDiveRoute: AgentDeepDiveRoute,
+  AgentPeacePactRoute: AgentPeacePactRoute,
   AgentPrioritiesRoute: AgentPrioritiesRoute,
   AgentProfileRoute: AgentProfileRoute,
   AgentQuizRoute: AgentQuizRoute,
+  AgentSubscribeRoute: AgentSubscribeRoute,
   ApiAgentMatchesRoute: ApiAgentMatchesRoute,
   ApiHealthRoute: ApiHealthRoute,
+  BuyerChatRoute: BuyerChatRoute,
+  BuyerDetailsRoute: BuyerDetailsRoute,
+  BuyerEmailRoute: BuyerEmailRoute,
+  BuyerIntroRoute: BuyerIntroRoute,
+  BuyerQuizRoute: BuyerQuizRoute,
+  BuyerResultsRoute: BuyerResultsRoute,
+  BuyerSummaryRoute: BuyerSummaryRoute,
+  BuyerUnlockRoute: BuyerUnlockRoute,
   ConsumerPrioritiesRoute: ConsumerPrioritiesRoute,
   ConsumerQuizRoute: ConsumerQuizRoute,
   ConsumerResultsRoute: ConsumerResultsRoute,
+  SellerChatRoute: SellerChatRoute,
+  SellerDetailsRoute: SellerDetailsRoute,
+  SellerEmailRoute: SellerEmailRoute,
+  SellerIntroRoute: SellerIntroRoute,
+  SellerQuizRoute: SellerQuizRoute,
+  SellerResultsRoute: SellerResultsRoute,
+  SellerSummaryRoute: SellerSummaryRoute,
+  SellerUnlockRoute: SellerUnlockRoute,
   ThemesThemeNameRoute: ThemesThemeNameRoute,
   AgentIndexRoute: AgentIndexRoute,
+  BuyerIndexRoute: BuyerIndexRoute,
   ConsumerIndexRoute: ConsumerIndexRoute,
+  SellerIndexRoute: SellerIndexRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
   ApiBetaAuthRoute: ApiBetaAuthRoute,
   ApiIngestSplatRoute: ApiIngestSplatRoute,
