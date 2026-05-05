@@ -13,7 +13,7 @@ watchPatterns = [
 multiRegionConfig = { "us-west2" = { numReplicas = 1 } }
 runtime = "V2"
 numReplicas = 1
-startCommand = "cd apps/peace-of-real-estate && node .output/server/index.mjs"
+startCommand = "node .output/server/index.mjs"
 healthcheckPath = "/"
 sleepApplication = true
 useLegacyStacker = false
