@@ -20,6 +20,12 @@
 		"e2e:update": "playwright test --update-snapshots",
 		"report": "playwright show-report .playwright/report",
 		"verify": "turbo run build test typecheck",
+		"compose:dev": "docker compose up -d postgres && docker compose up app",
+		"compose:infra": "docker compose up -d postgres",
+		"compose:populate": "docker compose up populate",
+		"compose:up": "docker compose up -d",
+		"compose:logs": "docker compose logs -f app",
+		"compose:down": "docker compose down",
 		"populate": "tsx --env-file .env.local scripts/populate-db.ts"
 	},
 	"dependencies": {

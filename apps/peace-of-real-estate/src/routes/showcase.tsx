@@ -991,7 +991,12 @@ function Showcase() {
 								</div>
 							</div>
 							<div className="mt-6 flex gap-3">
-								<a href="/showcase" className="font-sprout-body rounded-full bg-[#2D6A4F] px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#081C15]">Plant your idea</a>
+								<a
+									href="/showcase"
+									className="font-sprout-body rounded-full bg-[#2D6A4F] px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#081C15]"
+								>
+									Plant your idea
+								</a>
 							</div>
 						</div>
 					</div>
@@ -1012,101 +1017,101 @@ function Showcase() {
 							<p className="font-fizz-body mt-1 text-sm text-[#A68A64]">
 								Warm, bubbly energy. Serious product, casual vibe.
 							</p>
+						</div>
+					</div>
+
+					<div className="grid gap-8 md:grid-cols-2">
+						<div className="space-y-4">
+							<div className="flex items-center gap-4">
+								<div className="h-16 w-16 rounded-full border border-[#FDE68A] bg-[#FFFAF5] shadow-sm" />
+								<div>
+									<p className="text-sm font-medium text-[#2A1810]">
+										Cream Soda
+									</p>
+									<p className="font-mono text-xs text-[#A68A64]">#FFFAF5</p>
+								</div>
+							</div>
+							<div className="flex items-center gap-4">
+								<div className="h-16 w-16 rounded-full bg-[#F4A261] shadow-sm" />
+								<div>
+									<p className="text-sm font-medium text-[#2A1810]">
+										Tangerine
+									</p>
+									<p className="font-mono text-xs text-[#A68A64]">#F4A261</p>
+								</div>
+							</div>
+							<div className="flex items-center gap-4">
+								<div className="h-16 w-16 rounded-full bg-[#E9C46A] shadow-sm" />
+								<div>
+									<p className="text-sm font-medium text-[#2A1810]">Golden</p>
+									<p className="font-mono text-xs text-[#A68A64]">#E9C46A</p>
+								</div>
+							</div>
+							<div className="flex items-center gap-4">
+								<div className="h-16 w-16 rounded-full bg-[#2A1810] shadow-sm" />
+								<div>
+									<p className="text-sm font-medium text-[#2A1810]">Espresso</p>
+									<p className="font-mono text-xs text-[#A68A64]">#2A1810</p>
+								</div>
 							</div>
 						</div>
 
-						<div className="grid gap-8 md:grid-cols-2">
-							<div className="space-y-4">
-								<div className="flex items-center gap-4">
-									<div className="h-16 w-16 rounded-full border border-[#FDE68A] bg-[#FFFAF5] shadow-sm" />
-									<div>
-										<p className="text-sm font-medium text-[#2A1810]">
-											Cream Soda
-										</p>
-										<p className="font-mono text-xs text-[#A68A64]">#FFFAF5</p>
-									</div>
+						<div className="fizz-float rounded-3xl border border-[#FDE68A]/50 bg-white p-8 shadow-sm">
+							<div className="mb-6 flex items-center justify-between">
+								<span className="font-fizz-body text-xs tracking-[0.2em] text-[#A68A64] uppercase">
+									Product
+								</span>
+								<span className="font-fizz-body rounded-full bg-[#F4A261] px-3 py-1 text-xs font-medium text-white">
+									Beta
+								</span>
+							</div>
+							<h3 className="font-fizz-head mb-3 text-4xl leading-tight text-[#2A1810]">
+								Your ideas,
+								<br />
+								<span className="text-[#F4A261]">carbonated.</span>
+							</h3>
+							<p className="font-fizz-body mb-6 text-sm leading-relaxed text-[#A68A64]">
+								We take the flat and make it fantastic. Tools for creators who
+								don't take themselves too seriously — but ship like they do.
+							</p>
+							<div className="grid grid-cols-2 gap-3">
+								<div className="rounded-2xl bg-[#FFFAF5] p-4 text-center">
+									<p className="font-fizz-head text-2xl text-[#F4A261]">2x</p>
+									<p className="font-fizz-body text-xs text-[#A68A64]">
+										Faster builds
+									</p>
 								</div>
-								<div className="flex items-center gap-4">
-									<div className="h-16 w-16 rounded-full bg-[#F4A261] shadow-sm" />
-									<div>
-										<p className="text-sm font-medium text-[#2A1810]">
-											Tangerine
-										</p>
-										<p className="font-mono text-xs text-[#A68A64]">#F4A261</p>
-									</div>
-								</div>
-								<div className="flex items-center gap-4">
-									<div className="h-16 w-16 rounded-full bg-[#E9C46A] shadow-sm" />
-									<div>
-										<p className="text-sm font-medium text-[#2A1810]">Golden</p>
-										<p className="font-mono text-xs text-[#A68A64]">#E9C46A</p>
-									</div>
-								</div>
-								<div className="flex items-center gap-4">
-									<div className="h-16 w-16 rounded-full bg-[#2A1810] shadow-sm" />
-									<div>
-										<p className="text-sm font-medium text-[#2A1810]">Espresso</p>
-										<p className="font-mono text-xs text-[#A68A64]">#2A1810</p>
-									</div>
+								<div className="rounded-2xl bg-[#FFFAF5] p-4 text-center">
+									<p className="font-fizz-head text-2xl text-[#E9C46A]">100+</p>
+									<p className="font-fizz-body text-xs text-[#A68A64]">
+										Happy teams
+									</p>
 								</div>
 							</div>
-
-							<div className="fizz-float rounded-3xl border border-[#FDE68A]/50 bg-white p-8 shadow-sm">
-								<div className="mb-6 flex items-center justify-between">
-									<span className="font-fizz-body text-xs tracking-[0.2em] text-[#A68A64] uppercase">
-										Product
-									</span>
-									<span className="font-fizz-body rounded-full bg-[#F4A261] px-3 py-1 text-xs font-medium text-white">
-										Beta
-									</span>
-								</div>
-								<h3 className="font-fizz-head mb-3 text-4xl leading-tight text-[#2A1810]">
-									Your ideas,
-									<br />
-									<span className="text-[#F4A261]">carbonated.</span>
-								</h3>
-								<p className="font-fizz-body mb-6 text-sm leading-relaxed text-[#A68A64]">
-									We take the flat and make it fantastic. Tools for creators who
-									don't take themselves too seriously — but ship like they do.
-								</p>
-								<div className="grid grid-cols-2 gap-3">
-									<div className="rounded-2xl bg-[#FFFAF5] p-4 text-center">
-										<p className="font-fizz-head text-2xl text-[#F4A261]">2x</p>
-										<p className="font-fizz-body text-xs text-[#A68A64]">
-											Faster builds
-										</p>
-									</div>
-									<div className="rounded-2xl bg-[#FFFAF5] p-4 text-center">
-										<p className="font-fizz-head text-2xl text-[#E9C46A]">100+</p>
-										<p className="font-fizz-body text-xs text-[#A68A64]">
-											Happy teams
-										</p>
-									</div>
-								</div>
-								<div className="mt-6">
-									<a
-										href="/showcase"
-										className="font-fizz-body inline-flex items-center gap-2 rounded-full bg-[#F4A261] px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#2A1810]"
+							<div className="mt-6">
+								<a
+									href="/showcase"
+									className="font-fizz-body inline-flex items-center gap-2 rounded-full bg-[#F4A261] px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#2A1810]"
+								>
+									Pop the hood
+									<svg
+										className="h-4 w-4"
+										fill="none"
+										stroke="currentColor"
+										viewBox="0 0 24 24"
 									>
-										Pop the hood
-										<svg
-											className="h-4 w-4"
-											fill="none"
-											stroke="currentColor"
-											viewBox="0 0 24 24"
-										>
-											<path
-												strokeLinecap="round"
-												strokeLinejoin="round"
-												strokeWidth={1.5}
-												d="M17 8l4 4m0 0l-4 4m4-4H3"
-											/>
-										</svg>
-									</a>
-								</div>
+										<path
+											strokeLinecap="round"
+											strokeLinejoin="round"
+											strokeWidth={1.5}
+											d="M17 8l4 4m0 0l-4 4m4-4H3"
+										/>
+									</svg>
+								</a>
 							</div>
 						</div>
 					</div>
+				</div>
 			</section>
 
 			{/* Theme 9: Orbit */}
@@ -1376,8 +1381,7 @@ function Showcase() {
 						My Suggestion
 					</p>
 					<h2 className="font-signal-head mb-8 text-4xl font-semibold text-[#0A0E27]">
-						Startup Spark:{' '}
-						<em className="text-[#3B5BFE]">Signal</em> or{' '}
+						Startup Spark: <em className="text-[#3B5BFE]">Signal</em> or{' '}
 						<em className="text-[#6C5CE7]">Orbit</em>
 					</h2>
 					<p className="mx-auto mb-12 max-w-2xl leading-relaxed text-[#64748B]">
