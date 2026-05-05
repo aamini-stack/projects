@@ -1,9 +1,9 @@
 # Peace of Real Estate Theme
 
 Visual identity for Peace of Real Estate. The direction is **Calm Precision**:
-professional, trustworthy, human, and quietly premium. The product should feel
-like a guided matching experience, not a construction site, dashboard, or lead
-form.
+professional, trustworthy, human, and quietly premium. This theme is a product
+expression of the PRE brand guide in `PRE.md`, so colors and type should stay
+inside the official brand palette whenever possible.
 
 ## Logo
 
@@ -41,7 +41,6 @@ variants.
 | ---------- | --------- | ----- |
 | Porcelain  | `#F8FAFC` | App background |
 | White      | `#FFFFFF` | Cards, nav, forms |
-| Warm White | `#FFFDF8` | Hero/CTA gradients |
 | Sky Wash   | `#F0F9FF` | Secondary surfaces, hover states |
 | Ink        | `#0F172A` | Primary text |
 | Slate      | `#64748B` | Secondary text |
@@ -111,7 +110,7 @@ direction #1: clean, soft, precise, with generous spacing and low visual noise.
 - Large panels: `16px`.
 - Icon tokens: circular, softly tinted, bordered at low opacity.
 - Cards: white or translucent white, soft border, subtle shadow.
-- Backgrounds: porcelain with sky/amber radial glows.
+- Backgrounds: porcelain with sky/amber radial glows using official PRE colors.
 - Avoid hard table grids, blueprint grids, construction motifs, sharp boxes, and noisy patterns.
 
 ## Component Language
@@ -132,7 +131,7 @@ direction #1: clean, soft, precise, with generous spacing and low visual noise.
 
 --background: #F8FAFC;
 --surface: #FFFFFF;
---surface-warm: #FFFDF8;
+--surface-warm: #F8FAFC;
 --surface-cool: #F0F9FF;
 --foreground: #0F172A;
 --muted-foreground: #64748B;

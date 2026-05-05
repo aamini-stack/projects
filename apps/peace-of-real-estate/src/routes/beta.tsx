@@ -47,9 +47,6 @@ function BetaLogin() {
 
 	return (
 		<div className="theme-glow relative flex min-h-dvh w-full items-center justify-center overflow-hidden px-6 py-12">
-			<div className="bg-sky/25 absolute -top-24 right-1/4 h-80 w-80 rounded-full blur-3xl" />
-			<div className="bg-amber/15 absolute bottom-0 left-1/4 h-80 w-80 rounded-full blur-3xl" />
-
 			<div className="soft-panel relative z-10 w-full max-w-lg p-8 md:p-10">
 				<div className="mb-8 flex items-center justify-between gap-4">
 					<div className="border-navy/20 bg-navy-tint text-navy flex h-12 w-12 items-center justify-center rounded-full border">

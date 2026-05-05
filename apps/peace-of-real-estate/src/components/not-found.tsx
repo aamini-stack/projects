@@ -3,10 +3,7 @@ import { Compass, ArrowLeft, MapPin } from 'lucide-react'
 
 export function NotFoundComponent() {
 	return (
-		<div className="relative flex flex-1 flex-col items-center justify-center overflow-hidden px-6 py-24">
-			<div className="bg-sky/20 absolute top-20 right-1/4 h-64 w-64 rounded-full blur-3xl" />
-			<div className="bg-amber/15 absolute bottom-16 left-1/4 h-64 w-64 rounded-full blur-3xl" />
-
+		<div className="flex flex-1 flex-col items-center justify-center px-6 py-24">
 			<div className="soft-panel relative mx-auto max-w-xl p-10 text-center md:p-12">
 				<div className="border-navy/20 bg-navy-tint mx-auto mb-8 flex h-16 w-16 items-center justify-center rounded-full border">
 					<Compass className="text-navy h-8 w-8" />

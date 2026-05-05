@@ -30,8 +30,6 @@ function Home() {
 		<div className="flex flex-col">
 			<section className="border-border relative overflow-hidden border-b">
 				<div className="warm-gradient absolute inset-0" />
-				<div className="bg-sky/20 absolute -top-28 right-8 h-80 w-80 rounded-full blur-3xl" />
-				<div className="bg-amber/15 absolute bottom-0 left-8 h-72 w-72 rounded-full blur-3xl" />
 				<div className="relative mx-auto max-w-7xl px-6 py-16 lg:py-24">
 					<div className="grid items-start gap-10 xl:grid-cols-2 xl:gap-16">
 						<div className="flex flex-col justify-center pt-2 xl:pt-8">
@@ -204,7 +202,7 @@ function Home() {
 			{/* CTA Section */}
 			<section>
 				<div className="mx-auto max-w-7xl px-6 py-20">
-					<div className="soft-panel mx-auto max-w-3xl bg-linear-to-br from-[#FFFDF8] to-sky-50 p-12 md:p-16">
+					<div className="soft-panel mx-auto max-w-3xl p-12 md:p-16">
 						<div className="text-center">
 							<div className="data-label mb-6">Get Started</div>
 							<h2 className="font-heading mb-6 text-3xl font-normal tracking-tight md:text-4xl">

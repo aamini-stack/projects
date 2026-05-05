@@ -6,6 +6,14 @@
 :root {
 	--font-family-sans: 'DM Sans Variable', system-ui, sans-serif;
 	--font-family-heading: 'tt-commons-pro', system-ui, sans-serif;
+	--font-body: 'DM Sans Variable', system-ui, sans-serif;
+	--font-heading: 'tt-commons-pro', system-ui, sans-serif;
+
+	/* PRE Brand Guide */
+	--brand-navy: #024A70;
+	--brand-sky: #74D4FF;
+	--brand-amber: #FFB86A;
+	--brand-gray: #CAD5E2;
 
 	--radius: 0.75rem;
 	--background: #F8FAFC;
@@ -14,13 +22,13 @@
 	--card-foreground: #0F172A;
 	--popover: #ffffff;
 	--popover-foreground: #0F172A;
-	--primary: #024A70;
+	--primary: var(--brand-navy);
 	--primary-foreground: #F8FAFC;
 	--secondary: #F0F9FF;
 	--secondary-foreground: #0F172A;
 	--muted: #EEF5F9;
 	--muted-foreground: #64748B;
-	--accent: #74D4FF;
+	--accent: var(--brand-sky);
 	--accent-foreground: #0F172A;
 	--destructive: #f97316;
 	--border: #E2E8F0;
@@ -28,10 +36,10 @@
 	--ring: #024A70;
 
 	/* Brand Colors */
-	--navy: #024A70;
-	--sky: #74D4FF;
-	--amber: #FFB86A;
-	--gray: #CAD5E2;
+	--navy: var(--brand-navy);
+	--sky: var(--brand-sky);
+	--amber: var(--brand-amber);
+	--gray: var(--brand-gray);
 	--navy-foreground: #F8FAFC;
 	--sky-foreground: #0F172A;
 	--amber-foreground: #0F172A;
@@ -72,9 +80,8 @@
 	--amber-tint: rgba(255, 184, 106, 0.08);
 	--success-tint: rgba(34, 197, 94, 0.08);
 	--warning-tint: rgba(249, 115, 22, 0.08);
-	--surface-warm: #FFFDF8;
+	--surface-warm: var(--slate-50);
 	--surface-cool: #F0F9FF;
-	--surface-cream: #FFFBF4;
 	--shadow-soft: 0 24px 60px rgba(15, 23, 42, 0.08);
 	--shadow-card: 0 14px 32px rgba(2, 74, 112, 0.07);
 
@@ -83,6 +90,12 @@
 @theme inline {
 	--font-sans: var(--font-family-sans);
 	--font-heading: var(--font-family-heading);
+	--font-body: var(--font-family-sans);
+
+	--color-brand-navy: var(--brand-navy);
+	--color-brand-sky: var(--brand-sky);
+	--color-brand-amber: var(--brand-amber);
+	--color-brand-gray: var(--brand-gray);
 
 	/* Brand Colors */
 	--color-navy: var(--navy);
@@ -214,10 +227,7 @@
 }
 
 @utility warm-gradient {
-	background:
-		radial-gradient(circle at 18% 12%, rgba(116, 212, 255, 0.24), transparent 28rem),
-		radial-gradient(circle at 82% 18%, rgba(255, 184, 106, 0.16), transparent 24rem),
-		linear-gradient(180deg, var(--surface-warm) 0%, var(--background) 74%);
+	background: var(--background);
 }
 
 @utility btn-primary {
@@ -269,10 +279,7 @@
 }
 
 @utility theme-glow {
-	background:
-		radial-gradient(circle at 20% 10%, rgba(116, 212, 255, 0.22), transparent 20rem),
-		radial-gradient(circle at 80% 25%, rgba(255, 184, 106, 0.14), transparent 18rem),
-		var(--background);
+	background: var(--background);
 }
 
 @keyframes fade-in {

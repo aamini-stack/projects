@@ -185,16 +185,13 @@ function RootComponent() {
 							<div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
 								<Link
 									to={session ? '/match-activity' : '/'}
-									className="flex items-center gap-3"
+									className="flex items-center"
 								>
 									<img
-										src="/favicon.svg"
+										src="/logo-fullColor.svg"
 										alt="Peace of Real Estate"
-										className="h-7 w-7 shrink-0"
+										className="h-9 w-auto shrink-0"
 									/>
-									<span className="font-heading text-base tracking-tight">
-										Peace of Real Estate
-									</span>
 								</Link>
 
 								<div className="flex items-center gap-1">
