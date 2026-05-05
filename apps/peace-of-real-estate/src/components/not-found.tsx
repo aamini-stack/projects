@@ -3,31 +3,22 @@ import { Compass, ArrowLeft, MapPin } from 'lucide-react'
 
 export function NotFoundComponent() {
 	return (
-		<div className="flex flex-1 flex-col items-center justify-center px-6 py-24">
-			<div className="relative mx-auto max-w-xl text-center">
-				{/* Decorative grid lines */}
-				<div className="grid-pattern absolute inset-0 -z-10 opacity-[0.15]" />
+		<div className="relative flex flex-1 flex-col items-center justify-center overflow-hidden px-6 py-24">
+			<div className="bg-sky/20 absolute top-20 right-1/4 h-64 w-64 rounded-full blur-3xl" />
+			<div className="bg-amber/15 absolute bottom-16 left-1/4 h-64 w-64 rounded-full blur-3xl" />
 
-				{/* Icon with border */}
-				<div className="border-border bg-card mx-auto mb-8 flex h-16 w-16 items-center justify-center border">
-					<Compass className="text-muted-foreground h-8 w-8" />
+			<div className="soft-panel relative mx-auto max-w-xl p-10 text-center md:p-12">
+				<div className="border-navy/20 bg-navy-tint mx-auto mb-8 flex h-16 w-16 items-center justify-center rounded-full border">
+					<Compass className="text-navy h-8 w-8" />
 				</div>
-
-				{/* Error code */}
 				<div className="data-label mb-4">Error 404</div>
-
-				{/* Heading */}
 				<h1 className="font-heading mb-6 text-4xl font-normal tracking-tight md:text-5xl">
 					Page Not Found
 				</h1>
-
-				{/* Description */}
 				<p className="text-muted-foreground mx-auto mb-10 max-w-md text-lg leading-relaxed">
 					The page you're looking for doesn't exist or has been moved. Let's get
 					you back on track.
 				</p>
-
-				{/* Actions */}
 				<div className="flex flex-col items-center justify-center gap-3 sm:flex-row">
 					<Link to="/" className="btn-primary inline-flex items-center gap-2">
 						<ArrowLeft className="h-4 w-4" />

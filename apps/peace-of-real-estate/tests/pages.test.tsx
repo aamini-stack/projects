@@ -90,7 +90,7 @@ const pages = [
 		name: 'beta',
 		path: '/beta',
 		component: BetaRoute.options.component as ComponentType,
-		heading: /under construction/i,
+		heading: /step into a calmer way to find your agent/i,
 	},
 ] as const
 

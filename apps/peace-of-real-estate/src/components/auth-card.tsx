@@ -160,7 +160,7 @@ export function AuthCard({
 					<h1 className="font-heading text-3xl font-normal">{title}</h1>
 				</div>
 
-				<Card className="border-border w-full">
+				<Card className="soft-panel w-full">
 					<CardContent className="pt-6">
 						<div className="space-y-6">
 							{googleAvailable ? (
@@ -169,7 +169,7 @@ export function AuthCard({
 										type="button"
 										onClick={handleGoogleSignIn}
 										disabled={isGoogleLoading || isSubmitting}
-										className="border-border bg-background text-foreground hover:bg-secondary inline-flex w-full items-center justify-center gap-3 border px-4 py-3 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-70"
+										className="border-border bg-background text-foreground hover:bg-secondary inline-flex w-full items-center justify-center gap-3 rounded-xl border px-4 py-3 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-70"
 									>
 										{isGoogleLoading ? (
 											<Loader2 className="h-4 w-4 animate-spin" />
